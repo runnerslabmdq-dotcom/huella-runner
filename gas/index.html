@@ -1,0 +1,3366 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <base target="_top">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#080808">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <!-- SWIPER.JS CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+  <!-- PWA INSTALL SUPPORT -->
+  <link rel="apple-touch-icon" href="https://res.cloudinary.com/dlayzh9ln/image/upload/v1778672392/icono_HR_fomqlf.png">
+  <meta name="apple-mobile-web-app-title" content="Huella Runner">
+  <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Huella%20Runner%22,%22short_name%22:%22HR%22,%22display%22:%22standalone%22,%22background_color%22:%22%23080808%22,%22theme_color%22:%22%23E9FF00%22,%22icons%22:[{%22src%22:%22https://res.cloudinary.com/dlayzh9ln/image/upload/v1778672392/icono_HR_fomqlf.png%22,%22sizes%22:%22192x192%22,%22type%22:%22image/png%22},{%22src%22:%22https://res.cloudinary.com/dlayzh9ln/image/upload/v1778672989/icono_HR_512_hvbsyb.png%22,%22sizes%22:%22512x512%22,%22type%22:%22image/png%22}]}">
+  <!-- FIN PWA INSTALL SUPPORT -->
+
+  <style>
+    :root {
+      --bg-color: #080808;
+      --card-bg: #111111;
+      --amarillo: #C5B358;
+      --amarillo-top: #D4C570;
+      --amarillo-dark: #A89440;
+      --plata: #E8E8E8;
+      --gris-texto: #888888;
+      --borde: #1f1f1f;
+      --neon-cyan: #00f3ff;
+    }
+
+    @keyframes zapaPulso {
+      0%   { transform: scale(1);    opacity: 1; }
+      50%  { transform: scale(1.35); opacity: 0.7; }
+      100% { transform: scale(1);    opacity: 1; }
+    }
+    .zapa-loading {
+      display: inline-block;
+      animation: zapaPulso 1s ease-in-out infinite;
+      font-size: 1.4em;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--plata);
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 420px;
+      position: relative;
+    }
+
+    .header { text-align: center; margin: 30px 0 20px; }
+    .logo { font-weight: 900; font-size: 2.2rem; letter-spacing: -1px; text-transform: uppercase; line-height: 1.1; }
+    .logo-huella { color: var(--plata); }
+    .logo-runner { color: var(--amarillo); }
+
+    .nav-logo {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      line-height: 1;
+      gap: 0;
+      margin-top: 10px;
+    }
+    .logo-powered {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.5rem;
+      font-weight: 700;
+      color: var(--gris-texto);
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      margin-bottom: 2px;
+    }
+    .logo-name-row {
+      display: block;
+      white-space: nowrap;
+      line-height: 1;
+    }
+    .logo-open    { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; color: var(--plata);      letter-spacing: 2px; }
+    .logo-sports  { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; color: var(--amarillo);   letter-spacing: 2px; }
+    .logo-runbike { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; color: var(--gris-texto); letter-spacing: 2px; }
+
+    .nav-logo-inline {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      text-decoration: none;
+      line-height: 1;
+    }
+    .nav-logo-inline .logo-powered  { font-family: 'Montserrat', sans-serif; font-size: 0.42rem; font-weight: 700; color: var(--gris-texto); text-transform: uppercase; letter-spacing: 2px; }
+    .nav-logo-inline .logo-name-row { display: block; white-space: nowrap; line-height: 1; }
+    .nav-logo-inline .logo-open     { font-family: 'Bebas Neue', sans-serif; font-size: 1.60rem; color: var(--plata);      letter-spacing: 1.5px; }
+    .nav-logo-inline .logo-sports   { font-family: 'Bebas Neue', sans-serif; font-size: 1.60rem; color: var(--amarillo);   letter-spacing: 1.5px; }
+    .nav-logo-inline .logo-runbike  { font-family: 'Bebas Neue', sans-serif; font-size: 1.38rem; color: var(--gris-texto); letter-spacing: 1.5px; margin-top: 0; }
+
+    .card { background: var(--card-bg); border: 1px solid var(--borde); border-radius: 20px; padding: 25px; margin-bottom: 20px; }
+    .form-group { margin-bottom: 15px; text-align: left; }
+    label { display: block; font-size: 0.7rem; color: var(--gris-texto); margin-bottom: 5px; font-weight: 700; text-transform: uppercase; }
+
+    input, select {
+      width: 100%; background: #1a1a1a; border: 1px solid #333; border-radius: 10px;
+      padding: 12px; color: white; font-family: 'Montserrat', sans-serif; font-size: 0.9rem; outline: none; transition: 0.3s;
+    }
+    input:focus, select:focus { border-color: var(--amarillo); }
+    select option { background: #1a1a1a; color: white; }
+
+    .btn-primary {
+      width: 100%;
+      background: linear-gradient(180deg, var(--amarillo-top) 0%, var(--amarillo) 45%, var(--amarillo-dark) 100%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -1px 0 rgba(0,0,0,0.18), 0 2px 8px rgba(240,255,0,0.25);
+      color: black; border: none; padding: 15px; border-radius: 12px; font-weight: 900; font-size: 0.9rem;
+      cursor: pointer; text-transform: uppercase; margin-top: 10px; transition: 0.2s;
+      font-family: 'Montserrat', sans-serif;
+    }
+    .btn-primary:active { transform: scale(0.98); opacity: 0.92; }
+    .btn-ghost { width: 100%; background: transparent; color: var(--plata); border: none; padding: 15px; font-weight: 700; font-size: 0.8rem; cursor: pointer; margin-top: 5px; text-decoration: underline; font-family: 'Montserrat', sans-serif; }
+
+    .btn-recover {
+      width: 100%; background: transparent; color: var(--gris-texto); border: none;
+      padding: 8px 15px; font-weight: 700; font-size: 0.72rem; cursor: pointer;
+      margin-top: 2px; text-decoration: none; display: block; text-align: center;
+      transition: color 0.2s; font-family: 'Montserrat', sans-serif;
+    }
+    .btn-recover:hover { color: var(--amarillo); }
+
+    .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+
+    .armario-header { margin: 10px 0 20px; display: flex; flex-direction: column; align-items: center; }
+    .armario-title { font-weight: 900; font-size: 1.6rem; text-transform: uppercase; letter-spacing: -1px; }
+    .armario-title span { color: var(--amarillo); }
+    .armario-subtitle { font-size: 0.65rem; color: var(--gris-texto); text-transform: uppercase; letter-spacing: 2px; margin-top: 3px; }
+
+    /* =====================================================
+       GRILLA DE ZAPATILLAS
+       ===================================================== */
+    .shoe-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 160px));
+      gap: 12px;
+      justify-content: center;
+      margin-bottom: 100px;
+    }
+
+    .shoe-thumb {
+      background: var(--card-bg);
+      border: 1px solid rgba(192,192,192,0.35);
+      border-radius: 16px;
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      max-width: 160px;
+      box-shadow:
+        inset 0 0 10px rgba(192,192,192,0.08),
+        0 0 12px rgba(192,192,192,0.18),
+        0 0 24px rgba(192,192,192,0.06);
+    }
+    .shoe-thumb:active { transform: scale(0.95); }
+    .shoe-thumb:hover  {
+      border-color: 1px solid rgba(192,192,192,0.6);
+      box-shadow:
+        inset 0 0 14px rgba(192,192,192,0.14),
+        0 0 20px rgba(192,192,192,0.28),
+        0 0 40px rgba(192,192,192,0.10);
+    }
+
+    /* =====================================================
+       CARRUSEL COVERFLOW — v2 tarjeta activa fusionada
+       ===================================================== */
+    .coverflow-wrap {
+      width: 100%;
+      margin-bottom: 0;
+      padding-bottom: 30px;   /* espacio inferior del carrusel */
+      position: relative;
+    }
+
+    /* Pantallas chicas ≤ 400px: más espacio */
+    @media (max-width: 400px) {
+      .coverflow-wrap { padding-bottom: 70px; }
+    }
+
+    /* Contenedor Swiper */
+    .swiper-coverflow {
+      width: 100%;
+      padding: 16px 0 36px !important;
+      overflow: visible !important;
+    }
+
+    /* ── Cada slide: más estrecho para que se vean los laterales ── */
+    .swiper-coverflow .swiper-slide {
+      width: 62% !important;
+      max-width: 240px;
+      border-radius: 22px;
+      overflow: visible;
+      cursor: pointer;
+      transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+
+    /* Slides laterales: opacos y ligeramente más chicos */
+    .swiper-coverflow .swiper-slide:not(.swiper-slide-active) {
+      opacity: 0.45;
+      transform: scale(0.88) !important;
+    }
+
+    /* ── Tarjeta base ── */
+    .cf-card {
+      background: var(--card-bg);
+      border-radius: 22px;
+      overflow: hidden;
+      position: relative;
+      transition: box-shadow 0.35s ease;
+      /* borde neon degradado: pseudo-elemento lo pinta */
+      border: none;
+    }
+
+    /* ── Borde neon degradado solo en slide activo ── */
+    /* Wrapeamos la card en un div .cf-neon-wrap que hace el truco */
+    .cf-neon-wrap {
+      border-radius: 22px;
+      padding: 2px;           /* grosor del borde */
+      background: #1a1a1a;    /* fallback sin neon */
+      transition: background 0.35s ease, box-shadow 0.35s ease;
+    }
+    .swiper-slide-active .cf-neon-wrap {
+      background: linear-gradient(135deg, #00f3ff 0%, #ff6a00 100%);
+      box-shadow:
+        0 0 18px rgba(0,243,255,0.35),
+        0 0 36px rgba(255,106,0,0.22),
+        0 12px 48px rgba(0,0,0,0.7);
+    }
+    /* Slides laterales: borde gris sutil */
+    .swiper-coverflow .swiper-slide:not(.swiper-slide-active) .cf-neon-wrap {
+      background: rgba(192,192,192,0.18);
+      box-shadow: none;
+    }
+
+    /* ── Foto ── */
+    .cf-photo-wrap {
+      width: 100%;
+      aspect-ratio: 3 / 4;    /* ligeramente más alto */
+      background: #0d0d0d;
+      overflow: hidden;
+      position: relative;
+    }
+    .cf-photo-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      transition: transform 0.4s ease;
+      pointer-events: none;
+    }
+    .swiper-slide-active .cf-photo-wrap img {
+      transform: scale(1.05);
+    }
+
+    /* Badge de marca sobre la foto */
+    .cf-badge {
+      position: absolute; top: 8px; left: 8px;
+      padding: 2px 8px; border-radius: 6px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.65rem; letter-spacing: 1px;
+      z-index: 2; backdrop-filter: blur(4px);
+    }
+    /* Badge imagen genérica */
+.cf-badge-generica {
+  position: absolute; top: 8px; right: 28px;
+  padding: 2px 7px; border-radius: 5px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.6rem; letter-spacing: 1.5px;
+  z-index: 2; backdrop-filter: blur(4px);
+  background: rgba(80,80,80,0.82);
+  color: #C0C0C0;
+  border: 1px solid rgba(192,192,192,0.25);
+}
+
+    /* Indicador de advertencia */
+    .cf-warn {
+      position: absolute; top: 8px; right: 8px;
+      font-size: 0.78rem; z-index: 3;
+      background: rgba(0,0,0,0.65);
+      border-radius: 50%; width: 22px; height: 22px;
+      display: flex; align-items: center; justify-content: center;
+      backdrop-filter: blur(4px);
+    }
+
+    /* Botón eliminar — solo visible en slide activo */
+    .cf-btn-delete {
+      position: absolute; bottom: 8px; right: 8px;
+      width: 24px; height: 24px;
+      background: #e53935; border: 2px solid #000;
+      border-radius: 50%; display: flex; align-items: center;
+      justify-content: center; cursor: pointer; z-index: 10;
+      font-size: 0.58rem; color: white; font-weight: 900;
+      line-height: 1; transition: transform 0.15s, background 0.2s, opacity 0.25s;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .swiper-slide-active .cf-btn-delete {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .cf-btn-delete:hover  { background: #ff1744; transform: scale(1.15); }
+    .cf-btn-delete:active { transform: scale(0.92); }
+
+    /* ── Info del modelo (siempre visible) ── */
+    .cf-info {
+      padding: 10px 12px 5px;
+    }
+    .cf-model {
+      font-weight: 900; font-size: 0.90rem;
+      color: var(--plata); line-height: 1.2;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .cf-alias {
+      font-size: 0.6rem; color: var(--amarillo);
+      font-weight: 700; font-style: italic;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      margin-top: 1px;
+    }
+    .cf-size {
+      font-size: 0.64rem; color: var(--gris-texto);
+      font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.5px; margin-top: 2px;
+    }
+
+    /* ── Barra de km ── */
+    .cf-bar-section { padding: 4px 12px 8px; }
+    .cf-bar-wrap { width: 100%; height: 3px; background: #000; border-radius: 2px; overflow: hidden; }
+    .cf-bar-fill { height: 100%; background: linear-gradient(90deg, #F0FF00, #BFCA00); border-radius: 2px; transition: width 0.5s ease; }
+    .cf-km { font-size: 0.60rem; color: var(--gris-texto); margin-top: 4px; font-weight: 700; display: flex; justify-content: space-between; }
+    .cf-km .km-val { color: var(--amarillo); }
+
+    /* ── Bloque de acciones — solo visible en slide activo ── */
+    .cf-actions {
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height 0.35s ease, opacity 0.3s ease, padding 0.3s ease;
+      padding: 0 10px;
+    }
+    .swiper-slide-active .cf-actions {
+      max-height: 140px;
+      opacity: 1;
+      padding: 4px 10px 12px;
+    }
+    /* Fila SUMAR KM + HISTORIAL */
+    .cf-btn-row {
+      display: flex; gap: 7px; margin-bottom: 6px;
+    }
+    .cf-btn-train {
+      flex: 1;
+      background: linear-gradient(180deg, var(--amarillo-top) 0%, var(--amarillo) 45%, var(--amarillo-dark) 100%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), 0 2px 8px rgba(240,255,0,0.18);
+      color: #000; border: none;
+      padding: 10px 6px; border-radius: 50px;
+      font-size: 0.62rem; font-weight: 900; cursor: pointer;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      font-family: 'Montserrat', sans-serif;
+      transition: opacity 0.2s, transform 0.15s;
+      white-space: nowrap;
+    }
+    .cf-btn-train:active  { transform: scale(0.96); opacity: 0.88; }
+    .cf-btn-history {
+      flex: 1; background: transparent; color: #C0C0C0;
+      border: 1.5px solid #C0C0C0;
+      padding: 10px 6px; border-radius: 50px;
+      font-size: 0.62rem; font-weight: 900; cursor: pointer;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      font-family: 'Montserrat', sans-serif;
+      transition: background 0.2s, transform 0.15s;
+      white-space: nowrap;
+    }
+    .cf-btn-history:active { transform: scale(0.96); background: rgba(192,192,192,0.1); }
+    /* ── Botón Todo Trail ── */
+    .cf-btn-row-shop {
+      display: flex; gap: 7px;
+    }
+    .cf-btn-todotrail {
+      flex: 1;
+      background: linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 50%, #111111 100%);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.12),
+        inset 0 -1px 0 rgba(0,0,0,0.4),
+        0 2px 8px rgba(0,0,0,0.5),
+        0 0 0 1px rgba(255,255,255,0.06);
+      color: #fff; border: none;
+      padding: 9px 6px; border-radius: 10px;
+      font-size: 0.62rem; font-weight: 900; cursor: pointer;
+      letter-spacing: 0.5px;
+      font-family: 'Montserrat', sans-serif;
+      transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+      white-space: nowrap;
+      display: flex; align-items: center; justify-content: center; gap: 4px;
+    }
+    .cf-btn-todotrail:active {
+      transform: scale(0.96);
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04);
+    }
+    .cf-btn-todotrail .tt-todo { color: #ffffff; }
+    .cf-btn-todotrail .tt-trail { color: #FF6B00; }
+
+    /* ── Slide especial dual: nueva zapa + locker ── */
+    .cf-add-slide .cf-neon-wrap {
+      background: rgba(56,56,56,0.6);
+    }
+    .cf-add-slide.swiper-slide-active .cf-neon-wrap {
+      background: linear-gradient(135deg, rgba(233,255,0,0.5) 0%, rgba(233,255,0,0.15) 100%);
+      box-shadow: 0 0 20px rgba(233,255,0,0.10);
+    }
+    /* Contenedor dual — dos mitades verticales */
+    .cf-add-dual {
+      display: flex;
+      flex-direction: column;
+      border-radius: 20px;
+      overflow: hidden;
+      background: #111;
+      min-height: 320px;
+    }
+    /* Mitad superior: Nueva zapa */
+    .cf-add-top {
+      flex: 1;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 8px;
+      padding: 20px 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .cf-add-top:active { background: rgba(233,255,0,0.05); }
+    /* Divisor entre mitades */
+    .cf-add-divider {
+      height: 1px;
+      background: #222;
+      margin: 0 16px;
+      flex-shrink: 0;
+    }
+    /* Mitad inferior: Locker */
+    .cf-add-bottom {
+      flex: 1;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 6px;
+      padding: 20px 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .cf-add-bottom:active { background: rgba(255,255,255,0.03); }
+
+    .cf-add-icon { font-size: 2.2rem; color: #999; line-height: 1; }
+    .cf-add-text {
+      font-size: 0.62rem; color: #999; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1.5px; text-align: center;
+      line-height: 1.6;
+    }
+    .cf-add-locker-icon { font-size: 1.4rem; line-height: 1; }
+    .cf-add-locker-label {
+      font-family: 'Bebas Neue', sans-serif; font-size: 1rem;
+      color: #999; letter-spacing: 2px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .cf-add-locker-count {
+      background: #1a1a1a; color: var(--amarillo);
+      border: 1px solid #2a2a2a; border-radius: 20px;
+      padding: 2px 9px; font-size: 0.72rem; font-weight: 900;
+      font-family: 'Montserrat', sans-serif; line-height: 1.6;
+    }
+    /* Activo: colores encendidos */
+    .cf-add-slide.swiper-slide-active .cf-add-icon { color: var(--amarillo); }
+    .cf-add-slide.swiper-slide-active .cf-add-text  { color: var(--amarillo); }
+    .cf-add-slide.swiper-slide-active .cf-add-locker-label { color: var(--plata); }
+    .cf-add-slide.swiper-slide-active .cf-add-bottom:active { background: rgba(255,255,255,0.06); }
+
+    /* ── Modal Locker ── */
+    .modal-locker-content {
+      background: var(--card-bg); width: 92%; max-width: 380px;
+      max-height: 82vh; border-radius: 22px;
+      border: 1px solid #1f1f1f; position: relative;
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+    .locker-modal-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 20px 20px 14px; border-bottom: 1px solid #1a1a1a; flex-shrink: 0;
+    }
+    .locker-modal-title {
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem;
+      color: var(--plata); letter-spacing: 2px;
+    }
+    .locker-modal-sub {
+      font-size: 0.58rem; color: var(--gris-texto);
+      text-transform: uppercase; letter-spacing: 1.5px; margin-top: 2px;
+    }
+    .locker-modal-scroll {
+      overflow-y: auto; padding: 16px 16px 20px; flex: 1;
+    }
+    .locker-modal-scroll::-webkit-scrollbar       { width: 3px; }
+    .locker-modal-scroll::-webkit-scrollbar-track { background: #1a1a1a; }
+    .locker-modal-scroll::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+    .locker-modal-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    }
+
+    /* Paginación Swiper custom */
+    .swiper-pagination-bullet {
+      background: #444 !important;
+      opacity: 1 !important;
+      width: 6px !important; height: 6px !important;
+    }
+    .swiper-pagination-bullet-active {
+      background: var(--amarillo) !important;
+      width: 18px !important;
+      border-radius: 3px !important;
+    }
+
+    /* ── Pantallas chicas (≤ 390px): cf-actions más compacto ── */
+    @media (max-width: 390px) {
+      .cf-actions {
+        padding: 0 8px;
+      }
+      .swiper-slide-active .cf-actions {
+        max-height: 110px;
+        padding: 3px 8px 10px;
+      }
+      .cf-btn-train, .cf-btn-history {
+        padding: 8px 4px;
+        font-size: 0.58rem;
+      }
+      .cf-btn-todotrail {
+        padding: 7px 4px;
+        font-size: 0.54rem;
+      }
+      .cf-btn-row       { gap: 5px; margin-bottom: 5px; }
+      .cf-btn-row-shop  { gap: 5px; }
+    }
+
+    .shoe-photo-wrap {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      background: #0d0d0d;
+      border-radius: 12px 12px 0 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+    .shoe-photo-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      transition: transform 0.3s ease;
+    }
+    .shoe-thumb:hover .shoe-photo-wrap img { transform: scale(1.04); }
+
+    .shoe-brand-badge {
+      position: absolute; top: 6px; left: 6px; padding: 2px 6px; border-radius: 5px;
+      font-family: 'Bebas Neue', sans-serif; font-size: 0.62rem; letter-spacing: 1px;
+      z-index: 2; backdrop-filter: blur(4px);
+    }
+    .badge-adidas      { background: rgba(26,26,46,0.85);  color: #fff;     border: 1px solid rgba(255,255,255,0.15); }
+    .badge-nike        { background: rgba(61,0,0,0.85);    color: #ff4444;  border: 1px solid rgba(255,68,68,0.2); }
+    .badge-puma        { background: rgba(0,13,26,0.85);   color: #4fc3f7;  border: 1px solid rgba(79,195,247,0.2); }
+    .badge-asics       { background: rgba(0,26,0,0.85);    color: #69f0ae;  border: 1px solid rgba(105,240,174,0.2); }
+    .badge-newbalance  { background: rgba(26,10,0,0.85);   color: #ffb74d;  border: 1px solid rgba(255,183,77,0.2); }
+    .badge-hoka        { background: rgba(26,0,26,0.85);   color: #ce93d8;  border: 1px solid rgba(206,147,216,0.2); }
+    .badge-saucony     { background: rgba(0,20,40,0.85);   color: #29b6f6;  border: 1px solid rgba(41,182,246,0.2); }
+    .badge-brooks      { background: rgba(0,20,10,0.85);   color: #a5d6a7;  border: 1px solid rgba(165,214,167,0.2); }
+    .badge-on          { background: rgba(20,20,20,0.85);  color: #e0e0e0;  border: 1px solid rgba(224,224,224,0.2); }
+    .badge-skechers    { background: rgba(20,0,40,0.85);   color: #b39ddb;  border: 1px solid rgba(179,157,219,0.2); }
+    .badge-underarmour { background: rgba(0,10,30,0.85);   color: #64b5f6;  border: 1px solid rgba(100,181,246,0.2); }
+    .badge-fila        { background: rgba(30,0,0,0.85);    color: #ef9a9a;  border: 1px solid rgba(239,154,154,0.2); }
+    .badge-salomon     { background: rgba(0,20,10,0.85);   color: #80cbc4;  border: 1px solid rgba(128,203,196,0.2); }
+    .badge-merrell     { background: rgba(20,12,0,0.85);   color: #ffcc80;  border: 1px solid rgba(255,204,128,0.2); }
+    .badge-thenorthface{ background: rgba(0,10,20,0.85);   color: #90caf9;  border: 1px solid rgba(144,202,249,0.2); }
+    .badge-default     { background: rgba(0,0,0,0.75);     color: var(--amarillo); border: 1px solid rgba(240,255,0,0.2); }
+
+    .thumb-warn {
+      position: absolute; top: 6px; right: 6px; font-size: 0.72rem; z-index: 3;
+      background: rgba(0,0,0,0.6); border-radius: 50%; width: 20px; height: 20px;
+      display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px);
+    }
+
+    .btn-delete-shoe {
+      position: absolute; top: 5px; right: 5px; width: 20px; height: 20px;
+      background: #e53935; border: 2px solid #000; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; z-index: 10; transition: transform 0.15s, background 0.2s;
+      font-size: 0.58rem; color: white; font-weight: 900; line-height: 1;
+    }
+    .btn-delete-shoe:hover  { background: #ff1744; transform: scale(1.15); }
+    .btn-delete-shoe:active { transform: scale(0.92); }
+
+    .shoe-info { padding: 8px 8px 10px; display: flex; flex-direction: column; gap: 3px; flex: 1; }
+    .thumb-model { font-weight: 900; font-size: 0.68rem; color: var(--plata); line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .thumb-size  { font-size: 0.55rem; color: var(--gris-texto); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .thumb-alias { font-size: 0.55rem; color: var(--amarillo); font-weight: 700; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: 0.3px; }
+    .detail-alias{ font-size: 0.78rem; color: var(--amarillo); font-weight: 700; font-style: italic; letter-spacing: 0.5px; margin-bottom: 4px; }
+
+    .thumb-bar-section { padding: 0 8px 8px; }
+    .thumb-bar-wrap { width: 100%; height: 3px; background: #000; border-radius: 2px; overflow: hidden; }
+    .thumb-bar-fill { height: 100%; background: linear-gradient(90deg, #F0FF00, #BFCA00); border-radius: 2px; transition: width 0.5s ease; }
+    .thumb-km { font-size: 0.52rem; color: var(--gris-texto); margin-top: 4px; font-weight: 700; display: flex; justify-content: space-between; }
+    .thumb-km .km-val { color: var(--amarillo); }
+
+    .detail-photo-wrap {
+      width: 100%; height: 145px; border-radius: 16px; overflow: hidden;
+      margin-bottom: 12px; position: relative; background: #0d0d0d;
+    }
+    .detail-photo-wrap img { width: 100%; height: 100%; object-fit: cover; object-position: center top; }
+    .detail-photo-overlay  { position: absolute; inset: 0; background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.7) 100%); }
+    .detail-photo-badge    { position: absolute; bottom: 14px; left: 14px; font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 2px; color: var(--amarillo); }
+
+    .detail-card { background: var(--card-bg); border: 1px solid var(--borde); border-radius: 20px; padding: 25px; margin-bottom: 20px; }
+    .detail-model { font-weight: 900; font-size: 1.8rem; letter-spacing: -1px; color: var(--plata); line-height: 1.1; margin-bottom: 4px; }
+    .detail-brand { color: var(--amarillo); font-size: 0.75rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px; }
+
+    .battery-wrap {
+      width: 100%; height: 22px; background: #000; border: 2px solid #333;
+      border-radius: 11px; margin: 15px 0 8px; overflow: hidden; position: relative;
+    }
+    .battery-fill {
+      height: 100%; background: linear-gradient(90deg, #F0FF00, #BFCA00);
+      transition: width 0.8s cubic-bezier(.4,0,.2,1); position: relative;
+    }
+    .battery-fill::after {
+      content: ''; position: absolute; top: 3px; left: 6px; right: 6px;
+      height: 4px; background: rgba(255,255,255,0.25); border-radius: 2px;
+    }
+    .km-label { font-size: 0.72rem; color: var(--gris-texto); font-weight: 700; display: flex; justify-content: space-between; }
+    .km-label .km-perc { color: var(--amarillo); }
+
+    /* ALERTAS KM */
+    .km-alert { border-radius: 10px; padding: 10px 14px; font-size: 0.72rem; margin-top: 12px; display: none; }
+    .km-alert.nivel-naranja { background: rgba(255,152,0,0.1); border: 1px solid rgba(255,152,0,0.35); color: #ff9800; }
+    .km-alert.nivel-rojo    { background: rgba(239,68,68,0.1);  border: 1px solid rgba(239,68,68,0.3);  color: #ef4444; }
+
+    .detail-btn-row { display: flex; gap: 10px; margin-top: 15px; }
+    .btn-split-train {
+      flex: 1;
+      background: linear-gradient(180deg, var(--amarillo-top) 0%, var(--amarillo) 45%, var(--amarillo-dark) 100%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -1px 0 rgba(0,0,0,0.18), 0 2px 8px rgba(240,255,0,0.20);
+      color: black; border: none;
+      padding: 14px 10px; border-radius: 50px; font-size: 0.72rem; font-weight: 900;
+      cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.2s;
+      font-family: 'Montserrat', sans-serif;
+    }
+    .btn-split-train:hover   { opacity: 0.88; }
+    .btn-split-train:active  { transform: scale(0.97); }
+    .btn-split-history {
+      flex: 1; background: transparent; color: #C0C0C0; border: 1.5px solid #C0C0C0;
+      padding: 14px 10px; border-radius: 50px; font-size: 0.72rem; font-weight: 900;
+      cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; transition: 0.2s;
+      font-family: 'Montserrat', sans-serif;
+    }
+    .btn-split-history:hover  { background: rgba(192,192,192,0.12); }
+    .btn-split-history:active { transform: scale(0.97); }
+
+    .detail-shop-row { display: flex; gap: 10px; margin-top: 10px; }
+    .btn-shop-rnb {
+      flex: 1;
+      background: linear-gradient(180deg, var(--amarillo-top) 0%, var(--amarillo) 45%, var(--amarillo-dark) 100%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -1px 0 rgba(0,0,0,0.18);
+      color: #000; border: none;
+      padding: 15px 10px; border-radius: 12px; font-family: 'Montserrat', sans-serif;
+      font-size: 0.78rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px;
+      cursor: pointer; transition: 0.2s;
+    }
+    .btn-shop-rnb:active { transform: scale(0.98); opacity: 0.9; }
+    .btn-shop-dex {
+      flex: 1; background: #e53935; color: #fff; border: none;
+      padding: 15px 10px; border-radius: 12px; font-family: 'Montserrat', sans-serif;
+      font-size: 0.78rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px;
+      cursor: pointer; transition: 0.2s;
+    }
+    .btn-shop-dex:active { transform: scale(0.98); opacity: 0.9; }
+
+    .btn-open-sports {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%;
+      background: linear-gradient(180deg, var(--amarillo-top) 0%, var(--amarillo) 45%, var(--amarillo-dark) 100%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -1px 0 rgba(0,0,0,0.18);
+      color: #000; border: none;
+      padding: 15px 20px; border-radius: 12px; font-family: 'Montserrat', sans-serif;
+      font-size: 0.85rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px;
+      cursor: pointer; margin-top: 10px; transition: 0.2s;
+    }
+    .btn-open-sports:active { transform: scale(0.98); opacity: 0.9; }
+
+    .detail-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+    .stat-box { background: #0d0d0d; border: 1px solid var(--borde); border-radius: 12px; padding: 12px; text-align: center; }
+    .stat-value { font-weight: 900; font-size: 1.3rem; color: var(--plata); }
+    .stat-label { font-size: 0.6rem; color: var(--gris-texto); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 100; align-items: center; justify-content: center; }
+
+    /* ── Voice Drawer lateral ── */
+    .modal-overlay.drawer-lateral { justify-content: flex-end; align-items: stretch; }
+    .modal-overlay.drawer-lateral .modal-voice-content {
+      width: 88%; max-width: 340px; height: 100vh; max-height: 100vh;
+      border-radius: 22px 0 0 22px; border-right: none;
+      border-left: 1px solid var(--borde);
+      transform: translateX(100%);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex; flex-direction: column; overflow-y: auto;
+    }
+    .modal-overlay.drawer-lateral.open-drawer { display: flex; }
+    .modal-overlay.drawer-lateral.open-drawer .modal-voice-content { transform: translateX(0); }
+    .modal-content { background: var(--card-bg); width: 90%; max-width: 350px; padding: 25px; border-radius: 20px; border: 1px solid var(--borde); position: relative; }
+    .close-modal { position: absolute; top: 15px; right: 15px; background: none; border: none; color: var(--gris-texto); font-size: 1.2rem; cursor: pointer; }
+
+    .modal-historial-content {
+      background: var(--card-bg); width: 90%; max-width: 370px; max-height: 80vh;
+      padding: 25px; border-radius: 20px; border: 1px solid var(--borde);
+      position: relative; display: flex; flex-direction: column; gap: 0;
+    }
+    .historial-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .historial-title    { font-weight: 900; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; color: var(--plata); }
+    .historial-subtitle { font-size: 0.6rem; color: var(--gris-texto); text-transform: uppercase; letter-spacing: 2px; margin-top: 2px; }
+    .historial-scroll { overflow-y: auto; max-height: calc(80vh - 120px); padding-right: 4px; }
+    .historial-scroll::-webkit-scrollbar       { width: 4px; }
+    .historial-scroll::-webkit-scrollbar-track { background: #1a1a1a; border-radius: 2px; }
+    .historial-scroll::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+    .historial-empty { text-align: center; padding: 30px 10px; color: var(--gris-texto); font-size: 0.8rem; }
+    .historial-empty .empty-icon { font-size: 2rem; margin-bottom: 8px; }
+
+    .historial-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 11px 0; border-bottom: 1px solid var(--borde); gap: 8px;
+    }
+    .historial-item:last-child { border-bottom: none; }
+    .historial-item-left { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+    .historial-fecha { font-size: 0.72rem; color: var(--gris-texto); font-weight: 700; }
+    .historial-km    { font-size: 0.9rem; font-weight: 900; color: var(--amarillo); white-space: nowrap; }
+    .historial-km span { font-size: 0.62rem; color: var(--gris-texto); font-weight: 700; margin-left: 2px; }
+
+    .btn-delete-training {
+      width: 28px; height: 28px; border-radius: 8px; background: transparent;
+      border: 1px solid #2a2a2a; color: #555; font-size: 0.75rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      transition: background 0.18s, border-color 0.18s, color 0.18s, transform 0.15s;
+      font-family: 'Montserrat', sans-serif;
+    }
+    .btn-delete-training:hover  { background: rgba(229,57,53,0.12); border-color: #e53935; color: #e53935; }
+    .btn-delete-training:active { transform: scale(0.88); }
+    .btn-delete-training.no-id  { opacity: 0.2; cursor: not-allowed; pointer-events: none; }
+    .historial-loading { text-align: center; padding: 20px; color: var(--gris-texto); font-size: 0.75rem; }
+
+    .modal-confirm-training-content {
+      background: var(--card-bg); width: 90%; max-width: 340px;
+      padding: 28px 24px; border-radius: 20px; border: 1px solid #1a2a3a; position: relative;
+    }
+    .modal-confirm-content {
+      background: var(--card-bg); width: 90%; max-width: 340px;
+      padding: 28px 24px; border-radius: 20px; border: 1px solid #3a0000; position: relative;
+    }
+    .confirm-icon  { font-size: 2rem; text-align: center; margin-bottom: 12px; }
+    .confirm-title { font-weight: 900; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--plata); text-align: center; margin-bottom: 10px; }
+    .confirm-msg   { font-size: 0.75rem; color: var(--gris-texto); text-align: center; line-height: 1.55; margin-bottom: 22px; }
+    .confirm-msg strong { color: #ef4444; }
+    .confirm-btn-row { display: flex; gap: 10px; }
+    .btn-confirm-cancel { width: 100%; background: transparent; color: var(--gris-texto); border: 1px solid #333; padding: 12px; border-radius: 10px; font-family: 'Montserrat', sans-serif; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: 0.2s; }
+    .btn-confirm-cancel:hover { border-color: #555; color: var(--plata); }
+    /* Botón archivar — amarillo */
+    .btn-confirm-archive {
+      width: 100%; background: linear-gradient(180deg, var(--amarillo-top) 0%, var(--amarillo) 45%, var(--amarillo-dark) 100%);
+      color: #000; border: none; padding: 13px; border-radius: 10px;
+      font-family: 'Montserrat', sans-serif; font-size: 0.75rem; font-weight: 900;
+      text-transform: uppercase; cursor: pointer; transition: 0.2s; margin-top: 14px;
+    }
+    .btn-confirm-archive:active { transform: scale(0.97); opacity: 0.88; }
+    /* Botón eliminar — rojo */
+    .btn-confirm-delete { width: 100%; background: #1a1a1a; color: #e53935; border: 1px solid rgba(229,57,53,0.4); padding: 13px; border-radius: 10px; font-family: 'Montserrat', sans-serif; font-size: 0.75rem; font-weight: 900; text-transform: uppercase; cursor: pointer; transition: 0.2s; margin-top: 8px; }
+    .btn-confirm-delete:hover  { background: rgba(229,57,53,0.1); border-color: #e53935; }
+    .btn-confirm-delete:active { transform: scale(0.97); }
+    /* Hint debajo de cada opción */
+    .confirm-option-hint { font-size: 0.6rem; color: var(--gris-texto); text-align: center; margin-top: 4px; margin-bottom: 2px; line-height: 1.4; }
+
+    /* =====================================================
+       LOCKER — tarjetas (usadas en el modal)
+       ===================================================== */
+    /* Tarjeta de zapa archivada */
+    .locker-card {
+      background: #0d0d0d; border: 1px solid #1f1f1f; border-radius: 14px;
+      overflow: hidden; position: relative;
+      transition: border-color 0.2s;
+    }
+    .locker-card-photo {
+      width: 100%; aspect-ratio: 4/3; background: #0a0a0a; overflow: hidden;
+    }
+    .locker-card-photo img {
+      width: 100%; height: 100%; object-fit: cover; object-position: center;
+      filter: grayscale(60%); opacity: 0.7; pointer-events: none;
+    }
+    .locker-card-info { padding: 8px 10px 10px; }
+    .locker-card-model { font-weight: 900; font-size: 0.72rem; color: #666; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .locker-card-sub   { font-size: 0.54rem; color: #444; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+    .locker-card-km    { font-size: 0.54rem; color: #444; font-weight: 700; margin-top: 4px; }
+    .btn-reactivate {
+      width: 100%; background: transparent; border: 1px solid #2a2a2a; color: #555;
+      padding: 8px; border-radius: 8px; font-family: 'Montserrat', sans-serif;
+      font-size: 0.6rem; font-weight: 900; text-transform: uppercase; cursor: pointer;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+      margin-top: 6px;
+    }
+    .btn-reactivate:hover  { border-color: var(--amarillo); color: var(--amarillo); background: rgba(197,179,88,0.06); }
+    .btn-reactivate:active { transform: scale(0.96); }
+
+    .empty-state { grid-column: 1 / -1; text-align: center; padding: 40px 20px; }
+    .empty-state .empty-icon { font-size: 3rem; margin-bottom: 10px; }
+    .empty-state p { color: var(--gris-texto); font-size: 0.8rem; line-height: 1.5; }
+    .empty-state strong { color: var(--plata); }
+
+    .input-manual-wrap { overflow: hidden; max-height: 0; opacity: 0; transition: max-height 0.3s ease, opacity 0.3s ease, margin-top 0.3s ease; margin-top: 0; }
+    .input-manual-wrap.visible { max-height: 80px; opacity: 1; margin-top: 10px; }
+    .input-manual-wrap input { width: 100%; background: #1a1a1a; border: 1px solid var(--amarillo); border-radius: 10px; padding: 12px; color: white; font-family: 'Montserrat', sans-serif; font-size: 0.9rem; outline: none; }
+    .input-manual-wrap input::placeholder { color: #555; }
+
+    .shoe-thumb-placeholder {
+      background: #1a1a1a;
+      border: 1.5px dashed #383838;
+      border-radius: 16px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 160px;
+      width: 100%;
+      max-width: 160px;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .shoe-thumb-placeholder:active { opacity: 0.6; }
+    .shoe-thumb-placeholder:hover  { border-color: #555; background: #1e1e1e; }
+    .placeholder-icon { font-size: 1.4rem; color: #555; }
+    .placeholder-text { font-size: 0.58rem; color: #555; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; text-align: center; line-height: 1.4; }
+
+    .modal-recover-content {
+      background: var(--card-bg); width: 90%; max-width: 350px;
+      padding: 28px 24px; border-radius: 20px; border: 1px solid var(--borde); position: relative;
+    }
+    .recover-icon  { font-size: 2rem; text-align: center; margin-bottom: 10px; }
+    .recover-title { font-weight: 900; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--plata); text-align: center; margin-bottom: 6px; }
+    .recover-desc  { font-size: 0.72rem; color: var(--gris-texto); text-align: center; line-height: 1.5; margin-bottom: 18px; }
+    .recover-success   { font-size: 0.82rem; color: var(--amarillo); text-align: center; margin-top: 14px; display: none; font-weight: 900; letter-spacing: 0.5px; }
+    .recover-error-msg { font-size: 0.75rem; color: #ef4444; text-align: center; margin-top: 10px; display: none; font-weight: 700; line-height: 1.4; }
+
+    /* =====================================================
+       TOAST DE CONFIRMACIÓN
+       ===================================================== */
+    #km-toast {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #1a1a1a;
+      border: 1px solid var(--amarillo);
+      color: var(--amarillo);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 900;
+      padding: 12px 22px;
+      border-radius: 50px;
+      white-space: nowrap;
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      box-shadow: 0 4px 20px rgba(240,255,0,0.2);
+      letter-spacing: 0.5px;
+    }
+    #km-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* =====================================================
+       FAB KM EXPRESS
+       ===================================================== */
+
+    .modal-voice-content {
+      background: var(--card-bg); width: 90%; max-width: 350px;
+      padding: 28px 24px; border-radius: 20px; border: 1px solid var(--borde); position: relative;
+    }
+    .voice-modal-title { font-weight: 900; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 1px; color: var(--plata); text-align: center; margin-bottom: 6px; }
+    .voice-modal-sub   { font-size: 0.68rem; color: var(--gris-texto); text-align: center; margin-bottom: 20px; line-height: 1.5; }
+    .voice-listening-wrap { display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 10px 0 20px; }
+    .voice-input-hint     { display: flex; flex-direction: column; align-items: center; padding: 6px 0 14px; }
+    .voice-input-wrap     { display: flex; gap: 8px; align-items: center; width: 100%; }
+    .voice-input-field {
+      flex: 1; background: #0d0d0d; border: 1.5px solid #333; border-radius: 12px;
+      padding: 14px 16px; color: white; font-family: "Montserrat", sans-serif;
+      font-size: 1rem; outline: none; transition: border-color 0.2s;
+    }
+    .voice-input-field:focus       { border-color: var(--amarillo); }
+    .voice-input-field::placeholder{ color: #444; font-style: italic; }
+    .btn-voice-process {
+      width: 48px; height: 48px; border-radius: 12px;
+      background: linear-gradient(180deg, var(--amarillo-top) 0%, var(--amarillo) 45%, var(--amarillo-dark) 100%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -1px 0 rgba(0,0,0,0.18);
+      border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: transform 0.15s, opacity 0.15s;
+    }
+    .btn-voice-process:active { transform: scale(0.93); opacity: 0.85; }
+    .voice-confirm-wrap  { display: none; }
+    .voice-confirm-shoe  { background: #0d0d0d; border: 1px solid var(--borde); border-radius: 14px; padding: 14px 16px; margin-bottom: 12px; }
+    .voice-confirm-label { font-size: 0.6rem; color: var(--gris-texto); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 4px; }
+    .voice-confirm-value { font-size: 1rem; font-weight: 900; color: var(--plata); }
+    .voice-confirm-km    { font-size: 2rem; font-weight: 900; color: var(--amarillo); text-align: center; margin: 10px 0 4px; letter-spacing: -1px; }
+    .voice-confirm-km-label { font-size: 0.62rem; color: var(--gris-texto); text-transform: uppercase; letter-spacing: 2px; text-align: center; margin-bottom: 18px; }
+    .voice-confirm-btns  { display: flex; gap: 10px; }
+    .btn-voice-cancel {
+      flex: 1; background: transparent; color: var(--gris-texto); border: 1px solid #333;
+      padding: 13px; border-radius: 10px; font-family: 'Montserrat', sans-serif;
+      font-size: 0.75rem; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: 0.2s;
+    }
+    .btn-voice-cancel:hover { border-color: #555; color: var(--plata); }
+    .btn-voice-confirm {
+      flex: 1;
+      background: linear-gradient(180deg, var(--amarillo-top) 0%, var(--amarillo) 45%, var(--amarillo-dark) 100%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -1px 0 rgba(0,0,0,0.18);
+      color: #000; border: none; padding: 13px;
+      border-radius: 10px; font-family: 'Montserrat', sans-serif; font-size: 0.75rem;
+      font-weight: 900; text-transform: uppercase; cursor: pointer; transition: 0.2s;
+    }
+    .btn-voice-confirm:active { transform: scale(0.97); }
+    .voice-error-wrap { display: none; text-align: center; padding: 10px 0 20px; }
+    .voice-error-wrap p { font-size: 0.78rem; color: #ef4444; line-height: 1.5; margin-bottom: 14px; }
+    .voice-shoe-selector { display: none; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+    .voice-shoe-option {
+      background: #0d0d0d; border: 1px solid #333; border-radius: 10px;
+      padding: 12px 14px; cursor: pointer; font-size: 0.8rem; font-weight: 700;
+      color: var(--plata); text-align: left; font-family: 'Montserrat', sans-serif;
+      transition: border-color 0.18s, background 0.18s;
+    }
+    .voice-shoe-option:hover    { border-color: var(--amarillo); background: #151505; }
+    .voice-shoe-option.selected { border-color: var(--amarillo); background: #1a1800; color: var(--amarillo); }
+
+    /* =====================================================
+       GRUPO DE RUNNING — input manual
+       ===================================================== */
+    #wrap-grupo-manual {
+      overflow: hidden; max-height: 0; opacity: 0;
+      transition: max-height 0.3s ease, opacity 0.3s ease, margin-top 0.3s ease; margin-top: 0;
+    }
+    #wrap-grupo-manual.visible { max-height: 80px; opacity: 1; margin-top: 10px; }
+    #wrap-grupo-manual input {
+      width: 100%; background: #1a1a1a; border: 1px solid var(--amarillo);
+      border-radius: 10px; padding: 12px; color: white;
+      font-family: 'Montserrat', sans-serif; font-size: 0.9rem; outline: none;
+    }
+    #wrap-grupo-manual input::placeholder { color: #555; }
+
+    /* =====================================================
+       FIELD HINTS
+       ===================================================== */
+    .field-hint { font-size: 0.62rem; color: #555; margin-top: 6px; line-height: 1.5; padding-left: 2px; transition: color 0.2s; }
+    .field-hint strong { color: #777; font-weight: 700; }
+    input:focus ~ .field-hint, input:focus + .field-hint { color: #888; }
+
+    /* ⓘ vida útil */
+    .km-info-wrap { position: relative; display: inline-flex; align-items: center; }
+    .km-info-icon { font-size: 0.72rem; color: #444; cursor: pointer; line-height: 1; transition: color 0.2s; user-select: none; }
+    .km-info-wrap:hover .km-info-icon, .km-info-wrap:focus-within .km-info-icon { color: var(--amarillo); }
+    .km-info-tooltip {
+      display: none; position: absolute; bottom: calc(100% + 8px); right: 0;
+      width: 220px; background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 10px;
+      padding: 10px 12px; font-size: 0.62rem; color: #aaa; line-height: 1.6;
+      z-index: 50; pointer-events: none; box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+    .km-info-tooltip::after { content: ''; position: absolute; top: 100%; right: 14px; border: 5px solid transparent; border-top-color: #2a2a2a; }
+    .km-info-wrap:hover .km-info-tooltip { display: block; }
+
+    /* =====================================================
+       INTRO SECTION
+       ===================================================== */
+    .intro-section {
+      position: relative;
+      background: linear-gradient(135deg, #0e0e0e 0%, #111111 60%, #0a0a00 100%);
+      border: 1px solid #2a2a00; border-radius: 16px;
+      padding: 14px 16px; margin-bottom: 16px; overflow: hidden;
+    }
+    .intro-section::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent 0%, #F0FF00 40%, #BFCA00 60%, transparent 100%);
+      opacity: 0.7;
+    }
+    .intro-section::after {
+      content: ''; position: absolute; bottom: -30px; right: -20px;
+      width: 100px; height: 100px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(240,255,0,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .intro-top-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .intro-badge-demo {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: #F0FF00; color: #000000;
+      font-family: 'Montserrat', sans-serif; font-size: 0.52rem; font-weight: 900;
+      text-transform: uppercase; letter-spacing: 2px; padding: 3px 7px;
+      border-radius: 4px; flex-shrink: 0; line-height: 1;
+    }
+    .intro-badge-demo::before { content: '●'; font-size: 0.45rem; animation: blink-demo 1.6s ease-in-out infinite; }
+    @keyframes blink-demo { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
+    .intro-title-line {
+      font-family: 'Montserrat', sans-serif; font-size: 0.62rem; font-weight: 900;
+      color: var(--plata); text-transform: uppercase; letter-spacing: 1.5px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .intro-divider { height: 1px; background: linear-gradient(90deg, #2a2a2a 0%, #1e1e00 50%, #2a2a2a 100%); margin-bottom: 9px; }
+    .intro-body { font-family: 'Montserrat', sans-serif; font-size: 0.82rem; color: var(--gris-texto); line-height: 1.65; }
+    .intro-body strong { color: var(--plata); font-weight: 700; }
+    .intro-body .intro-highlight { color: #F0FF00; font-weight: 700; }
+    .intro-footer-row { display: flex; align-items: center; gap: 6px; margin-top: 10px; }
+    .intro-dot { width: 5px; height: 5px; border-radius: 50%; background: #F0FF00; flex-shrink: 0; opacity: 0.6; }
+    .intro-footer-text { font-family: 'Montserrat', sans-serif; font-size: 0.6rem; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 1.5px; }
+
+    /* =====================================================
+       CAMPANITA DE NOTIFICACIONES
+       ===================================================== */
+    .btn-notif {
+      position: relative;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      color: #444444;
+      font-size: 1.1rem;
+      line-height: 1;
+      transition: color 0.3s, filter 0.3s;
+      display: flex;
+      align-items: center;
+    }
+    .btn-notif:hover { color: var(--amarillo); }
+    .btn-notif.activa {
+      color: var(--amarillo);
+      filter: drop-shadow(0 0 5px rgba(240,255,0,0.55));
+      animation: bell-pulse 2.4s ease-in-out infinite;
+    }
+    @keyframes bell-pulse {
+      0%, 100% { filter: drop-shadow(0 0 4px rgba(240,255,0,0.45)); }
+      50%       { filter: drop-shadow(0 0 10px rgba(240,255,0,0.85)); }
+    }
+    .notif-badge {
+      display: none;
+      position: absolute;
+      top: -2px;
+      right: -4px;
+      background: #ef4444;
+      color: #fff;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.58rem;
+      font-weight: 900;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      border: 1.5px solid var(--bg-color);
+    }
+    .notif-badge.visible { display: flex; }
+
+    /* =====================================================
+       VISTA NOTIFICACIONES — BUZÓN
+       ===================================================== */
+    .notif-card {
+      background: var(--card-bg);
+      border: 1px solid var(--borde);
+      border-radius: 16px;
+      padding: 16px 18px;
+      margin-bottom: 12px;
+      transition: opacity 0.4s, border-color 0.3s;
+    }
+    .notif-card.leida { opacity: 0.45; }
+    .notif-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .notif-tipo-badge {
+      font-size: 0.52rem; font-weight: 900; text-transform: uppercase;
+      letter-spacing: 1.5px; padding: 3px 8px; border-radius: 4px;
+    }
+    .notif-tipo-badge.mensaje { background: rgba(192,192,192,0.12); color: #C0C0C0; border: 1px solid rgba(192,192,192,0.2); }
+    .notif-tipo-badge.premio  { background: rgba(240,255,0,0.12);   color: var(--amarillo); border: 1px solid rgba(240,255,0,0.3); }
+    .notif-fecha { font-size: 0.58rem; color: var(--gris-texto); font-weight: 700; }
+    .notif-mensaje { font-size: 0.82rem; color: var(--plata); line-height: 1.55; margin-bottom: 10px; }
+
+    /* Tarjeta VIP voucher */
+    .voucher-card {
+      background: linear-gradient(135deg, #0d0d00 0%, #1a1a00 50%, #111100 100%);
+      border: 1.5px dashed rgba(240,255,0,0.5);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin: 8px 0 10px;
+      position: relative;
+      overflow: hidden;
+    }
+    .voucher-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--amarillo), transparent);
+      opacity: 0.8;
+    }
+    .voucher-card::after {
+      content: '';
+      position: absolute; bottom: -20px; right: -20px;
+      width: 80px; height: 80px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(240,255,0,0.08) 0%, transparent 70%);
+    }
+    .voucher-label { font-size: 0.52rem; color: #888; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 4px; }
+    .voucher-code {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.6rem;
+      color: var(--amarillo);
+      letter-spacing: 3px;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .voucher-brand { font-size: 0.58rem; color: #888; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; }
+    .voucher-hint  { font-size: 0.6rem; color: rgba(240,255,0,0.5); margin-top: 8px; font-weight: 700; line-height: 1.4; }
+
+    .notif-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 6px;
+    }
+    .notif-fecha-hora {
+      font-size: 0.62rem;
+      font-weight: 500;
+      color: #B0B0B0;
+      letter-spacing: 0.3px;
+      font-family: 'Montserrat', sans-serif;
+    }
+    .btn-borrar-notif {
+      background: transparent;
+      border: none;
+      color: #888;
+      font-size: 1rem;
+      cursor: pointer;
+      padding: 4px 6px;
+      border-radius: 6px;
+      transition: color 0.2s;
+      line-height: 1;
+    }
+    .btn-borrar-notif:hover { color: #cc3333; }
+
+    .notif-empty { text-align: center; padding: 50px 20px; }
+    .notif-empty-icon { font-size: 3rem; margin-bottom: 12px; }
+    .notif-empty-text { color: var(--gris-texto); font-size: 0.82rem; line-height: 1.6; }
+
+    /* =====================================================
+       VISTA ADMIN — PANEL NOTIFICACIONES
+       ===================================================== */
+    .admin-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: rgba(240,255,0,0.1); border: 1px solid rgba(240,255,0,0.3);
+      color: var(--amarillo); font-size: 0.55rem; font-weight: 900;
+      text-transform: uppercase; letter-spacing: 2px;
+      padding: 4px 10px; border-radius: 6px; margin-bottom: 16px;
+    }
+    .admin-section-title {
+      font-weight: 900; font-size: 0.75rem; text-transform: uppercase;
+      letter-spacing: 1px; color: var(--plata); margin-bottom: 12px;
+      border-bottom: 1px solid var(--borde); padding-bottom: 8px;
+    }
+    .radio-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+    .radio-option {
+      display: flex; align-items: center; gap: 10px;
+      background: #1a1a1a; border: 1px solid #333; border-radius: 10px;
+      padding: 11px 14px; cursor: pointer; transition: border-color 0.2s;
+    }
+    .radio-option input[type="radio"] { accent-color: var(--amarillo); width: 16px; height: 16px; cursor: pointer; }
+    .radio-option label { font-size: 0.78rem; color: var(--plata); font-weight: 700; cursor: pointer; text-transform: none; margin: 0; }
+    .radio-option:has(input:checked) { border-color: var(--amarillo); background: #141400; }
+
+    .premio-toggle-wrap { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: #1a1a1a; border: 1px solid #333; border-radius: 10px; margin-bottom: 12px; cursor: pointer; transition: border-color 0.2s; }
+    .premio-toggle-wrap:has(input:checked) { border-color: var(--amarillo); background: #141400; }
+    .premio-toggle-wrap input[type="checkbox"] { accent-color: var(--amarillo); width: 18px; height: 18px; cursor: pointer; }
+    .premio-toggle-label { font-size: 0.78rem; color: var(--plata); font-weight: 700; cursor: pointer; }
+    .premio-toggle-sub   { font-size: 0.62rem; color: var(--gris-texto); margin-top: 1px; }
+
+    .admin-result {
+      border-radius: 10px; padding: 12px 14px; font-size: 0.75rem;
+      font-weight: 700; text-align: center; margin-top: 12px; display: none;
+    }
+    .admin-result.ok    { background: rgba(105,240,174,0.1); border: 1px solid rgba(105,240,174,0.25); color: #69f0ae; }
+    .admin-result.error { background: rgba(239,68,68,0.1);   border: 1px solid rgba(239,68,68,0.3);   color: #ef4444; }
+  </style>
+</head>
+<body>
+
+<!-- PANTALLA INICIAL TODO TRAIL -->
+<div id="onboarding-screen" style="
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: #000; z-index: 9999;
+  display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+  padding: 44px 20px 32px; box-sizing: border-box; overflow: hidden;">
+
+  <!-- Fondo decorativo -->
+  <div style="position:absolute;inset:0;pointer-events:none;overflow:hidden;">
+    <div style="position:absolute;top:-80px;left:-80px;width:320px;height:320px;
+      border-radius:50%;background:radial-gradient(circle,rgba(220,253,139,0.07) 0%,transparent 70%);"></div>
+    <div style="position:absolute;bottom:-60px;right:-60px;width:260px;height:260px;
+      border-radius:50%;background:radial-gradient(circle,rgba(220,253,139,0.05) 0%,transparent 70%);"></div>
+  </div>
+
+    <!-- Header -->
+  <div style="text-align:center;position:relative;z-index:1;margin-top:8px;">
+    <div style="color:#888;font-size:0.55rem;text-transform:uppercase;letter-spacing:3px;
+      margin-bottom:4px;font-weight:700;line-height:1.5;">
+      Powered by
+      <span style="color:#cccccc;font-weight:900;letter-spacing:2px;">Huella Runner MDQ</span>
+    </div>
+    <h1 style="font-size:2.4rem;font-weight:900;margin:8px 0 0;
+      letter-spacing:-1px;line-height:1.05;font-family:'Montserrat',sans-serif;">
+      <span style="background:linear-gradient(180deg,#a0c080 0%,#6B8F5E 40%,#3d5c35 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">HUELLA</span>
+      <span style="background:linear-gradient(180deg,#ffffff 0%,#d0d0d0 50%,#a0a0a0 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">RUNNER</span>
+    </h1>
+    <span style="font-size:2.6rem;font-weight:900;
+      text-transform:uppercase;letter-spacing:5px;display:block;margin-top:10px;">
+      <span style="background:linear-gradient(180deg,#ffffff 0%,#d0d0d0 50%,#a0a0a0 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">TODO</span><span style="background:linear-gradient(180deg,#D4C570 0%,#C5B358 50%,#A89440 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;"> TRAIL</span></span>
+  </div>
+
+  <!-- Card central -->
+  <div style="background:linear-gradient(135deg,#0d0d0d 0%,#141414 100%);
+    border:1px solid #1f1f1f;border-radius:20px;padding:24px 20px;
+    width:100%;max-width:380px;position:relative;z-index:1;margin:20px 0;">
+    <div style="height:2px;background:linear-gradient(90deg,transparent,var(--amarillo),transparent);
+      margin:-24px -20px 20px;border-radius:20px 20px 0 0;opacity:0.6;"></div>
+    <ul style="list-style:none;padding:0;margin:0;color:#d8d8d8;font-size:0.82rem;line-height:1.6;">
+      <li style="margin-bottom:18px;display:flex;align-items:flex-start;gap:12px;">
+        <span style="color:var(--amarillo);font-size:1.1rem;line-height:1;flex-shrink:0;">✔</span>
+        <span><strong style="color:#fff;">Regístrate e ingresa</strong> de forma simple y directa.</span>
+      </li>
+      <li style="margin-bottom:18px;display:flex;align-items:flex-start;gap:12px;">
+        <span style="color:var(--amarillo);font-size:1.1rem;line-height:1;flex-shrink:0;">✔</span>
+        <span><strong style="color:#fff;">Registra tus zapatillas trail</strong> y cárgales los kilómetros de cada entrenamiento y carrera.</span>
+      </li>
+      <li style="display:flex;align-items:flex-start;gap:12px;">
+        <span style="color:var(--amarillo);font-size:1.1rem;line-height:1;flex-shrink:0;">✔</span>
+        <span><strong style="color:#fff;">Recibí novedades, ofertas y premios</strong> exclusivos para la comunidad trail.</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Footer -->
+  <div style="text-align:center;width:100%;position:relative;z-index:1;">
+    <button onclick="cerrarPantallaOnboarding()" style="
+      background:linear-gradient(180deg,var(--amarillo-top) 0%,var(--amarillo) 45%,var(--amarillo-dark) 100%);
+      color:#000;border:none;padding:16px;font-size:0.9rem;font-weight:900;
+      border-radius:14px;width:100%;max-width:380px;
+      box-shadow:0 4px 20px rgba(220,253,139,0.25);cursor:pointer;
+      text-transform:uppercase;letter-spacing:0.5px;margin-bottom:16px;
+      font-family:'Montserrat',sans-serif;">
+      Aceptar y Continuar
+    </button>
+    <p style="color:#A89440;font-size:0.8rem;line-height:1.7;margin:0;padding:0 16px;text-align:center;">
+      Los datos de los usuarios no serán compartidos,<br>
+      solo son utilizados para estadísticas internas.
+    </p>
+  </div>
+</div>
+
+<!-- TOAST CONFIRMACIÓN KM -->
+<div id="km-toast">✅ +0 km guardados</div>
+
+<div class="container">
+
+  <!-- VISTA: LOGIN -->
+  <div id="view-login" style="display:block;">
+    <!-- Header -->
+    <div style="text-align:center;position:relative;z-index:1;margin-top:8px;margin-bottom:16px;">
+      <div style="color:#cccccc;font-size:0.55rem;text-transform:uppercase;letter-spacing:3px;
+        margin-bottom:6px;font-weight:700;line-height:1;">
+        Powered by Huella Runner MDQ
+      </div>
+      <h1 style="font-size:2.4rem;font-weight:900;margin:0;
+        letter-spacing:-1px;line-height:1.05;font-family:'Montserrat',sans-serif;">
+        <span style="background:linear-gradient(180deg,#a0c080 0%,#6B8F5E 40%,#3d5c35 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">HUELLA</span>
+        <span style="background:linear-gradient(180deg,#ffffff 0%,#d0d0d0 50%,#a0a0a0 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">RUNNER</span>
+      </h1>
+      <span style="font-size:2.6rem;font-weight:900;
+        text-transform:uppercase;letter-spacing:5px;display:block;margin-top:10px;">
+        <span style="background:linear-gradient(180deg,#ffffff 0%,#d0d0d0 50%,#a0a0a0 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">TODO</span><span style="background:linear-gradient(180deg,#D4C570 0%,#C5B358 50%,#A89440 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;"> TRAIL</span>
+      </span>
+    </div>
+
+    <div class="card">
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="log-email" placeholder="tu@email.com">
+      </div>
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input type="password" id="log-pass" placeholder="••••••••">
+      </div>
+      <button class="btn-primary" id="btn-login" onclick="doLogin()">Iniciar Sesión</button>
+
+      <div class="intro-section" style="margin-top:18px; margin-bottom:4px; text-align:center;">
+        <div class="intro-footer-row" style="justify-content:center; margin-bottom:8px;">
+          <div class="intro-dot"></div>
+          <span class="intro-footer-text" style="color:var(--amarillo); letter-spacing:2px;">Todo Trail · Villa de Merlo · San Luis</span>
+        </div>
+        <div class="intro-divider"></div>
+        <div class="intro-body" style="text-align:center; line-height:1.8;">
+          Gestioná tus zapatillas running<br>
+          y registrá cada kilómetro recorrido.<br>
+          <br>
+          <span class="intro-highlight">Próximamente:</span> acceso exclusivo a ofertas<br>
+          y beneficios con marcas líderes en running.
+        </div>
+      </div>
+
+      <button class="btn-recover" onclick="openRecoverModal()">¿Olvidaste tu contraseña?</button>
+      <button class="btn-ghost" onclick="switchView('view-register')">¿No tienes cuenta? Regístrate</button>
+      <p id="log-error" style="color:#ef4444; font-size:0.8rem; text-align:center; margin-top:10px; display:none;"></p>
+    </div>
+  </div>
+
+  <!-- VISTA: REGISTRO -->
+  <div id="view-register" style="display:none;">
+    <!-- Header -->
+    <div style="text-align:center;position:relative;z-index:1;margin-top:8px;margin-bottom:16px;">
+      <div style="color:#cccccc;font-size:0.55rem;text-transform:uppercase;letter-spacing:3px;
+        margin-bottom:6px;font-weight:700;line-height:1;">
+        Powered by Huella Runner MDQ
+      </div>
+      <h1 style="font-size:2.4rem;font-weight:900;margin:0;
+        letter-spacing:-1px;line-height:1.05;font-family:'Montserrat',sans-serif;">
+        <span style="background:linear-gradient(180deg,#a0c080 0%,#6B8F5E 40%,#3d5c35 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">HUELLA</span>
+        <span style="background:linear-gradient(180deg,#ffffff 0%,#d0d0d0 50%,#a0a0a0 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">RUNNER</span>
+      </h1>
+      <span style="font-size:2.6rem;font-weight:900;
+        text-transform:uppercase;letter-spacing:5px;display:block;margin-top:10px;">
+        <span style="background:linear-gradient(180deg,#ffffff 0%,#d0d0d0 50%,#a0a0a0 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">TODO</span><span style="background:linear-gradient(180deg,#D4C570 0%,#C5B358 50%,#A89440 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;"> TRAIL</span>
+      </span>
+    </div>
+
+    <div class="card">
+      <div style="display: flex; gap: 10px;">
+        <div class="form-group" style="flex: 1;">
+          <label>Nombre</label>
+          <input type="text" id="reg-nombre" placeholder="Ej. Juan">
+        </div>
+        <div class="form-group" style="flex: 1;">
+          <label>Apellido</label>
+          <input type="text" id="reg-apellido" placeholder="Ej. García">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="reg-email" placeholder="tu@email.com">
+      </div>
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input type="password" id="reg-pass" placeholder="••••••••">
+      </div>
+      <div class="form-group">
+        <label>Confirmar Contraseña</label>
+        <input type="password" id="reg-pass-confirm" placeholder="••••••••">
+      </div>
+      <div class="form-group">
+        <label>Fecha de Nacimiento <span style="color:#444;font-weight:400;text-transform:none;font-size:0.65rem;">(opcional)</span></label>
+        <input type="date" id="reg-fecha-nac" style="color-scheme:dark;">
+      </div>
+      <!-- PROVINCIA Y CIUDAD — v2906 -->
+      <div class="form-group">
+        <label>Provincia <span style="color:#444;font-weight:400;text-transform:none;font-size:0.65rem;">(opcional)</span></label>
+        <select id="reg-provincia" onchange="onProvinciaChange()">
+          <option value="">Seleccionar provincia...</option>
+          <option value="Buenos Aires">Buenos Aires</option>
+          <option value="Ciudad Autónoma de Buenos Aires">Ciudad Autónoma de Buenos Aires</option>
+          <option value="Catamarca">Catamarca</option>
+          <option value="Chaco">Chaco</option>
+          <option value="Chubut">Chubut</option>
+          <option value="Córdoba">Córdoba</option>
+          <option value="Corrientes">Corrientes</option>
+          <option value="Entre Ríos">Entre Ríos</option>
+          <option value="Formosa">Formosa</option>
+          <option value="Jujuy">Jujuy</option>
+          <option value="La Pampa">La Pampa</option>
+          <option value="La Rioja">La Rioja</option>
+          <option value="Mendoza">Mendoza</option>
+          <option value="Misiones">Misiones</option>
+          <option value="Neuquén">Neuquén</option>
+          <option value="Río Negro">Río Negro</option>
+          <option value="Salta">Salta</option>
+          <option value="San Juan">San Juan</option>
+          <option value="San Luis">San Luis</option>
+          <option value="Santa Cruz">Santa Cruz</option>
+          <option value="Santa Fe">Santa Fe</option>
+          <option value="Santiago del Estero">Santiago del Estero</option>
+          <option value="Tierra del Fuego">Tierra del Fuego</option>
+          <option value="Tucumán">Tucumán</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Ciudad <span style="color:#444;font-weight:400;text-transform:none;font-size:0.65rem;">(opcional)</span></label>
+        <select id="reg-ciudad" disabled>
+          <option value="">Primero elegí una provincia...</option>
+        </select>
+        <div id="reg-ciudad-loading" style="display:none;font-size:0.68rem;color:var(--gris-texto);margin-top:5px;padding-left:2px;">
+          <span class="zapa-loading">📍</span> Cargando ciudades...
+        </div>
+      </div>
+      <!-- FIN PROVINCIA Y CIUDAD -->
+
+      <div class="form-group">
+        <label>Celular <span style="color:#444;font-weight:400;text-transform:none;font-size:0.65rem;">(WhatsApp · opcional)</span></label>
+        <input type="tel" id="reg-celular" placeholder="Ej. 223 555 1234">
+      </div>
+      <div class="form-group">
+        <label>Nivel de Corredor</label>
+        <select id="reg-nivel">
+          <option value="">Seleccionar...</option>
+          <option value="Principiante/Recreativo">Principiante / Recreativo (hasta 20 km semanales)</option>
+          <option value="Intermedio">Intermedio (20–35 km semanales)</option>
+          <option value="Avanzado">Avanzado (35–65 km semanales)</option>
+          <option value="Pro">Pro (+65 km semanales)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Grupo de Running <span style="color:#444;font-weight:400;text-transform:none;font-size:0.65rem;">(opcional)</span></label>
+        <select id="reg-grupo" onchange="onGrupoChange()">
+          <option value="">Seleccionar...</option>
+          <option value="Aventura Avanza">Aventura Avanza</option>
+          <option value="Club K10">Club K10</option>
+          <option value="CROSS Running Club MDQ">CROSS Running Club MDQ</option>
+          <option value="Deportes Mar del Plata">Deportes Mar del Plata</option>
+          <option value="Forest Run Group">Forest Run Group</option>
+          <option value="EmpoweRun">EmpoweRun</option>
+          <option value="Grupo A">Grupo A</option>
+          <option value="Grupo A Running &amp; Triatlón">Grupo A Running &amp; Triatlón</option>
+          <option value="Grupo Troten">Grupo Troten</option>
+          <option value="JM Corredores">JM Corredores</option>
+          <option value="KM Trail Running">KM Trail Running</option>
+          <option value="Kuden Group Tandil">Kuden Group Tandil</option>
+          <option value="Malgor Track &amp; Field">Malgor Track &amp; Field</option>
+          <option value="MDQ Entrena">MDQ Entrena</option>
+          <option value="Miller Team Running">Miller Team Running</option>
+          <option value="NQN Running">NQN Running</option>
+          <option value="OK Eventos MDQ">OK Eventos MDQ</option>
+          <option value="Plotteam">Plotteam</option>
+          <option value="ProGroup Running">ProGroup Running</option>
+          <option value="Punto Fit Gym &amp; Run">Punto Fit Gym &amp; Run</option>
+          <option value="RA Caminantes">RA Caminantes</option>
+          <option value="Ranerzzz">Ranerzzz</option>
+          <option value="Run Club MDP">Run Club MDP</option>
+          <option value="Running Tandil">Running Tandil</option>
+          <option value="Runtrek Club">Runtrek Club</option>
+          <option value="SC Training La Plata">SC Training La Plata</option>
+          <option value="Stímulo MdP">Stímulo MdP</option>
+          <option value="Sumando KM">Sumando KM</option>
+          <option value="Treino ARG">Treino ARG</option>
+          <option value="__otro__">Otro...</option>
+        </select>
+        <div id="wrap-grupo-manual">
+          <input type="text" id="reg-grupo-manual" placeholder="Escribí el nombre de tu grupo...">
+        </div>
+      </div>
+      <button class="btn-primary" id="btn-reg" onclick="doRegister()">Crear Cuenta</button>
+      <button class="btn-ghost" onclick="switchView('view-login')">Volver al Login</button>
+      <p id="reg-error" style="color:#ef4444; font-size:0.8rem; text-align:center; margin-top:10px; display:none;"></p>
+    </div>
+  </div>
+
+  <!-- VISTA: DASHBOARD -->
+  <div id="view-dashboard" style="display: none;">
+    <div class="top-bar">
+      <a href="#" class="nav-logo-inline">
+        <span class="logo-name-row" style="margin-top:3px;"><span class="logo-open">Todo</span> <span class="logo-sports">Trail</span></span>
+      </a>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div style="font-size: 0.75rem; color: var(--gris-texto);">Hola, <span id="user-name" style="color: var(--amarillo); font-weight: 900;">Corredor</span></div>
+        <!-- CAMPANITA NOTIFICACIONES -->
+        <button class="btn-notif" id="btn-notif" onclick="abrirNotificaciones()" title="Mis notificaciones">
+          🔔
+          <span class="notif-badge" id="notif-badge"></span>
+        </button>
+        <button onclick="doLogout()" style="background:none; border:none; color:var(--amarillo); cursor:pointer; font-weight:700; font-size: 0.8rem;">Salir</button>
+      </div>
+    </div>
+    <div class="armario-header">
+      <div class="armario-title">MIS <span>ZAPAS</span></div>
+      <div class="armario-subtitle">Tus zapatillas activas</div>
+    </div>
+    <!-- CARRUSEL COVERFLOW -->
+    <div class="coverflow-wrap" id="shoe-grid">
+      <!-- Estado de carga inicial -->
+      <div class="empty-state" id="cf-loading-state">
+        <div class="empty-icon"><span class="zapa-loading">👟</span></div>
+        <p>Cargando tu armario...</p>
+      </div>
+    </div>
+    <!-- POWERED BY — al fondo del dashboard -->
+    <div style="text-align:center; padding: 8px 0 16px; margin-top: -10px;">
+      <span style="font-family:'Montserrat',sans-serif; font-size:0.62rem; font-weight:700; color:var(--gris-texto); text-transform:uppercase; letter-spacing:2px;">Powered by Huella Runner MDQ</span>
+    </div>
+
+  </div>
+
+  <!-- VISTA: DETALLE DE ZAPATILLA -->
+  <!-- VISTA: AGREGAR ZAPATILLA -->
+  <div id="view-add-shoe" style="display: none;">
+    <div class="top-bar">
+      <button onclick="switchView('view-dashboard')" style="background:none; border:none; color:var(--gris-texto); cursor:pointer; font-weight:700;">← Volver</button>
+    </div>
+    <div class="card">
+      <h3 style="text-align:center; margin-bottom:20px; font-size:1rem; text-transform:uppercase;">Nueva Zapatilla</h3>
+      <div class="form-group">
+        <label>Marca</label>
+        <select id="shoe-marca" onchange="onMarcaChange()">
+          <option value="">Seleccionar...</option>
+          <option value="Dynafit">Dynafit</option>
+          <option value="Hoka">Hoka</option>
+          <option value="La Sportiva">La Sportiva</option>
+          <option value="Nnormal">Nnormal</option>
+          <option value="Osx">Osx</option>
+          <option value="Salomon">Salomon</option>
+          <option value="Saucony">Saucony</option>
+          <option value="__otras__">Otras...</option>
+        </select>
+        <div class="input-manual-wrap" id="wrap-marca-manual">
+          <input type="text" id="shoe-marca-manual" placeholder="Escribí la marca...">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Modelo</label>
+        <select id="shoe-modelo" onchange="onModeloChange()"><option value="">Primero elige marca</option></select>
+        <div class="input-manual-wrap" id="wrap-modelo-manual">
+          <input type="text" id="shoe-modelo-manual" placeholder="Escribí el modelo...">
+        </div>
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <div class="form-group" style="flex: 1;">
+          <label>Talle (EU)</label>
+          <select id="shoe-talle"></select>
+        </div>
+        <div class="form-group" style="flex: 1;">
+          <label>Género</label>
+          <select id="shoe-genero"><option value="Hombre">Hombre</option><option value="Mujer">Mujer</option></select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>KM Iniciales</label>
+        <input type="number" id="shoe-km" placeholder="0" min="0" inputmode="decimal">
+        <div class="field-hint">¿Ya las usaste? Ingresá los km que ya tienen</div>
+      </div>
+      <div class="form-group">
+        <label>Apodo <span style="color:#444;font-weight:400;text-transform:none;font-size:0.65rem;">(opcional)</span></label>
+        <input type="text" id="shoe-alias" placeholder="Ej: Las rojas" maxlength="30">
+        <div class="field-hint">Usalo para carga rápida: decí <strong>"10 km Speedgoat"</strong> y las encuentra sola ⚡</div>
+      </div>
+      <button class="btn-primary" id="btn-save-shoe" onclick="saveShoe()">Añadir a Mis Zapas</button>
+    </div>
+  </div>
+
+  <!-- VISTA: NOTIFICACIONES (BUZÓN DEL RUNNER) -->
+  <div id="view-notificaciones" style="display: none;">
+    <div class="top-bar">
+      <button onclick="switchView('view-dashboard')" style="background:none; border:none; color:var(--gris-texto); cursor:pointer; font-weight:700; font-size:0.9rem;">← Volver</button>
+      <div style="font-size: 0.7rem; color: var(--gris-texto); text-transform: uppercase; letter-spacing: 1px;">Notificaciones</div>
+    </div>
+    <div id="notif-list" style="padding-bottom: 40px;">
+      <div class="notif-empty">
+        <div class="notif-empty-icon"><span class="zapa-loading">👟</span></div>
+        <div class="notif-empty-text">Cargando...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VISTA: ADMIN NOTIFICACIONES (solo runnerslabmdq@gmail.com) -->
+  <div id="view-admin-notif" style="display: none;">
+    <div class="top-bar">
+      <button onclick="switchView('view-dashboard')" style="background:none; border:none; color:var(--gris-texto); cursor:pointer; font-weight:700; font-size:0.9rem;">← Volver</button>
+      <div style="font-size: 0.7rem; color: var(--amarillo); text-transform: uppercase; letter-spacing: 1px; font-weight: 900;">Admin</div>
+    </div>
+    <div class="card">
+      <div class="admin-badge">⚙️ Panel Admin · Notificaciones</div>
+
+      <div class="admin-section-title">Destinatarios</div>
+      <div class="radio-group">
+        <div class="radio-option">
+          <input type="radio" name="admin-dest-tipo" id="radio-todos" value="todos" checked onchange="onAdminDestinoChange()">
+          <label for="radio-todos">Todos los runners</label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" name="admin-dest-tipo" id="radio-grupo" value="grupo" onchange="onAdminDestinoChange()">
+          <label for="radio-grupo">Por grupo de running</label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" name="admin-dest-tipo" id="radio-individual" value="individual" onchange="onAdminDestinoChange()">
+          <label for="radio-individual">Email individual</label>
+        </div>
+      </div>
+
+      <!-- Selector de grupo (oculto por defecto) -->
+      <div id="admin-grupo-wrap" style="display:none; margin-bottom:12px;">
+        <div class="form-group" style="margin-bottom:0;">
+          <label>Grupo</label>
+          <select id="admin-grupo-select">
+            <option value="">Cargando grupos...</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Input email individual (oculto por defecto) -->
+      <div id="admin-individual-wrap" style="display:none; margin-bottom:12px;">
+        <div class="form-group" style="margin-bottom:0;">
+          <label>Email del runner</label>
+          <input type="email" id="admin-email-individual" placeholder="runner@email.com">
+        </div>
+      </div>
+
+      <div class="admin-section-title" style="margin-top:16px;">Mensaje</div>
+      <div class="form-group">
+        <textarea id="admin-mensaje" placeholder="Escribí el comunicado o mensaje para el runner..." rows="4"
+          style="width:100%; background:#1a1a1a; border:1px solid #333; border-radius:10px; padding:12px; color:white; font-family:'Montserrat',sans-serif; font-size:0.85rem; outline:none; resize:vertical; transition:border-color 0.3s;"></textarea>
+      </div>
+
+      <div class="admin-section-title" style="margin-top:4px;">Tipo</div>
+      <div class="premio-toggle-wrap">
+        <input type="checkbox" id="admin-es-premio" onchange="onPremioToggle()">
+        <div>
+          <div class="premio-toggle-label">🏆 ¿Es un Premio / Voucher?</div>
+          <div class="premio-toggle-sub">Se generará un código Open Sports automáticamente</div>
+        </div>
+      </div>
+
+      <!-- Preview voucher -->
+      <div id="admin-voucher-preview" style="display:none; margin-bottom:12px;">
+        <div class="voucher-card">
+          <div class="voucher-label">Vista previa — Código generado al enviar</div>
+          <div class="voucher-code">HR-OPEN-••••</div>
+          <div class="voucher-brand">Open Sports · Beneficio exclusivo</div>
+          <div class="voucher-hint">📲 El runner presenta este código en caja</div>
+        </div>
+      </div>
+
+      <button class="btn-primary" id="btn-admin-enviar" onclick="adminEnviarNotificacion()" style="margin-top:8px;">Enviar Comunicado</button>
+      <div class="admin-result" id="admin-result"></div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<!-- MODAL: REGISTRAR ENTRENAMIENTO -->
+<div class="modal-overlay" id="train-modal">
+  <div class="modal-content">
+    <button class="close-modal" onclick="closeModal()">✕</button>
+    <h3 style="text-align:center; margin-bottom:20px; font-size:1rem;">REGISTRAR KM</h3>
+    <div class="form-group">
+      <label>Kilómetros recorridos</label>
+      <input type="number" id="train-km" placeholder="Ej. 10" min="0.1" step="0.1" inputmode="decimal">
+    </div>
+    <input type="hidden" id="train-shoe-id">
+    <button class="btn-primary" id="btn-save-train" onclick="saveTraining()">Guardar Entrenamiento</button>
+  </div>
+</div>
+
+<!-- MODAL HISTORIAL -->
+<div class="modal-overlay" id="historial-modal">
+  <div class="modal-historial-content">
+    <div class="historial-header">
+      <div>
+        <div class="historial-title">📋 Historial</div>
+        <div class="historial-subtitle" id="historial-shoe-name">— km registrados</div>
+      </div>
+      <button class="close-modal" style="position:static;" onclick="closeHistorial()">✕</button>
+    </div>
+    <div class="historial-scroll" id="historial-list">
+      <div class="historial-loading"><span class="zapa-loading">👟</span> Cargando...</div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CONFIRMAR ELIMINAR ZAPATILLA -->
+<div class="modal-overlay" id="confirm-delete-modal">
+  <div class="modal-confirm-content">
+    <div class="confirm-icon">👟</div>
+    <div class="confirm-title" id="confirm-delete-title">¿Qué hacemos con esta zapa?</div>
+    <div class="confirm-msg" id="confirm-delete-msg"></div>
+    <input type="hidden" id="confirm-delete-shoe-id">
+    <!-- Opción 1: Archivar -->
+    <button class="btn-confirm-archive" id="btn-confirm-archive" onclick="executeArchiveShoe()">
+      🗄️ &nbsp;ARCHIVAR EN EL LOCKER
+    </button>
+    <div class="confirm-option-hint">La guardás con historial intacto. Podés reactivarla cuando quieras.</div>
+    <!-- Opción 2: Eliminar -->
+    <button class="btn-confirm-delete" id="btn-confirm-delete-ok" onclick="executeDeleteShoe()">
+      🗑️ &nbsp;ELIMINAR PARA SIEMPRE
+    </button>
+    <div class="confirm-option-hint" style="color:#e53935;">Se borra la zapatilla y todo su historial. No se puede deshacer.</div>
+    <!-- Cancelar -->
+    <button class="btn-confirm-cancel" style="margin-top:10px;" onclick="closeConfirmDelete()">Cancelar</button>
+  </div>
+</div>
+
+<!-- MODAL LOCKER -->
+<div class="modal-overlay" id="locker-modal">
+  <div class="modal-locker-content">
+    <div class="locker-modal-header">
+      <div>
+        <div class="locker-modal-title">🗄️ LOCKER</div>
+        <div class="locker-modal-sub" id="locker-modal-sub">Tus zapatillas guardadas</div>
+      </div>
+      <button class="close-modal" onclick="cerrarLockerModal()">✕</button>
+    </div>
+    <div class="locker-modal-scroll">
+      <div class="locker-modal-grid" id="locker-modal-grid">
+        <div style="grid-column:1/-1;text-align:center;padding:24px;color:var(--gris-texto);font-size:0.75rem;"><span class="zapa-loading">👟</span> Cargando...</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CONFIRMAR BORRAR ENTRENAMIENTO INDIVIDUAL -->
+<div class="modal-overlay" id="confirm-delete-training-modal">
+  <div class="modal-confirm-training-content">
+    <div class="confirm-icon">🗑️</div>
+    <div class="confirm-title">Borrar registro</div>
+    <div class="confirm-msg" id="confirm-delete-training-msg">¿Confirmás que querés borrar este registro? <strong>Los KM se descontarán de la zapatilla.</strong></div>
+    <div class="confirm-btn-row">
+      <button class="btn-confirm-cancel" onclick="closeConfirmDeleteTraining()">Cancelar</button>
+      <button class="btn-confirm-delete" id="btn-confirm-delete-training-ok" onclick="executeDeleteTraining()">Borrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CONFIRMAR BORRAR NOTIFICACIÓN -->
+<div class="modal-overlay" id="confirm-delete-notif-modal">
+  <div class="modal-confirm-training-content">
+    <div class="confirm-icon">🗑️</div>
+    <div class="confirm-title">Borrar notificación</div>
+    <div class="confirm-msg">¿Confirmás que querés borrar esta notificación? <strong>Esta acción no se puede deshacer.</strong></div>
+    <div class="confirm-btn-row">
+      <button class="btn-confirm-cancel" onclick="closeConfirmDeleteNotif()">Cancelar</button>
+      <button class="btn-confirm-delete" id="btn-confirm-delete-notif-ok" onclick="executeDeleteNotif()">Borrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL RECUPERAR CONTRASEÑA -->
+<div class="modal-overlay" id="recover-modal">
+  <div class="modal-recover-content">
+    <button class="close-modal" onclick="closeRecoverModal()">✕</button>
+    <div class="recover-icon">🔑</div>
+    <div class="recover-title">Recuperar Contraseña</div>
+    <div class="recover-desc">Ingresá tu email y te enviaremos tus credenciales.</div>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" id="recover-email" placeholder="tu@email.com">
+    </div>
+    <button class="btn-primary" id="btn-recover-send" onclick="doRecoverPassword()">Enviar</button>
+    <div class="recover-success"   id="recover-success">✅ ¡Listo! Revisá tu correo.</div>
+    <div class="recover-error-msg" id="recover-error"></div>
+  </div>
+</div>
+
+<!-- Modal de voz -->
+<div class="modal-overlay drawer-lateral" id="voice-modal">
+  <div class="modal-voice-content">
+    <button class="close-modal" onclick="closeVoiceModal()">✕</button>
+    <div class="voice-modal-title" id="voice-modal-title">Registrar Entrenamiento</div>
+    <div class="voice-modal-sub"   id="voice-modal-sub">Usá el 🎙️ del teclado o escribí:<br><em>"12 km Speedgoat"</em></div>
+    <div class="voice-listening-wrap" id="voice-listening-wrap">
+      <div class="voice-input-hint" id="voice-input-hint">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-bottom:8px;">
+          <rect x="9" y="2" width="6" height="11" rx="3" fill="#F0FF00"/>
+          <path d="M5 11a7 7 0 0 0 14 0" stroke="#F0FF00" stroke-width="2" stroke-linecap="round"/>
+          <line x1="12" y1="18" x2="12" y2="22" stroke="#F0FF00" stroke-width="2" stroke-linecap="round"/>
+          <line x1="9"  y1="22" x2="15" y2="22" stroke="#F0FF00" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <div style="font-size:0.7rem;color:#888888;text-align:center;line-height:1.6;">
+          Toca el campo, luego usa el<br>
+          <strong style="color:#E8E8E8;">microfono del teclado</strong><br>
+          <span style="font-size:0.62rem;">o escribe directamente</span>
+        </div>
+      </div>
+      <div class="voice-input-wrap">
+        <input
+          type="text"
+          id="voice-input-field"
+          class="voice-input-field"
+          placeholder="Ej: 12 km Speedgoat"
+          autocomplete="off"
+          autocorrect="off"
+          spellcheck="false"
+          inputmode="text"
+          oninput="onVoiceInputChange()"
+          onkeydown="if(event.key==='Enter'){event.preventDefault();processVoiceInput();}"
+        >
+        <button class="btn-voice-process" onclick="processVoiceInput()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5 12h14M13 6l6 6-6 6" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div class="voice-confirm-wrap" id="voice-confirm-wrap">
+      <div class="voice-confirm-km"       id="voice-confirm-km">0</div>
+      <div class="voice-confirm-km-label">kilómetros</div>
+      <div class="voice-shoe-selector"    id="voice-shoe-selector"></div>
+      <div class="voice-confirm-shoe"     id="voice-confirm-shoe" style="display:none;">
+        <div class="voice-confirm-label">Zapatilla</div>
+        <div class="voice-confirm-value"  id="voice-confirm-shoe-name">—</div>
+      </div>
+      <div class="voice-confirm-btns">
+        <button class="btn-voice-cancel"  onclick="resetVoiceModal()">Reintentar</button>
+        <button class="btn-voice-confirm" id="btn-voice-confirm" onclick="confirmVoiceSave()">Guardar</button>
+      </div>
+    </div>
+    <div class="voice-error-wrap" id="voice-error-wrap">
+      <p id="voice-error-msg">No se pudo procesar.</p>
+      <button class="btn-primary" style="margin-top:0;" onclick="resetVoiceModal()">Intentar de nuevo</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  let currentUserEmail = '';
+  const MAX_KM = 900;
+  const ADMIN_EMAIL = 'runnerslabmdq@gmail.com';
+
+  // =====================================================
+  // ONBOARDING INICIAL
+  // =====================================================
+  function cerrarPantallaOnboarding() {
+    var ob = document.getElementById('onboarding-screen');
+    if (!ob) return;
+    ob.style.transition = 'opacity 0.4s ease';
+    ob.style.opacity = '0';
+    setTimeout(function(){ ob.style.display = 'none'; }, 420);
+  }
+
+    // =====================================================
+  // TOAST
+  // =====================================================
+  var _toastTimer = null;
+  function showKmToast(km) {
+    var toast = document.getElementById('km-toast');
+    toast.textContent = '✅ +' + km + ' km guardados';
+    toast.classList.add('show');
+    if (_toastTimer) clearTimeout(_toastTimer);
+    _toastTimer = setTimeout(function() { toast.classList.remove('show'); }, 2500);
+  }
+
+  // =====================================================
+  // IMÁGENES POR MODELO
+  // =====================================================
+  // ════════════════════════════════════════════════════════════
+  // IMÁGENES DE ZAPATILLAS — FUENTE ÚNICA DE VERDAD
+  // ------------------------------------------------------------
+  // IMG_NO_DISPONIBLE: se usa cuando marca/modelo no tienen foto.
+  // modelImages: foto específica por (marca + modelo).
+  //   La key se arma normalizando: minúsculas, espacios→"_", sin acentos.
+  // brandImages: foto genérica por marca (fallback si el modelo no tiene).
+  // Una sola tabla para holo y fondo: las fotos son las mismas, así no
+  // se desincronizan nunca.
+  // ════════════════════════════════════════════════════════════
+  const IMG_NO_DISPONIBLE = "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781901282/IMAGEN_NO_DISPONIBLE_xhrjte.png";
+
+  // Normaliza marca/modelo a una key estable: minúsculas, sin acentos, espacios→"_"
+  function _normKey(str) {
+    return (str || "")
+      .toString()
+      .toLowerCase()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // saca acentos
+      .trim()
+      .replace(/\s+/g, "_");
+  }
+
+  const modelImages = {
+    "saucony_peregrine_16_blanca":   "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781624322/Saucony_Peregrine_16_Mujer_Blanca_TT_j44hnt.png",
+    "saucony_peregrine_16_carbon":   "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781624322/Saucony_Peregrine_16_Hombre_Carbon_TT_fntckk.png",
+    "saucony_xodus_4":               "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781624320/Sacony_Xodus_4_Hombre_TT_svgexm.png",
+    "osx_libertador":                "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781782941/OSX_Libertador_TT_wzi9fm.png",
+    "nnormal_tomir_2.0":             "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781783033/Nnormal_Tomir_2.0_TT_vzqclg.png",
+    "nnormal_kjerag":                "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781783037/Nnormal_Kjerag_TT_b77tln.png",
+    "la_sportiva_prodigio_pro_m":    "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781783404/La_Sportiva_Prodigio_Pro_M_TT_ptntbw.png",
+    "la_sportiva_prodigio_pro_max":  "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781783406/La_Sportiva_Prodigio_Pro_Max_TT_y2lbjk.png",
+    "la_sportiva_prodigio_pro_w":    "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781783407/La_Sportiva_Prodigio_Pro_W_TT_deh7xw.png",
+    "dynafit_alpine_trail":          "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781783433/Dinafit_Alpine_Trail_TT_ba9tvb.png",
+    "hoka_mafate_x":                 "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781783457/Hoka_Mafate_X_TT_t2mxou.png",
+    "hoka_speedgoat_6":              "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781783457/Hoka_Speedgoat_6_TT_gjrgx7.png",
+    "hoka_torrent_4":                "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781783459/Hoka_Torrent_4_SSTW_TT_pjqlup.png",
+    "hoka_challenger_atr_7":         "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781881682/Hoka_Challenger_ATR_7_ST_TT_ve19yo.png",
+    "hoka_bondi_9":                  "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781881685/Hoka_Bondi_9_TT_h1u1fe.png",
+    "hoka_bondi_9_w":                "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781881680/Hoka_Bondi_9_W_ST_TT_kshhiv.png",
+    "hoka_challenger_atr_8":         "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781797825/Hoka_Challenger_ATR_8_TT_uq30le.png",
+    "hoka_speedgoat_6_mid_gore":     "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781797829/Hoka_Speedgoat_6_Mid_Gore_TT_esjphm.png",
+    "hoka_transport":                "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781797834/Hoka_Transport_TT_ql0egt.png",
+    "hoka_mafate_5_black":           "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781797835/Hoka_Mafate_5_Black_TT_abn0f2.png",
+    "salomon_genesis_trail":         "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781797818/Salomon_Genesis_Trail_TT_djsnsp.png",
+    "salomon_ultra_glide_4_trail":   "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781797817/Salomon_Ultra_Glide_4_Trail_TT_pytavn.png",
+    "salomon_ultra_flow_2":          "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781797820/Salomon_Ultra_Flow_2_TT_jlpf2h.png",
+    "salomon_aero_glide_4":          "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781797825/Salomon_Aero_Glide_4_TT_kiwztx.png"
+  };
+
+  // Genéricas por marca (fallback cuando el modelo no tiene foto propia).
+  // Solo marcas que existen en el desplegable de "Nueva zapatilla".
+  const brandImages = {
+  "hoka":        "https://res.cloudinary.com/dlayzh9ln/image/upload/v1782223352/Hoka_Genericas_TT_2_ybq5az.png",
+  "saucony":     "https://res.cloudinary.com/dlayzh9ln/image/upload/v1782216017/Saucony_Peregrine_16_W_TT_xpchn3.png",
+  "salomon":     "https://res.cloudinary.com/dlayzh9ln/image/upload/v1782223426/Salomon_Genericas_2_lujglk.png",
+  "la_sportiva": "https://res.cloudinary.com/dlayzh9ln/image/upload/v1782223423/La_Sportiva_Genericas_2_bbvwd1.png",
+  "dynafit":     "https://res.cloudinary.com/dlayzh9ln/image/upload/v1782223420/Dynafit_Genericas_2_oqh9du.png",
+  "nnormal":     "https://res.cloudinary.com/dlayzh9ln/image/upload/v1782223417/Nnormal_Genericas_2_hsble4.png",
+  "osx":         "https://res.cloudinary.com/dlayzh9ln/image/upload/v1782223343/OSX_Genericas_TT_2_ueeikj.png"
+};
+
+  // Resolución única: modelo específico → genérica de marca → IMAGEN NO DISPONIBLE.
+  // Sirve tanto para la foto principal (holo) como para el fondo.
+  function getShoeImage(marca, modelo) {
+    const modeloKey = _normKey(marca) + "_" + _normKey(modelo);
+    if (modelImages[modeloKey]) return modelImages[modeloKey];
+    const marcaKey = _normKey(marca);
+    if (brandImages[marcaKey]) return brandImages[marcaKey];
+    return IMG_NO_DISPONIBLE;
+  }
+
+  // Alias para compatibilidad: el fondo usa exactamente la misma imagen.
+  function getShoeImageBg(marca, modelo) {
+    return getShoeImage(marca, modelo);
+  }
+  function isGenericImage(marca, modelo) {
+  const modeloKey = _normKey(marca) + "_" + _normKey(modelo);
+  if (modelImages[modeloKey]) return false;  // tiene foto propia
+  const marcaKey = _normKey(marca);
+  if (brandImages[marcaKey]) return true;    // es genérica de marca
+  return false;                              // no disponible tampoco
+}
+
+  function sanitize(str) {
+    return (str || '').toString()
+      .replace(/&/g,  '&amp;')
+      .replace(/</g,  '&lt;')
+      .replace(/>/g,  '&gt;')
+      .replace(/"/g,  '&quot;')
+      .replace(/'/g,  '&#39;');
+  }
+
+  let currentDetailShoe = null;
+  let allUserShoes = [];
+  const ALL_VIEWS = ['view-login','view-register','view-dashboard','view-add-shoe','view-notificaciones','view-admin-notif'];
+
+  function switchView(viewId) {
+    ALL_VIEWS.forEach(id => { document.getElementById(id).style.display = 'none'; });
+    document.getElementById(viewId).style.display = 'block';
+  }
+
+  function cerrarOnboardingFab() {
+    // FAB eliminado — función mantenida para compatibilidad con openVoiceModal
+    try { localStorage.setItem('hr_fab_onboarding_seen', '1'); } catch(e) {}
+  }
+
+  // =====================================================
+  // CATÁLOGO ACTUALIZADO CON NUEVOS MODELOS
+  // =====================================================
+  const catalogo = {
+    "Dynafit":      ["Alpine Trail"],
+    "Hoka":         ["Mafate X", "Speedgoat 6", "Torrent 4", "Challenger ATR 7", "Challenger ATR 8", "Speedgoat 6 Mid Gore", "Transport", "Mafate 5 Black", "Bondi 9", "Bondi 9 W"],
+    "La Sportiva":  ["Prodigio Pro M", "Prodigio Pro Max", "Prodigio Pro W"],
+    "Nnormal":      ["Kjerag", "Tomir 2.0"],
+    "Osx":          ["Libertador"],
+    "Salomon": ["Supercross","Supercross 4","Speedcross Peak","X Adventure",
+  "Genesis Trail","Ultra Glide 4 Trail","Ultra Flow 2","Aero Glide 4"],
+    "Saucony": [
+      "Peregrine 16 Blanca",
+      "Peregrine 16 Carbon",
+      "Xodus 4"
+    ],
+  };
+
+  function getBrandBadgeClass(marca) {
+    const m = (marca || '').toLowerCase().replace(/\s/g, '');
+    const map = {
+      'adidas':'badge-adidas','nike':'badge-nike','puma':'badge-puma',
+      'asics':'badge-asics','newbalance':'badge-newbalance','hoka':'badge-hoka',
+      'saucony':'badge-saucony','brooks':'badge-brooks','on':'badge-on',
+      'skechers':'badge-skechers','underarmour':'badge-underarmour','fila':'badge-fila',
+      'salomon':'badge-salomon','merrell':'badge-merrell','thenorthface':'badge-thenorthface'
+    };
+    return map[m] || 'badge-default';
+  }
+
+  function initApp() {
+    const ts = document.getElementById('shoe-talle');
+    for(let t = 35; t <= 48; t += 0.5) {
+      let o = document.createElement('option'); o.value = t; o.text = t; ts.add(o);
+    }
+  }
+
+  function onMarcaChange() {
+    const sel   = document.getElementById('shoe-marca');
+    const marca = sel.value;
+    const wrapMarca = document.getElementById('wrap-marca-manual');
+    if (marca === '__otras__') {
+      wrapMarca.classList.add('visible');
+      document.getElementById('shoe-marca-manual').focus();
+    } else {
+      wrapMarca.classList.remove('visible');
+      document.getElementById('shoe-marca-manual').value = '';
+    }
+    const s = document.getElementById('shoe-modelo');
+    s.innerHTML = '';
+    const wrapModelo = document.getElementById('wrap-modelo-manual');
+    wrapModelo.classList.remove('visible');
+    document.getElementById('shoe-modelo-manual').value = '';
+    if (marca === '__otras__') {
+      const oOtros = document.createElement('option');
+      oOtros.value = '__otros__'; oOtros.text = 'Otros...'; s.add(oOtros);
+      wrapModelo.classList.add('visible');
+      document.getElementById('shoe-modelo-manual').focus();
+    } else if (catalogo[marca]) {
+      const oDefault = document.createElement('option');
+      oDefault.value = ''; oDefault.text = 'Seleccionar...'; s.add(oDefault);
+      catalogo[marca].forEach(x => {
+        let o = document.createElement('option'); o.value = x; o.text = x; s.add(o);
+      });
+      const oOtros = document.createElement('option');
+      oOtros.value = '__otros__'; oOtros.text = 'Otros...'; s.add(oOtros);
+    } else {
+      const oVacio = document.createElement('option');
+      oVacio.value = ''; oVacio.text = 'Primero elige marca'; s.add(oVacio);
+    }
+  }
+
+  function onModeloChange() {
+    const val  = document.getElementById('shoe-modelo').value;
+    const wrap = document.getElementById('wrap-modelo-manual');
+    if (val === '__otros__') {
+      wrap.classList.add('visible');
+      document.getElementById('shoe-modelo-manual').focus();
+    } else {
+      wrap.classList.remove('visible');
+      document.getElementById('shoe-modelo-manual').value = '';
+    }
+  }
+
+  function onGrupoChange() {
+    const val  = document.getElementById('reg-grupo').value;
+    const wrap = document.getElementById('wrap-grupo-manual');
+    if (val === '__otro__') {
+      wrap.classList.add('visible');
+      document.getElementById('reg-grupo-manual').focus();
+    } else {
+      wrap.classList.remove('visible');
+      document.getElementById('reg-grupo-manual').value = '';
+    }
+  }
+
+  function doRegister() {
+    const n  = document.getElementById('reg-nombre').value.trim();
+    const a  = document.getElementById('reg-apellido').value.trim();
+    const e  = document.getElementById('reg-email').value.trim();
+    const p  = document.getElementById('reg-pass').value;
+    const pc = document.getElementById('reg-pass-confirm').value;
+    const nivel     = document.getElementById('reg-nivel').value;
+    const fechaNac  = document.getElementById('reg-fecha-nac').value;
+    const celular   = document.getElementById('reg-celular').value.trim();
+    const provincia = document.getElementById('reg-provincia').value;
+    const ciudadEl  = document.getElementById('reg-ciudad');
+    const ciudad    = ciudadEl.value && ciudadEl.value !== '' ? ciudadEl.value : '';
+    const grupoSel  = document.getElementById('reg-grupo').value;
+    const grupo = grupoSel === '__otro__'
+      ? document.getElementById('reg-grupo-manual').value.trim()
+      : grupoSel;
+    const err = document.getElementById('reg-error');
+    err.style.display = 'none';
+    if (!n || !e || !p || !pc) { err.innerText = 'Completá todos los campos obligatorios.'; err.style.display = 'block'; return; }
+    if (p !== pc) { err.innerText = 'Las contraseñas no coinciden.'; err.style.display = 'block'; return; }
+    document.getElementById('btn-reg').innerText = 'CREANDO...';
+    google.script.run.withSuccessHandler(res => {
+      document.getElementById('btn-reg').innerText = 'Crear Cuenta';
+      if (res.success) {
+        currentUserEmail = res.email;
+        document.getElementById('user-name').innerText = res.nombre;
+        switchView('view-dashboard');
+        loadDashboard();
+      } else { err.innerText = res.error; err.style.display = 'block'; }
+    }).registerUser(n, a, e, p, nivel, grupo, fechaNac, provincia, ciudad, celular);
+  }
+
+  // ── Provincia → Ciudad dinámica via API Georef ──────────────
+  function onProvinciaChange() {
+    var selectProvincia = document.getElementById('reg-provincia');
+    var selectCiudad    = document.getElementById('reg-ciudad');
+    var loadingEl       = document.getElementById('reg-ciudad-loading');
+    var provincia       = selectProvincia.value;
+
+    // Reset ciudad
+    selectCiudad.innerHTML = '<option value="">Seleccionar ciudad...</option>';
+    selectCiudad.disabled  = true;
+
+    if (!provincia) {
+      selectCiudad.innerHTML = '<option value="">Primero elegí una provincia...</option>';
+      return;
+    }
+
+    // Mostrar loading
+    loadingEl.style.display = 'block';
+    selectCiudad.disabled   = true;
+
+    var url = 'https://apis.datos.gob.ar/georef/api/localidades'
+            + '?provincia=' + encodeURIComponent(provincia)
+            + '&max=1000&campos=nombre&orden=nombre';
+
+    fetch(url)
+      .then(function(response) {
+        if (!response.ok) throw new Error('Error HTTP ' + response.status);
+        return response.json();
+      })
+      .then(function(data) {
+        loadingEl.style.display = 'none';
+        var localidades = (data && data.localidades) ? data.localidades : [];
+
+        // Deduplicar y ordenar
+        var nombres = [];
+        var visto   = {};
+        localidades.forEach(function(loc) {
+          var n = (loc.nombre || '').trim();
+          if (n && !visto[n.toLowerCase()]) {
+            visto[n.toLowerCase()] = true;
+            nombres.push(n);
+          }
+        });
+        nombres.sort(function(a, b) { return a.localeCompare(b, 'es'); });
+
+        selectCiudad.innerHTML = '<option value="">Seleccionar ciudad...</option>';
+        nombres.forEach(function(nombre) {
+          var opt = document.createElement('option');
+          opt.value       = nombre;
+          opt.textContent = nombre;
+          selectCiudad.appendChild(opt);
+        });
+
+        selectCiudad.disabled = (nombres.length === 0);
+        if (nombres.length === 0) {
+          selectCiudad.innerHTML = '<option value="">Sin ciudades disponibles</option>';
+        }
+      })
+      .catch(function(err) {
+        loadingEl.style.display = 'none';
+        // Si la API falla, habilitar input libre
+        selectCiudad.innerHTML  = '<option value="">Error al cargar — ingresá manualmente</option>';
+        selectCiudad.disabled   = false;
+        console.warn('Georef API error:', err);
+      });
+  }
+  // ── Fin Provincia/Ciudad ─────────────────────────────────────
+
+  function doLogin() {
+    const e = document.getElementById('log-email').value;
+    const p = document.getElementById('log-pass').value;
+    const err = document.getElementById('log-error');
+    if(!e || !p) return;
+    document.getElementById('btn-login').innerText = 'INICIANDO...';
+    google.script.run.withSuccessHandler(res => {
+      document.getElementById('btn-login').innerText = 'Iniciar Sesión';
+      if(res.success) {
+      if(res.esAdmin) {
+  // Es admin → pedir la URL real al backend y abrir el panel en la ventana superior
+  google.script.run.withSuccessHandler(function(adminUrl){
+    var a = document.createElement('a');
+    a.href = adminUrl;
+    a.target = '_top';
+    document.body.appendChild(a);
+    a.click();
+  }).getAdminUrl();
+  return;
+}
+        currentUserEmail = res.email;
+        document.getElementById('user-name').innerText = res.nombre || 'Runner';
+        switchView('view-dashboard');
+        loadDashboard();
+        // Cargar badge de notificaciones automáticamente
+        cargarBadgeNotificaciones();
+        setInterval(cargarBadgeNotificaciones, 60000);
+      } else { err.innerText = res.error; err.style.display = 'block'; }
+    }).loginUser(e, p);
+  }
+
+  function doLogout() {
+    currentUserEmail  = '';
+    allUserShoes      = [];
+    currentDetailShoe = null;
+    document.getElementById('log-email').value = '';
+    document.getElementById('log-pass').value  = '';
+    // Limpiar badge
+    var badge = document.getElementById('notif-badge');
+    if (badge) { badge.innerText = ''; badge.classList.remove('visible'); }
+    switchView('view-login');
+  }
+
+  function openRecoverModal() {
+    document.getElementById('recover-email').value            = '';
+    document.getElementById('recover-success').style.display = 'none';
+    document.getElementById('recover-error').style.display   = 'none';
+    document.getElementById('recover-error').innerText        = '';
+    document.getElementById('btn-recover-send').innerText     = 'Enviar';
+    document.getElementById('btn-recover-send').disabled      = false;
+    document.getElementById('recover-modal').style.display    = 'flex';
+    setTimeout(function(){ document.getElementById('recover-email').focus(); }, 150);
+  }
+  function closeRecoverModal() { document.getElementById('recover-modal').style.display = 'none'; }
+
+  function doRecoverPassword() {
+    var email     = document.getElementById('recover-email').value.trim();
+    var successEl = document.getElementById('recover-success');
+    var errorEl   = document.getElementById('recover-error');
+    var btn       = document.getElementById('btn-recover-send');
+    successEl.style.display = 'none';
+    errorEl.style.display   = 'none';
+    errorEl.innerText        = '';
+    if (!email) { errorEl.innerText = 'Ingresá tu email.'; errorEl.style.display = 'block'; return; }
+    btn.innerText = 'Enviando...';
+    btn.disabled  = true;
+    google.script.run
+      .withSuccessHandler(function(res) {
+        btn.innerText = 'Enviar'; btn.disabled = false;
+        if (res && res.success) { successEl.style.display = 'block'; setTimeout(closeRecoverModal, 3000); }
+        else { errorEl.innerText = (res && res.error) ? res.error : 'Error desconocido.'; errorEl.style.display = 'block'; }
+      })
+      .withFailureHandler(function() {
+        btn.innerText = 'Enviar'; btn.disabled = false;
+        errorEl.innerText = 'Error de conexión. Intentá de nuevo.'; errorEl.style.display = 'block';
+      })
+      .recoverPassword(email);
+  }
+
+  let _loadRetries = 0;
+  const _MAX_RETRIES = 4;
+
+  function loadDashboard() { _loadRetries = 0; _intentarCargar(); }
+
+  function _intentarCargar() {
+    var grid = document.getElementById('shoe-grid');
+    var emailTrimmed = (currentUserEmail || '').trim().toLowerCase();
+    var intentoText  = _loadRetries > 0 ? ' (intento ' + (_loadRetries + 1) + '/' + _MAX_RETRIES + ')' : '';
+
+    // Destruir swiper si existe antes de mostrar loading
+    if (_swiperInstance) {
+      try { _swiperInstance.destroy(true, true); } catch(e) {}
+      _swiperInstance = null;
+    }
+
+    grid.innerHTML = '<div class="empty-state"><div class="empty-icon"><span class="zapa-loading">👟</span></div><p>Cargando armario' + intentoText + '...</p></div>';
+    google.script.run
+      .withSuccessHandler(function(shoes) {
+        if (!shoes || !Array.isArray(shoes)) {
+          _loadRetries++;
+          if (_loadRetries < _MAX_RETRIES) { setTimeout(_intentarCargar, 2000); }
+          else { renderArmario([]); }
+          return;
+        }
+        _loadRetries = 0;
+        renderArmario(shoes);
+        cargarLocker();
+      })
+      .withFailureHandler(function() {
+        _loadRetries++;
+        if (_loadRetries < _MAX_RETRIES) { setTimeout(_intentarCargar, 2000); }
+        else {
+          grid.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div>'
+            + '<p style="color:#ef4444;">No se pudieron cargar las zapatillas.</p>'
+            + '<button onclick="loadDashboard()" style="margin-top:16px;background:var(--amarillo);border:none;color:#000;padding:10px 20px;border-radius:8px;font-family:Montserrat,sans-serif;font-weight:900;font-size:0.75rem;cursor:pointer;">↺ REINTENTAR</button>'
+            + '</div>';
+        }
+      })
+      .getUserShoes(emailTrimmed);
+  }
+
+  // =====================================================
+  // VARIABLE GLOBAL DEL SWIPER
+  // =====================================================
+  var _swiperInstance = null;
+  var _pendingActiveShoeIndex = 0; // índice a restaurar al re-renderizar
+
+  // Devuelve el índice actual del slide activo en el swiper
+  function _getCurrentSlideIndex() {
+    if (_swiperInstance) return _swiperInstance.activeIndex || 0;
+    return 0;
+  }
+
+  function renderArmario(shoes) {
+    if (!shoes || !Array.isArray(shoes)) shoes = [];
+    allUserShoes = shoes;
+
+    var grid = document.getElementById('shoe-grid');
+
+    // Destruir swiper anterior si existe
+    if (_swiperInstance) {
+      try { _swiperInstance.destroy(true, true); } catch(e) {}
+      _swiperInstance = null;
+    }
+
+    // Limpiar contenedor
+    grid.innerHTML = '';
+
+    // ── CASO: sin zapatillas ──────────────────────────
+    if (shoes.length === 0) {
+      grid.innerHTML =
+        '<div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:30px 20px 100px;">' +
+          '<div style="width:62%;max-width:240px;cursor:pointer;" onclick="switchView(\'view-add-shoe\')">' +
+            '<div class="cf-neon-wrap" style="background:rgba(56,56,56,0.6);border-radius:22px;">' +
+              '<div style="background:#111;border-radius:20px;min-height:260px;' +
+                   'display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;">' +
+                '<div style="font-size:2.2rem;color:#555;line-height:1;">+</div>' +
+                '<div style="font-size:0.62rem;color:#555;font-weight:700;text-transform:uppercase;' +
+                     'letter-spacing:1.5px;text-align:center;line-height:1.6;">Agregá tu<br>primera zapatilla</div>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      return;
+    }
+
+    // ── CASO: hay zapatillas → construir Swiper ──────
+
+    var swiperEl = document.createElement('div');
+    swiperEl.className = 'swiper swiper-coverflow';
+
+    var wrapperEl = document.createElement('div');
+    wrapperEl.className = 'swiper-wrapper';
+
+    // Slides de zapatillas (más reciente primero = reverse)
+    shoes.slice().reverse().forEach(function(s) {
+      var km        = Number(s.KM_Actuales) || 0;
+      var perc      = Math.min((km / MAX_KM) * 100, 100);
+      var percFixed = perc.toFixed(0);
+      var kmRestantes = Math.max(MAX_KM - km, 0);
+      var sMarca    = sanitize(s.Marca);
+      var sModelo   = sanitize(s.Modelo);
+      var sTalle    = sanitize(s.Talle);
+      var sGenero   = sanitize(s.Genero);
+      var sIdZapa   = sanitize(s.ID_Zapa);
+      var sAlias    = sanitize(s.Alias || '');
+      // ID real sin sanitize para usar en funciones JS (ya está sanitizado para HTML)
+      var rawId     = (s.ID_Zapa || '').toString().replace(/'/g, "\\'");
+      var rawModelo = (s.Modelo  || '').toString().replace(/'/g, "\\'");
+
+      var barColor = 'linear-gradient(90deg, #F0FF00, #BFCA00)';
+      if (perc >= 85) barColor = 'linear-gradient(90deg, #ef4444, #ff6b6b)';
+      else if (perc >= 70) barColor = 'linear-gradient(90deg, #ff9800, #F0FF00)';
+
+      var warnHtml = perc >= 70
+        ? '<div class="cf-warn">' + (perc >= 85 ? '⚠️' : '🔶') + '</div>'
+        : '';
+      var badgeCls  = getBrandBadgeClass(s.Marca);
+      var shoeImg   = getShoeImage(s.Marca, s.Modelo);
+      var aliasHtml = sAlias
+        ? '<div class="cf-alias">' + sAlias + '</div>'
+        : '';
+
+      var slide = document.createElement('div');
+      slide.className = 'swiper-slide';
+      slide.dataset.shoeId = sIdZapa;
+
+      slide.innerHTML =
+        '<div class="cf-neon-wrap">' +
+          '<div class="cf-card">' +
+
+            // ── Foto ──
+            '<div class="cf-photo-wrap">' +
+              '<img src="' + shoeImg + '" alt="' + sModelo + '" loading="lazy">' +
+              '<div class="cf-badge ' + badgeCls + '">' + sMarca.toUpperCase() + '</div>' +
+              warnHtml +
+              '<button class="cf-btn-delete" title="Eliminar zapatilla" ' +
+                'onclick="event.stopPropagation(); openConfirmDelete(\'' + rawId + '\', \'' + rawModelo + '\'); return false;">✕</button>' +
+            '</div>' +
+
+            // ── Info modelo ──
+            '<div class="cf-info">' +
+              '<div class="cf-model">' + sModelo + '</div>' +
+              aliasHtml +
+              '<div class="cf-size">' + sMarca.toUpperCase() + ' | EU ' + sTalle + ' | ' + sGenero + '</div>' +
+            '</div>' +
+
+            // ── Barra km ──
+            '<div class="cf-bar-section">' +
+              '<div class="cf-bar-wrap">' +
+                '<div class="cf-bar-fill" style="width:' + perc + '%; background:' + barColor + ';"></div>' +
+              '</div>' +
+              '<div class="cf-km">' +
+                '<span>' + km + ' km / ' + MAX_KM + ' km</span>' +
+                '<span class="km-val">' + percFixed + '%</span>' +
+              '</div>' +
+            '</div>' +
+
+            // ── Acciones (solo activo) ──
+            '<div class="cf-actions">' +
+              '<div class="cf-btn-row">' +
+                '<button class="cf-btn-train" ' +
+                  'onclick="event.stopPropagation(); (function(){ ' +
+                    'var shoe = allUserShoes.find(function(x){ return x.ID_Zapa === \'' + rawId + '\'; }); ' +
+                    'if(shoe){ currentDetailShoe = shoe; openModal(\'' + rawId + '\'); } ' +
+                  '})();">⚡ SUMAR KM</button>' +
+                '<button class="cf-btn-history" ' +
+                  'onclick="event.stopPropagation(); (function(){ ' +
+                    'var shoe = allUserShoes.find(function(x){ return x.ID_Zapa === \'' + rawId + '\'; }); ' +
+                    'if(shoe){ currentDetailShoe = shoe; openHistorial(); } ' +
+                  '})();">📋 HISTORIAL</button>' +
+              '</div>' +
+              '<div class="cf-btn-row-shop">' +
+                '<button class="cf-btn-todotrail" ' +
+                  'onclick="event.stopPropagation(); (function(){ ' +
+                    'var shoe = allUserShoes.find(function(x){ return x.ID_Zapa === \'' + rawId + '\'; }); ' +
+                    'if(shoe){ irATodoTrail(shoe.Genero, shoe.Talle); } ' +
+                  '})();">⛰️⛰️ <span class="tt-todo">todo</span><span class="tt-trail">trail</span> </button>' +
+              '</div>' +
+            '</div>' +
+
+          '</div>' +  // /cf-card
+        '</div>';    // /cf-neon-wrap
+
+      wrapperEl.appendChild(slide);
+    });
+
+    // Slide final: "+ Agregar" + Locker
+    var slideAdd = document.createElement('div');
+    slideAdd.className = 'swiper-slide cf-add-slide';
+    slideAdd.dataset.shoeId = '__add__';
+
+    // Calcular cuántas zapas hay en el locker para el contador
+    var lockerN = 0;
+    google.script.run
+      .withSuccessHandler(function(archived) {
+        lockerN = (archived && Array.isArray(archived)) ? archived.length : 0;
+        var countEl = slideAdd.querySelector('.cf-add-locker-count');
+        if (countEl) countEl.style.display = lockerN > 0 ? 'inline-block' : 'none';
+        if (countEl) countEl.innerText = lockerN;
+      })
+      .withFailureHandler(function() {})
+      .getArchivedShoes(currentUserEmail);
+
+    slideAdd.innerHTML =
+      '<div class="cf-neon-wrap">' +
+        '<div class="cf-add-dual">' +
+
+          // ── Mitad superior: Nueva zapa ──
+          '<div class="cf-add-top" onclick="switchView(\'view-add-shoe\')">' +
+            '<div class="cf-add-icon">+</div>' +
+            '<div class="cf-add-text">Nueva<br>zapatilla</div>' +
+          '</div>' +
+
+          // ── Divisor ──
+          '<div class="cf-add-divider"></div>' +
+
+          // ── Mitad inferior: Locker ──
+          '<div class="cf-add-bottom" onclick="abrirLockerModal()">' +
+            '<div class="cf-add-locker-icon">🗄️</div>' +
+            '<div class="cf-add-locker-label">LOCKER' +
+              '<span class="cf-add-locker-count" style="display:none;">0</span>' +
+            '</div>' +
+          '</div>' +
+
+        '</div>' +
+      '</div>';
+    wrapperEl.appendChild(slideAdd);
+
+    // Paginación
+    var paginationEl = document.createElement('div');
+    paginationEl.className = 'swiper-pagination';
+
+    swiperEl.appendChild(wrapperEl);
+    swiperEl.appendChild(paginationEl);
+    grid.appendChild(swiperEl);
+
+    // ── Inicializar Swiper ────────────────────────────
+    _swiperInstance = new Swiper('.swiper-coverflow', {
+      effect: 'coverflow',
+      grabCursor: true,
+      centeredSlides: true,
+      slidesPerView: 'auto',
+      loop: false,
+      initialSlide: _pendingActiveShoeIndex || 0,
+      coverflowEffect: {
+        rotate: 20,
+        stretch: 0,
+        depth: 100,
+        modifier: 1,
+        slideShadows: false
+      },
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+        dynamicBullets: true
+      },
+      on: {
+        slideChange: function() {},
+        afterInit:   function() {}
+      }
+    });
+    _pendingActiveShoeIndex = 0; // reset después de usar
+
+    // Tap en slide no-activo → navegar a ese slide (sin abrir nada)
+    // Tap en slide activo "agregar" → ya tiene onclick en el card
+    // Los botones dentro del activo tienen stopPropagation, no necesitamos handler de tap
+  }
+
+  function saveShoe() {
+    let marcaRaw   = document.getElementById('shoe-marca').value;
+    let marcaFinal = marcaRaw;
+    if (marcaRaw === '__otras__') {
+      marcaFinal = document.getElementById('shoe-marca-manual').value.trim();
+      if (!marcaFinal) return alert('Ingresá el nombre de la marca');
+    }
+    let modeloRaw   = document.getElementById('shoe-modelo').value;
+    let modeloFinal = modeloRaw;
+    if (modeloRaw === '__otros__') {
+      modeloFinal = document.getElementById('shoe-modelo-manual').value.trim();
+      if (!modeloFinal) return alert('Ingresá el nombre del modelo');
+    }
+    const kmVal = parseFloat(document.getElementById('shoe-km').value) || 0;
+    if (kmVal < 0) return alert('Los KM iniciales no pueden ser negativos');
+    const d = {
+      marca:  marcaFinal,
+      modelo: modeloFinal,
+      talle:  document.getElementById('shoe-talle').value,
+      genero: document.getElementById('shoe-genero').value,
+      km:     kmVal,
+      alias:  document.getElementById('shoe-alias').value.trim()
+    };
+    if (!d.marca || !d.modelo) return alert('Completá la información');
+    document.getElementById('btn-save-shoe').innerText = 'GUARDANDO...';
+    google.script.run
+      .withSuccessHandler(() => {
+        document.getElementById('btn-save-shoe').innerText = 'Añadir a Mis Zapas';
+        document.getElementById('shoe-alias').value = '';
+        switchView('view-dashboard');
+        setTimeout(loadDashboard, 800);
+      })
+      .withFailureHandler(err => {
+        document.getElementById('btn-save-shoe').innerText = 'Añadir a Mis Zapas';
+        alert('Error al guardar: ' + (err.message || err));
+      })
+      .addShoe(currentUserEmail, d);
+  }
+
+  function openModalFromDetail() {
+    if (!currentDetailShoe) return;
+    openModal(currentDetailShoe.ID_Zapa);
+  }
+  function openModal(idZapa) {
+    document.getElementById('train-shoe-id').value = idZapa;
+    document.getElementById('train-km').value      = '';
+    document.getElementById('train-modal').style.display = 'flex';
+  }
+  function closeModal() { document.getElementById('train-modal').style.display = 'none'; }
+
+  function saveTraining() {
+    const id  = document.getElementById('train-shoe-id').value;
+    const km  = document.getElementById('train-km').value;
+    const kmN = parseFloat(km);
+    if (!km || isNaN(kmN) || kmN < 0.1) return alert("Ingresá un kilometraje válido (mínimo 0.1 km)");
+    document.getElementById('btn-save-train').innerText = 'Guardando...';
+    google.script.run.withSuccessHandler(res => {
+      document.getElementById('btn-save-train').innerText = 'Guardar Entrenamiento';
+      if(res.success) {
+        closeModal();
+        showKmToast(kmN % 1 === 0 ? kmN : kmN.toFixed(1));
+        google.script.run
+          .withSuccessHandler(function(shoes) {
+            if (!shoes || !Array.isArray(shoes)) { loadDashboard(); return; }
+            allUserShoes = shoes;
+            _pendingActiveShoeIndex = _getCurrentSlideIndex();
+            renderArmario(shoes);
+          })
+          .withFailureHandler(function() { loadDashboard(); })
+          .getUserShoes(currentUserEmail);
+      } else { alert(res.error); }
+    }).logTraining(currentUserEmail, id, kmN);
+  }
+
+  // =====================================================
+  // HISTORIAL
+  // =====================================================
+  function openHistorial() {
+    if (!currentDetailShoe) return;
+    var listEl     = document.getElementById('historial-list');
+    var subtitleEl = document.getElementById('historial-shoe-name');
+    subtitleEl.innerText = currentDetailShoe.Modelo + ' · Entrenamientos';
+    listEl.innerHTML = '<div class="historial-loading"><span class="zapa-loading">👟</span> Cargando historial...</div>';
+    document.getElementById('historial-modal').style.display = 'flex';
+    _cargarHistorial();
+  }
+
+  function _cargarHistorial() {
+    var listEl = document.getElementById('historial-list');
+    google.script.run
+      .withSuccessHandler(function(history) {
+        if (!history || history.length === 0) {
+          listEl.innerHTML = '<div class="historial-empty"><div class="empty-icon">📭</div><p>Todavía no hay entrenamientos registrados con esta zapatilla.</p></div>';
+          return;
+        }
+        listEl.innerHTML = '';
+        history.forEach(function(h) {
+          var item = document.createElement('div');
+          item.className = 'historial-item';
+          var left = document.createElement('div');
+          left.className = 'historial-item-left';
+          left.innerHTML = '<div class="historial-fecha">' + (sanitize(h.Fecha) || '—') + '</div>';
+          var kmDiv = document.createElement('div');
+          kmDiv.className = 'historial-km';
+          kmDiv.innerHTML = (Number(h.KM_Sumados) || 0) + '<span>km</span>';
+          left.appendChild(kmDiv);
+          var btnBorrar = document.createElement('button');
+          btnBorrar.className = 'btn-delete-training' + (h.ID_Entreno ? '' : ' no-id');
+          btnBorrar.title     = h.ID_Entreno ? 'Borrar este registro' : 'Registro sin ID, no se puede borrar';
+          btnBorrar.innerHTML = '🗑';
+          if (h.ID_Entreno) {
+            (function(idEntreno, kmSumados, fechaLabel) {
+              btnBorrar.onclick = function() { openConfirmDeleteTraining(idEntreno, kmSumados, fechaLabel); };
+            })(h.ID_Entreno, Number(h.KM_Sumados) || 0, sanitize(h.Fecha || ''));
+          }
+          item.appendChild(left);
+          item.appendChild(btnBorrar);
+          listEl.appendChild(item);
+        });
+      })
+      .withFailureHandler(function() {
+        document.getElementById('historial-list').innerHTML = '<div class="historial-empty"><div class="empty-icon">⚠️</div><p>No se pudo cargar el historial.</p></div>';
+      })
+      .getShoeHistory(currentUserEmail, currentDetailShoe.ID_Zapa);
+  }
+
+  function closeHistorial() { document.getElementById('historial-modal').style.display = 'none'; }
+
+  // =====================================================
+  // BORRAR ENTRENAMIENTO INDIVIDUAL
+  // =====================================================
+  var _pendingDeleteTrainingId  = null;
+  var _pendingDeleteTrainingKm  = 0;
+  var _pendingDeleteTrainingZap = null;
+
+  function openConfirmDeleteTraining(idEntreno, kmSumados, fechaLabel) {
+    _pendingDeleteTrainingId  = idEntreno;
+    _pendingDeleteTrainingKm  = kmSumados;
+    _pendingDeleteTrainingZap = currentDetailShoe ? currentDetailShoe.ID_Zapa : null;
+    document.getElementById('confirm-delete-training-msg').innerHTML =
+      'Vas a borrar el registro del <strong>' + fechaLabel + '</strong> (<strong>' + kmSumados + ' km</strong>). '
+      + 'Estos KM se descontarán de la zapatilla. <strong>Esta acción no se puede deshacer.</strong>';
+    document.getElementById('confirm-delete-training-modal').style.display = 'flex';
+  }
+
+  function closeConfirmDeleteTraining() {
+    _pendingDeleteTrainingId  = null;
+    _pendingDeleteTrainingKm  = 0;
+    _pendingDeleteTrainingZap = null;
+    document.getElementById('confirm-delete-training-modal').style.display = 'none';
+  }
+
+  function executeDeleteTraining() {
+    if (!_pendingDeleteTrainingId || !_pendingDeleteTrainingZap) return;
+    var btn = document.getElementById('btn-confirm-delete-training-ok');
+    btn.innerText = 'Borrando...'; btn.disabled = true;
+    var idEntrenoToDelete = _pendingDeleteTrainingId;
+    var idZapaToUpdate    = _pendingDeleteTrainingZap;
+    var kmADescontar      = _pendingDeleteTrainingKm;
+    google.script.run
+      .withSuccessHandler(function(res) {
+        btn.innerText = 'Borrar'; btn.disabled = false;
+        closeConfirmDeleteTraining();
+        if (res && res.success) {
+          _cargarHistorial();
+          google.script.run
+            .withSuccessHandler(function(shoes) {
+              if (shoes && Array.isArray(shoes)) {
+                allUserShoes = shoes;
+                _pendingActiveShoeIndex = _getCurrentSlideIndex();
+                renderArmario(shoes);
+              }
+            })
+            .withFailureHandler(function(){ loadDashboard(); })
+            .getUserShoes(currentUserEmail);
+        } else { alert('Error al borrar: ' + (res ? res.error : 'desconocido')); }
+      })
+      .withFailureHandler(function(err) {
+        btn.innerText = 'Borrar'; btn.disabled = false;
+        closeConfirmDeleteTraining();
+        alert('Error de conexión: ' + (err.message || err));
+      })
+      .deleteTraining(currentUserEmail, idEntrenoToDelete, idZapaToUpdate, kmADescontar);
+  }
+
+  // =====================================================
+  // BORRAR ZAPATILLA
+  // =====================================================
+  let _pendingDeleteId = null;
+
+  function openConfirmDelete(shoeId, shoeModelo) {
+    _pendingDeleteId = shoeId;
+    document.getElementById('confirm-delete-msg').innerHTML =
+      'Elegí qué hacer con <strong style="color:var(--plata);">' + sanitize(shoeModelo) + '</strong>:';
+    document.getElementById('btn-confirm-archive').innerText  = '🗄️  ARCHIVAR EN EL LOCKER';
+    document.getElementById('btn-confirm-archive').disabled   = false;
+    document.getElementById('btn-confirm-delete-ok').innerText = '🗑️  ELIMINAR PARA SIEMPRE';
+    document.getElementById('btn-confirm-delete-ok').disabled  = false;
+    document.getElementById('confirm-delete-modal').style.display = 'flex';
+  }
+  function closeConfirmDelete() {
+    _pendingDeleteId = null;
+    document.getElementById('confirm-delete-modal').style.display = 'none';
+  }
+  function executeArchiveShoe() {
+    if (!_pendingDeleteId) return;
+    var btn = document.getElementById('btn-confirm-archive');
+    btn.innerText = 'Archivando...'; btn.disabled = true;
+    google.script.run
+      .withSuccessHandler(function(res) {
+        btn.innerText = '🗄️  ARCHIVAR EN EL LOCKER'; btn.disabled = false;
+        closeConfirmDelete();
+        if (res && res.success) {
+          loadDashboard();
+        } else { alert('Error al archivar: ' + (res ? res.error : 'desconocido')); }
+      })
+      .withFailureHandler(function(err) {
+        btn.innerText = '🗄️  ARCHIVAR EN EL LOCKER'; btn.disabled = false;
+        alert('Error: ' + (err.message || err));
+      })
+      .archiveShoe(currentUserEmail, _pendingDeleteId);
+  }
+  function executeDeleteShoe() {
+    if (!_pendingDeleteId) return;
+    const btn = document.getElementById('btn-confirm-delete-ok');
+    btn.innerText = 'Eliminando...'; btn.disabled = true;
+    google.script.run
+      .withSuccessHandler(function(res) {
+        btn.innerText = '🗑️  ELIMINAR PARA SIEMPRE'; btn.disabled = false;
+        closeConfirmDelete();
+        if (res && res.success) { loadDashboard(); }
+        else { alert('Error al eliminar: ' + (res ? res.error : 'desconocido')); }
+      })
+      .withFailureHandler(function(err) {
+        btn.innerText = '🗑️  ELIMINAR PARA SIEMPRE'; btn.disabled = false;
+        alert('Error al eliminar: ' + (err.message || err));
+      })
+      .deleteShoe(currentUserEmail, _pendingDeleteId);
+  }
+
+  // =====================================================
+  // LOCKER — modal desde el slide "+"
+  // =====================================================
+
+  // Actualiza el contador en el slide "+" sin abrir nada
+  function cargarLocker() {
+    if (!currentUserEmail) return;
+    google.script.run
+      .withSuccessHandler(function(archived) {
+        var n = (archived && Array.isArray(archived)) ? archived.length : 0;
+        // Actualizar todos los contadores visibles en el slide add
+        var counts = document.querySelectorAll('.cf-add-locker-count');
+        counts.forEach(function(el) {
+          el.innerText = n;
+          el.style.display = n > 0 ? 'inline-block' : 'none';
+        });
+      })
+      .withFailureHandler(function() {})
+      .getArchivedShoes(currentUserEmail);
+  }
+
+  function abrirLockerModal() {
+    var grid = document.getElementById('locker-modal-grid');
+    var sub  = document.getElementById('locker-modal-sub');
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:24px;color:var(--gris-texto);font-size:0.75rem;"><span class="zapa-loading">👟</span> Cargando...</div>';
+    document.getElementById('locker-modal').style.display = 'flex';
+    google.script.run
+      .withSuccessHandler(function(archived) {
+        var n = (archived && Array.isArray(archived)) ? archived.length : 0;
+        sub.innerText = n + ' zapatilla' + (n !== 1 ? 's' : '') + ' guardada' + (n !== 1 ? 's' : '');
+        renderLockerModal(archived);
+      })
+      .withFailureHandler(function() {
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:24px;color:#ef4444;font-size:0.75rem;">Error al cargar el Locker.</div>';
+      })
+      .getArchivedShoes(currentUserEmail);
+  }
+
+  function cerrarLockerModal() {
+    document.getElementById('locker-modal').style.display = 'none';
+  }
+
+  function renderLockerModal(archived) {
+    var grid = document.getElementById('locker-modal-grid');
+    if (!archived || archived.length === 0) {
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:32px 16px;">' +
+        '<div style="font-size:2rem;margin-bottom:10px;">🗄️</div>' +
+        '<div style="color:var(--gris-texto);font-size:0.78rem;line-height:1.5;">El Locker está vacío.<br>Archivá una zapatilla para guardarla acá.</div>' +
+        '</div>';
+      return;
+    }
+    grid.innerHTML = '';
+    archived.forEach(function(s) {
+      var km      = Number(s.KM_Actuales) || 0;
+      var shoeImg = getShoeImage(s.Marca, s.Modelo);
+      var sMarca  = sanitize(s.Marca);
+      var sModelo = sanitize(s.Modelo);
+      var sTalle  = sanitize(s.Talle);
+      var rawId   = (s.ID_Zapa || '').toString().replace(/'/g, "\\'");
+      var rawMod  = (s.Modelo  || '').toString().replace(/'/g, "\\'");
+
+      var card = document.createElement('div');
+      card.className = 'locker-card';
+      card.innerHTML =
+        '<div class="locker-card-photo">' +
+          '<img src="' + shoeImg + '" alt="' + sModelo + '" loading="lazy">' +
+        '</div>' +
+        '<div class="locker-card-info">' +
+          '<div class="locker-card-model">' + sModelo + '</div>' +
+          '<div class="locker-card-sub">' + sMarca + ' · EU ' + sTalle + '</div>' +
+          '<div class="locker-card-km">' + km + ' km</div>' +
+          '<button class="btn-reactivate" onclick="reactivarZapa(\'' + rawId + '\', \'' + rawMod + '\')">↩ Reactivar</button>' +
+        '</div>';
+      grid.appendChild(card);
+    });
+  }
+
+  function reactivarZapa(idZapa, modelo) {
+    if (!confirm('¿Reactivar ' + modelo + '? Vuelve a tu carrusel activo.')) return;
+    google.script.run
+      .withSuccessHandler(function(res) {
+        if (res && res.success) {
+          cerrarLockerModal();
+          loadDashboard();
+        } else { alert('Error al reactivar: ' + (res ? res.error : 'desconocido')); }
+      })
+      .withFailureHandler(function(err) { alert('Error: ' + (err.message || err)); })
+      .reactivateShoe(currentUserEmail, idZapa);
+  }
+
+  function irATodoTrail(genero, talleEU) {
+    // Mapa EU → formato de talle AR que usa Todo Trail en sus filtros URL
+    // Formato exacto: "Ar44 - 29cm"  (espacio guión espacio, sin coma en cm)
+    var talleMap = {
+      '35':   'Ar35 - 22.5cm',  '35.5': 'Ar35.5 - 23cm',
+      '36':   'Ar36 - 23cm',    '36.5': 'Ar36.5 - 23.5cm',
+      '37':   'Ar37 - 24cm',    '37.5': 'Ar37.5 - 24cm',
+      '38':   'Ar38 - 24.5cm',  '38.5': 'Ar38.5 - 25cm',
+      '39':   'Ar39 - 25cm',    '39.5': 'Ar39.5 - 25.5cm',
+      '40':   'Ar40 - 26cm',    '40.5': 'Ar40.5 - 26cm',
+      '41':   'Ar41 - 26.5cm',  '41.5': 'Ar41.5 - 27cm',
+      '42':   'Ar42 - 27cm',    '42.5': 'Ar42.5 - 27.5cm',
+      '43':   'Ar43 - 28cm',    '43.5': 'Ar43.5 - 28cm',
+      '44':   'Ar44 - 29cm',    '44.5': 'Ar44.5 - 29cm',
+      '45':   'Ar45 - 29.5cm',  '45.5': 'Ar45.5 - 30cm',
+      '46':   'Ar46 - 30cm',    '46.5': 'Ar46.5 - 30.5cm',
+      '47':   'Ar47 - 31cm',    '48':   'Ar48 - 31.5cm'
+    };
+
+    // URL base según género — exactamente como las usa Todo Trail
+    var generoRaw = (genero || '').toLowerCase();
+    var baseUrl;
+    if (generoRaw === 'mujer') {
+      baseUrl = 'https://todotrail.com.ar/zapatillas/mujer2/trail1/';
+    } else {
+      baseUrl = 'https://todotrail.com.ar/zapatillas/hombre1/trail/';
+    }
+
+    // Armar parámetros — solo talle, sin filtro de marca
+    var params = [];
+
+    var talleKey = (talleEU || '').toString().replace(',', '.');
+    if (talleMap[talleKey]) {
+      params.push('Talle=' + encodeURIComponent(talleMap[talleKey]));
+    }
+
+    var url = baseUrl + (params.length ? '?' + params.join('&') : '');
+    window.open(url, '_blank');
+  }
+
+  // =====================================================
+  // NOTIFICACIONES — BADGE
+  // =====================================================
+  function cargarBadgeNotificaciones() {
+    if (!currentUserEmail) return;
+    google.script.run
+      .withSuccessHandler(function(notifs) {
+        var badge = document.getElementById('notif-badge');
+        var btnEl = document.getElementById('btn-notif');
+        if (!badge || !btnEl) return;
+        var n = 0;
+        if (notifs && Array.isArray(notifs)) {
+          notifs.forEach(function(notif) {
+            if ((notif.Leido || '').toString().toUpperCase() !== 'TRUE') n++;
+          });
+        }
+        if (n > 0) {
+          badge.innerText = n > 9 ? '9+' : String(n);
+          badge.classList.add('visible');
+          btnEl.classList.add('activa');
+        } else {
+          badge.innerText = '';
+          badge.classList.remove('visible');
+          btnEl.classList.remove('activa');
+        }
+      })
+      .withFailureHandler(function() {})
+      .getNotificacionesUsuario(currentUserEmail);
+  }
+
+  // =====================================================
+  // NOTIFICACIONES — ABRIR BUZÓN
+  // =====================================================
+  function abrirNotificaciones() {
+    // Si es admin, abrir panel admin
+    if (currentUserEmail.trim().toLowerCase() === ADMIN_EMAIL.trim().toLowerCase()) {
+      abrirPanelAdmin();
+      return;
+    }
+    switchView('view-notificaciones');
+    var listEl = document.getElementById('notif-list');
+    listEl.innerHTML = '<div class="notif-empty"><div class="notif-empty-icon"><span class="zapa-loading">👟</span></div><div class="notif-empty-text">Cargando...</div></div>';
+    google.script.run
+.withSuccessHandler(function(notifs) {
+        renderNotificaciones(notifs);
+        // Marcar todas como leídas y limpiar badge
+        if (notifs && notifs.length > 0) {
+          notifs.forEach(function(n) {
+            if ((n.Leido || '').toString().toUpperCase() !== 'TRUE') {
+              google.script.run.marcarLeido(n.ID_Notif);
+            }
+          });
+          var badge = document.getElementById('notif-badge');
+          var btnEl = document.getElementById('btn-notif');
+          if (badge) { badge.innerText = ''; badge.classList.remove('visible'); }
+          if (btnEl) { btnEl.classList.remove('activa'); }
+        }
+      })
+      .withFailureHandler(function() {
+        listEl.innerHTML = '<div class="notif-empty"><div class="notif-empty-icon">⚠️</div><div class="notif-empty-text">No se pudieron cargar las notificaciones.</div></div>';
+      })
+      .getNotificacionesUsuario(currentUserEmail);
+  }
+
+  function renderNotificaciones(notifs) {
+    var listEl = document.getElementById('notif-list');
+    if (!notifs || notifs.length === 0) {
+      listEl.innerHTML = '<div class="notif-empty"><div class="notif-empty-icon">📭</div><div class="notif-empty-text">No tenés notificaciones por ahora.<br>Acá aparecerán tus avisos y premios.</div></div>';
+      return;
+    }
+    listEl.innerHTML = '';
+    notifs.forEach(function(n) {
+      var esLeida  = (n.Leido || '').toString().toUpperCase() === 'TRUE';
+      var esPremio = (n.Tipo  || '').toString() === 'Premio';
+      var idSafe   = sanitize(n.ID_Notif);
+
+      var fechaFormateada = (function(raw) {
+        if (!raw) return '';
+        var d = new Date(raw);
+        if (isNaN(d.getTime())) {
+          return raw.toString().substring(0, 14);
+        }
+        var dd   = String(d.getDate()).padStart(2, '0');
+        var mm   = String(d.getMonth() + 1).padStart(2, '0');
+        var yy   = String(d.getFullYear()).slice(-2);
+        var hh   = String(d.getHours()).padStart(2, '0');
+        var min  = String(d.getMinutes()).padStart(2, '0');
+        return dd + '/' + mm + '/' + yy + ' ' + hh + ':' + min;
+      })(n.Fecha);
+
+      var card = document.createElement('div');
+      card.className = 'notif-card' + (esLeida ? ' leida' : '');
+      card.id = 'notif-card-' + idSafe;
+
+      var headerHtml = '<div class="notif-card-header">'
+        + '<span class="notif-tipo-badge ' + (esPremio ? 'premio' : 'mensaje') + '">'
+        + (esPremio ? '🏆 Premio' : '📢 Aviso') + '</span>'
+        + '<span class="notif-fecha">' + sanitize(fechaFormateada) + '</span>'
+        + '</div>';
+
+      var mensajeHtml = '<div class="notif-mensaje">' + sanitize(n.Mensaje || '') + '</div>';
+
+      var voucherHtml = '';
+      if (esPremio && n.Codigo_Voucher) {
+        voucherHtml = '<div class="voucher-card">'
+          + '<div class="voucher-label">Tu código exclusivo Open Sports</div>'
+          + '<div class="voucher-code">' + sanitize(n.Codigo_Voucher) + '</div>'
+          + '<div class="voucher-brand">Open Sports · Beneficio exclusivo Huella Runner</div>'
+          + '<div class="voucher-hint">📲 Presentá este código en caja al momento de tu compra</div>'
+          + '</div>';
+      }
+
+      var actionsHtml = '<div class="notif-actions">'
+        + '<button class="btn-borrar-notif" title="Borrar notificación" onclick="openConfirmDeleteNotif(\'' + idSafe + '\')">🗑</button>'
+        + '</div>';
+
+      card.innerHTML = headerHtml + mensajeHtml + voucherHtml + actionsHtml;
+      listEl.appendChild(card);
+    });
+  }
+
+  
+  // =====================================================
+  // BORRAR NOTIFICACIÓN
+  // =====================================================
+  var _pendingDeleteNotifId = null;
+
+  function openConfirmDeleteNotif(idNotif) {
+    _pendingDeleteNotifId = idNotif;
+    document.getElementById('confirm-delete-notif-modal').style.display = 'flex';
+  }
+
+  function closeConfirmDeleteNotif() {
+    _pendingDeleteNotifId = null;
+    document.getElementById('confirm-delete-notif-modal').style.display = 'none';
+  }
+
+  function executeDeleteNotif() {
+    if (!_pendingDeleteNotifId) return;
+    var btn = document.getElementById('btn-confirm-delete-notif-ok');
+    btn.innerText = 'Borrando...';
+    btn.disabled  = true;
+    var idABorrar = _pendingDeleteNotifId;
+    google.script.run
+      .withSuccessHandler(function(res) {
+        btn.innerText = 'Borrar';
+        btn.disabled  = false;
+        closeConfirmDeleteNotif();
+        if (res && res.success) {
+          var card = document.getElementById('notif-card-' + idABorrar);
+          if (card) card.remove();
+          cargarBadgeNotificaciones();
+        } else {
+          alert('Error al borrar: ' + (res ? res.error : 'desconocido'));
+        }
+      })
+      .withFailureHandler(function(err) {
+        btn.innerText = 'Borrar';
+        btn.disabled  = false;
+        closeConfirmDeleteNotif();
+        alert('Error de conexión: ' + (err.message || err));
+      })
+      .deleteNotificacion(currentUserEmail, idABorrar);
+  }
+
+    // =====================================================
+  // PANEL ADMIN
+  // =====================================================
+  function abrirPanelAdmin() {
+    switchView('view-admin-notif');
+
+    // Cargar métricas dashboard
+    var tblAlertas   = document.getElementById('dash-table-alertas')   ? document.getElementById('dash-table-alertas').querySelector('tbody')   : null;
+    var tblActividad = document.getElementById('dash-table-actividad') ? document.getElementById('dash-table-actividad').querySelector('tbody') : null;
+    var txtUsuarios  = document.getElementById('dash-txt-usuarios');
+
+    google.script.run
+      .withSuccessHandler(function(data) {
+        if (!data || !data.success) return;
+        if (txtUsuarios) txtUsuarios.innerText = data.totalUsuarios || 0;
+        if (tblAlertas) {
+          if (!data.alertasDesgaste || data.alertasDesgaste.length === 0) {
+            tblAlertas.innerHTML = '<tr><td colspan="3" style="text-align:center;padding:10px;color:var(--gris-texto);">✅ Sin desgaste crítico.</td></tr>';
+          } else {
+            tblAlertas.innerHTML = '';
+            data.alertasDesgaste.forEach(function(item) {
+              var tr = document.createElement('tr');
+              tr.innerHTML = '<td style="padding:10px;border-bottom:1px solid #141414;color:var(--plata);"><strong>' + sanitize(item.runner) + '</strong><br><span style="color:#666;font-size:0.65rem;">' + sanitize(item.grupo) + '</span></td>' +
+                '<td style="padding:10px;border-bottom:1px solid #141414;color:var(--plata);">' + sanitize(item.zapatilla) + '</td>' +
+                '<td style="padding:10px;border-bottom:1px solid #141414;text-align:right;"><span style="background:rgba(229,57,53,0.15);color:#ef4444;border:1px solid rgba(229,57,53,0.3);padding:2px 6px;border-radius:4px;font-weight:700;">' + item.kilometraje + ' KM</span></td>';
+              tblAlertas.appendChild(tr);
+            });
+          }
+        }
+        if (tblActividad) {
+          if (!data.rankingActividad || data.rankingActividad.length === 0) {
+            tblActividad.innerHTML = '<tr><td colspan="3" style="text-align:center;padding:10px;color:var(--gris-texto);">Sin registros.</td></tr>';
+          } else {
+            tblActividad.innerHTML = '';
+            data.rankingActividad.forEach(function(user) {
+              var tr = document.createElement('tr');
+              tr.innerHTML = '<td style="padding:10px;border-bottom:1px solid #141414;color:var(--plata);">' + sanitize(user.nombre) + '<br><span style="color:#555;font-size:0.65rem;">' + sanitize(user.email) + '</span></td>' +
+                '<td style="padding:10px;border-bottom:1px solid #141414;color:var(--plata);">' + sanitize(user.grupo) + '</td>' +
+                '<td style="padding:10px;border-bottom:1px solid #141414;text-align:right;font-weight:700;color:var(--amarillo);">' + Number(user.kmCargados).toFixed(1) + ' km</td>';
+              tblActividad.appendChild(tr);
+            });
+          }
+        }
+      })
+      .withFailureHandler(function() {
+        if (tblAlertas)   tblAlertas.innerHTML   = '<tr><td colspan="3" style="text-align:center;color:#ef4444;">Error al cargar.</td></tr>';
+        if (tblActividad) tblActividad.innerHTML = '<tr><td colspan="3" style="text-align:center;color:#ef4444;">Error al cargar.</td></tr>';
+      })
+      .getAdminDashboardData();
+
+    // Cargar grupos desde Sheet
+    var sel = document.getElementById('admin-grupo-select');
+    sel.innerHTML = '<option value="">Cargando grupos...</option>';
+    google.script.run
+      .withSuccessHandler(function(grupos) {
+        sel.innerHTML = '<option value="">Seleccionar grupo...</option>';
+        if (grupos && grupos.length > 0) {
+          grupos.forEach(function(g) {
+            var opt = document.createElement('option');
+            opt.value = g; opt.text = g;
+            sel.appendChild(opt);
+          });
+        } else {
+          sel.innerHTML = '<option value="">No hay grupos registrados</option>';
+        }
+      })
+      .withFailureHandler(function() {
+        sel.innerHTML = '<option value="">Error al cargar grupos</option>';
+      })
+      .getGruposRunning();
+    // Reset form
+    document.getElementById('admin-mensaje').value       = '';
+    document.getElementById('admin-es-premio').checked   = false;
+    document.getElementById('admin-voucher-preview').style.display = 'none';
+    document.getElementById('admin-result').style.display = 'none';
+    document.querySelector('input[name="admin-dest-tipo"][value="todos"]').checked = true;
+    onAdminDestinoChange();
+  }
+
+  function onAdminDestinoChange() {
+    var tipo = document.querySelector('input[name="admin-dest-tipo"]:checked').value;
+    document.getElementById('admin-grupo-wrap').style.display      = tipo === 'grupo'      ? 'block' : 'none';
+    document.getElementById('admin-individual-wrap').style.display = tipo === 'individual' ? 'block' : 'none';
+  }
+
+  function onPremioToggle() {
+    var checked = document.getElementById('admin-es-premio').checked;
+    document.getElementById('admin-voucher-preview').style.display = checked ? 'block' : 'none';
+  }
+
+  function adminEnviarNotificacion() {
+    var tipo = document.querySelector('input[name="admin-dest-tipo"]:checked').value;
+    var valor = '';
+    if (tipo === 'grupo')      valor = document.getElementById('admin-grupo-select').value;
+    if (tipo === 'individual') valor = document.getElementById('admin-email-individual').value.trim();
+    var mensaje   = document.getElementById('admin-mensaje').value.trim();
+    var esPremio  = document.getElementById('admin-es-premio').checked;
+    var tipoNotif = esPremio ? 'Premio' : 'Mensaje';
+
+    var resultEl = document.getElementById('admin-result');
+    resultEl.style.display = 'none';
+    resultEl.className     = 'admin-result';
+
+    if (!mensaje) {
+      resultEl.innerText      = 'El mensaje no puede estar vacío.';
+      resultEl.className     += ' error';
+      resultEl.style.display  = 'block';
+      return;
+    }
+    if (tipo === 'grupo' && !valor) {
+      resultEl.innerText      = 'Seleccioná un grupo.';
+      resultEl.className     += ' error';
+      resultEl.style.display  = 'block';
+      return;
+    }
+    if (tipo === 'individual' && !valor) {
+      resultEl.innerText      = 'Ingresá el email del destinatario.';
+      resultEl.className     += ' error';
+      resultEl.style.display  = 'block';
+      return;
+    }
+
+    var btn = document.getElementById('btn-admin-enviar');
+    btn.innerText = 'Enviando...';
+    btn.disabled  = true;
+
+    google.script.run
+      .withSuccessHandler(function(res) {
+        btn.innerText = 'Enviar Comunicado';
+        btn.disabled  = false;
+        if (res && res.success) {
+          resultEl.innerText      = '✅ Enviado correctamente a ' + res.enviados + ' runner' + (res.enviados !== 1 ? 's' : '') + '.';
+          resultEl.className     += ' ok';
+          resultEl.style.display  = 'block';
+          document.getElementById('admin-mensaje').value     = '';
+          document.getElementById('admin-es-premio').checked = false;
+          document.getElementById('admin-voucher-preview').style.display = 'none';
+        } else {
+          resultEl.innerText      = '❌ Error: ' + ((res && res.error) ? res.error : 'desconocido');
+          resultEl.className     += ' error';
+          resultEl.style.display  = 'block';
+        }
+      })
+      .withFailureHandler(function(err) {
+        btn.innerText = 'Enviar Comunicado';
+        btn.disabled  = false;
+        resultEl.innerText      = '❌ Error de conexión: ' + (err.message || err);
+        resultEl.className     += ' error';
+        resultEl.style.display  = 'block';
+      })
+      .enviarNotificacion(tipo, valor, mensaje, tipoNotif);
+  }
+
+  // =====================================================
+  // VOZ
+  // =====================================================
+  var _voiceParsedKm     = 0;
+  var _voiceMatchedShoes = [];
+  var _voiceSelectedShoe = null;
+
+  var _wordToNum = {
+    'cero':0,'un':1,'uno':1,'una':1,'dos':2,'tres':3,'cuatro':4,'cinco':5,
+    'seis':6,'siete':7,'ocho':8,'nueve':9,'diez':10,'once':11,'doce':12,
+    'trece':13,'catorce':14,'quince':15,'dieciséis':16,'dieciseis':16,
+    'diecisiete':17,'dieciocho':18,'diecinueve':19,'veinte':20,
+    'veintiuno':21,'veintidós':22,'veintidos':22,'veintitrés':23,'veintitres':23,
+    'veinticuatro':24,'veinticinco':25,'veintiséis':26,'veintiseis':26,
+    'veintisiete':27,'veintiocho':28,'veintinueve':29,'treinta':30,
+    'cuarenta':40,'cincuenta':50,'sesenta':60,'setenta':70,'ochenta':80,'noventa':90,
+    'cien':100,'ciento':100
+  };
+
+  function _parseKmFromText(text) {
+    var t = text.toLowerCase()
+      .replace(/á/g,'a').replace(/é/g,'e').replace(/í/g,'i')
+      .replace(/ó/g,'o').replace(/ú/g,'u').replace(/ü/g,'u');
+    var m = t.match(/(\d+)[.,](\d+)\s*(km|kil[oó]metros?)?/);
+    if (m) return parseFloat(m[1] + '.' + m[2]);
+    m = t.match(/(\d+)\s*(km|kil[oó]metros?)/);
+    if (m) return parseInt(m[1], 10);
+    m = t.match(/\b(\d+)\b/);
+    if (m) return parseInt(m[1], 10);
+    var words = t.split(/\s+/);
+    for (var i = 0; i < words.length; i++) {
+      var w = words[i].replace(/[^a-záéíóúü]/g,'');
+      if (_wordToNum[w] !== undefined) return _wordToNum[w];
+    }
+    return 0;
+  }
+
+  function _matchShoesFromText(text) {
+    if (!allUserShoes || allUserShoes.length === 0) return [];
+    var t = text.toLowerCase()
+      .replace(/á/g,'a').replace(/é/g,'e').replace(/í/g,'i')
+      .replace(/ó/g,'o').replace(/ú/g,'u').replace(/ü/g,'u');
+    var matches = [];
+    allUserShoes.forEach(function(shoe) {
+      var modelo = (shoe.Modelo || '').toLowerCase().replace(/á/g,'a').replace(/é/g,'e').replace(/í/g,'i').replace(/ó/g,'o').replace(/ú/g,'u').replace(/ü/g,'u');
+      var marca  = (shoe.Marca  || '').toLowerCase().replace(/á/g,'a').replace(/é/g,'e').replace(/í/g,'i').replace(/ó/g,'o').replace(/ú/g,'u').replace(/ü/g,'u');
+      var alias  = (shoe.Alias  || '').toLowerCase().replace(/á/g,'a').replace(/é/g,'e').replace(/í/g,'i').replace(/ó/g,'o').replace(/ú/g,'u').replace(/ü/g,'u');
+      var words = (modelo + ' ' + marca + ' ' + alias).split(/\s+/).filter(function(w){ return w.length > 3; });
+      var score = 0;
+      words.forEach(function(w) { if (t.indexOf(w) !== -1) score++; });
+      if (score > 0) matches.push({ shoe: shoe, score: score });
+    });
+    matches.sort(function(a,b){ return b.score - a.score; });
+    return matches.map(function(m){ return m.shoe; });
+  }
+
+  function openVoiceModal() {
+    _voiceParsedKm = 0; _voiceMatchedShoes = []; _voiceSelectedShoe = null;
+    cerrarOnboardingFab();
+    document.getElementById('voice-modal-title').innerText        = 'Registrar Entrenamiento';
+    document.getElementById('voice-modal-sub').innerHTML          = 'Usá el 🎙️ del teclado o escribí:<br><em>"12 km Speedgoat"</em>';
+    document.getElementById('voice-input-field').value            = '';
+    document.getElementById('voice-input-hint').style.display     = 'block';
+    document.getElementById('voice-listening-wrap').style.display = 'flex';
+    document.getElementById('voice-confirm-wrap').style.display   = 'none';
+    document.getElementById('voice-error-wrap').style.display     = 'none';
+    document.getElementById('voice-shoe-selector').style.display  = 'none';
+    document.getElementById('voice-shoe-selector').innerHTML      = '';
+    document.getElementById('voice-confirm-shoe').style.display   = 'none';
+    document.getElementById('voice-modal').style.display = 'flex';
+    setTimeout(function() {
+      var inp = document.getElementById('voice-input-field');
+      inp.focus(); setTimeout(function(){ inp.focus(); }, 200);
+    }, 350);
+  }
+  function closeVoiceModal() { document.getElementById('voice-modal').style.display = 'none'; document.getElementById('voice-input-field').blur(); }
+  function resetVoiceModal() { openVoiceModal(); }
+  function onVoiceInputChange() {
+    var val = document.getElementById('voice-input-field').value.trim();
+    document.getElementById('voice-input-hint').style.display = val.length > 0 ? 'none' : 'block';
+  }
+
+  function processVoiceInput() {
+    var text = document.getElementById('voice-input-field').value.trim();
+    if (!text) return;
+    document.getElementById('voice-input-field').blur();
+    var km    = _parseKmFromText(text);
+    var shoes = _matchShoesFromText(text);
+    if (km <= 0) { _showVoiceError('No encontramos los kilómetros en "' + text + '".\nEjemplo: "12 km Speedgoat"'); return; }
+    _voiceParsedKm = km; _voiceMatchedShoes = shoes;
+    document.getElementById('voice-listening-wrap').style.display = 'none';
+    document.getElementById('voice-confirm-wrap').style.display   = 'block';
+    document.getElementById('voice-confirm-km').innerText         = km;
+    document.getElementById('voice-modal-title').innerText        = '¿Confirmás?';
+    document.getElementById('voice-modal-sub').innerText          = '"' + text + '"';
+    if (shoes.length === 0)      { _buildShoeSelector(allUserShoes); }
+    else if (shoes.length === 1) { _voiceSelectedShoe = shoes[0]; document.getElementById('voice-confirm-shoe-name').innerText = shoes[0].Marca + ' ' + shoes[0].Modelo; document.getElementById('voice-confirm-shoe').style.display = 'block'; }
+    else                          { _buildShoeSelector(shoes.slice(0, 4)); }
+  }
+
+  function _buildShoeSelector(shoeList) {
+    var selectorEl = document.getElementById('voice-shoe-selector');
+    selectorEl.innerHTML = '';
+    var label = document.createElement('div');
+    label.className = 'voice-confirm-label'; label.style.marginBottom = '8px';
+    label.innerText = shoeList.length === allUserShoes.length ? 'Elegí la zapatilla:' : 'Seleccioná la correcta:';
+    selectorEl.appendChild(label);
+    shoeList.forEach(function(shoe) {
+      var btn = document.createElement('button');
+      btn.className = 'voice-shoe-option';
+      btn.innerText = shoe.Marca + ' ' + shoe.Modelo + (shoe.Alias ? '  ·  ' + shoe.Alias : '');
+      btn.onclick = function() {
+        selectorEl.querySelectorAll('.voice-shoe-option').forEach(function(b){ b.classList.remove('selected'); });
+        btn.classList.add('selected'); _voiceSelectedShoe = shoe;
+      };
+      selectorEl.appendChild(btn);
+    });
+    selectorEl.style.display = 'flex';
+    document.getElementById('voice-confirm-shoe').style.display = 'none';
+  }
+
+  function confirmVoiceSave() {
+    if (!_voiceSelectedShoe) {
+      var lbl = document.querySelector('#voice-shoe-selector .voice-confirm-label');
+      if (lbl) lbl.style.color = '#ef4444';
+      return;
+    }
+    if (_voiceParsedKm <= 0) return;
+    var btn = document.getElementById('btn-voice-confirm');
+    btn.innerText = 'Guardando...'; btn.disabled = true;
+    google.script.run
+      .withSuccessHandler(function(res) {
+        btn.innerText = 'Guardar'; btn.disabled = false;
+        if (res && res.success) {
+          closeVoiceModal();
+          showKmToast(_voiceParsedKm % 1 === 0 ? _voiceParsedKm : _voiceParsedKm.toFixed(1));
+          google.script.run
+            .withSuccessHandler(function(shoes) {
+              if (shoes && Array.isArray(shoes)) { allUserShoes = shoes; renderArmario(shoes); }
+            })
+            .withFailureHandler(function(){ loadDashboard(); })
+            .getUserShoes(currentUserEmail);
+        } else { _showVoiceError('Error al guardar: ' + (res ? res.error : 'desconocido')); }
+      })
+      .withFailureHandler(function(err) {
+        btn.innerText = 'Guardar'; btn.disabled = false;
+        _showVoiceError('Error de conexión: ' + (err.message || err));
+      })
+      .logTraining(currentUserEmail, _voiceSelectedShoe.ID_Zapa, _voiceParsedKm);
+  }
+
+  function _showVoiceError(msg) {
+    document.getElementById('voice-listening-wrap').style.display = 'none';
+    document.getElementById('voice-confirm-wrap').style.display   = 'none';
+    document.getElementById('voice-error-wrap').style.display     = 'block';
+    document.getElementById('voice-error-msg').innerText          = msg;
+    document.getElementById('voice-modal-title').innerText        = 'Ups...';
+    document.getElementById('voice-modal-sub').innerText          = '';
+  }
+
+  window.onload = initApp;
+</script>
+</body>
+</html>
