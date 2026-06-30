@@ -1,0 +1,463 @@
+<!-- ============================================================
+     SOCIAL PROOF DE DURABILIDAD — Fragmentos para gas/index.html
+
+     INTEGRACIÓN:
+       1. Copiar los estilos CSS dentro del <style> existente.
+       2. Pegar el Banner HTML al final del <body> (oculto por defecto).
+       3. En la tarjeta de zapatilla activa, insertar el Acordeón HTML.
+       4. Copiar las funciones JS en tu bloque <script> principal.
+       5. En la llamada que registra zapatilla, reemplazar addShoe()
+          por registrarZapatillaConProof() en google.script.run.
+     ============================================================ -->
+
+
+<!-- ============================================================
+     CSS — Agregar dentro del <style> existente
+     ============================================================ -->
+<style>
+/* ---------- BANNER DE ÉXITO SOCIAL PROOF ---------- */
+.sp-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.82);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.sp-overlay.sp-visible {
+  display: flex;
+}
+
+.sp-banner {
+  background: #0d0d0d;
+  border: 1px solid #2a2a2a;
+  border-radius: 18px;
+  padding: 32px 28px 28px;
+  max-width: 420px;
+  width: 100%;
+  position: relative;
+  box-shadow: 0 0 48px rgba(255, 215, 0, 0.12), 0 24px 64px rgba(0,0,0,0.7);
+  animation: spSlideIn 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes spSlideIn {
+  from { opacity: 0; transform: translateY(24px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)  scale(1); }
+}
+
+.sp-banner__close {
+  position: absolute;
+  top: 14px; right: 16px;
+  background: none;
+  border: none;
+  color: #555;
+  font-size: 20px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: color 0.2s;
+}
+.sp-banner__close:hover { color: #FFD700; }
+
+.sp-banner__check {
+  width: 52px; height: 52px;
+  background: linear-gradient(135deg, #FFD700 0%, #c8a800 100%);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 20px;
+  font-size: 24px;
+}
+
+.sp-banner__title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #FFD700;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  text-align: center;
+  margin-bottom: 14px;
+}
+
+.sp-banner__msg {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #e8e8e8;
+  text-align: center;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+.sp-banner__msg strong {
+  color: #FFD700;
+  font-weight: 700;
+}
+
+.sp-banner__stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.sp-stat {
+  background: #161616;
+  border: 1px solid #2a2a2a;
+  border-radius: 10px;
+  padding: 14px 10px;
+  text-align: center;
+}
+.sp-stat__value {
+  font-family: 'Bebas Neue', 'Montserrat', sans-serif;
+  font-size: 1.8rem;
+  color: #FFD700;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.sp-stat__label {
+  font-size: 0.62rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+.sp-banner__km {
+  background: linear-gradient(90deg, #1a1a1a 0%, #141414 100%);
+  border: 1px solid #333;
+  border-left: 3px solid #FFD700;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.sp-banner__km-icon { font-size: 18px; }
+.sp-banner__km-text {
+  font-size: 0.8rem;
+  color: #aaa;
+}
+.sp-banner__km-text span {
+  color: #c0c0c0;
+  font-weight: 600;
+}
+
+.sp-banner__cta {
+  width: 100%;
+  background: linear-gradient(90deg, #FFD700 0%, #e6c200 100%);
+  color: #080808;
+  border: none;
+  border-radius: 10px;
+  padding: 14px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.sp-banner__cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 24px rgba(255, 215, 0, 0.3);
+}
+.sp-banner__cta:active { transform: translateY(0); }
+
+
+/* ---------- ACORDEÓN EN TARJETA ACTIVA ---------- */
+.sp-accordion {
+  margin-top: 10px;
+  border-top: 1px solid #1e1e1e;
+}
+
+.sp-accordion__trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  cursor: pointer;
+  background: none;
+  border: none;
+  width: 100%;
+  color: #888;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: color 0.2s;
+}
+.sp-accordion__trigger:hover { color: #FFD700; }
+.sp-accordion__arrow {
+  font-size: 10px;
+  transition: transform 0.25s;
+}
+.sp-accordion.open .sp-accordion__arrow {
+  transform: rotate(180deg);
+}
+
+.sp-accordion__body {
+  display: none;
+  padding: 0 0 12px;
+}
+.sp-accordion.open .sp-accordion__body {
+  display: block;
+  animation: spFadeIn 0.2s ease;
+}
+@keyframes spFadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.sp-accordion__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid #1a1a1a;
+}
+.sp-accordion__row:last-child { border-bottom: none; }
+
+.sp-accordion__key {
+  font-size: 0.7rem;
+  color: #666;
+}
+.sp-accordion__val {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #c0c0c0;
+}
+.sp-accordion__val.gold { color: #FFD700; }
+</style>
+
+
+<!-- ============================================================
+     HTML — BANNER DE ÉXITO (pegar antes de </body>)
+     ============================================================ -->
+<div class="sp-overlay" id="spOverlay">
+  <div class="sp-banner">
+    <button class="sp-banner__close" onclick="spCerrarBanner()" aria-label="Cerrar">✕</button>
+
+    <div class="sp-banner__check">✓</div>
+    <div class="sp-banner__title">¡Zapatilla registrada!</div>
+
+    <p class="sp-banner__msg" id="spMensaje">
+      ¡Excelente elección! Formás parte de los
+      <strong id="spUsuarios">—</strong> runners en Huella Runner
+      que entrenan con las <strong id="spModelo">—</strong>.
+      Entre todos ya llevan acumulados
+      <strong id="spKmTotal">—</strong> km en este modelo.
+    </p>
+
+    <div class="sp-banner__stats">
+      <div class="sp-stat">
+        <div class="sp-stat__value" id="spStatUsuarios">—</div>
+        <div class="sp-stat__label">Runners activos</div>
+      </div>
+      <div class="sp-stat">
+        <div class="sp-stat__value" id="spStatKm">—</div>
+        <div class="sp-stat__label">KM globales</div>
+      </div>
+    </div>
+
+    <div class="sp-banner__km" id="spKmCritico" style="display:none">
+      <span class="sp-banner__km-icon">📊</span>
+      <span class="sp-banner__km-text">
+        Vida útil promedio en HR:
+        <span id="spKmCriticoVal">—</span> km
+      </span>
+    </div>
+
+    <button class="sp-banner__cta" onclick="spCerrarBanner()">
+      ¡A entrenar! 🏃
+    </button>
+  </div>
+</div>
+
+
+<!-- ============================================================
+     HTML — ACORDEÓN (insertar dentro de cada tarjeta activa,
+     reemplazando el ID dinámico con el de cada zapatilla)
+
+     Ejemplo de uso en el render de tarjeta:
+       renderSocialProofAccordion(shoeId, marca, modelo)
+     ============================================================ -->
+
+<!-- Este es el template que genera renderSocialProofAccordion() por JS -->
+<!-- No copiar estático; el JS lo inyecta dinámicamente -->
+
+
+<!-- ============================================================
+     JS — Agregar en el bloque <script> principal
+     ============================================================ -->
+<script>
+// ---------------------------------------------------------------
+// SOCIAL PROOF — Mostrar banner al registrar zapatilla
+// ---------------------------------------------------------------
+
+// Llama a esta función en lugar de google.script.run.addShoe(...)
+function registrarZapatillaConSocialProof(email, marca, modelo, talle, genero, imagenUrl) {
+  // Mostrar loader / deshabilitar botón (usa la lógica existente)
+  mostrarLoader && mostrarLoader();
+
+  google.script.run
+    .withSuccessHandler(function(res) {
+      ocultarLoader && ocultarLoader();
+
+      if (!res || !res.success) {
+        mostrarError(res && res.error ? res.error : 'Error al registrar la zapatilla.');
+        return;
+      }
+
+      // Cerrar modal de registro si existe
+      if (typeof cerrarModalAgregarZapa === 'function') cerrarModalAgregarZapa();
+
+      // Mostrar banner de Social Proof
+      if (res.socialProof) {
+        spMostrarBanner(marca, modelo, res.socialProof);
+      }
+
+      // Refrescar lista de zapatillas
+      if (typeof loadShoes === 'function') loadShoes();
+    })
+    .withFailureHandler(function(err) {
+      ocultarLoader && ocultarLoader();
+      mostrarError('Error de conexión: ' + err.message);
+    })
+    .registrarZapatillaConProof(email, marca, modelo, talle, genero, imagenUrl);
+}
+
+// ---------------------------------------------------------------
+// Muestra el banner con los datos reales
+// ---------------------------------------------------------------
+function spMostrarBanner(marca, modelo, proof) {
+  const nombreModelo   = marca + ' ' + modelo;
+  const usuarios       = proof.totalUsuarios    || 1;
+  const kmTotal        = spFormatKm(proof.totalKmGlobales  || 0);
+  const promedio       = proof.promedioKmCritico || 0;
+
+  document.getElementById('spUsuarios').textContent = usuarios;
+  document.getElementById('spModelo').textContent   = nombreModelo;
+  document.getElementById('spKmTotal').textContent  = kmTotal;
+
+  document.getElementById('spStatUsuarios').textContent = usuarios;
+  document.getElementById('spStatKm').textContent       = kmTotal;
+
+  const kmCriticoEl = document.getElementById('spKmCritico');
+  if (promedio > 0) {
+    document.getElementById('spKmCriticoVal').textContent = promedio;
+    kmCriticoEl.style.display = 'flex';
+  } else {
+    kmCriticoEl.style.display = 'none';
+  }
+
+  document.getElementById('spOverlay').classList.add('sp-visible');
+  document.body.style.overflow = 'hidden';
+}
+
+function spCerrarBanner() {
+  document.getElementById('spOverlay').classList.remove('sp-visible');
+  document.body.style.overflow = '';
+}
+
+// Cierra con click en overlay (fuera del banner)
+document.getElementById('spOverlay').addEventListener('click', function(e) {
+  if (e.target === this) spCerrarBanner();
+});
+
+// Formato de número con separador de miles
+function spFormatKm(n) {
+  return Math.round(n).toLocaleString('es-AR');
+}
+
+// ---------------------------------------------------------------
+// ACORDEÓN — Renderizar en cada tarjeta de zapatilla activa
+// ---------------------------------------------------------------
+
+// Llamar al cargar cada tarjeta:
+//   renderSocialProofAccordion(shoeId, marca, modelo, containerEl)
+// donde containerEl es el DOM element de la tarjeta.
+
+function renderSocialProofAccordion(shoeId, marca, modelo, containerEl) {
+  // Evita duplicados
+  if (containerEl.querySelector('.sp-accordion')) return;
+
+  const accordionId = 'sp-acc-' + shoeId;
+  const html = `
+    <div class="sp-accordion" id="${accordionId}" data-loaded="false">
+      <button class="sp-accordion__trigger"
+              onclick="spToggleAccordion('${accordionId}', '${marca.replace(/'/g,"\\'")}', '${modelo.replace(/'/g,"\\'")}')">
+        <span>¿Cómo rinde esta zapatilla en la comunidad?</span>
+        <span class="sp-accordion__arrow">▼</span>
+      </button>
+      <div class="sp-accordion__body">
+        <div class="sp-accordion__row">
+          <span class="sp-accordion__key">Cargando...</span>
+        </div>
+      </div>
+    </div>`;
+
+  containerEl.insertAdjacentHTML('beforeend', html);
+}
+
+function spToggleAccordion(accordionId, marca, modelo) {
+  const el = document.getElementById(accordionId);
+  if (!el) return;
+
+  const isOpen = el.classList.contains('open');
+
+  if (isOpen) {
+    el.classList.remove('open');
+    return;
+  }
+
+  el.classList.add('open');
+
+  // Carga los datos solo la primera vez
+  if (el.dataset.loaded === 'false') {
+    el.dataset.loaded = 'loading';
+
+    google.script.run
+      .withSuccessHandler(function(proof) {
+        spRenderAccordionBody(el, proof);
+        el.dataset.loaded = 'true';
+      })
+      .withFailureHandler(function() {
+        spRenderAccordionBody(el, null);
+        el.dataset.loaded = 'true';
+      })
+      .obtenerDataSocialProof(marca, modelo);
+  }
+}
+
+function spRenderAccordionBody(el, proof) {
+  const body = el.querySelector('.sp-accordion__body');
+  if (!body) return;
+
+  if (!proof) {
+    body.innerHTML = '<div class="sp-accordion__row"><span class="sp-accordion__key">Sin datos disponibles aún.</span></div>';
+    return;
+  }
+
+  const promedio = proof.promedioKmCritico > 0
+    ? proof.promedioKmCritico + ' km'
+    : 'Sin datos suficientes aún';
+
+  body.innerHTML = `
+    <div class="sp-accordion__row">
+      <span class="sp-accordion__key">Runners que la usan</span>
+      <span class="sp-accordion__val gold">${proof.totalUsuarios || 1}</span>
+    </div>
+    <div class="sp-accordion__row">
+      <span class="sp-accordion__key">KM globales acumulados</span>
+      <span class="sp-accordion__val">${spFormatKm(proof.totalKmGlobales || 0)} km</span>
+    </div>
+    <div class="sp-accordion__row">
+      <span class="sp-accordion__key">Vida útil promedio en HR</span>
+      <span class="sp-accordion__val gold">${promedio}</span>
+    </div>`;
+}
+</script>
