@@ -9,6 +9,90 @@ const SHEET_ID = '1zPS06n_ufECAw-4yWUHzQJDbpqYjxtoL24akjOo0Ofo';
 
 function doGet(e) {
   const page = e && e.parameter ? e.parameter.page : '';
+
+  // ── PWA: Web App Manifest ──
+  if (page === 'manifest') {
+    const appUrl = ScriptApp.getService().getUrl();
+    const manifest = {
+      name:             'Huella Runner',
+      short_name:       'Huella Runner',
+      description:      'Tu zapatilla de trail, siempre bajo control. Todo Trail.',
+      start_url:        appUrl,
+      scope:            appUrl,
+      display:          'standalone',
+      orientation:      'portrait',
+      background_color: '#000000',
+      theme_color:      '#CCFF00',
+      lang:             'es',
+      icons: [
+        { src: appUrl + '?page=icon&size=192', sizes: '192x192', type: 'image/png', purpose: 'any maskable' },
+        { src: appUrl + '?page=icon&size=512', sizes: '512x512', type: 'image/png', purpose: 'any maskable' }
+      ]
+    };
+    return ContentService
+      .createTextOutput(JSON.stringify(manifest))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  // ── PWA: Ícono generado (PNG 1×1 negro como placeholder seguro) ──
+  if (page === 'icon') {
+    // SVG renderizado como PNG via base64 — ícono con la "H" de Huella Runner en neon
+    const size = (e.parameter.size === '512') ? 512 : 192;
+    const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + size + '" height="' + size + '" viewBox="0 0 100 100">'
+      + '<rect width="100" height="100" fill="#000"/>'
+      + '<text x="50" y="62" font-family="Arial Black,sans-serif" font-size="56" font-weight="900" '
+      + 'fill="#CCFF00" text-anchor="middle">H</text>'
+      + '<text x="50" y="82" font-family="Arial,sans-serif" font-size="11" font-weight="700" '
+      + 'fill="#CCFF00" text-anchor="middle" letter-spacing="3">RUNNER</text>'
+      + '</svg>';
+    return ContentService
+      .createTextOutput(svg)
+      .setMimeType(ContentService.MimeType.TEXT);
+  }
+
+  // ── PWA: Service Worker ──
+  if (page === 'sw') {
+    const SW_VERSION = 'hr-v1';
+    const swCode = `
+const CACHE = '${SW_VERSION}';
+const SHELL = ['${ScriptApp.getService().getUrl()}'];
+
+self.addEventListener('install', function(e) {
+  e.waitUntil(
+    caches.open(CACHE).then(function(c) { return c.addAll(SHELL); })
+  );
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', function(e) {
+  e.waitUntil(
+    caches.keys().then(function(keys) {
+      return Promise.all(keys.filter(function(k){ return k !== CACHE; }).map(function(k){ return caches.delete(k); }));
+    })
+  );
+  self.clients.claim();
+});
+
+self.addEventListener('fetch', function(e) {
+  e.respondWith(
+    fetch(e.request).then(function(res) {
+      var clone = res.clone();
+      caches.open(CACHE).then(function(c){ c.put(e.request, clone); });
+      return res;
+    }).catch(function() {
+      return caches.match(e.request).then(function(cached) {
+        return cached || new Response('<h2 style="font-family:sans-serif;padding:40px;color:#555">Sin conexión — abrí Huella Runner cuando tengas internet para ver tus datos.</h2>', {headers:{'Content-Type':'text/html'}});
+      });
+    })
+  );
+});
+`;
+    return ContentService
+      .createTextOutput(swCode)
+      .setMimeType(ContentService.MimeType.JAVASCRIPT);
+  }
+
+  // ── Panel admin ──
   if (page === 'admin') {
     return HtmlService.createTemplateFromFile('admin')
       .evaluate()
@@ -16,6 +100,8 @@ function doGet(e) {
       .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
       .addMetaTag('viewport', 'width=device-width, initial-scale=1.0');
   }
+
+  // ── App principal ──
   return HtmlService.createTemplateFromFile('Index')
     .evaluate()
     .setTitle('Huella Runner')
@@ -61,6 +147,12 @@ function registerUser(nombre, apellido, email, password, nivel, grupo, fechaNac,
   }
   if (!email) return { success: false, error: 'Email requerido.' };
   const emailClean = email.toString().trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailClean)) {
+    return { success: false, error: 'El email no tiene un formato válido.' };
+  }
+  if (!password || password.toString().length < 6) {
+    return { success: false, error: 'La contraseña debe tener al menos 6 caracteres.' };
+  }
   const nombreClean = nombre.toString().trim();
   const { sheet, headers } = getSheetAndHeaders('Usuarios', USERS_HEADERS);
   const data = sheet.getDataRange().getValues();
@@ -232,14 +324,6 @@ function enviarEmailBienvenida(emailUsuario, nombreUsuario) {
   }
 }
 
-// ============================================================
-// FUNCIÓN DE PRUEBA TEMPORAL — ELIMINAR DESPUÉS DE AUTORIZAR
-// ============================================================
-function testPermisoEmail() {
-  var resultado = recoverPassword('runnerslabmdq@gmail.com');
-  Logger.log(JSON.stringify(resultado));
-}
-
 // --- ZAPATILLAS ---
 const SHOES_HEADERS = ['ID_Zapa', 'Email_Usuario', 'Marca', 'Modelo', 'Talle', 'Genero', 'KM_Actuales', 'Alias', 'Estado'];
 
@@ -256,6 +340,13 @@ function addShoe(email, formData) {
     'KM_Actuales':   Number(formData.km),
     'Alias':         formData.alias || ''
   });
+
+  // Encola notificación diferida con datos de comunidad (Social Proof).
+  try {
+    const proof = obtenerDataSocialProof(formData.marca, formData.modelo);
+    _encolarNotificacionDiferida(emailClean, formData.marca, formData.modelo, proof);
+  } catch(_) {}
+
   return { success: true };
 }
 
@@ -436,7 +527,7 @@ function reactivateShoe(email, idZapatilla) {
       const rowId    = data[i][idCol]    ? data[i][idCol].toString()                        : '';
       const rowEmail = data[i][emailCol] ? data[i][emailCol].toString().trim().toLowerCase() : '';
       if (rowId === idZapatilla.toString() && rowEmail === emailClean) {
-        sheet.getRange(i + 1, estadoCol + 1).setValue('');
+        sheet.getRange(i + 1, estadoCol + 1).setValue('activa');
         SpreadsheetApp.flush();
         Logger.log('reactivateShoe OK: id=' + idZapatilla);
         return { success: true };
@@ -514,50 +605,15 @@ const TRAIN_HEADERS = ['ID_Entreno', 'Email_Usuario', 'ID_Zapa', 'KM_Sumados', '
 
 function logTraining(email, idZapatilla, kmNuevos) {
   if (!email) return { success: false, error: 'Email requerido.' };
-  const emailClean = email.toString().trim().toLowerCase();
 
-  const ss = SpreadsheetApp.openById(SHEET_ID);
-  const shoeSheet = ss.getSheetByName('Zapatillas');
-  if (!shoeSheet) return { success: false, error: 'Hoja Zapatillas no encontrada.' };
+  // Delega a Trail Points: incluye validación anti-fraude, ponderación y cupones.
+  const resultado = registrarActividadTrailPoints(
+    email, idZapatilla, kmNuevos, 'Manual', null, null
+  );
 
-  const shoeData    = shoeSheet.getDataRange().getValues();
-  const shoeHeaders = shoeData[0];
-  const idCol       = shoeHeaders.indexOf('ID_Zapa');
-  const kmCol       = shoeHeaders.indexOf('KM_Actuales');
-
-  let filaZapa = -1;
-  for (let i = 1; i < shoeData.length; i++) {
-    if (shoeData[i][idCol] === idZapatilla) {
-      filaZapa = i;
-      break;
-    }
-  }
-
-  if (filaZapa === -1) {
-    Logger.log('logTraining: zapatilla no encontrada id=' + idZapatilla);
-    return { success: false, error: 'Zapatilla no encontrada.' };
-  }
-
-  const now  = new Date();
-  const dd   = String(now.getDate()).padStart(2, '0');
-  const mm   = String(now.getMonth() + 1).padStart(2, '0');
-  const yyyy = now.getFullYear();
-  const hh   = String(now.getHours()).padStart(2, '0');
-  const min  = String(now.getMinutes()).padStart(2, '0');
-  const fechaFormateada = dd + '/' + mm + '/' + yyyy + ' ' + hh + ':' + min;
-
-  appendDataByHeader('Entrenamientos', TRAIN_HEADERS, {
-    'ID_Entreno':    Utilities.getUuid(),
-    'Email_Usuario': emailClean,
-    'ID_Zapa':       idZapatilla,
-    'KM_Sumados':    Number(kmNuevos),
-    'Fecha':         fechaFormateada
-  });
-
-  const totalKm = Number(shoeData[filaZapa][kmCol]) + Number(kmNuevos);
-  shoeSheet.getRange(filaZapa + 1, kmCol + 1).setValue(totalKm);
-  SpreadsheetApp.flush();
-  return { success: true };
+  // La respuesta de trail-points usa kmAcreditados; el frontend solo necesita success/error.
+  if (!resultado.success) return resultado;
+  return { success: true, cupon: resultado.cupon || null };
 }
 
 // ============================================================
@@ -922,20 +978,36 @@ function getAdminDashboardData() {
       totalUsuarios = usersSheet.getLastRow() - 1;
     }
 
-    // — Mapa usuario → nombre/grupo —
+    // — Mapa usuario → nombre/grupo/provincia —
     var grupoMap = {};
+    // — Ranking por provincia + grupo —
+    var provinciaMap = {};
+    var grupoRankMap  = {};
     if (usersSheet && usersSheet.getLastRow() > 1) {
       var uData0    = usersSheet.getDataRange().getValues();
       var uHeaders0 = uData0[0];
       var uEmailC0  = uHeaders0.indexOf('Email');
       var uNombreC0 = uHeaders0.indexOf('Nombre');
       var uGrupoC0  = uHeaders0.indexOf('Grupo');
+      var uProvC0   = uHeaders0.indexOf('Provincia');
       for (var i = 1; i < uData0.length; i++) {
         var ue0 = uData0[i][uEmailC0] ? uData0[i][uEmailC0].toString().trim().toLowerCase() : '';
+        var prov0 = uProvC0 !== -1 ? (uData0[i][uProvC0] || '').toString().trim() : '';
+        var grp0  = uGrupoC0 !== -1 ? (uData0[i][uGrupoC0] || '').toString().trim() : '';
         if (ue0) grupoMap[ue0] = {
           nombre: uData0[i][uNombreC0] ? uData0[i][uNombreC0].toString() : ue0,
-          grupo:  uGrupoC0 !== -1 ? (uData0[i][uGrupoC0] || '').toString() : ''
+          grupo:  grp0,
+          provincia: prov0
         };
+
+        if (prov0) {
+          if (!provinciaMap[prov0]) provinciaMap[prov0] = { provincia: prov0, runners: 0, kmTotal: 0 };
+          provinciaMap[prov0].runners++;
+        }
+        if (grp0) {
+          if (!grupoRankMap[grp0]) grupoRankMap[grp0] = { grupo: grp0, runners: 0, kmTotal: 0 };
+          grupoRankMap[grp0].runners++;
+        }
       }
     }
 
@@ -945,6 +1017,8 @@ function getAdminDashboardData() {
 
     // — RANKING CALZADO: conteo de combinaciones Marca+Modelo activas —
     var rankingCalzado = [];
+    var rankingMarca   = [];
+    var rankingGenero  = [];
 
     if (zapSheet && zapSheet.getLastRow() > 1) {
       var zapData    = zapSheet.getDataRange().getValues();
@@ -954,9 +1028,12 @@ function getAdminDashboardData() {
       var zModeloCol = zapHeaders.indexOf('Modelo');
       var zKmCol     = zapHeaders.indexOf('KM_Actuales');
       var zEstadoCol = zapHeaders.indexOf('Estado');
+      var zGeneroCol = zapHeaders.indexOf('Genero');
 
       // Mapa para rankingCalzado: clave = "Marca||Modelo"
       var calzadoMap = {};
+      var marcaMap   = {};
+      var generoMap  = {};
 
       for (var i = 1; i < zapData.length; i++) {
         var estado = zEstadoCol !== -1 ? zapData[i][zEstadoCol].toString().trim().toLowerCase() : '';
@@ -964,6 +1041,7 @@ function getAdminDashboardData() {
 
         var marca  = zMarcaCol  !== -1 ? (zapData[i][zMarcaCol]  || '').toString().trim() : '';
         var modelo = zModeloCol !== -1 ? (zapData[i][zModeloCol] || '').toString().trim() : '';
+        var genero = zGeneroCol !== -1 ? (zapData[i][zGeneroCol] || '').toString().trim() : '';
         var km     = Number(zapData[i][zKmCol]) || 0;
 
         // ── Alertas de desgaste ──
@@ -978,7 +1056,7 @@ function getAdminDashboardData() {
           });
         }
 
-        // ── Ranking calzado ──
+        // ── Ranking calzado (marca + modelo) ──
         if (marca || modelo) {
           var clave = marca + '||' + modelo;
           if (!calzadoMap[clave]) {
@@ -987,45 +1065,118 @@ function getAdminDashboardData() {
           calzadoMap[clave].cantidad++;
           calzadoMap[clave].kmTotal += km;
         }
+
+        // ── Ranking por marca ──
+        if (marca) {
+          if (!marcaMap[marca]) marcaMap[marca] = { marca: marca, cantidad: 0, kmTotal: 0 };
+          marcaMap[marca].cantidad++;
+          marcaMap[marca].kmTotal += km;
+        }
+
+        // ── Distribución por género ──
+        if (genero) {
+          if (!generoMap[genero]) generoMap[genero] = { genero: genero, cantidad: 0 };
+          generoMap[genero].cantidad++;
+        }
       }
 
       alertasDesgaste.sort(function(a, b) { return b.kilometraje - a.kilometraje; });
 
-      // Convertir mapa a array y ordenar por cantidad descendente
+      // Convertir mapas a arrays y ordenar por cantidad descendente
       rankingCalzado = Object.values(calzadoMap)
         .sort(function(a, b) {
           if (b.cantidad !== a.cantidad) return b.cantidad - a.cantidad;
           return b.kmTotal - a.kmTotal; // desempate por km total
         })
-        .slice(0, 15); // top 15
+        .slice(0, 10); // top 10
+
+      rankingMarca = Object.values(marcaMap)
+        .sort(function(a, b) {
+          if (b.cantidad !== a.cantidad) return b.cantidad - a.cantidad;
+          return b.kmTotal - a.kmTotal;
+        })
+        .slice(0, 10); // top 10
+
+      rankingGenero = Object.values(generoMap)
+        .sort(function(a, b) { return b.cantidad - a.cantidad; });
     }
 
-    // — Ranking actividad (km totales por usuario) —
+    // — Ranking actividad (km totales por usuario) + por provincia/grupo + retención —
     var rankingActividad = [];
     var trainSheet = ss.getSheetByName('Entrenamientos');
+    var activosUltimos7  = {};
+    var activosUltimos30 = {};
     if (trainSheet && trainSheet.getLastRow() > 1) {
       var tData    = trainSheet.getDataRange().getValues();
       var tHeaders = tData[0];
       var tEmailC  = tHeaders.indexOf('Email_Usuario');
       var tKmC     = tHeaders.indexOf('KM_Sumados');
+      var tFechaC  = tHeaders.indexOf('Fecha');
       var kmMap    = {};
+      var ahoraMs  = Date.now();
+      var MS_DIA   = 24 * 60 * 60 * 1000;
+
       for (var j = 1; j < tData.length; j++) {
         var temail = tData[j][tEmailC] ? tData[j][tEmailC].toString().trim().toLowerCase() : '';
         var tkm    = Number(tData[j][tKmC]) || 0;
         if (temail) kmMap[temail] = (kmMap[temail] || 0) + tkm;
+
+        // ── Retención: actividad reciente ──
+        if (temail && tFechaC !== -1 && tData[j][tFechaC]) {
+          var fEntreno = _celdaADate(tData[j][tFechaC]);
+          var diffDias = fEntreno ? (ahoraMs - fEntreno.getTime()) / MS_DIA : NaN;
+          if (diffDias <= 7)  activosUltimos7[temail]  = true;
+          if (diffDias <= 30) activosUltimos30[temail] = true;
+        }
+
+        // ── Km por provincia/grupo ──
+        var uInfoKm = grupoMap[temail];
+        if (uInfoKm) {
+          if (uInfoKm.provincia && provinciaMap[uInfoKm.provincia]) {
+            provinciaMap[uInfoKm.provincia].kmTotal += tkm;
+          }
+          if (uInfoKm.grupo && grupoRankMap[uInfoKm.grupo]) {
+            grupoRankMap[uInfoKm.grupo].kmTotal += tkm;
+          }
+        }
       }
       for (var email in kmMap) {
         var uInfo = grupoMap[email] || { nombre: email, grupo: '' };
         rankingActividad.push({ email: email, nombre: uInfo.nombre, grupo: uInfo.grupo, kmCargados: kmMap[email] });
       }
       rankingActividad.sort(function(a, b) { return b.kmCargados - a.kmCargados; });
-      rankingActividad = rankingActividad.slice(0, 20);
+      rankingActividad = rankingActividad.slice(0, 10); // top 10
     }
+
+    var rankingProvincia = Object.values(provinciaMap)
+      .sort(function(a, b) {
+        if (b.runners !== a.runners) return b.runners - a.runners;
+        return b.kmTotal - a.kmTotal;
+      })
+      .slice(0, 10); // top 10
+
+    var rankingGrupo = Object.values(grupoRankMap)
+      .sort(function(a, b) {
+        if (b.runners !== a.runners) return b.runners - a.runners;
+        return b.kmTotal - a.kmTotal;
+      })
+      .slice(0, 10); // top 10
+
+    var retencion = {
+      activos7:  Object.keys(activosUltimos7).length,
+      activos30: Object.keys(activosUltimos30).length,
+      total:     totalUsuarios
+    };
 
     return {
       success:          true,
       totalUsuarios:    totalUsuarios,
       alertasDesgaste:  alertasDesgaste,
+      rankingMarca:     rankingMarca,
+      rankingGenero:    rankingGenero,
+      rankingProvincia: rankingProvincia,
+      rankingGrupo:     rankingGrupo,
+      retencion:        retencion,
       rankingActividad: rankingActividad,
       rankingCalzado:   rankingCalzado   // NUEVO v2906
     };
