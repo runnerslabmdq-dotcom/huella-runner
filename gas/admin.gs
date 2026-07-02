@@ -237,7 +237,7 @@ function getRankingUsuarios() {
 }
 
 // ============================================================
-// ACTIVIDAD RECIENTE (últimos 15 eventos combinados)
+// ACTIVIDAD RECIENTE (últimos 10 eventos combinados)
 // Tipo: 'entrenamiento' | 'registro'
 // ============================================================
 function getActividadReciente() {
@@ -315,14 +315,14 @@ function getActividadReciente() {
       }
     }
 
-    // Ordenar por fecha descendente y devolver los 15 más recientes
+    // Ordenar por fecha descendente y devolver los 10 más recientes
     eventos.sort(function(a, b) {
       const ta = a.ts ? a.ts.getTime() : 0;
       const tb = b.ts ? b.ts.getTime() : 0;
       return tb - ta;
     });
 
-    return eventos.slice(0, 15).map(function(ev) {
+    return eventos.slice(0, 10).map(function(ev) {
       return {
         tipo:      ev.tipo,
         email:     ev.email,
