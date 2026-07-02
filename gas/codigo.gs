@@ -94,6 +94,12 @@ self.addEventListener('fetch', function(e) {
 
   // ── Panel admin ──
   if (page === 'admin') {
+    const token = e && e.parameter ? e.parameter.token : '';
+    if (!_adminAutorizado(token)) {
+      return HtmlService.createHtmlOutput(
+        '<h2 style="font-family:sans-serif;color:#c00;padding:40px">Acceso denegado.</h2>'
+      );
+    }
     return HtmlService.createTemplateFromFile('admin')
       .evaluate()
       .setTitle('Admin — Huella Runner')
@@ -338,7 +344,8 @@ function addShoe(email, formData) {
     'Talle':         formData.talle,
     'Genero':        formData.genero,
     'KM_Actuales':   Number(formData.km),
-    'Alias':         formData.alias || ''
+    'Alias':         formData.alias || '',
+    'Estado':        _calcularEstadoDesgaste(Number(formData.km) || 0)
   });
 
   // Encola notificación diferida con datos de comunidad (Social Proof).
@@ -906,8 +913,9 @@ function contarNoLeidas(email) {
 
     const data    = sheet.getDataRange().getValues();
     const headers = data[0];
-    const emailCol = headers.indexOf('Email');
-    const leidoCol = headers.indexOf('Leido');
+    const emailCol  = headers.indexOf('Email');
+    const leidoCol  = headers.indexOf('Leido');
+    const ocultoCol = headers.indexOf('Oculto');
 
     if (emailCol === -1 || leidoCol === -1) return 0;
 
@@ -915,7 +923,8 @@ function contarNoLeidas(email) {
     for (let i = 1; i < data.length; i++) {
       const rowEmail = data[i][emailCol] ? data[i][emailCol].toString().trim().toLowerCase() : '';
       const leido    = data[i][leidoCol] ? data[i][leidoCol].toString().toUpperCase() : 'FALSE';
-      if (rowEmail === emailClean && leido !== 'TRUE') count++;
+      const oculto   = ocultoCol !== -1 && data[i][ocultoCol] ? data[i][ocultoCol].toString().toUpperCase() : 'FALSE';
+      if (rowEmail === emailClean && leido !== 'TRUE' && oculto !== 'TRUE') count++;
     }
     return count;
   } catch(e) {
@@ -945,9 +954,11 @@ function deleteNotificacion(email, idNotif) {
       const rowId    = data[i][idCol]    ? data[i][idCol].toString()                        : '';
       const rowEmail = data[i][emailCol] ? data[i][emailCol].toString().trim().toLowerCase() : '';
       if (rowId === idNotif.toString() && rowEmail === emailClean) {
-        const ocultoCol = headers.indexOf('Oculto');
+        let ocultoCol = headers.indexOf('Oculto');
         if (ocultoCol === -1) {
-          return { success: false, error: 'Columna Oculto no encontrada.' };
+          ocultoCol = headers.length;
+          sheet.getRange(1, ocultoCol + 1).setValue('Oculto');
+          headers.push('Oculto');
         }
         sheet.getRange(i + 1, ocultoCol + 1).setValue('TRUE');
         SpreadsheetApp.flush();
