@@ -144,25 +144,26 @@ function obtenerDataSocialProof(marca, modelo) {
 // A3. REGISTRO CON SOCIAL PROOF INCLUIDO
 //     Llama a addShoe() existente y agrega los datos de proof.
 //     Reemplaza la llamada a addShoe() en el frontend por esta.
+//     formData: mismo objeto que ya arma el frontend para addShoe
+//     (marca, modelo, talle, genero, km, alias).
 // -----------------------------------------------------------
-function registrarZapatillaConProof(email, marca, modelo, talle, genero, imagenUrl) {
+function registrarZapatillaConProof(email, formData) {
   try {
     // Reutiliza la función de registro existente en codigo.gs
-    const resultadoRegistro = addShoe(email, marca, modelo, talle, genero, imagenUrl);
+    const resultadoRegistro = addShoe(email, formData);
 
     if (!resultadoRegistro || !resultadoRegistro.success) {
       return { success: false, error: (resultadoRegistro && resultadoRegistro.error) || 'Error al registrar.' };
     }
 
     // Enriquece la respuesta con Social Proof
-    const proof = obtenerDataSocialProof(marca, modelo);
+    const proof = obtenerDataSocialProof(formData.marca, formData.modelo);
 
     // Encola notificación diferida (simulada: guarda en hoja Notificaciones con fecha +24h)
-    _encolarNotificacionDiferida(email, marca, modelo, proof);
+    _encolarNotificacionDiferida(email, formData.marca, formData.modelo, proof);
 
     return {
       success:          true,
-      shoeId:           resultadoRegistro.shoeId || '',
       socialProof:      proof
     };
 
