@@ -86,6 +86,12 @@
     .rank-km { font-size: 1.05rem; font-weight: 900; color: var(--neon); white-space: nowrap; flex-shrink: 0; }
     .rank-km span { font-size: 0.6rem; color: var(--metal); font-weight: 700; margin-left: 2px; }
 
+    /* ══ MINI-TABS DE RANKING ══ */
+    .rank-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+    .rtab { font-size: 0.58rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; padding: 6px 11px; border-radius: 5px; cursor: pointer; border: 1px solid var(--borde2); background: var(--card2); color: var(--metal); transition: all 0.15s; }
+    .rtab:hover { border-color: var(--neon); color: var(--neon); }
+    .rtab.active { background: var(--neon); color: #000; border-color: var(--neon); }
+
     /* ══ ACTIVIDAD RECIENTE ══ */
     .act-item { display: flex; align-items: flex-start; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--borde); }
     .act-item:last-child { border-bottom: none; }
@@ -324,7 +330,14 @@
     <div class="sec-label">Rankings y actividad</div>
     <div class="two-col">
       <div class="panel">
-        <div class="panel-title">🏅 Ranking — KM totales</div>
+        <div class="panel-title">🏅 Rankings</div>
+        <div class="rank-tabs" id="rank-tabs">
+          <div class="rtab active" data-rt="km"        onclick="setRankTab('km')">KM Totales</div>
+          <div class="rtab"        data-rt="modelo"    onclick="setRankTab('modelo')">Por Modelo</div>
+          <div class="rtab"        data-rt="marca"     onclick="setRankTab('marca')">Por Marca</div>
+          <div class="rtab"        data-rt="provincia" onclick="setRankTab('provincia')">Por Provincia</div>
+          <div class="rtab"        data-rt="grupo"     onclick="setRankTab('grupo')">Por Grupo</div>
+        </div>
         <div id="ranking-list"><div class="loading-row">Cargando...</div></div>
       </div>
       <div class="panel">
@@ -434,6 +447,12 @@
       <div class="ins-content active" id="ins-comunidad">
         <div class="panel-title">Distribución de niveles en la comunidad</div>
         <div id="ins-niveles-bars"><div class="loading-row">Cargando...</div></div>
+
+        <div class="panel-title" style="margin-top:24px;">Distribución por género</div>
+        <div id="ins-genero-bars"><div class="loading-row">Cargando...</div></div>
+
+        <div class="panel-title" style="margin-top:24px;">Retención de usuarios</div>
+        <div id="ins-retencion-body"><div class="loading-row">Cargando...</div></div>
       </div>
 
       <!-- B: ESTADO ZAPAS (Semáforo) -->
@@ -503,6 +522,9 @@
   let alertasData         = [];
   let actividadPorDiaData = [];
   let insTabActual        = 'comunidad';
+  let rankTabActual        = 'km';
+  let _kmRankingCache      = [];
+  let _dashData            = null;
 
   // Estado compartido entre las dos llamadas async (stats y dashboard).
   const _insState = { totalZapas: null, alertasCount: null };
@@ -566,10 +588,12 @@
       .getRankingUsuarios();
   }
   function renderRanking(lista) {
+    _kmRankingCache = lista || [];
+    if (rankTabActual !== 'km') return;
     const cont = document.getElementById('ranking-list');
     if (!lista || !lista.length) { cont.innerHTML = '<div class="loading-row">Sin datos</div>'; return; }
     const cls = ['gold','silver','bronze'];
-    cont.innerHTML = lista.slice(0, 8).map(function(u, i) {
+    cont.innerHTML = lista.slice(0, 10).map(function(u, i) {
       const ini = ((u.nombre[0]||'') + (u.apellido[0]||'')).toUpperCase() || '?';
       return `<div class="rank-item">
         <div class="rank-num ${cls[i]||''}">${i+1}</div>
@@ -579,6 +603,55 @@
           <div class="rank-detail">${u.zapatillas} zapa${u.zapatillas!==1?'s':''} · ${u.grupo||'Sin grupo'}</div>
         </div>
         <div class="rank-km">${u.kmTotales}<span>km</span></div>
+      </div>`;
+    }).join('');
+  }
+
+  /* ════════════════════════════════════
+     PESTAÑAS DE RANKING (KM / Modelo / Marca / Provincia / Grupo)
+  ════════════════════════════════════ */
+  function setRankTab(tab) {
+    rankTabActual = tab;
+    document.querySelectorAll('.rtab').forEach(function(el) {
+      el.classList.toggle('active', el.dataset.rt === tab);
+    });
+    renderRankTabContent();
+  }
+  function renderRankTabContent() {
+    const cont = document.getElementById('ranking-list');
+    if (rankTabActual === 'km') { renderRanking(_kmRankingCache); return; }
+
+    const d = _dashData || {};
+    let list = [];
+    if (rankTabActual === 'modelo')    list = d.rankingCalzado   || [];
+    if (rankTabActual === 'marca')     list = d.rankingMarca     || [];
+    if (rankTabActual === 'provincia') list = d.rankingProvincia || [];
+    if (rankTabActual === 'grupo')     list = d.rankingGrupo     || [];
+
+    if (!list.length) { cont.innerHTML = '<div class="loading-row">Sin datos</div>'; return; }
+    const cls = ['gold','silver','bronze'];
+    cont.innerHTML = list.slice(0, 10).map(function(item, i) {
+      let nombre, detalle, valor, unidad;
+      if (rankTabActual === 'modelo') {
+        nombre = item.modelo || '—'; detalle = item.marca || '';
+        valor  = item.cantidad; unidad = item.cantidad !== 1 ? 'pares' : 'par';
+      } else if (rankTabActual === 'marca') {
+        nombre = item.marca || '—'; detalle = item.kmTotal + ' km acumulados';
+        valor  = item.cantidad; unidad = item.cantidad !== 1 ? 'pares' : 'par';
+      } else if (rankTabActual === 'provincia') {
+        nombre = item.provincia || '—'; detalle = item.kmTotal + ' km acumulados';
+        valor  = item.runners; unidad = item.runners !== 1 ? 'runners' : 'runner';
+      } else if (rankTabActual === 'grupo') {
+        nombre = item.grupo || '—'; detalle = item.kmTotal + ' km acumulados';
+        valor  = item.runners; unidad = item.runners !== 1 ? 'runners' : 'runner';
+      }
+      return `<div class="rank-item">
+        <div class="rank-num ${cls[i]||''}">${i+1}</div>
+        <div class="rank-info">
+          <div class="rank-name">${nombre}</div>
+          <div class="rank-detail">${detalle}</div>
+        </div>
+        <div class="rank-km">${valor}<span>${unidad}</span></div>
       </div>`;
     }).join('');
   }
@@ -636,6 +709,9 @@
     if (!data || !data.success) { cont.innerHTML = '<div class="loading-row">Sin datos</div>'; return; }
     const alertas = data.alertasDesgaste || [];
     alertasData = alertas.map(function(a) { return (a.email || '').toLowerCase(); });
+
+    _dashData = data;
+    if (rankTabActual !== 'km') renderRankTabContent();
 
     // Alimenta el panel Insights con datos del dashboard
     _renderInsightsDesdeDashboard(data);
@@ -947,6 +1023,9 @@
     if (!data || !data.alertasDesgaste) return;
     const alertas = data.alertasDesgaste || [];
 
+    _renderGenero(data.rankingGenero || []);
+    _renderRetencion(data.retencion || null);
+
     /* ── B: Semáforo ── */
     let critico    = 0;
     let precaucion = 0;
@@ -1082,6 +1161,52 @@
           }).join('');
       }
     }
+  }
+
+  /* ════════════════════════════════════════════════════
+     INSIGHTS — Género y Retención
+  ════════════════════════════════════════════════════ */
+  function _renderGenero(lista) {
+    const cont = document.getElementById('ins-genero-bars');
+    if (!cont) return;
+    if (!lista.length) { cont.innerHTML = '<div class="loading-row">Sin datos</div>'; return; }
+    const total = lista.reduce(function(s, g) { return s + g.cantidad; }, 0) || 1;
+    const colores = { 'Hombre': '#7799EE', 'Mujer': '#FF6BAA' };
+    cont.innerHTML = lista.map(function(g) {
+      const pct = Math.round((g.cantidad / total) * 100);
+      const col = colores[g.genero] || 'var(--neon)';
+      return `<div class="nivel-bar-wrap">
+        <div class="nivel-bar-header">
+          <div class="nivel-bar-name">${g.genero}</div>
+          <div class="nivel-bar-count">${g.cantidad}</div>
+        </div>
+        <div class="nivel-bar-track">
+          <div class="nivel-bar-fill" style="width:${pct}%;background:${col};"></div>
+        </div>
+        <div class="nivel-bar-pct">${pct}% de las zapatillas activas</div>
+      </div>`;
+    }).join('');
+  }
+
+  function _renderRetencion(r) {
+    const cont = document.getElementById('ins-retencion-body');
+    if (!cont) return;
+    if (!r) { cont.innerHTML = '<div class="loading-row">Sin datos</div>'; return; }
+    const pct7  = r.total > 0 ? Math.round((r.activos7  / r.total) * 100) : 0;
+    const pct30 = r.total > 0 ? Math.round((r.activos30 / r.total) * 100) : 0;
+    cont.innerHTML = `
+      <div style="display:flex;gap:16px;flex-wrap:wrap;">
+        <div class="metric-card accent" style="flex:1;min-width:160px;">
+          <div class="metric-lbl">Activos últimos 7 días</div>
+          <div class="metric-val">${r.activos7}</div>
+          <div class="metric-sub">${pct7}% de ${r.total} usuarios</div>
+        </div>
+        <div class="metric-card" style="flex:1;min-width:160px;">
+          <div class="metric-lbl">Activos últimos 30 días</div>
+          <div class="metric-val">${r.activos30}</div>
+          <div class="metric-sub">${pct30}% de ${r.total} usuarios</div>
+        </div>
+      </div>`;
   }
 
   /* Semáforo verde: saludables = total zapas − en alerta */
