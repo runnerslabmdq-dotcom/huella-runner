@@ -26,7 +26,7 @@
 // ============================================================
 
 // ---- CONFIG CENTRAL (ajustar según negocio) ----------------
-const TP = {
+var TP = {
   KM_UMBRAL_CUPON:      650,    // km para disparar cupón
   KM_MAX_DIA:           120,    // filtro diario anti-fraude
   KM_MAX_SEMANA:        180,    // filtro semanal anti-fraude
