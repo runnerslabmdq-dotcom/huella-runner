@@ -308,7 +308,7 @@ function registrarZapatillaConSocialProof(email, marca, modelo, talle, genero, i
       ocultarLoader && ocultarLoader();
 
       if (!res || !res.success) {
-        mostrarError(res && res.error ? res.error : 'Error al registrar la zapatilla.');
+        typeof mostrarError === 'function' && mostrarError(res && res.error ? res.error : 'Error al registrar la zapatilla.');
         return;
       }
 
@@ -327,7 +327,7 @@ function registrarZapatillaConSocialProof(email, marca, modelo, talle, genero, i
       ocultarLoader && ocultarLoader();
       mostrarError('Error de conexión: ' + err.message);
     })
-    .registrarZapatillaConProof(email, marca, modelo, talle, genero, imagenUrl);
+    .registrarZapatillaConProof(email, { marca: marca, modelo: modelo, talle: talle, genero: genero, km: 0, alias: '' });
 }
 
 // ---------------------------------------------------------------

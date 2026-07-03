@@ -2540,8 +2540,12 @@
     if (!d.marca || !d.modelo) return alert('Completá la información');
     document.getElementById('btn-save-shoe').innerText = 'GUARDANDO...';
     google.script.run
-      .withSuccessHandler(() => {
+      .withSuccessHandler(res => {
         document.getElementById('btn-save-shoe').innerText = 'Añadir a Mis Zapas';
+        if (!res || !res.success) {
+          alert('Error al guardar: ' + ((res && res.error) ? res.error : 'desconocido'));
+          return;
+        }
         document.getElementById('shoe-alias').value = '';
         switchView('view-dashboard');
         setTimeout(loadDashboard, 800);
