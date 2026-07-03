@@ -15,7 +15,9 @@
   <!-- PWA INSTALL SUPPORT -->
   <link rel="apple-touch-icon" href="https://res.cloudinary.com/dlayzh9ln/image/upload/v1778672392/icono_HR_fomqlf.png">
   <meta name="apple-mobile-web-app-title" content="Huella Runner">
-  <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Huella%20Runner%22,%22short_name%22:%22HR%22,%22display%22:%22standalone%22,%22background_color%22:%22%23080808%22,%22theme_color%22:%22%23E9FF00%22,%22icons%22:[{%22src%22:%22https://res.cloudinary.com/dlayzh9ln/image/upload/v1778672392/icono_HR_fomqlf.png%22,%22sizes%22:%22192x192%22,%22type%22:%22image/png%22},{%22src%22:%22https://res.cloudinary.com/dlayzh9ln/image/upload/v1778672989/icono_HR_512_hvbsyb.png%22,%22sizes%22:%22512x512%22,%22type%22:%22image/png%22}]}">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- El manifest completo lo sirve doGet?page=manifest (incluye SW scope correcto) -->
+  <link rel="manifest" id="pwa-manifest">
   <!-- FIN PWA INSTALL SUPPORT -->
 
   <style>
@@ -3361,6 +3363,94 @@
   }
 
   window.onload = initApp;
+
+  /* ═══════════════════════════════════════════════
+     PWA — Service Worker + Banner "Instalar app"
+  ═══════════════════════════════════════════════ */
+  (function() {
+    // 1. Apunta el manifest al endpoint dinámico para que el SW tenga el scope correcto
+    var appUrl = window.location.href.split('?')[0];
+    var manifestLink = document.getElementById('pwa-manifest');
+    if (manifestLink) {
+      // Usamos data URI con los íconos de Cloudinary ya existentes
+      var manifest = {
+        name: 'Huella Runner',
+        short_name: 'Huella Runner',
+        description: 'Tu zapatilla de trail, siempre bajo control. Todo Trail.',
+        start_url: appUrl,
+        scope: appUrl,
+        display: 'standalone',
+        orientation: 'portrait',
+        background_color: '#000000',
+        theme_color: '#CCFF00',
+        lang: 'es',
+        icons: [
+          { src: 'https://res.cloudinary.com/dlayzh9ln/image/upload/v1778672392/icono_HR_fomqlf.png', sizes: '192x192', type: 'image/png', purpose: 'any maskable' },
+          { src: 'https://res.cloudinary.com/dlayzh9ln/image/upload/v1778672989/icono_HR_512_hvbsyb.png', sizes: '512x512', type: 'image/png', purpose: 'any maskable' }
+        ]
+      };
+      var encoded = encodeURIComponent(JSON.stringify(manifest));
+      manifestLink.href = 'data:application/manifest+json,' + encoded;
+    }
+
+    // 2. Registrar Service Worker (solo navegadores que lo soporten)
+    if ('serviceWorker' in navigator) {
+      var swUrl = appUrl + '?page=sw';
+      navigator.serviceWorker.register(swUrl, { scope: appUrl })
+        .then(function(reg) { console.log('[HR SW] Registrado. Scope:', reg.scope); })
+        .catch(function(err) { console.warn('[HR SW] No se pudo registrar:', err); });
+    }
+
+    // 3. Banner de instalación "Agregá Huella Runner a tu pantalla"
+    var _deferredPrompt = null;
+    window.addEventListener('beforeinstallprompt', function(e) {
+      e.preventDefault();
+      _deferredPrompt = e;
+      var banner = document.getElementById('pwa-install-banner');
+      if (banner) banner.style.display = 'flex';
+    });
+    window.addEventListener('appinstalled', function() {
+      var banner = document.getElementById('pwa-install-banner');
+      if (banner) banner.style.display = 'none';
+      _deferredPrompt = null;
+    });
+
+    window._installPWA = function() {
+      if (!_deferredPrompt) return;
+      _deferredPrompt.prompt();
+      _deferredPrompt.userChoice.then(function(choice) {
+        if (choice.outcome === 'accepted') {
+          var banner = document.getElementById('pwa-install-banner');
+          if (banner) banner.style.display = 'none';
+        }
+        _deferredPrompt = null;
+      });
+    };
+    window._closePWABanner = function() {
+      var banner = document.getElementById('pwa-install-banner');
+      if (banner) banner.style.display = 'none';
+    };
+  })();
 </script>
+
+<!-- Banner PWA -->
+<div id="pwa-install-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;
+  background:#0d0d0d;border-top:1px solid #252525;padding:14px 20px;
+  align-items:center;gap:14px;z-index:9998;font-family:'Montserrat',sans-serif;">
+  <img src="https://res.cloudinary.com/dlayzh9ln/image/upload/v1778672392/icono_HR_fomqlf.png"
+    style="width:40px;height:40px;border-radius:10px;flex-shrink:0;" alt="HR">
+  <div style="flex:1;min-width:0;">
+    <div style="font-size:0.82rem;font-weight:700;color:#F0F0F0;">Instalá Huella Runner</div>
+    <div style="font-size:0.72rem;color:#9c9c9c;margin-top:2px;">Accedé directo desde tu pantalla de inicio</div>
+  </div>
+  <button onclick="_installPWA()" style="background:#CCFF00;color:#000;border:none;
+    border-radius:7px;font-family:'Montserrat',sans-serif;font-size:0.72rem;font-weight:900;
+    text-transform:uppercase;letter-spacing:1.5px;padding:9px 16px;cursor:pointer;white-space:nowrap;">
+    Instalar
+  </button>
+  <button onclick="_closePWABanner()" style="background:transparent;border:none;color:#9c9c9c;
+    font-size:1.2rem;cursor:pointer;padding:4px 6px;line-height:1;">✕</button>
+</div>
+
 </body>
 </html>
