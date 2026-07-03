@@ -63,12 +63,14 @@ function registrarActividadTrailPoints(email, idZapa, kmBrutos, tipoCarga, fecha
                             'Rechazada', validacion.motivo);
       return { success: false, error: validacion.motivo, validacion: 'Rechazada' };
     }
+    if (validacion.estado === 'Sospechosa') {
+      _guardarEntrenamiento(emailClean, idZapa, km, 0, tipo, fechaStr, horaStr,
+                            'Sospechosa', validacion.motivo);
+      return { success: false, error: validacion.motivo, validacion: 'Sospechosa' };
+    }
 
     // B: Ponderar según tipo de carga
-    const kmAcreditados = _ponderarKm(km, tipo, fechaStr, horaStr);
-    if (kmAcreditados === null) {
-      return { success: false, error: 'Carga manual requiere fecha y hora exacta.' };
-    }
+    const kmAcreditados = _ponderarKm(km, tipo);
 
     // Guardar entrenamiento aprobado
     _guardarEntrenamiento(emailClean, idZapa, km, kmAcreditados, tipo, fechaStr, horaStr,
@@ -160,14 +162,11 @@ function _sumaKmUltimos7Dias(email, fechaStr) {
 // Retorna los km efectivos a acreditar, o null si la carga
 // manual no tiene los campos obligatorios.
 // ============================================================
-function _ponderarKm(km, tipoCarga, fecha, hora) {
+function _ponderarKm(km, tipoCarga) {
   if (tipoCarga === 'Sincronizada') {
     return km;  // 100% — fuente oficial
   }
-
-  // Manual: requiere fecha Y hora explícitas
-  if (!fecha || !hora) return null;
-
+  // Manual: aplica factor de ponderación, hora no requerida
   return Math.round(km * TRAIL_PTS.FACTOR_MANUAL * 100) / 100;
 }
 
@@ -197,6 +196,10 @@ function _guardarEntrenamiento(email, idZapa, kmBrutos, kmSumados, tipo,
     const i = headers.indexOf(key);
     if (i !== -1) newRow[i] = val;
   };
+
+  // Genera ID_Entreno si la columna existe pero la fila no tiene uno aún
+  const idEntrenoIdx = headers.indexOf('ID_Entreno');
+  if (idEntrenoIdx !== -1) newRow[idEntrenoIdx] = Utilities.getUuid();
 
   set('Email_Usuario',    email);
   set('ID_Zapa',          idZapa);

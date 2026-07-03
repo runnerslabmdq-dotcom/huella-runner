@@ -92,7 +92,7 @@ self.addEventListener('fetch', function(e) {
       .setMimeType(ContentService.MimeType.JAVASCRIPT);
   }
 
-  // ── Panel admin ──
+  // ── Panel admin (requiere token) ──
   if (page === 'admin') {
     const token = e && e.parameter ? e.parameter.token : '';
     if (!_adminAutorizado(token)) {
@@ -336,6 +336,7 @@ const SHOES_HEADERS = ['ID_Zapa', 'Email_Usuario', 'Marca', 'Modelo', 'Talle', '
 function addShoe(email, formData) {
   if (!email || !formData) return { success: false, error: 'Datos incompletos.' };
   const emailClean = email.toString().trim().toLowerCase();
+  const kmInicial = Number(formData.km) || 0;
   appendDataByHeader('Zapatillas', SHOES_HEADERS, {
     'ID_Zapa':       Utilities.getUuid(),
     'Email_Usuario': emailClean,
@@ -343,9 +344,9 @@ function addShoe(email, formData) {
     'Modelo':        formData.modelo,
     'Talle':         formData.talle,
     'Genero':        formData.genero,
-    'KM_Actuales':   Number(formData.km),
+    'KM_Actuales':   kmInicial,
     'Alias':         formData.alias || '',
-    'Estado':        _calcularEstadoDesgaste(Number(formData.km) || 0)
+    'Estado':        _calcularEstadoDesgaste(kmInicial)
   });
 
   // Encola notificación diferida con datos de comunidad (Social Proof).
@@ -919,6 +920,7 @@ function contarNoLeidas(email) {
 
     if (emailCol === -1 || leidoCol === -1) return 0;
 
+    const ocultoCol = headers.indexOf('Oculto');
     let count = 0;
     for (let i = 1; i < data.length; i++) {
       const rowEmail = data[i][emailCol] ? data[i][emailCol].toString().trim().toLowerCase() : '';

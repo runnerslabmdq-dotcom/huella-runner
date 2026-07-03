@@ -475,8 +475,9 @@ function _parseFecha(str) {
 
 function _labelDia(date) {
   const dias = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
-  const now  = new Date();
-  const diffDias = Math.round((now.setHours(0,0,0,0) - date.setHours(0,0,0,0)) / 86400000);
+  const nowMid  = new Date(); nowMid.setHours(0, 0, 0, 0);
+  const dateMid = new Date(date); dateMid.setHours(0, 0, 0, 0);
+  const diffDias = Math.round((nowMid - dateMid) / 86400000);
   if (diffDias === 0) return 'Hoy';
   if (diffDias === 1) return 'Ayer';
   return dias[new Date(date).getDay()];
