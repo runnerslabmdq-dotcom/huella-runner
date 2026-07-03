@@ -31,6 +31,15 @@
       --gris-texto: #888888;
       --borde: #1f1f1f;
       --neon-cyan: #00f3ff;
+      --cobre: #B87333;
+      --cobre-top: #D4904A;
+    }
+    :root.light-mode {
+      --bg-color: #f4f4f0;
+      --card-bg: #ffffff;
+      --plata: #1a1a1a;
+      --gris-texto: #555555;
+      --borde: #ddd;
     }
 
     @keyframes zapaPulso {
@@ -1230,9 +1239,6 @@
       <span style="background:linear-gradient(180deg,#a0c080 0%,#6B8F5E 40%,#3d5c35 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">HUELLA</span>
       <span style="background:linear-gradient(180deg,#ffffff 0%,#d0d0d0 50%,#a0a0a0 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">RUNNER</span>
     </h1>
-    <span style="font-size:2.6rem;font-weight:900;
-      text-transform:uppercase;letter-spacing:5px;display:block;margin-top:10px;">
-      <span style="background:linear-gradient(180deg,#ffffff 0%,#d0d0d0 50%,#a0a0a0 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">TODO</span><span style="background:linear-gradient(180deg,#D4C570 0%,#C5B358 50%,#A89440 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;"> TRAIL</span></span>
   </div>
 
   <!-- Card central -->
@@ -1293,10 +1299,6 @@
         <span style="background:linear-gradient(180deg,#a0c080 0%,#6B8F5E 40%,#3d5c35 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">HUELLA</span>
         <span style="background:linear-gradient(180deg,#ffffff 0%,#d0d0d0 50%,#a0a0a0 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">RUNNER</span>
       </h1>
-      <span style="font-size:2.6rem;font-weight:900;
-        text-transform:uppercase;letter-spacing:5px;display:block;margin-top:10px;">
-        <span style="background:linear-gradient(180deg,#ffffff 0%,#d0d0d0 50%,#a0a0a0 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">TODO</span><span style="background:linear-gradient(180deg,#D4C570 0%,#C5B358 50%,#A89440 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;"> TRAIL</span>
-      </span>
     </div>
 
     <div class="card">
@@ -1313,7 +1315,7 @@
       <div class="intro-section" style="margin-top:18px; margin-bottom:4px; text-align:center;">
         <div class="intro-footer-row" style="justify-content:center; margin-bottom:8px;">
           <div class="intro-dot"></div>
-          <span class="intro-footer-text" style="color:var(--amarillo); letter-spacing:2px;">Todo Trail · Villa de Merlo · San Luis</span>
+          <span class="intro-footer-text" style="color:var(--amarillo); letter-spacing:2px;">Huella Runner · Comunidad Trail</span>
         </div>
         <div class="intro-divider"></div>
         <div class="intro-body" style="text-align:center; line-height:1.8;">
@@ -1344,10 +1346,6 @@
         <span style="background:linear-gradient(180deg,#a0c080 0%,#6B8F5E 40%,#3d5c35 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">HUELLA</span>
         <span style="background:linear-gradient(180deg,#ffffff 0%,#d0d0d0 50%,#a0a0a0 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">RUNNER</span>
       </h1>
-      <span style="font-size:2.6rem;font-weight:900;
-        text-transform:uppercase;letter-spacing:5px;display:block;margin-top:10px;">
-        <span style="background:linear-gradient(180deg,#ffffff 0%,#d0d0d0 50%,#a0a0a0 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">TODO</span><span style="background:linear-gradient(180deg,#D4C570 0%,#C5B358 50%,#A89440 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;"> TRAIL</span>
-      </span>
     </div>
 
     <div class="card">
@@ -1483,7 +1481,7 @@
   <div id="view-dashboard" style="display: none;">
     <div class="top-bar">
       <a href="#" class="nav-logo-inline">
-        <span class="logo-name-row" style="margin-top:3px;"><span class="logo-open">Todo</span> <span class="logo-sports">Trail</span></span>
+        <span class="logo-name-row" style="margin-top:3px;"><span class="logo-open">HUELLA</span> <span class="logo-sports">RUNNER</span></span>
       </a>
       <div style="display:flex; align-items:center; gap:12px;">
         <div style="font-size: 0.75rem; color: var(--gris-texto);">Hola, <span id="user-name" style="color: var(--amarillo); font-weight: 900;">Corredor</span></div>
@@ -1492,12 +1490,13 @@
           🔔
           <span class="notif-badge" id="notif-badge"></span>
         </button>
+        <button onclick="toggleTheme()" id="btn-theme" title="Cambiar tema" style="background:none; border:none; cursor:pointer; font-size:1rem; line-height:1;">🌙</button>
         <button onclick="doLogout()" style="background:none; border:none; color:var(--amarillo); cursor:pointer; font-weight:700; font-size: 0.8rem;">Salir</button>
       </div>
     </div>
     <div class="armario-header">
       <div class="armario-title">MIS <span>ZAPAS</span></div>
-      <div class="armario-subtitle">Tus zapatillas activas</div>
+      <div class="armario-subtitle" style="font-size:0.85rem; font-weight:900; text-transform:uppercase; letter-spacing:2px; background:linear-gradient(90deg,#D4904A,#B87333,#8B5E2A); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">Tus Zapatillas Activas</div>
     </div>
     <!-- CARRUSEL COVERFLOW -->
     <div class="coverflow-wrap" id="shoe-grid">
@@ -2196,6 +2195,21 @@
     }).loginUser(e, p);
   }
 
+  function toggleTheme() {
+    var isLight = document.documentElement.classList.toggle('light-mode');
+    document.getElementById('btn-theme').innerText = isLight ? '☀️' : '🌙';
+    try { localStorage.setItem('hr-theme', isLight ? 'light' : 'dark'); } catch(_) {}
+  }
+  (function() {
+    try {
+      if (localStorage.getItem('hr-theme') === 'light') {
+        document.documentElement.classList.add('light-mode');
+        var btn = document.getElementById('btn-theme');
+        if (btn) btn.innerText = '☀️';
+      }
+    } catch(_) {}
+  })();
+
   function doLogout() {
     currentUserEmail  = '';
     allUserShoes      = [];
@@ -2422,7 +2436,7 @@
                   'onclick="event.stopPropagation(); (function(){ ' +
                     'var shoe = allUserShoes.find(function(x){ return x.ID_Zapa === \'' + rawId + '\'; }); ' +
                     'if(shoe){ irATodoTrail(shoe.Genero, shoe.Talle); } ' +
-                  '})();">⛰️⛰️ <span class="tt-todo">todo</span><span class="tt-trail">trail</span> </button>' +
+                  '})();">⛰️ Ver en tienda</button>' +
               '</div>' +
             '</div>' +
 

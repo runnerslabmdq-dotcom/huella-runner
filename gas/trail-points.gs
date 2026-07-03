@@ -30,7 +30,7 @@ var TRAIL_PTS = {
   KM_UMBRAL_CUPON:      650,    // km para disparar cupón
   KM_MAX_DIA:           120,    // filtro diario anti-fraude
   KM_MAX_SEMANA:        180,    // filtro semanal anti-fraude
-  FACTOR_MANUAL:        0.85,   // ponderación carga manual
+  FACTOR_MANUAL:        1.0,    // ponderación carga manual (100%)
   PREFIJO_CUPON:        'TT-DESGASTE-',
   SHEET_CUPONES:        'Cupones_Emitidos',
   SHEET_ZAPAS:          'Zapatillas',
