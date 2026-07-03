@@ -25,8 +25,34 @@
       --naranja:   #FF6B00;
       --amarillo:  #FFD60A;
     }
+
+    /* ══ MODO CLARO ══ */
+    body.modo-claro {
+      --bg:        #F5F5F5;
+      --bg2:       #FFFFFF;
+      --card:      #FFFFFF;
+      --card2:     #EFEFEF;
+      --neon:      #8FB300;
+      --neon-dim:  #769400;
+      --neon-glow: rgba(143,179,0,0.15);
+      --plata:     #161616;
+      --gris:      #2e2e2e;
+      --metal:     #6a6a6a;
+      --borde:     #E0E0E0;
+      --borde2:    #D0D0D0;
+      --verde:     #1E8E0E;
+      --rojo:      #D6002A;
+      --naranja:   #CC5500;
+      --amarillo:  #B38600;
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--plata); min-height: 100vh; font-size: 15px; }
+    body {
+      font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--plata);
+      min-height: 100vh; font-size: 15px;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    body, body * { transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
     ::-webkit-scrollbar { width: 4px; height: 4px; }
     ::-webkit-scrollbar-track { background: #0a0a0a; }
     ::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 2px; }
@@ -47,6 +73,12 @@
     .adm-badge { background: var(--neon); color: #000; font-size: 0.6rem; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; padding: 5px 12px; border-radius: 4px; }
     .adm-refresh { background: transparent; border: 1px solid var(--borde2); border-radius: 6px; color: var(--metal); font-size: 0.7rem; font-weight: 700; font-family: 'Montserrat', sans-serif; padding: 7px 14px; cursor: pointer; transition: all 0.15s; }
     .adm-refresh:hover { color: var(--neon); border-color: var(--neon); }
+    .adm-theme-toggle {
+      background: transparent; border: 1px solid var(--borde2); border-radius: 6px;
+      color: var(--metal); font-size: 1rem; line-height: 1; padding: 7px 10px;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .adm-theme-toggle:hover { color: var(--neon); border-color: var(--neon); }
 
     /* ══ LAYOUT ══ */
     .wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
@@ -313,6 +345,7 @@
       <div class="adm-tagline">Panel de administración</div>
     </div>
     <div class="adm-header-right">
+      <button class="adm-theme-toggle" id="themeToggle" onclick="toggleTema()" title="Cambiar tema" aria-label="Cambiar tema claro/oscuro">🌙</button>
       <button class="adm-refresh" onclick="cargarTodo()">↺ Actualizar</button>
       <div class="adm-badge">Admin</div>
     </div>
@@ -528,6 +561,25 @@
 
   // Estado compartido entre las dos llamadas async (stats y dashboard).
   const _insState = { totalZapas: null, alertasCount: null };
+
+  /* ════════════════════════════════════
+     MODO OSCURO / MODO CLARO
+  ════════════════════════════════════ */
+  function aplicarTema(modo) {
+    const esClaro = modo === 'claro';
+    document.body.classList.toggle('modo-claro', esClaro);
+    const btn = document.getElementById('themeToggle');
+    if (btn) btn.textContent = esClaro ? '☀️' : '🌙';
+  }
+
+  function toggleTema() {
+    const nuevoModo = document.body.classList.contains('modo-claro') ? 'oscuro' : 'claro';
+    aplicarTema(nuevoModo);
+    localStorage.setItem('adminTema', nuevoModo);
+  }
+
+  // Aplica el tema guardado (o "oscuro" por defecto) antes de cargar datos.
+  aplicarTema(localStorage.getItem('adminTema') || 'oscuro');
 
   window.onload = function() { cargarTodo(); };
 
