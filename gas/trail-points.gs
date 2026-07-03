@@ -26,7 +26,7 @@
 // ============================================================
 
 // ---- CONFIG CENTRAL (ajustar según negocio) ----------------
-var TP = {
+var TRAIL_PTS = {
   KM_UMBRAL_CUPON:      650,    // km para disparar cupón
   KM_MAX_DIA:           120,    // filtro diario anti-fraude
   KM_MAX_SEMANA:        180,    // filtro semanal anti-fraude
@@ -97,10 +97,10 @@ function registrarActividadTrailPoints(email, idZapa, kmBrutos, tipoCarga, fecha
 // ============================================================
 function _validarUmbralesBiologicos(email, km, fechaStr) {
   // Filtro diario absoluto
-  if (km > TP.KM_MAX_DIA) {
+  if (km > TRAIL_PTS.KM_MAX_DIA) {
     return {
       estado: 'Rechazada',
-      motivo: `Supera el máximo diario permitido (${TP.KM_MAX_DIA} km). Actividad: ${km} km.`
+      motivo: `Supera el máximo diario permitido (${TRAIL_PTS.KM_MAX_DIA} km). Actividad: ${km} km.`
     };
   }
 
@@ -108,10 +108,10 @@ function _validarUmbralesBiologicos(email, km, fechaStr) {
   const kmSemana = _sumaKmUltimos7Dias(email, fechaStr);
   const total    = kmSemana + km;
 
-  if (total > TP.KM_MAX_SEMANA) {
+  if (total > TRAIL_PTS.KM_MAX_SEMANA) {
     return {
       estado: 'Sospechosa',
-      motivo: `Acumulado semanal excede ${TP.KM_MAX_SEMANA} km (acumulado: ${kmSemana} km + nuevo: ${km} km = ${total} km). KM congelados.`
+      motivo: `Acumulado semanal excede ${TRAIL_PTS.KM_MAX_SEMANA} km (acumulado: ${kmSemana} km + nuevo: ${km} km = ${total} km). KM congelados.`
     };
   }
 
@@ -121,7 +121,7 @@ function _validarUmbralesBiologicos(email, km, fechaStr) {
 function _sumaKmUltimos7Dias(email, fechaStr) {
   try {
     const ss    = SpreadsheetApp.openById(SHEET_ID);
-    const sheet = ss.getSheetByName(TP.SHEET_TRAIN);
+    const sheet = ss.getSheetByName(TRAIL_PTS.SHEET_TRAIN);
     if (!sheet || sheet.getLastRow() < 2) return 0;
 
     const data    = sheet.getDataRange().getValues();
@@ -168,7 +168,7 @@ function _ponderarKm(km, tipoCarga, fecha, hora) {
   // Manual: requiere fecha Y hora explícitas
   if (!fecha || !hora) return null;
 
-  return Math.round(km * TP.FACTOR_MANUAL * 100) / 100;
+  return Math.round(km * TRAIL_PTS.FACTOR_MANUAL * 100) / 100;
 }
 
 // ============================================================
@@ -177,7 +177,7 @@ function _ponderarKm(km, tipoCarga, fecha, hora) {
 function _guardarEntrenamiento(email, idZapa, kmBrutos, kmSumados, tipo,
                                fecha, hora, estadoVal, motivoRechazo) {
   const ss    = SpreadsheetApp.openById(SHEET_ID);
-  const sheet = ss.getSheetByName(TP.SHEET_TRAIN);
+  const sheet = ss.getSheetByName(TRAIL_PTS.SHEET_TRAIN);
   if (!sheet) return;
 
   const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
@@ -221,7 +221,7 @@ function _sumarKmYVerificarUmbral(email, idZapa, kmAcreditados) {
 
   try {
     const ss    = SpreadsheetApp.openById(SHEET_ID);
-    const sheet = ss.getSheetByName(TP.SHEET_ZAPAS);
+    const sheet = ss.getSheetByName(TRAIL_PTS.SHEET_ZAPAS);
     if (!sheet || sheet.getLastRow() < 2) return null;
 
     const data    = sheet.getDataRange().getValues();
@@ -258,7 +258,7 @@ function _sumarKmYVerificarUmbral(email, idZapa, kmAcreditados) {
 
       // Verificar si corresponde emitir cupón
       const yaEmitido = data[i][col.cuponEmitido];
-      if (!yaEmitido && kmNuevos >= TP.KM_UMBRAL_CUPON) {
+      if (!yaEmitido && kmNuevos >= TRAIL_PTS.KM_UMBRAL_CUPON) {
         const marca  = (data[i][col.marca]  || '').toString().trim();
         const modelo = (data[i][col.modelo] || '').toString().trim();
 
@@ -285,9 +285,9 @@ function _sumarKmYVerificarUmbral(email, idZapa, kmAcreditados) {
 }
 
 function _calcularEstadoDesgaste(km) {
-  if (km >= TP.KM_UMBRAL_CUPON) return 'Crítico';
-  if (km >= TP.KM_UMBRAL_CUPON * 0.80) return 'Bajo';
-  if (km >= TP.KM_UMBRAL_CUPON * 0.55) return 'Positivo';
+  if (km >= TRAIL_PTS.KM_UMBRAL_CUPON) return 'Crítico';
+  if (km >= TRAIL_PTS.KM_UMBRAL_CUPON * 0.80) return 'Bajo';
+  if (km >= TRAIL_PTS.KM_UMBRAL_CUPON * 0.55) return 'Positivo';
   return 'Normal';
 }
 
@@ -295,13 +295,13 @@ function _calcularEstadoDesgaste(km) {
 // EMITIR CUPÓN ÚNICO — Genera código y lo persiste
 // ============================================================
 function _emitirCupon(email, idZapa, marca, modelo, kmAlEmitir) {
-  const codigo = TP.PREFIJO_CUPON + _generarCodigoAlfanumerico(6);
+  const codigo = TRAIL_PTS.PREFIJO_CUPON + _generarCodigoAlfanumerico(6);
   const fecha  = _hoy();
 
   const ss    = SpreadsheetApp.openById(SHEET_ID);
-  let cSheet  = ss.getSheetByName(TP.SHEET_CUPONES);
+  let cSheet  = ss.getSheetByName(TRAIL_PTS.SHEET_CUPONES);
   if (!cSheet) {
-    cSheet = ss.insertSheet(TP.SHEET_CUPONES);
+    cSheet = ss.insertSheet(TRAIL_PTS.SHEET_CUPONES);
     cSheet.appendRow([
       'Codigo', 'Email_Usuario', 'ID_Zapa', 'Marca', 'Modelo',
       'KM_Al_Emitir', 'Fecha_Emision', 'Estado'
@@ -331,7 +331,7 @@ function _emitirCupon(email, idZapa, marca, modelo, kmAlEmitir) {
 function getCuponDisponible(email) {
   try {
     const ss     = SpreadsheetApp.openById(SHEET_ID);
-    const sheet  = ss.getSheetByName(TP.SHEET_CUPONES);
+    const sheet  = ss.getSheetByName(TRAIL_PTS.SHEET_CUPONES);
     if (!sheet || sheet.getLastRow() < 2) return null;
 
     const data    = sheet.getDataRange().getValues();
@@ -375,7 +375,7 @@ function getCuponDisponible(email) {
 function marcarCuponUsado(email, codigo) {
   try {
     const ss    = SpreadsheetApp.openById(SHEET_ID);
-    const sheet = ss.getSheetByName(TP.SHEET_CUPONES);
+    const sheet = ss.getSheetByName(TRAIL_PTS.SHEET_CUPONES);
     if (!sheet || sheet.getLastRow() < 2) return { success: false };
 
     const data    = sheet.getDataRange().getValues();
