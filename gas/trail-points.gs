@@ -314,10 +314,11 @@ function _emitirCupon(email, idZapa, marca, modelo, kmAlEmitir) {
   // Notificar al usuario en-app
   try {
     enviarNotificacion(
+      'individual',
       email,
-      '🏆 ¡Cupón Trail Points desbloqueado!',
       `Tus ${marca} ${modelo} llegaron a ${kmAlEmitir} km de trail. ` +
-      `Cupón de descuento: ${codigo}. ¡Usalo en tu próxima compra en Todo Trail!`
+      `Cupón de descuento: ${codigo}. ¡Usalo en tu próxima compra en Todo Trail!`,
+      'Premio'
     );
   } catch(_) {}
 

@@ -235,7 +235,7 @@ function procesarNotificacionesDiferidas() {
       const mensaje = data[i][col.mensaje].toString();
 
       // Reutiliza enviarNotificacion() del backend principal
-      enviarNotificacion(email, '🏃 Dato de tu zapatilla', mensaje);
+      enviarNotificacion('individual', email, mensaje, 'Mensaje');
 
       sheet.getRange(i + 1, col.enviado + 1).setValue(true);
     }
