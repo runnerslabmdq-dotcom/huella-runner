@@ -28,8 +28,8 @@
 // ---- CONFIG CENTRAL (ajustar según negocio) ----------------
 var TRAIL_PTS = {
   KM_UMBRAL_CUPON:      650,    // km para disparar cupón
-  KM_MAX_DIA:           120,    // filtro diario anti-fraude
-  KM_MAX_SEMANA:        180,    // filtro semanal anti-fraude
+  KM_MAX_DIA:           132,    // filtro diario anti-fraude (+10%)
+  KM_MAX_SEMANA:        198,    // filtro semanal anti-fraude (+10%)
   FACTOR_MANUAL:        1.0,    // ponderación carga manual (100%)
   PREFIJO_CUPON:        'TT-DESGASTE-',
   SHEET_CUPONES:        'Cupones_Emitidos',
