@@ -16,7 +16,7 @@ function doGet(e) {
     const manifest = {
       name:             'Huella Runner',
       short_name:       'Huella Runner',
-      description:      'Tu zapatilla de trail, siempre bajo control. Todo Trail.',
+      description:      'Tu zapatilla de trail, siempre bajo control.',
       start_url:        appUrl,
       scope:            appUrl,
       display:          'standalone',
@@ -25,8 +25,8 @@ function doGet(e) {
       theme_color:      '#CCFF00',
       lang:             'es',
       icons: [
-        { src: appUrl + '?page=icon&size=192', sizes: '192x192', type: 'image/png', purpose: 'any maskable' },
-        { src: appUrl + '?page=icon&size=512', sizes: '512x512', type: 'image/png', purpose: 'any maskable' }
+        { src: 'https://res.cloudinary.com/dlayzh9ln/image/upload/v1778672392/icono_HR_fomqlf.png', sizes: '192x192', type: 'image/png', purpose: 'any maskable' },
+        { src: 'https://res.cloudinary.com/dlayzh9ln/image/upload/v1778672989/icono_HR_512_hvbsyb.png', sizes: '512x512', type: 'image/png', purpose: 'any maskable' }
       ]
     };
     return ContentService
