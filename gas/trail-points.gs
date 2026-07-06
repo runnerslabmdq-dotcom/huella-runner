@@ -428,10 +428,12 @@ function _generarCodigoAlfanumerico(longitud) {
 }
 
 function _hoy() {
-  const d  = new Date();
-  const dd = String(d.getDate()).padStart(2, '0');
-  const mm = String(d.getMonth() + 1).padStart(2, '0');
-  return dd + '/' + mm + '/' + d.getFullYear();
+  const d   = new Date();
+  const dd  = String(d.getDate()).padStart(2, '0');
+  const mm  = String(d.getMonth() + 1).padStart(2, '0');
+  const hh  = String(d.getHours()).padStart(2, '0');
+  const min = String(d.getMinutes()).padStart(2, '0');
+  return dd + '/' + mm + '/' + d.getFullYear() + ' ' + hh + ':' + min;
 }
 
 function _parseFechaStr(str) {
