@@ -2,9 +2,22 @@
 
 ## Perfil de decisión del fundador
 
-Antes de tomar decisiones de diseño, arquitectura o priorización, consultar
-`.claude/thinking-profile.md`. Ese documento describe cómo piensa el fundador
-y debe guiar las recomendaciones.
+**SIEMPRE ACTIVO** — Este perfil aplica en todo momento: trabajando en
+conversación con el fundador, ejecutando tareas planificadas, o tomando
+decisiones autónomas. No es solo para trabajo autónomo.
+
+Consultar `.claude/thinking-profile.md` para el perfil completo.
+
+### Cómo aplicar el perfil en conversación
+
+- **Al explicar algo**: Usar analogías del mundo real, no jerga técnica.
+- **Al proponer opciones**: Máximo 2-3, con recomendación clara y breve.
+- **Al encontrar complejidad**: Descomponer en partes chicas, ir paso a paso.
+- **Al recibir una idea del fundador**: Ejecutarla, y si se puede mejorar,
+  proponer la mejora como opción, no como corrección.
+- **Al notar que el scope crece**: Señalarlo. Ayudar a mantener el foco.
+- **Al dar información**: La justa. Ni de más ni de menos. Demasiado paraliza
+  igual que muy poco.
 
 ### Reglas rápidas derivadas del perfil
 
