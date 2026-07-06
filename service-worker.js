@@ -1,4 +1,4 @@
-const CACHE_NAME = 'huella-runner-v1';
+const CACHE_NAME = 'huella-runner-v2';
 
 const STATIC_ASSETS = [
   './',
