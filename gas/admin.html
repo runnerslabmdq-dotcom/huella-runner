@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <base target="_top">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#000000">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:        #000000;
+      --bg2:       #080808;
+      --card:      #0d0d0d;
+      --card2:     #0a0a0a;
+      --neon:      #CCFF00;
+      --neon-dim:  #a8d400;
+      --neon-glow: rgba(204,255,0,0.12);
+      --plata:     #F0F0F0;
+      --gris:      #C8C8C8;
+      --metal:     #808080;
+      --borde:     #1a1a1a;
+      --borde2:    #252525;
+      --verde:     #39FF14;
+      --rojo:      #FF2D55;
+      --naranja:   #FF6B00;
+      --amarillo:  #FFD60A;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--plata); min-height: 100vh; font-size: 14px; }
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: #0a0a0a; }
+    ::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 2px; }
+
+    #dashboard { display: block; padding: 0 0 80px; }
+
+    /* ══ HEADER ══ */
+    .adm-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 16px 28px; border-bottom: 1px solid var(--borde2);
+      background: var(--bg); position: sticky; top: 0; z-index: 100;
+    }
+    .adm-logo-wrap { display: flex; flex-direction: column; gap: 2px; }
+    .adm-logo-text { font-size: 0.72rem; font-weight: 900; color: var(--plata); text-transform: uppercase; letter-spacing: 4px; }
+    .adm-logo-text span { color: var(--neon); }
+    .adm-tagline { font-size: 0.58rem; color: var(--metal); text-transform: uppercase; letter-spacing: 3px; }
+    .adm-header-right { display: flex; align-items: center; gap: 10px; }
+    .adm-badge { background: var(--neon); color: #000; font-size: 0.6rem; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; padding: 5px 12px; border-radius: 4px; }
+    .adm-refresh { background: transparent; border: 1px solid var(--borde2); border-radius: 6px; color: var(--metal); font-size: 0.7rem; font-weight: 700; font-family: 'Montserrat', sans-serif; padding: 7px 14px; cursor: pointer; transition: all 0.15s; }
+    .adm-refresh:hover { color: var(--neon); border-color: var(--neon); }
+
+    /* ══ LAYOUT ══ */
+    .wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
+    .sec-label { font-size: 0.66rem; font-weight: 900; text-transform: uppercase; letter-spacing: 4px; color: var(--metal); margin: 36px 0 14px; display: flex; align-items: center; gap: 10px; }
+    .sec-label::before { content: ''; display: block; width: 3px; height: 14px; background: var(--neon); border-radius: 2px; flex-shrink: 0; }
+
+    /* ══ MÉTRICAS ══ */
+    .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    @media (max-width: 700px) { .metrics-grid { grid-template-columns: repeat(2, 1fr); } }
+    .metric-card { background: var(--card); border: 1px solid var(--borde); border-radius: 12px; padding: 20px 16px; position: relative; overflow: hidden; transition: border-color 0.2s; }
+    .metric-card.accent { border-color: rgba(204,255,0,0.2); background: linear-gradient(135deg, #0a0d00 0%, #0d0d0d 100%); }
+    .metric-card.accent::after { content: ''; position: absolute; top: 0; right: 0; width: 60px; height: 60px; background: radial-gradient(circle at top right, rgba(204,255,0,0.08), transparent 70%); }
+    .metric-lbl { font-size: 0.62rem; font-weight: 700; color: var(--metal); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; }
+    .metric-val { font-size: 2.6rem; font-weight: 900; color: var(--plata); line-height: 1; letter-spacing: -1px; }
+    .metric-card.accent .metric-val { color: var(--neon); }
+    .metric-sub { font-size: 0.68rem; color: var(--metal); margin-top: 8px; }
+
+    /* ══ DOS COLUMNAS ══ */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+
+    /* ══ PANEL ══ */
+    .panel { background: var(--card); border: 1px solid var(--borde); border-radius: 12px; padding: 20px 18px; }
+    .panel-title { font-size: 0.66rem; font-weight: 900; color: var(--metal); text-transform: uppercase; letter-spacing: 2.5px; margin-bottom: 16px; }
+
+    /* ══ RANKING ══ */
+    .rank-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--borde); }
+    .rank-item:last-child { border-bottom: none; }
+    .rank-num { font-size: 0.72rem; font-weight: 900; color: #333; width: 18px; text-align: center; flex-shrink: 0; }
+    .rank-num.gold   { color: var(--neon); }
+    .rank-num.silver { color: #C0C0C0; }
+    .rank-num.bronze { color: #B07850; }
+    .rank-avatar { width: 34px; height: 34px; border-radius: 50%; background: #111; border: 1px solid var(--borde2); display: flex; align-items: center; justify-content: center; font-size: 0.68rem; font-weight: 900; color: var(--metal); flex-shrink: 0; }
+    .rank-info { flex: 1; min-width: 0; }
+    .rank-name { font-size: 0.86rem; font-weight: 700; color: var(--plata); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .rank-detail { font-size: 0.65rem; color: var(--metal); margin-top: 2px; }
+    .rank-km { font-size: 1.05rem; font-weight: 900; color: var(--neon); white-space: nowrap; flex-shrink: 0; }
+    .rank-km span { font-size: 0.6rem; color: var(--metal); font-weight: 700; margin-left: 2px; }
+
+    /* ══ ACTIVIDAD RECIENTE ══ */
+    .act-item { display: flex; align-items: flex-start; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--borde); }
+    .act-item:last-child { border-bottom: none; }
+    .act-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--neon); flex-shrink: 0; margin-top: 5px; box-shadow: 0 0 6px var(--neon); }
+    .act-dot.grey { background: #2a2a2a; box-shadow: none; }
+    .act-body { flex: 1; min-width: 0; }
+    .act-text { font-size: 0.8rem; color: var(--gris); line-height: 1.4; }
+    .act-text strong { color: var(--plata); }
+    .act-time { font-size: 0.65rem; color: var(--metal); margin-top: 2px; }
+
+    /* ══ CHIPS FILTRO USUARIOS ══ */
+    .filter-bar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 16px; }
+    .fchip { font-size: 0.65rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1.5px; padding: 8px 16px; border-radius: 6px; cursor: pointer; border: 1px solid var(--borde2); background: var(--card2); color: var(--metal); transition: all 0.15s; white-space: nowrap; user-select: none; }
+    .fchip:hover { border-color: var(--neon); color: var(--neon); }
+    .fchip.active { background: var(--neon); color: #000; border-color: var(--neon); box-shadow: 0 0 12px var(--neon-glow); }
+    .filter-count { font-size: 0.6rem; font-weight: 900; color: var(--metal); margin-left: auto; white-space: nowrap; }
+
+    /* ══ STATUS DOT ══ */
+    .status-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+    .status-dot.online  { background: var(--verde); box-shadow: 0 0 6px var(--verde); }
+    .status-dot.offline { background: #2a2a2a; }
+
+    /* ══ TABLA USUARIOS Desktop ══ */
+    .table-hint { font-size: 0.68rem; color: var(--metal); margin-bottom: 14px; }
+    .table-wrap { overflow-x: auto; }
+    .users-table { width: 100%; border-collapse: collapse; min-width: 480px; }
+    .users-table th { font-size: 0.62rem; font-weight: 900; color: var(--metal); text-transform: uppercase; letter-spacing: 2px; text-align: left; padding: 0 12px 12px 0; border-bottom: 1px solid var(--borde); }
+    .users-table td { font-size: 0.8rem; color: var(--gris); padding: 11px 12px 11px 0; border-bottom: 1px solid var(--borde); vertical-align: middle; }
+    .users-table td.name { color: var(--plata); font-weight: 700; font-size: 0.86rem; }
+    .users-table tr.row-click { cursor: pointer; transition: background 0.12s; }
+    .users-table tr.row-click:hover td { background: #0f0f0f; }
+
+    /* ══ CARDS Mobile ══ */
+    .users-cards { display: none; flex-direction: column; gap: 8px; }
+    @media (max-width: 640px) { .table-wrap { display: none; } .users-cards { display: flex; } }
+    .user-card { background: var(--bg2); border: 1px solid var(--borde); border-radius: 10px; padding: 14px 16px; cursor: pointer; transition: border-color 0.15s; }
+    .user-card:hover { border-color: var(--borde2); }
+    .user-card-top { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .user-card-avatar { width: 38px; height: 38px; border-radius: 50%; background: #111; border: 1px solid var(--borde2); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 900; color: var(--metal); flex-shrink: 0; }
+    .user-card-info { flex: 1; min-width: 0; }
+    .user-card-name { font-size: 0.9rem; font-weight: 700; color: var(--plata); }
+    .user-card-grupo { font-size: 0.65rem; color: var(--metal); margin-top: 2px; }
+    .user-card-stats { display: flex; gap: 16px; }
+    .user-card-stat { display: flex; flex-direction: column; gap: 2px; }
+    .user-card-stat-lbl { font-size: 0.58rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--metal); font-weight: 700; }
+    .user-card-stat-val { font-size: 1rem; font-weight: 900; color: var(--plata); }
+    .user-card-stat-val.neon { color: var(--neon); }
+    .user-card-actions { display: flex; align-items: center; gap: 8px; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--borde); }
+
+    /* ══ PILLS ══ */
+    .pill { display: inline-block; font-size: 0.58rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; padding: 4px 9px; border-radius: 4px; }
+    .pill.grupo { background: #0a0f1a; color: #7799EE; border: 1px solid #1a2240; }
+    .pill.nivel { background: #0a0a00; color: var(--neon); border: 1px solid rgba(204,255,0,0.2); }
+
+    /* ══ NOTIF BTN ══ */
+    .notif-btn { font-size: 0.6rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; padding: 5px 10px; border-radius: 5px; background: transparent; color: var(--metal); border: 1px solid var(--borde2); cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+    .notif-btn:hover { background: var(--neon); color: #000; border-color: var(--neon); }
+
+    /* ══ ALERTAS DESGASTE ══ */
+    .alertas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; }
+    .alert-card { background: var(--bg2); border: 1px solid var(--borde); border-radius: 10px; padding: 14px 16px; transition: border-color 0.2s; }
+    .alert-card:hover { border-color: var(--borde2); }
+    .alert-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+    .alert-runner { font-size: 0.88rem; font-weight: 700; color: var(--plata); }
+    .alert-zapa { font-size: 0.68rem; color: var(--metal); margin-top: 3px; }
+    .alert-km-badge { font-size: 1.1rem; font-weight: 900; white-space: nowrap; flex-shrink: 0; line-height: 1; }
+    .alert-km-badge span { font-size: 0.6rem; color: var(--metal); font-weight: 700; margin-left: 2px; }
+    .km-bar-track { height: 6px; border-radius: 3px; background: #1a1a1a; overflow: hidden; margin-top: 4px; }
+    .km-bar-fill { height: 100%; border-radius: 3px; transition: width 0.8s cubic-bezier(0.4,0,0.2,1); }
+    .km-bar-labels { display: flex; justify-content: space-between; margin-top: 5px; }
+    .km-bar-label { font-size: 0.54rem; color: #2a2a2a; font-weight: 700; }
+    .km-bar-label.active { color: var(--metal); }
+
+    /* ══ NOTIFICACIONES ══ */
+    .notif-tabs { display: flex; gap: 7px; margin-bottom: 20px; flex-wrap: wrap; }
+    .ntab { font-size: 0.65rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1.5px; padding: 8px 14px; border-radius: 6px; cursor: pointer; border: 1px solid transparent; transition: all 0.15s; }
+    .ntab.active   { background: var(--neon); color: #000; }
+    .ntab.inactive { background: var(--card2); color: var(--metal); border-color: var(--borde2); }
+    .ntab.inactive:hover { border-color: var(--neon); color: var(--neon); }
+    .nf-label { font-size: 0.64rem; font-weight: 900; color: var(--metal); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; }
+    .nf-select, .nf-textarea { width: 100%; background: var(--bg); border: 1px solid var(--borde2); border-radius: 8px; color: var(--plata); font-family: 'Montserrat', sans-serif; font-size: 0.86rem; padding: 11px 14px; outline: none; margin-bottom: 14px; transition: border-color 0.2s; }
+    .nf-select:focus, .nf-textarea:focus { border-color: var(--neon); }
+    .nf-textarea { resize: vertical; min-height: 90px; }
+    .nf-chip { display: inline-flex; align-items: center; gap: 8px; background: rgba(204,255,0,0.06); border: 1px solid rgba(204,255,0,0.25); border-radius: 7px; padding: 8px 12px; font-size: 0.8rem; font-weight: 700; color: var(--neon); margin-bottom: 14px; }
+    .nf-chip button { background: none; border: none; color: var(--metal); cursor: pointer; font-size: 1rem; padding: 0; line-height: 1; }
+    .nf-chip button:hover { color: var(--rojo); }
+    .nf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .nf-btn { width: 100%; background: var(--neon); color: #000; border: none; border-radius: 8px; font-family: 'Montserrat', sans-serif; font-size: 0.8rem; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; padding: 14px; cursor: pointer; margin-top: 4px; transition: all 0.2s; }
+    .nf-btn:hover    { background: var(--neon-dim); box-shadow: 0 0 16px var(--neon-glow); }
+    .nf-btn:disabled { background: #1a1a1a; color: #333; cursor: not-allowed; box-shadow: none; }
+    .nf-feedback { font-size: 0.76rem; margin-top: 10px; min-height: 20px; text-align: center; }
+    .nf-feedback.ok  { color: var(--verde); }
+    .nf-feedback.err { color: var(--rojo); }
+    .nf-info { font-size: 0.76rem; color: var(--metal); margin-bottom: 14px; padding: 10px 0; }
+
+    /* ══ SEARCH ══ */
+    .users-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px; }
+    .search-input { background: var(--bg); border: 1px solid var(--borde2); border-radius: 7px; color: var(--plata); font-family: 'Montserrat', sans-serif; font-size: 0.78rem; padding: 8px 14px; outline: none; width: 220px; transition: border-color 0.2s; }
+    .search-input:focus { border-color: var(--neon); }
+
+    /* ══ LOADING / TOAST ══ */
+    .loading-row { text-align: center; padding: 32px 10px; color: #333; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; }
+    #toast { display: none; position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); background: var(--card2); border: 1px solid var(--borde2); border-radius: 8px; padding: 12px 20px; font-size: 0.78rem; font-weight: 700; color: var(--plata); z-index: 9999; white-space: nowrap; box-shadow: 0 4px 32px rgba(0,0,0,0.8); }
+
+    /* ══════════════════════════════════════════════════
+       PANEL INSIGHTS — pestañas + módulos
+    ══════════════════════════════════════════════════ */
+    .insights-panel {
+      background: var(--card); border: 1px solid var(--borde);
+      border-radius: 12px; overflow: hidden;
+    }
+
+    /* Barra de pestañas */
+    .ins-tabs {
+      display: flex; border-bottom: 1px solid var(--borde);
+      overflow-x: auto; scrollbar-width: none;
+    }
+    .ins-tabs::-webkit-scrollbar { display: none; }
+    .ins-tab {
+      font-size: 0.62rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1.5px;
+      padding: 14px 18px; cursor: pointer; color: var(--metal); white-space: nowrap;
+      border-bottom: 2px solid transparent; transition: all 0.15s; flex-shrink: 0;
+      background: transparent; border-left: none; border-right: none; border-top: none;
+    }
+    .ins-tab:hover { color: var(--plata); }
+    .ins-tab.active { color: var(--neon); border-bottom-color: var(--neon); }
+
+    /* Contenido de cada pestaña */
+    .ins-content { display: none; padding: 22px 20px; }
+    .ins-content.active { display: block; }
+
+    /* ── Módulo A: Perfil Comunidad ── */
+    .nivel-bar-wrap { margin-bottom: 14px; }
+    .nivel-bar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .nivel-bar-name { font-size: 0.76rem; font-weight: 700; color: var(--plata); }
+    .nivel-bar-count { font-size: 0.72rem; font-weight: 900; color: var(--neon); }
+    .nivel-bar-track { height: 8px; background: #111; border-radius: 4px; overflow: hidden; }
+    .nivel-bar-fill  { height: 100%; border-radius: 4px; transition: width 0.9s cubic-bezier(0.4,0,0.2,1); }
+    .nivel-bar-pct   { font-size: 0.6rem; color: var(--metal); margin-top: 3px; text-align: right; }
+
+    /* ── Módulo B: Semáforo Zapas ── */
+    .semaforo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    @media (max-width: 480px) { .semaforo-grid { grid-template-columns: 1fr; } }
+    .semaforo-card {
+      border-radius: 10px; padding: 18px 14px; text-align: center;
+      border: 1px solid; position: relative; overflow: hidden;
+    }
+    .semaforo-card.verde   { background: #001a00; border-color: rgba(57,255,20,0.25); }
+    .semaforo-card.naranja { background: #1a0800; border-color: rgba(255,107,0,0.3); }
+    .semaforo-card.rojo    { background: #1a0008; border-color: rgba(255,45,85,0.3); }
+    .semaforo-dot { width: 12px; height: 12px; border-radius: 50%; margin: 0 auto 12px; }
+    .semaforo-card.verde   .semaforo-dot { background: var(--verde); box-shadow: 0 0 10px var(--verde); }
+    .semaforo-card.naranja .semaforo-dot { background: var(--naranja); box-shadow: 0 0 10px var(--naranja); }
+    .semaforo-card.rojo    .semaforo-dot { background: var(--rojo); box-shadow: 0 0 10px var(--rojo); }
+    .semaforo-num { font-size: 2.4rem; font-weight: 900; line-height: 1; margin-bottom: 4px; }
+    .semaforo-card.verde   .semaforo-num { color: var(--verde); }
+    .semaforo-card.naranja .semaforo-num { color: var(--naranja); }
+    .semaforo-card.rojo    .semaforo-num { color: var(--rojo); }
+    .semaforo-lbl { font-size: 0.62rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1.5px; color: var(--metal); }
+    .semaforo-sub { font-size: 0.6rem; color: #444; margin-top: 6px; }
+
+    /* ── Módulo C: Tendencia semanal ── */
+    .tend-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .tend-day { font-size: 0.68rem; font-weight: 700; color: var(--metal); width: 36px; text-align: right; flex-shrink: 0; }
+    .tend-track { flex: 1; background: #111; border-radius: 3px; height: 10px; overflow: hidden; }
+    .tend-fill  { height: 100%; background: var(--neon); border-radius: 3px; transition: width 0.7s ease; }
+    .tend-info  { font-size: 0.64rem; color: var(--metal); width: 100px; text-align: right; flex-shrink: 0; }
+
+    /* ── Módulo D: Top Modelos ══ */
+    .top-modelo-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--borde); }
+    .top-modelo-item:last-child { border-bottom: none; }
+    .top-modelo-pos { font-size: 0.7rem; font-weight: 900; color: #2a2a2a; width: 20px; flex-shrink: 0; text-align: center; }
+    .top-modelo-pos.t1 { color: var(--neon); }
+    .top-modelo-pos.t2 { color: #C0C0C0; }
+    .top-modelo-pos.t3 { color: #B07850; }
+    .top-modelo-info { flex: 1; min-width: 0; }
+    .top-modelo-name { font-size: 0.84rem; font-weight: 700; color: var(--plata); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .top-modelo-marca { font-size: 0.62rem; color: var(--metal); margin-top: 2px; }
+    .top-modelo-count { font-size: 1rem; font-weight: 900; color: var(--neon); flex-shrink: 0; white-space: nowrap; }
+    .top-modelo-count span { font-size: 0.6rem; color: var(--metal); margin-left: 2px; }
+
+    /* ── Módulo E: Insight Comercial ══ */
+    .insight-card {
+      background: var(--bg2); border: 1px solid var(--borde2); border-radius: 10px;
+      padding: 16px 18px; margin-bottom: 10px; display: flex; align-items: flex-start; gap: 14px;
+    }
+    .insight-icon { font-size: 1.6rem; flex-shrink: 0; line-height: 1; margin-top: 2px; }
+    .insight-body { flex: 1; min-width: 0; }
+    .insight-title { font-size: 0.82rem; font-weight: 700; color: var(--plata); margin-bottom: 4px; }
+    .insight-desc  { font-size: 0.72rem; color: var(--metal); line-height: 1.5; }
+    .insight-action {
+      font-size: 0.62rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1.5px;
+      color: var(--neon); border: 1px solid rgba(204,255,0,0.3); border-radius: 5px;
+      padding: 5px 10px; cursor: pointer; background: transparent; margin-top: 10px;
+      transition: all 0.15s; display: inline-block;
+    }
+    .insight-action:hover { background: var(--neon); color: #000; }
+    .insight-num { font-size: 2rem; font-weight: 900; color: var(--neon); flex-shrink: 0; line-height: 1; align-self: center; }
+
+    /* ══ RESPONSIVE ══ */
+    @media (max-width: 480px) {
+      .adm-header { padding: 14px 16px; }
+      .wrap { padding: 0 14px; }
+      .nf-row { grid-template-columns: 1fr; }
+      .filter-bar { gap: 6px; }
+      .fchip { padding: 7px 12px; font-size: 0.6rem; }
+      .ins-tab { padding: 12px 14px; font-size: 0.58rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="dashboard">
+
+  <!-- HEADER -->
+  <div class="adm-header">
+    <div class="adm-logo-wrap">
+      <div class="adm-logo-text">Huella Runner <span>Todo Trail</span></div>
+      <div class="adm-tagline">Panel de administración</div>
+    </div>
+    <div class="adm-header-right">
+      <button class="adm-refresh" onclick="cargarTodo()">↺ Actualizar</button>
+      <div class="adm-badge">Admin</div>
+    </div>
+  </div>
+
+  <div class="wrap">
+
+    <!-- 1. MÉTRICAS -->
+    <div class="sec-label">Resumen general</div>
+    <div class="metrics-grid" id="metrics-grid">
+      <div class="loading-row" style="grid-column:1/-1">Cargando...</div>
+    </div>
+
+    <!-- 2. RANKING + ACTIVIDAD -->
+    <div class="sec-label">Rankings y actividad</div>
+    <div class="two-col">
+      <div class="panel">
+        <div class="panel-title">🏅 Ranking — KM totales</div>
+        <div id="ranking-list"><div class="loading-row">Cargando...</div></div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">⚡ Actividad reciente</div>
+        <div id="actividad-list"><div class="loading-row">Cargando...</div></div>
+      </div>
+    </div>
+
+    <!-- 3. ALERTAS DESGASTE — oculto visualmente (los datos alimentan el panel Insights) -->
+    <div style="display:none;">
+      <div id="alertas-list"></div>
+    </div>
+
+    <!-- 4. USUARIOS REGISTRADOS -->
+    <div class="sec-label">Usuarios registrados</div>
+    <div class="panel">
+      <div class="users-toolbar">
+        <div class="panel-title" style="margin:0;">Todos los usuarios</div>
+        <input type="text" class="search-input" id="buscar-usuario"
+          placeholder="Buscar nombre o email..." oninput="filtrarYRenderizar()">
+      </div>
+      <div class="filter-bar" id="filter-bar">
+        <div class="fchip active" data-filter="todos"          onclick="activarFiltro('todos')">Todos</div>
+        <div class="fchip"        data-filter="alerta-zapas"   onclick="activarFiltro('alerta-zapas')">🔥 Alerta Zapas</div>
+        <div class="fchip"        data-filter="inactivos"      onclick="activarFiltro('inactivos')">💤 Inactivos</div>
+        <div class="fchip"        data-filter="top-performers" onclick="activarFiltro('top-performers')">⭐ Top Performers</div>
+        <span class="filter-count" id="filter-count"></span>
+      </div>
+      <div class="table-hint">💡 Tocá un runner para enviarle una notificación individual</div>
+      <div class="table-wrap">
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>Estado</th><th>Nombre</th><th>Grupo</th><th>Nivel</th><th>Zapas</th><th>KM totales</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="users-tbody">
+            <tr><td colspan="7" class="loading-row">Cargando usuarios...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="users-cards" id="users-cards"></div>
+    </div>
+
+    <!-- 5. ENVIAR NOTIFICACIÓN -->
+    <div class="sec-label">Enviar notificación</div>
+    <div class="panel" id="panel-notificacion">
+      <div class="notif-tabs">
+        <div class="ntab active"   onclick="setTab('todos')">Todos</div>
+        <div class="ntab inactive" onclick="setTab('grupo')">Por grupo</div>
+        <div class="ntab inactive" onclick="setTab('individual')">Individual</div>
+        <div class="ntab inactive" onclick="setTab('premio')">Premio / Promo</div>
+      </div>
+      <div class="nf-label" id="nf-destino-label">Destinatarios</div>
+      <select class="nf-select" id="nf-destino" style="display:none;"></select>
+      <div id="nf-individual-wrap" style="display:none;">
+        <div id="nf-chip-wrap" style="display:none;">
+          <div class="nf-chip">
+            <span id="nf-chip-nombre"></span>
+            <button onclick="limpiarDestinatario()">✕</button>
+          </div>
+        </div>
+        <input type="text" class="nf-select" id="nf-email-individual"
+          placeholder="Email del usuario (o seleccioná desde la tabla arriba)...">
+      </div>
+      <div id="nf-destino-todos" class="nf-info">
+        El mensaje llegará a <strong id="total-users-label" style="color:var(--plata);">todos</strong> los usuarios registrados.
+      </div>
+      <div class="nf-label">Mensaje</div>
+      <textarea class="nf-textarea" id="nf-mensaje" placeholder="Escribí el mensaje que recibirán..."></textarea>
+      <div id="voucher-wrap" style="display:none;">
+        <div class="nf-label">Código voucher</div>
+        <input class="nf-select" id="nf-voucher" placeholder="Opcional: forzar un código específico">
+      </div>
+      <div class="nf-row">
+        <div>
+          <div class="nf-label">Tipo</div>
+          <select class="nf-select" id="nf-tipo" onchange="onTipoChange()" style="margin-bottom:0;">
+            <option value="Mensaje">Mensaje</option>
+            <option value="Premio">Premio / Promo</option>
+          </select>
+        </div>
+        <div style="display:flex;align-items:flex-end;">
+          <button class="nf-btn" id="nf-btn" onclick="enviarNotif()">Enviar notificación →</button>
+        </div>
+      </div>
+      <div class="nf-feedback" id="nf-feedback"></div>
+    </div>
+
+    <!-- 6. PANEL INSIGHTS -->
+    <div class="sec-label">Insights del negocio</div>
+    <div class="insights-panel">
+
+      <!-- Pestañas -->
+      <div class="ins-tabs">
+        <div class="ins-tab active"   onclick="setInsTab('comunidad')">👥 Perfil Comunidad</div>
+        <div class="ins-tab"          onclick="setInsTab('grupos')">🏃 Grupos</div>
+        <div class="ins-tab"          onclick="setInsTab('zapas')">🚦 Estado Zapas</div>
+        <div class="ins-tab"          onclick="setInsTab('tendencia')">📈 Tendencia Semanal</div>
+        <div class="ins-tab"          onclick="setInsTab('vidautil')">⏳ Vida Útil</div>
+        <div class="ins-tab"          onclick="setInsTab('horario')">🕐 Horario Pico</div>
+        <div class="ins-tab"          onclick="setInsTab('modelos')">👟 Recambio</div>
+        <div class="ins-tab"          onclick="setInsTab('comercial')">💡 Insight Comercial</div>
+      </div>
+
+      <!-- A: PERFIL COMUNIDAD -->
+      <div class="ins-content active" id="ins-comunidad">
+        <div class="panel-title">Distribución de niveles en la comunidad</div>
+        <div id="ins-niveles-bars"><div class="loading-row">Cargando...</div></div>
+      </div>
+
+      <!-- B: ESTADO ZAPAS (Semáforo) -->
+      <div class="ins-content" id="ins-zapas">
+        <div class="panel-title">Estado de zapatillas activas</div>
+        <div class="semaforo-grid" id="ins-semaforo">
+          <div class="loading-row" style="grid-column:1/-1">Cargando...</div>
+        </div>
+        <div style="margin-top:18px; padding-top:14px; border-top:1px solid var(--borde);">
+          <div class="panel-title">Detalle por tramo</div>
+          <div id="ins-semaforo-detalle"></div>
+        </div>
+      </div>
+
+      <!-- C: TENDENCIA SEMANAL -->
+      <div class="ins-content" id="ins-tendencia">
+        <div class="panel-title">KM registrados — últimos 7 días</div>
+        <div id="ins-tend-chart"><div class="loading-row">Cargando...</div></div>
+        <div id="ins-tend-resumen" style="margin-top:16px; padding-top:14px; border-top:1px solid var(--borde);"></div>
+      </div>
+
+      <!-- F: GRUPOS EN MOVIMIENTO -->
+      <div class="ins-content" id="ins-grupos">
+        <div class="panel-title">Ranking de grupos por KM totales</div>
+        <div id="ins-grupos-list"><div class="loading-row">Cargando...</div></div>
+      </div>
+
+      <!-- G: VIDA ÚTIL PROMEDIO -->
+      <div class="ins-content" id="ins-vidautil">
+        <div class="panel-title">Vida útil promedio de las zapatillas</div>
+        <div id="ins-vidautil-body"><div class="loading-row">Cargando...</div></div>
+      </div>
+
+      <!-- H: HORARIO PICO -->
+      <div class="ins-content" id="ins-horario">
+        <div class="panel-title">Franja horaria de entrenamiento</div>
+        <div id="ins-horario-body"><div class="loading-row">Cargando...</div></div>
+      </div>
+
+      <!-- D: RANKING CALZADO — CAMBIO v2906 -->
+      <div class="ins-content" id="ins-modelos">
+        <div class="panel-title">👟 Ranking de Calzado — Los más usados en Todo Trail</div>
+        <div id="ins-top-modelos"><div class="loading-row">Cargando...</div></div>
+      </div>
+
+      <!-- E: INSIGHT COMERCIAL -->
+      <div class="ins-content" id="ins-comercial">
+        <div class="panel-title">Oportunidades de acción comercial</div>
+        <div id="ins-comercial-cards"><div class="loading-row">Cargando...</div></div>
+      </div>
+
+    </div><!-- /insights-panel -->
+
+  </div><!-- /wrap -->
+</div><!-- /dashboard -->
+
+<div id="toast"></div>
+
+<script>
+  /* ════════════════════════════════════
+     ESTADO GLOBAL
+  ════════════════════════════════════ */
+  let tabActual           = 'todos';
+  let usuariosData        = [];
+  let gruposData          = [];
+  let filtroActivo        = 'todos';
+  let alertasData         = [];
+  let actividadPorDiaData = [];
+  let insTabActual        = 'comunidad';
+
+  // Estado compartido entre las dos llamadas async (stats y dashboard).
+  const _insState = { totalZapas: null, alertasCount: null };
+
+  window.onload = function() { cargarTodo(); };
+
+  function cargarTodo() {
+    cargarMetricas();
+    cargarRanking();
+    cargarActividad();
+    cargarAlertas();
+    cargarUsuarios();
+    cargarGrupos();
+    cargarActividadPorDia();
+  }
+
+  /* ════════════════════════════════════
+     MÉTRICAS
+  ════════════════════════════════════ */
+  function cargarMetricas() {
+    google.script.run
+      .withSuccessHandler(renderMetricas)
+      .withFailureHandler(function() {})
+      .getAdminStats();
+  }
+  function renderMetricas(data) {
+    if (!data || !data.success) return;
+    document.getElementById('metrics-grid').innerHTML = `
+      <div class="metric-card accent">
+        <div class="metric-lbl">Usuarios totales</div>
+        <div class="metric-val">${data.usuariosTotales}</div>
+        <div class="metric-sub">registrados</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-lbl">Activos hoy</div>
+        <div class="metric-val">${data.activosHoy}</div>
+        <div class="metric-sub">${data.registrosHoy} entrenamientos</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-lbl">Zapatillas activas</div>
+        <div class="metric-val">${data.zapatillasTotales}</div>
+        <div class="metric-sub">${data.zapasArchivadas} archivadas</div>
+      </div>
+      <div class="metric-card accent">
+        <div class="metric-lbl">KM registrados hoy</div>
+        <div class="metric-val">${data.kmHoy}</div>
+        <div class="metric-sub">${data.kmSemana} esta semana</div>
+      </div>`;
+    document.getElementById('total-users-label').textContent = data.usuariosTotales;
+    _insState.totalZapas = data.zapatillasTotales;
+    _actualizarSemaforoVerde();
+  }
+
+  /* ════════════════════════════════════
+     RANKING
+  ════════════════════════════════════ */
+  function cargarRanking() {
+    google.script.run
+      .withSuccessHandler(renderRanking)
+      .withFailureHandler(function() {})
+      .getRankingUsuarios();
+  }
+  function renderRanking(lista) {
+    const cont = document.getElementById('ranking-list');
+    if (!lista || !lista.length) { cont.innerHTML = '<div class="loading-row">Sin datos</div>'; return; }
+    const cls = ['gold','silver','bronze'];
+    cont.innerHTML = lista.slice(0, 8).map(function(u, i) {
+      const ini = ((u.nombre[0]||'') + (u.apellido[0]||'')).toUpperCase() || '?';
+      return `<div class="rank-item">
+        <div class="rank-num ${cls[i]||''}">${i+1}</div>
+        <div class="rank-avatar">${ini}</div>
+        <div class="rank-info">
+          <div class="rank-name">${u.nombre} ${u.apellido}</div>
+          <div class="rank-detail">${u.zapatillas} zapa${u.zapatillas!==1?'s':''} · ${u.grupo||'Sin grupo'}</div>
+        </div>
+        <div class="rank-km">${u.kmTotales}<span>km</span></div>
+      </div>`;
+    }).join('');
+  }
+
+  /* ════════════════════════════════════
+     ACTIVIDAD RECIENTE
+  ════════════════════════════════════ */
+  function cargarActividad() {
+    google.script.run
+      .withSuccessHandler(renderActividad)
+      .withFailureHandler(function() {})
+      .getActividadReciente();
+  }
+  function renderActividad(eventos) {
+    const cont = document.getElementById('actividad-list');
+    if (!eventos || !eventos.length) { cont.innerHTML = '<div class="loading-row">Sin actividad reciente</div>'; return; }
+    cont.innerHTML = eventos.map(function(ev) {
+      const display = (ev.nombre && ev.nombre !== ev.email) ? ev.nombre : ev.email;
+      const dotCls  = ev.tipo === 'entrenamiento' ? '' : 'grey';
+      const zapaTag = ev.zapatilla
+        ? `<span style="color:var(--metal);font-size:0.65rem;display:block;margin-top:1px;">${ev.zapatilla}</span>`
+        : '';
+      const texto = ev.tipo === 'entrenamiento'
+        ? `<strong>${display}</strong> sumó <strong style="color:var(--neon)">${ev.km} km</strong>${zapaTag}`
+        : `<strong>${display}</strong> se registró`;
+      return `<div class="act-item">
+        <div class="act-dot ${dotCls}"></div>
+        <div class="act-body">
+          <div class="act-text">${texto}</div>
+          <div class="act-time">${_formatFecha(ev.fecha)}</div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  /* ════════════════════════════════════
+     ALERTAS DESGASTE
+  ════════════════════════════════════ */
+  function cargarAlertas() {
+    google.script.run
+      .withSuccessHandler(renderAlertas)
+      .withFailureHandler(function() {
+        document.getElementById('alertas-list').innerHTML = '<div class="loading-row">Sin datos</div>';
+      })
+      .getAdminDashboardData();
+  }
+  function _kmBarColor(km) {
+    if (km > 800) return '#FF2D55';
+    if (km > 600) return '#FF6B00';
+    if (km > 300) return '#FFD60A';
+    return '#39FF14';
+  }
+  function renderAlertas(data) {
+    const cont = document.getElementById('alertas-list');
+    if (!data || !data.success) { cont.innerHTML = '<div class="loading-row">Sin datos</div>'; return; }
+    const alertas = data.alertasDesgaste || [];
+    alertasData = alertas.map(function(a) { return (a.email || '').toLowerCase(); });
+
+    // Alimenta el panel Insights con datos del dashboard
+    _renderInsightsDesdeDashboard(data);
+
+    if (!alertas.length) {
+      cont.innerHTML = `<div style="text-align:center;padding:24px;font-size:0.86rem;color:var(--metal);">✅ Ninguna zapatilla en zona crítica</div>`;
+      return;
+    }
+    cont.innerHTML = '<div class="alertas-grid">' +
+      alertas.map(function(a) {
+        const km    = a.kilometraje || 0;
+        const pct   = Math.min(100, Math.round((km / 1000) * 100));
+        const color = _kmBarColor(km);
+        const t1 = km > 0   ? 'active' : '';
+        const t2 = km > 300 ? 'active' : '';
+        const t3 = km > 600 ? 'active' : '';
+        const t4 = km > 800 ? 'active' : '';
+        return `<div class="alert-card">
+          <div class="alert-card-top">
+            <div>
+              <div class="alert-runner">${a.runner || 'Runner'}</div>
+              <div class="alert-zapa">${a.zapatilla || '—'}${a.grupo ? ' · '+a.grupo : ''}</div>
+            </div>
+            <div class="alert-km-badge" style="color:${color};">${km}<span>km</span></div>
+          </div>
+          <div class="km-bar-track">
+            <div class="km-bar-fill" style="width:${pct}%;background:${color};box-shadow:0 0 6px ${color}40;"></div>
+          </div>
+          <div class="km-bar-labels">
+            <span class="km-bar-label ${t1}">0</span>
+            <span class="km-bar-label ${t2}">300</span>
+            <span class="km-bar-label ${t3}">600</span>
+            <span class="km-bar-label ${t4}">800</span>
+            <span class="km-bar-label ${t4}">1000</span>
+          </div>
+        </div>`;
+      }).join('') + '</div>';
+  }
+
+  /* ════════════════════════════════════
+     USUARIOS
+  ════════════════════════════════════ */
+  function cargarUsuarios() {
+    document.getElementById('users-tbody').innerHTML = '<tr><td colspan="7" class="loading-row">Cargando...</td></tr>';
+    document.getElementById('users-cards').innerHTML  = '<div class="loading-row">Cargando...</div>';
+    google.script.run
+      .withSuccessHandler(function(data) {
+        usuariosData = data || [];
+        filtrarYRenderizar();
+        _renderInsightsDesdeUsuarios();
+      })
+      .withFailureHandler(function() {})
+      .getAdminUsuarios();
+  }
+
+  function activarFiltro(filtro) {
+    filtroActivo = filtro;
+    document.querySelectorAll('.fchip').forEach(function(el) {
+      el.classList.toggle('active', el.dataset.filter === filtro);
+    });
+    filtrarYRenderizar();
+  }
+
+  function filtrarYRenderizar() {
+    const q = (document.getElementById('buscar-usuario').value || '').toLowerCase().trim();
+    let lista = usuariosData.slice();
+    if (filtroActivo === 'alerta-zapas') {
+      lista = lista.filter(function(u) { return alertasData.indexOf(u.email.toLowerCase()) !== -1; });
+    } else if (filtroActivo === 'inactivos') {
+      lista = lista.filter(function(u) { return !u.activoHoy; });
+    } else if (filtroActivo === 'top-performers') {
+      lista = lista.filter(function(u) { return ['avanzado','pro','Avanzado','Pro'].indexOf(u.nivel) !== -1; });
+    }
+    if (q) {
+      lista = lista.filter(function(u) {
+        return (u.nombre + ' ' + u.apellido + ' ' + u.email).toLowerCase().includes(q);
+      });
+    }
+    const countEl = document.getElementById('filter-count');
+    if (countEl) countEl.textContent = lista.length + ' runner' + (lista.length !== 1 ? 's' : '');
+    renderTabla(lista);
+    renderCards(lista);
+  }
+
+  function filtrarTabla() { filtrarYRenderizar(); }
+
+  function renderTabla(lista) {
+    const tbody = document.getElementById('users-tbody');
+    if (!lista || !lista.length) {
+      tbody.innerHTML = '<tr><td colspan="7" class="loading-row">Sin resultados</td></tr>'; return;
+    }
+    tbody.innerHTML = lista.map(function(u) {
+      const nom  = (u.nombre + ' ' + u.apellido).trim();
+      const esc  = nom.replace(/'/g, "\\'");
+      const escE = u.email.replace(/'/g, "\\'");
+      const dotCls = u.activoHoy ? 'online' : 'offline';
+      const grp  = u.grupo ? `<span class="pill grupo">${u.grupo}</span>` : '<span style="color:#333;">—</span>';
+      const niv  = u.nivel ? `<span class="pill nivel">${u.nivel}</span>` : '<span style="color:#333;">—</span>';
+      return `<tr class="row-click" onclick="seleccionarDestinatario('${escE}','${esc}')">
+        <td><span class="status-dot ${dotCls}" title="${u.activoHoy ? 'Entrenó hoy' : 'Inactivo hoy'}"></span></td>
+        <td class="name">${nom}</td>
+        <td>${grp}</td>
+        <td>${niv}</td>
+        <td style="font-weight:700;">${u.zapatillas}</td>
+        <td style="color:var(--neon);font-weight:900;font-size:0.92rem;">${u.kmTotales}</td>
+        <td><button class="notif-btn" onclick="event.stopPropagation();seleccionarDestinatario('${escE}','${esc}')">✉</button></td>
+      </tr>`;
+    }).join('');
+  }
+
+  function renderCards(lista) {
+    const cont = document.getElementById('users-cards');
+    if (!lista || !lista.length) { cont.innerHTML = '<div class="loading-row">Sin resultados</div>'; return; }
+    cont.innerHTML = lista.map(function(u) {
+      const nom  = (u.nombre + ' ' + u.apellido).trim();
+      const esc  = nom.replace(/'/g, "\\'");
+      const escE = u.email.replace(/'/g, "\\'");
+      const ini  = ((u.nombre[0]||'') + (u.apellido[0]||'')).toUpperCase() || '?';
+      const dotCls = u.activoHoy ? 'online' : 'offline';
+      const grp  = u.grupo ? `<span class="pill grupo">${u.grupo}</span>` : '';
+      const niv  = u.nivel ? `<span class="pill nivel">${u.nivel}</span>` : '';
+      return `<div class="user-card" onclick="seleccionarDestinatario('${escE}','${esc}')">
+        <div class="user-card-top">
+          <div class="user-card-avatar">${ini}</div>
+          <div class="user-card-info">
+            <div class="user-card-name">${nom}</div>
+            <div class="user-card-grupo">${grp} ${niv}</div>
+          </div>
+          <span class="status-dot ${dotCls}" style="margin-left:auto;"></span>
+        </div>
+        <div class="user-card-stats">
+          <div class="user-card-stat"><div class="user-card-stat-lbl">KM totales</div><div class="user-card-stat-val neon">${u.kmTotales}</div></div>
+          <div class="user-card-stat"><div class="user-card-stat-lbl">Zapatillas</div><div class="user-card-stat-val">${u.zapatillas}</div></div>
+        </div>
+        <div class="user-card-actions">
+          <button class="notif-btn" onclick="event.stopPropagation();seleccionarDestinatario('${escE}','${esc}')">✉ Notificación</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  /* ════════════════════════════════════
+     DESTINATARIO / GRUPOS / NOTIF / TABS
+  ════════════════════════════════════ */
+  function seleccionarDestinatario(email, nombre) {
+    setTab('individual');
+    document.getElementById('nf-email-individual').value = email;
+    document.getElementById('nf-email-individual').style.display = 'none';
+    document.getElementById('nf-chip-nombre').textContent = nombre || email;
+    document.getElementById('nf-chip-wrap').style.display = 'block';
+    const panelN = document.getElementById('panel-notificacion');
+    if (panelN) panelN.scrollIntoView({ behavior:'smooth', block:'start' });
+    toast('✉ Destinatario: ' + (nombre || email));
+  }
+  function limpiarDestinatario() {
+    document.getElementById('nf-chip-wrap').style.display = 'none';
+    document.getElementById('nf-email-individual').value = '';
+    document.getElementById('nf-email-individual').style.display = 'block';
+  }
+  function cargarGrupos() {
+    google.script.run
+      .withSuccessHandler(function(grupos) {
+        gruposData = grupos || [];
+        const sel = document.getElementById('nf-destino');
+        sel.innerHTML = '<option value="">— Seleccioná un grupo —</option>';
+        gruposData.forEach(function(g) {
+          const o = document.createElement('option');
+          o.value = g; o.textContent = g; sel.appendChild(o);
+        });
+      })
+      .withFailureHandler(function() {})
+      .getGruposRunning();
+  }
+  function setTab(tab) {
+    tabActual = tab;
+    document.querySelectorAll('.ntab').forEach(function(el, i) {
+      const tabs = ['todos','grupo','individual','premio'];
+      el.className = 'ntab ' + (tabs[i] === tab ? 'active' : 'inactive');
+    });
+    document.getElementById('nf-destino').style.display         = tab === 'grupo'      ? 'block' : 'none';
+    document.getElementById('nf-individual-wrap').style.display = tab === 'individual' ? 'block' : 'none';
+    document.getElementById('nf-destino-todos').style.display   = (tab === 'todos' || tab === 'premio') ? 'block' : 'none';
+    document.getElementById('voucher-wrap').style.display       = tab === 'premio'     ? 'block' : 'none';
+    document.getElementById('nf-tipo').value = tab === 'premio' ? 'Premio' : 'Mensaje';
+  }
+  function onTipoChange() {
+    document.getElementById('voucher-wrap').style.display =
+      document.getElementById('nf-tipo').value === 'Premio' ? 'block' : 'none';
+  }
+  function enviarNotif() {
+    const mensaje = document.getElementById('nf-mensaje').value.trim();
+    const tipo    = document.getElementById('nf-tipo').value;
+    const btn     = document.getElementById('nf-btn');
+    const fb      = document.getElementById('nf-feedback');
+    if (!mensaje) { fb.className = 'nf-feedback err'; fb.textContent = 'El mensaje no puede estar vacío.'; return; }
+    let dTipo = tabActual === 'premio' ? 'todos' : tabActual;
+    let dValor = '';
+    if (tabActual === 'grupo') {
+      dValor = document.getElementById('nf-destino').value;
+      if (!dValor) { fb.className = 'nf-feedback err'; fb.textContent = 'Seleccioná un grupo.'; return; }
+    } else if (tabActual === 'individual') {
+      dValor = document.getElementById('nf-email-individual').value.trim();
+      if (!dValor) { fb.className = 'nf-feedback err'; fb.textContent = 'Seleccioná un usuario desde la tabla.'; return; }
+    }
+    btn.disabled = true; btn.textContent = 'Enviando...'; fb.textContent = '';
+    google.script.run
+      .withSuccessHandler(function(res) {
+        btn.disabled = false; btn.textContent = 'Enviar notificación →';
+        if (res && res.success) {
+          fb.className = 'nf-feedback ok';
+          fb.textContent = '✓ Enviado a ' + (res.enviados || 1) + ' usuario(s).';
+          document.getElementById('nf-mensaje').value = '';
+          limpiarDestinatario();
+        } else {
+          fb.className = 'nf-feedback err';
+          fb.textContent = '✗ ' + (res ? res.error : 'Error desconocido');
+        }
+      })
+      .withFailureHandler(function() {
+        btn.disabled = false; btn.textContent = 'Enviar notificación →';
+        fb.className = 'nf-feedback err'; fb.textContent = '✗ Error de conexión.';
+      })
+      .enviarNotificacion(dTipo, dValor, mensaje, tipo);
+  }
+
+  /* ════════════════════════════════════
+     ACTIVIDAD 7 DÍAS
+  ════════════════════════════════════ */
+  function cargarActividadPorDia() {
+    google.script.run
+      .withSuccessHandler(function(dias) {
+        actividadPorDiaData = dias || [];
+        _renderTendencia();
+      })
+      .withFailureHandler(function() {})
+      .getActividadPorDia();
+  }
+
+  /* ════════════════════════════════════════════════════
+     PESTAÑAS INSIGHTS — controlador
+  ════════════════════════════════════════════════════ */
+  function setInsTab(tab) {
+    insTabActual = tab;
+    document.querySelectorAll('.ins-tab').forEach(function(el, i) {
+      const tabs = ['comunidad','grupos','zapas','tendencia','vidautil','horario','modelos','comercial'];
+      el.classList.toggle('active', tabs[i] === tab);
+    });
+    document.querySelectorAll('.ins-content').forEach(function(el) {
+      el.classList.remove('active');
+    });
+    const target = document.getElementById('ins-' + tab);
+    if (target) target.classList.add('active');
+  }
+
+  /* ════════════════════════════════════════════════════
+     INSIGHTS — Módulo A: Perfil Comunidad
+  ════════════════════════════════════════════════════ */
+  const NIVELES_ORDER  = ['Principiante','Recreativo','Intermedio','Avanzado','Pro'];
+  const NIVELES_COLORS = {
+    'Principiante': '#39FF14',
+    'Recreativo':   '#CCFF00',
+    'Intermedio':   '#FFD60A',
+    'Avanzado':     '#FF6B00',
+    'Pro':          '#FF2D55'
+  };
+
+  function _renderInsightsDesdeUsuarios() {
+    if (!usuariosData || !usuariosData.length) return;
+
+    /* ── A: Niveles ── */
+    const conteo = {};
+    NIVELES_ORDER.forEach(function(n) { conteo[n] = 0; });
+    usuariosData.forEach(function(u) {
+      const niv = (u.nivel || '').trim();
+      if (conteo[niv] !== undefined) conteo[niv]++;
+    });
+    const total = usuariosData.length;
+    const cont  = document.getElementById('ins-niveles-bars');
+    if (total === 0) { cont.innerHTML = '<div class="loading-row">Sin datos</div>'; return; }
+
+    cont.innerHTML = NIVELES_ORDER.map(function(n) {
+      const c   = conteo[n] || 0;
+      const pct = total > 0 ? Math.round((c / total) * 100) : 0;
+      const col = NIVELES_COLORS[n] || 'var(--neon)';
+      return `<div class="nivel-bar-wrap">
+        <div class="nivel-bar-header">
+          <div class="nivel-bar-name">${n}</div>
+          <div class="nivel-bar-count">${c}</div>
+        </div>
+        <div class="nivel-bar-track">
+          <div class="nivel-bar-fill" style="width:${pct}%;background:${col};"></div>
+        </div>
+        <div class="nivel-bar-pct">${pct}% de la comunidad</div>
+      </div>`;
+    }).join('');
+
+    /* ── E, F, G, H ── */
+    _renderInsightComercial();
+    _renderGrupos();
+    _renderVidaUtil();
+    _renderHorario();
+  }
+
+  /* ════════════════════════════════════════════════════
+     INSIGHTS — Módulo B: Semáforo + Módulo D: Ranking Calzado
+     CAMBIO v2906: Módulo D ahora usa data.rankingCalzado
+  ════════════════════════════════════════════════════ */
+  function _renderInsightsDesdeDashboard(data) {
+    if (!data || !data.alertasDesgaste) return;
+    const alertas = data.alertasDesgaste || [];
+
+    /* ── B: Semáforo ── */
+    let critico    = 0;
+    let precaucion = 0;
+    let atencion   = 0;
+
+    alertas.forEach(function(a) {
+      const km = a.kilometraje || 0;
+      if (km > 800)       critico++;
+      else if (km > 600)  precaucion++;
+      else                atencion++;
+    });
+
+    const semCont = document.getElementById('ins-semaforo');
+    semCont.innerHTML = `
+      <div class="semaforo-card verde">
+        <div class="semaforo-dot"></div>
+        <div class="semaforo-num" id="sem-verde">—</div>
+        <div class="semaforo-lbl">Saludables</div>
+        <div class="semaforo-sub">0 – 600 km</div>
+      </div>
+      <div class="semaforo-card naranja">
+        <div class="semaforo-dot"></div>
+        <div class="semaforo-num">${precaucion}</div>
+        <div class="semaforo-lbl">Precaución</div>
+        <div class="semaforo-sub">600 – 800 km</div>
+      </div>
+      <div class="semaforo-card rojo">
+        <div class="semaforo-dot"></div>
+        <div class="semaforo-num">${critico}</div>
+        <div class="semaforo-lbl">Cambio urgente</div>
+        <div class="semaforo-sub">> 800 km</div>
+      </div>`;
+
+    _insState.alertasCount = alertas.length;
+    _actualizarSemaforoVerde();
+
+    /* ── Detalle por tramo ── */
+    const detCont = document.getElementById('ins-semaforo-detalle');
+    if (!alertas.length) {
+      detCont.innerHTML = '<div style="color:var(--metal);font-size:0.8rem;padding:12px 0;">✅ No hay zapatillas en zona de alerta.</div>';
+    } else {
+      detCont.innerHTML = alertas.slice(0, 6).map(function(a) {
+        const km    = a.kilometraje || 0;
+        const color = _kmBarColor(km);
+        const pct   = Math.min(100, Math.round((km / 1000) * 100));
+        return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--borde);">
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:0.8rem;font-weight:700;color:var(--plata);">${a.runner}</div>
+            <div style="font-size:0.65rem;color:var(--metal);">${a.zapatilla}</div>
+          </div>
+          <div style="width:80px;">
+            <div style="height:5px;background:#111;border-radius:2px;overflow:hidden;">
+              <div style="height:100%;width:${pct}%;background:${color};border-radius:2px;"></div>
+            </div>
+          </div>
+          <div style="font-size:0.82rem;font-weight:900;color:${color};white-space:nowrap;">${km} km</div>
+        </div>`;
+      }).join('');
+    }
+
+    /* ── D: Ranking Calzado — CAMBIO v2906 ──────────────────────────────
+       Usa data.rankingCalzado devuelto por getAdminDashboardData() en el GS.
+       rankingCalzado = array de { marca, modelo, cantidad, kmTotal }
+         ordenado por cantidad DESC, top 15, solo zapatillas ACTIVAS.
+       Si rankingCalzado llega vacío (backend viejo o sin datos),
+       cae en el fallback que calcula desde alertasDesgaste.
+    ─────────────────────────────────────────────────────────────────── */
+    const modelCont      = document.getElementById('ins-top-modelos');
+    const rankingCalzado = data.rankingCalzado || [];
+
+    if (rankingCalzado.length > 0) {
+      // ── Modo principal: datos completos desde el backend ──
+      const posClass = ['t1','t2','t3'];
+      const maxCant  = rankingCalzado[0].cantidad || 1;
+
+      modelCont.innerHTML =
+        '<div style="font-size:0.66rem;color:var(--gris);margin-bottom:16px;padding:10px 12px;' +
+        'background:var(--bg2);border-radius:8px;border:1px solid var(--borde);line-height:1.6;">' +
+        '👟 Ranking de todos los modelos <strong style="color:var(--neon)">activos</strong> en la comunidad. ' +
+        'Usalo para conocer las marcas preferidas por tus clientes y orientar el stock de <strong style="color:var(--plata)">Todo Trail</strong>.' +
+        '</div>' +
+        rankingCalzado.slice(0, 15).map(function(m, i) {
+          const pct    = Math.round((m.cantidad / maxCant) * 100);
+          const posC   = posClass[i] || '';
+          const kmProm = m.cantidad > 0 ? Math.round(m.kmTotal / m.cantidad) : 0;
+          return `<div style="margin-bottom:16px;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;">
+              <div class="top-modelo-pos ${posC}">${i+1}</div>
+              <div class="top-modelo-info">
+                <div class="top-modelo-name">${m.modelo || '—'}</div>
+                <div class="top-modelo-marca">${m.marca || '—'} · ${kmProm} km/prom · ${m.kmTotal} km total</div>
+              </div>
+              <div class="top-modelo-count">${m.cantidad}<span>${m.cantidad !== 1 ? ' pares' : ' par'}</span></div>
+            </div>
+            <div class="nivel-bar-track">
+              <div class="nivel-bar-fill" style="width:${pct}%;background:var(--neon);"></div>
+            </div>
+          </div>`;
+        }).join('');
+
+    } else {
+      // ── Fallback: calcular desde alertasDesgaste (solo zapas >700 km) ──
+      const modelMap = {};
+      alertas.forEach(function(a) {
+        const key = (a.zapatilla || '').trim();
+        if (!key) return;
+        if (!modelMap[key]) modelMap[key] = { nombre: key, count: 0, kmTotal: 0 };
+        modelMap[key].count++;
+        modelMap[key].kmTotal += (a.kilometraje || 0);
+      });
+      const modelList = Object.values(modelMap).sort(function(a, b) { return b.count - a.count; });
+
+      if (!modelList.length) {
+        modelCont.innerHTML = '<div style="text-align:center;padding:24px;font-size:0.84rem;color:var(--metal);">✅ Sin datos de modelos disponibles por ahora</div>';
+      } else {
+        const posClass2 = ['t1','t2','t3'];
+        modelCont.innerHTML =
+          '<div style="font-size:0.66rem;color:var(--gris);margin-bottom:16px;padding:10px 12px;' +
+          'background:var(--bg2);border-radius:8px;border:1px solid var(--borde);line-height:1.5;">' +
+          '⚠️ Mostrando solo modelos en zona crítica (>700 km). Actualizá para ver el ranking completo.</div>' +
+          modelList.slice(0, 7).map(function(m, i) {
+            const parts  = m.nombre.split(' ');
+            const marca  = parts[0] || '';
+            const modelo = parts.slice(1).join(' ') || m.nombre;
+            return `<div class="top-modelo-item">
+              <div class="top-modelo-pos ${posClass2[i]||''}">${i+1}</div>
+              <div class="top-modelo-info">
+                <div class="top-modelo-name">${modelo}</div>
+                <div class="top-modelo-marca">${marca} · ${m.kmTotal} km acumulados</div>
+              </div>
+              <div class="top-modelo-count">${m.count}<span>${m.count!==1?'runners':'runner'}</span></div>
+            </div>`;
+          }).join('');
+      }
+    }
+  }
+
+  /* Semáforo verde: saludables = total zapas − en alerta */
+  function _actualizarSemaforoVerde() {
+    const el = document.getElementById('sem-verde');
+    if (!el) return;
+    const total = _insState.totalZapas;
+    if (total === null || total === undefined) { el.textContent = '—'; return; }
+    const saludables = Math.max(0, total - (_insState.alertasCount || 0));
+    el.textContent = saludables;
+  }
+
+  /* ════════════════════════════════════════════════════
+     INSIGHTS — Módulo C: Tendencia Semanal
+  ════════════════════════════════════════════════════ */
+  function _renderTendencia() {
+    const cont    = document.getElementById('ins-tend-chart');
+    const resumen = document.getElementById('ins-tend-resumen');
+    const dias    = actividadPorDiaData;
+
+    if (!dias || !dias.length) {
+      cont.innerHTML = '<div class="loading-row">Sin datos</div>'; return;
+    }
+
+    const maxKm     = Math.max.apply(null, dias.map(function(d) { return d.km || 0; })) || 1;
+    const totalKm   = dias.reduce(function(s, d) { return s + (d.km || 0); }, 0);
+    const totalDias = dias.filter(function(d) { return (d.km || 0) > 0; }).length;
+    const diaPico   = dias.reduce(function(a, b) { return (b.km||0) > (a.km||0) ? b : a; }, dias[0]);
+
+    cont.innerHTML = dias.map(function(d) {
+      const pct    = Math.round(((d.km||0) / maxKm) * 100);
+      const activo = (d.km||0) > 0;
+      return `<div class="tend-row">
+        <div class="tend-day">${d.label}</div>
+        <div class="tend-track">
+          <div class="tend-fill" style="width:${pct}%;${activo ? '' : 'background:#1a1a1a;'}"></div>
+        </div>
+        <div class="tend-info">${d.usuarios||0} runners · ${d.km||0} km</div>
+      </div>`;
+    }).join('');
+
+    resumen.innerHTML = `
+      <div style="display:flex;gap:20px;flex-wrap:wrap;">
+        <div>
+          <div style="font-size:0.6rem;color:var(--metal);text-transform:uppercase;letter-spacing:2px;margin-bottom:4px;">KM semana</div>
+          <div style="font-size:1.6rem;font-weight:900;color:var(--neon);">${totalKm}</div>
+        </div>
+        <div>
+          <div style="font-size:0.6rem;color:var(--metal);text-transform:uppercase;letter-spacing:2px;margin-bottom:4px;">Días activos</div>
+          <div style="font-size:1.6rem;font-weight:900;color:var(--plata);">${totalDias}/7</div>
+        </div>
+        <div>
+          <div style="font-size:0.6rem;color:var(--metal);text-transform:uppercase;letter-spacing:2px;margin-bottom:4px;">Día pico</div>
+          <div style="font-size:1.6rem;font-weight:900;color:var(--plata);">${diaPico.label}</div>
+          <div style="font-size:0.65rem;color:var(--metal);">${diaPico.km||0} km</div>
+        </div>
+      </div>`;
+  }
+
+  /* ════════════════════════════════════════════════════
+     INSIGHTS — Módulo E: Insight Comercial
+  ════════════════════════════════════════════════════ */
+  function _renderInsightComercial() {
+    const cont = document.getElementById('ins-comercial-cards');
+    if (!usuariosData || !usuariosData.length) {
+      cont.innerHTML = '<div class="loading-row">Esperando datos...</div>'; return;
+    }
+
+    const listosCambio    = (_insState.alertasCount || 0);
+    const inactivosSemana = usuariosData.filter(function(u) { return !u.activoHoy; }).length;
+    const topRunners      = usuariosData.filter(function(u) { return ['Avanzado','Pro'].indexOf(u.nivel) !== -1; }).length;
+    const sinZapas        = usuariosData.filter(function(u) { return (u.zapatillas || 0) === 0; }).length;
+
+    const insights = [
+      {
+        icon: '🔥', num: listosCambio,
+        title: listosCambio + ' runners listos para renovar zapatillas',
+        desc: 'Tienen zapatillas en zona crítica (>700 km). Momento ideal para una campaña de descuento en calzado trail.',
+        action: 'Ver y notificar',
+        onClick: "irANotificar('todos','¡Tus zapatillas ya cumplieron su ciclo! Es momento de renovarlas. Tenemos opciones especiales para vos. 🏃')"
+      },
+      {
+        icon: '💤', num: inactivosSemana,
+        title: inactivosSemana + ' runners no entrenaron hoy',
+        desc: 'Una notificación motivacional o una promo puede reactivarlos. El engagement es clave para fidelizar.',
+        action: 'Filtrar inactivos',
+        onClick: "activarFiltro('inactivos'); irANotificar('todos','¡Extrañamos verte en la pista! Volvé a entrenar y seguí sumando kilómetros. 💪')"
+      },
+      {
+        icon: '⭐', num: topRunners,
+        title: topRunners + ' runners nivel Avanzado / Pro',
+        desc: 'Son tus embajadores naturales. Ofreceles productos premium, acceso anticipado a novedades o beneficios exclusivos.',
+        action: 'Segmentar Top Runners',
+        onClick: "activarFiltro('top-performers'); document.querySelector('.users-toolbar').scrollIntoView({behavior:'smooth',block:'start'});"
+      },
+      {
+        icon: '👟', num: sinZapas,
+        title: sinZapas + ' usuarios sin zapatillas registradas',
+        desc: 'Aún no registraron su calzado en la app. Son clientes potenciales directos para la tienda.',
+        action: 'Notificar a todos',
+        onClick: "irANotificar('todos','¡Registrá tus zapatillas en Huella Runner y comenzá a trackear tus kilómetros! 👟')"
+      }
+    ];
+
+    cont.innerHTML = insights.map(function(ins) {
+      return `<div class="insight-card">
+        <div class="insight-icon">${ins.icon}</div>
+        <div class="insight-body">
+          <div class="insight-title">${ins.title}</div>
+          <div class="insight-desc">${ins.desc}</div>
+          <button class="insight-action" onclick="${ins.onClick}">${ins.action} →</button>
+        </div>
+        <div class="insight-num">${ins.num}</div>
+      </div>`;
+    }).join('');
+  }
+
+  /* ════════════════════════════════════════════════════
+     HELPER: ir al panel de notificación con mensaje
+  ════════════════════════════════════════════════════ */
+  function irANotificar(tab, mensaje) {
+    setTab(tab || 'todos');
+    if (mensaje) document.getElementById('nf-mensaje').value = mensaje;
+    const panel = document.getElementById('panel-notificacion');
+    if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  /* ════════════════════════════════════════════════════
+     INSIGHTS — Módulo F: Grupos
+  ════════════════════════════════════════════════════ */
+  function _renderGrupos() {
+    const cont = document.getElementById('ins-grupos-list');
+    if (!usuariosData || !usuariosData.length) {
+      cont.innerHTML = '<div class="loading-row">Sin datos</div>'; return;
+    }
+    const grupoMap = {};
+    usuariosData.forEach(function(u) {
+      const g = (u.grupo || '').trim() || 'Sin grupo';
+      if (!grupoMap[g]) grupoMap[g] = { nombre: g, km: 0, runners: 0, activos: 0 };
+      grupoMap[g].km      += (u.kmTotales || 0);
+      grupoMap[g].runners += 1;
+      if (u.activoHoy) grupoMap[g].activos += 1;
+    });
+    const lista = Object.values(grupoMap)
+      .filter(function(g) { return g.nombre !== 'Sin grupo'; })
+      .sort(function(a, b) { return b.km - a.km; });
+
+    if (!lista.length) {
+      cont.innerHTML = '<div class="loading-row">Sin grupos registrados</div>'; return;
+    }
+    const maxKm    = Math.max.apply(null, lista.map(function(g){ return g.km; })) || 1;
+    const posClass = ['t1','t2','t3'];
+    cont.innerHTML = lista.slice(0, 10).map(function(g, i) {
+      const pct = Math.round((g.km / maxKm) * 100);
+      return `<div style="margin-bottom:16px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+          <div class="top-modelo-pos ${posClass[i]||''}">${i+1}</div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:0.84rem;font-weight:700;color:var(--plata);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${g.nombre}</div>
+            <div style="font-size:0.62rem;color:var(--metal);">${g.runners} runner${g.runners!==1?'s':''} · ${g.activos} activo${g.activos!==1?'s':''} hoy</div>
+          </div>
+          <div style="font-size:1rem;font-weight:900;color:var(--neon);white-space:nowrap;">${g.km}<span style="font-size:0.6rem;color:var(--metal);margin-left:2px;">km</span></div>
+        </div>
+        <div class="nivel-bar-track"><div class="nivel-bar-fill" style="width:${pct}%;background:var(--neon);"></div></div>
+      </div>`;
+    }).join('');
+  }
+
+  /* ════════════════════════════════════════════════════
+     INSIGHTS — Módulo G: Vida Útil
+  ════════════════════════════════════════════════════ */
+  function _renderVidaUtil() {
+    const cont = document.getElementById('ins-vidautil-body');
+    let kmTotal = 0, zapasTotal = 0;
+    usuariosData.forEach(function(u) {
+      kmTotal    += (u.kmTotales || 0);
+      zapasTotal += (u.zapatillas || 0);
+    });
+    const promedio = zapasTotal > 0 ? Math.round(kmTotal / zapasTotal) : 0;
+
+    cont.innerHTML = `
+      <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:18px;">
+        <div class="metric-card accent" style="flex:1;min-width:160px;">
+          <div class="metric-lbl">Promedio km / zapatilla</div>
+          <div class="metric-val">${promedio}</div>
+          <div class="metric-sub">sobre zapas activas</div>
+        </div>
+        <div class="metric-card" style="flex:1;min-width:160px;">
+          <div class="metric-lbl">Zapatillas activas</div>
+          <div class="metric-val">${zapasTotal}</div>
+          <div class="metric-sub">${kmTotal} km acumulados</div>
+        </div>
+      </div>
+      <div style="font-size:0.72rem;color:var(--metal);line-height:1.6;padding:14px 16px;background:var(--bg2);border-radius:8px;border:1px solid var(--borde);">
+        ⏳ <strong style="color:var(--gris);">Próximamente:</strong> cuando conectemos el backend, vas a ver acá cuántos km le saca en promedio un corredor a una zapatilla <strong style="color:var(--gris);">antes de archivarla</strong>. Ese dato es clave para saber cada cuánto tu cliente necesita reponer calzado.
+      </div>`;
+  }
+
+  /* ════════════════════════════════════════════════════
+     INSIGHTS — Módulo H: Horario Pico
+  ════════════════════════════════════════════════════ */
+  function _renderHorario() {
+    const cont   = document.getElementById('ins-horario-body');
+    const franjas = [
+      { lbl: '🌅 Mañana', rango: '6 – 12 h',  pct: 0 },
+      { lbl: '☀️ Tarde',  rango: '12 – 19 h', pct: 0 },
+      { lbl: '🌙 Noche',  rango: '19 – 6 h',  pct: 0 }
+    ];
+    cont.innerHTML =
+      franjas.map(function(f) {
+        return `<div style="margin-bottom:14px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <div style="font-size:0.78rem;font-weight:700;color:var(--plata);">${f.lbl}</div>
+            <div style="font-size:0.62rem;color:var(--metal);">${f.rango}</div>
+          </div>
+          <div class="nivel-bar-track"><div class="nivel-bar-fill" style="width:${f.pct}%;background:#2a2a2a;"></div></div>
+        </div>`;
+      }).join('') +
+      `<div style="font-size:0.72rem;color:var(--metal);line-height:1.6;padding:14px 16px;background:var(--bg2);border-radius:8px;border:1px solid var(--borde);margin-top:6px;">
+        ⏳ <strong style="color:var(--gris);">Próximamente:</strong> cuando conectemos el backend con la hora de cada entrenamiento, vas a ver en qué franja entrena más la comunidad. Sirve para elegir el mejor momento para enviar notificaciones y promos con mayor apertura.
+      </div>`;
+  }
+
+  /* ════════════════════════════════════
+     HELPERS
+  ════════════════════════════════════ */
+  function _formatFecha(fechaStr) {
+    if (!fechaStr) return '';
+    try {
+      const parts = fechaStr.toString().trim().split(' ');
+      const dp = parts[0].split('/');
+      const tp = parts[1] ? parts[1].split(':') : ['0','0'];
+      const d  = new Date(+dp[2], +dp[1]-1, +dp[0], +tp[0], +tp[1]);
+      const diff = Math.floor((Date.now() - d.getTime()) / 60000);
+      if (isNaN(diff) || diff < 0) return parts[0];
+      if (diff < 1)    return 'ahora';
+      if (diff < 60)   return 'hace ' + diff + ' min';
+      if (diff < 1440) return 'hace ' + Math.floor(diff/60) + 'h';
+      return dp[0] + '/' + dp[1];
+    } catch(e) { return ''; }
+  }
+
+  function toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.style.display = 'block';
+    setTimeout(function() { t.style.display = 'none'; }, 2800);
+  }
+</script>
+</body>
+</html>
+
+
+te dejo los 4 codigos, estamos casi 90% en USO y se renueva a las 14.01 hs ARG tu puede seguir trabajando y si se acaba el uso luego reanudar a las 19 hs calculo??? ya hice la carpeta GAS en la carpeta HUELLA RUNNER
