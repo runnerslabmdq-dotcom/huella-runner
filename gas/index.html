@@ -1265,6 +1265,20 @@
 
   <!-- Footer -->
   <div style="text-align:center;width:100%;position:relative;z-index:1;">
+    <button onclick="var el=document.getElementById('legales-acordeon');el.style.display=el.style.display==='none'?'block':'none';this.innerText=el.style.display==='none'?'VER LEGALES +':'CERRAR LEGALES −';" style="
+      background:none;border:none;color:#A89440;font-size:0.72rem;font-weight:700;
+      cursor:pointer;letter-spacing:2px;text-transform:uppercase;
+      font-family:'Montserrat',sans-serif;padding:4px 0;margin-bottom:10px;">VER LEGALES +</button>
+    <div id="legales-acordeon" style="display:none;text-align:left;background:#0d0d0d;border:1px solid #1f1f1f;
+      border-radius:12px;padding:16px 18px;margin:0 auto 14px;max-width:380px;width:100%;
+      font-size:0.72rem;color:#999;line-height:1.7;">
+      <p style="color:#d8d8d8;font-weight:700;margin:0 0 10px;font-size:0.75rem;">Privacidad y Tratamiento de Datos</p>
+      <p style="margin:0 0 8px;">Nuestra prioridad es proteger tu información. Solo recolectamos los datos estrictamente necesarios para el funcionamiento y mejora de la aplicación.</p>
+      <p style="margin:0 0 8px;"><strong style="color:#bbb;">Uso interno:</strong> La información proporcionada se utiliza exclusivamente con fines analíticos y estadísticos para optimizar la experiencia del usuario y mejorar el rendimiento técnico.</p>
+      <p style="margin:0 0 8px;"><strong style="color:#bbb;">No compartición:</strong> Bajo ninguna circunstancia vendemos, alquilamos ni compartimos tus datos personales con terceros con fines comerciales o de marketing ajenos a nuestra plataforma.</p>
+      <p style="margin:0 0 8px;"><strong style="color:#bbb;">Seguridad:</strong> Implementamos medidas técnicas y organizativas para garantizar la confidencialidad y protección de tus datos frente a accesos no autorizados.</p>
+      <p style="margin:0;"><strong style="color:#bbb;">Tus derechos:</strong> Puedes solicitar la consulta, modificación o eliminación de tus datos en cualquier momento contactando a nuestro equipo de soporte.</p>
+    </div>
     <button onclick="cerrarPantallaOnboarding()" style="
       background:linear-gradient(180deg,var(--amarillo-top) 0%,var(--amarillo) 45%,var(--amarillo-dark) 100%);
       color:#000;border:none;padding:16px;font-size:0.9rem;font-weight:900;
@@ -1274,20 +1288,6 @@
       font-family:'Montserrat',sans-serif;">
       Aceptar y Continuar
     </button>
-    <button onclick="var el=document.getElementById('legales-acordeon');el.style.display=el.style.display==='none'?'block':'none';this.innerText=el.style.display==='none'?'VER LEGALES +':'CERRAR LEGALES −';" style="
-      background:none;border:none;color:#A89440;font-size:0.72rem;font-weight:700;
-      cursor:pointer;letter-spacing:2px;text-transform:uppercase;
-      font-family:'Montserrat',sans-serif;padding:4px 0;">VER LEGALES +</button>
-    <div id="legales-acordeon" style="display:none;text-align:left;background:#0d0d0d;border:1px solid #1f1f1f;
-      border-radius:12px;padding:16px 18px;margin-top:10px;max-width:380px;width:100%;
-      font-size:0.72rem;color:#999;line-height:1.7;">
-      <p style="color:#d8d8d8;font-weight:700;margin:0 0 10px;font-size:0.75rem;">Privacidad y Tratamiento de Datos</p>
-      <p style="margin:0 0 8px;">Nuestra prioridad es proteger tu información. Solo recolectamos los datos estrictamente necesarios para el funcionamiento y mejora de la aplicación.</p>
-      <p style="margin:0 0 8px;"><strong style="color:#bbb;">Uso interno:</strong> La información proporcionada se utiliza exclusivamente con fines analíticos y estadísticos para optimizar la experiencia del usuario y mejorar el rendimiento técnico.</p>
-      <p style="margin:0 0 8px;"><strong style="color:#bbb;">No compartición:</strong> Bajo ninguna circunstancia vendemos, alquilamos ni compartimos tus datos personales con terceros con fines comerciales o de marketing ajenos a nuestra plataforma.</p>
-      <p style="margin:0 0 8px;"><strong style="color:#bbb;">Seguridad:</strong> Implementamos medidas técnicas y organizativas para garantizar la confidencialidad y protección de tus datos frente a accesos no autorizados.</p>
-      <p style="margin:0;"><strong style="color:#bbb;">Tus derechos:</strong> Puedes solicitar la consulta, modificación o eliminación de tus datos en cualquier momento contactando a nuestro equipo de soporte.</p>
-    </div>
   </div>
 </div>
 
