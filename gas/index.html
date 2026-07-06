@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
   <base target="_top">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -15,7 +16,6 @@
   <!-- PWA INSTALL SUPPORT -->
   <link rel="apple-touch-icon" href="https://res.cloudinary.com/dlayzh9ln/image/upload/v1778672392/icono_HR_fomqlf.png">
   <meta name="apple-mobile-web-app-title" content="Huella Runner">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <!-- El manifest completo lo sirve doGet?page=manifest (incluye SW scope correcto) -->
   <link rel="manifest" id="pwa-manifest">
   <!-- FIN PWA INSTALL SUPPORT -->
@@ -63,6 +63,8 @@
       justify-content: center;
       min-height: 100vh;
       padding: 20px;
+      padding-top: max(20px, env(safe-area-inset-top));
+      padding-bottom: max(20px, env(safe-area-inset-bottom));
     }
 
     .container {
