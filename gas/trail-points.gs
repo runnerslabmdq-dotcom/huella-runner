@@ -52,7 +52,7 @@ function registrarActividadTrailPoints(email, idZapa, kmBrutos, tipoCarga, fecha
     const km          = Math.abs(Number(kmBrutos)) || 0;
     const tipo        = (tipoCarga || 'Manual').toString().trim();
     const fechaStr    = fecha || _hoy();
-    const horaStr     = hora  || '';
+    const horaStr     = hora  || _horaActual();
 
     if (km <= 0) return { success: false, error: 'KM debe ser mayor a cero.' };
 
@@ -431,9 +431,14 @@ function _hoy() {
   const d   = new Date();
   const dd  = String(d.getDate()).padStart(2, '0');
   const mm  = String(d.getMonth() + 1).padStart(2, '0');
+  return dd + '/' + mm + '/' + d.getFullYear();
+}
+
+function _horaActual() {
+  const d   = new Date();
   const hh  = String(d.getHours()).padStart(2, '0');
   const min = String(d.getMinutes()).padStart(2, '0');
-  return dd + '/' + mm + '/' + d.getFullYear() + ' ' + hh + ':' + min;
+  return hh + ':' + min;
 }
 
 function _parseFechaStr(str) {
