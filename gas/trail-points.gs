@@ -28,8 +28,8 @@
 // ---- CONFIG CENTRAL (ajustar según negocio) ----------------
 var TRAIL_PTS = {
   KM_UMBRAL_CUPON:      650,    // km para disparar cupón
-  KM_MAX_DIA:           132,    // filtro diario anti-fraude (+10%)
-  KM_MAX_SEMANA:        198,    // filtro semanal anti-fraude (+10%)
+  KM_MAX_DIA:           200,    // filtro diario anti-fraude
+  KM_MAX_SEMANA:        400,    // filtro semanal anti-fraude
   FACTOR_MANUAL:        1.0,    // ponderación carga manual (100%)
   PREFIJO_CUPON:        'TT-DESGASTE-',
   SHEET_CUPONES:        'Cupones_Emitidos',
@@ -58,21 +58,20 @@ function registrarActividadTrailPoints(email, idZapa, kmBrutos, tipoCarga, fecha
 
     // A: Validar contra umbrales biológicos
     const validacion = _validarUmbralesBiologicos(emailClean, km, fechaStr);
+
+    // Solo se rechaza (0 km) si supera el límite DIARIO.
+    // El límite SEMANAL ("Sospechosa") ya no bloquea: se acredita el km igual,
+    // pero queda marcado para revisión futura.
     if (validacion.estado === 'Rechazada') {
       _guardarEntrenamiento(emailClean, idZapa, km, 0, tipo, fechaStr, horaStr,
                             'Rechazada', validacion.motivo);
       return { success: false, error: validacion.motivo, validacion: 'Rechazada' };
     }
-    if (validacion.estado === 'Sospechosa') {
-      _guardarEntrenamiento(emailClean, idZapa, km, 0, tipo, fechaStr, horaStr,
-                            'Sospechosa', validacion.motivo);
-      return { success: false, error: validacion.motivo, validacion: 'Sospechosa' };
-    }
 
-    // B: Ponderar según tipo de carga
+    // B: Ponderar según tipo de carga (aplica igual para Aprobada y Sospechosa)
     const kmAcreditados = _ponderarKm(km, tipo);
 
-    // Guardar entrenamiento aprobado
+    // Guardar entrenamiento — si es Sospechosa, queda marcado pero SÍ se acredita
     _guardarEntrenamiento(emailClean, idZapa, km, kmAcreditados, tipo, fechaStr, horaStr,
                           validacion.estado, validacion.motivo);
 
@@ -113,7 +112,7 @@ function _validarUmbralesBiologicos(email, km, fechaStr) {
   if (total > TRAIL_PTS.KM_MAX_SEMANA) {
     return {
       estado: 'Sospechosa',
-      motivo: `Acumulado semanal excede ${TRAIL_PTS.KM_MAX_SEMANA} km (acumulado: ${kmSemana} km + nuevo: ${km} km = ${total} km). KM congelados.`
+      motivo: `Acumulado semanal excede ${TRAIL_PTS.KM_MAX_SEMANA} km (acumulado: ${kmSemana} km + nuevo: ${km} km = ${total} km). Marcado para revisión, KM acreditados normalmente.`
     };
   }
 
@@ -142,7 +141,7 @@ function _sumaKmUltimos7Dias(email, fechaStr) {
       const rowEmail  = (data[i][col.email]  || '').toString().trim().toLowerCase();
       const rowEstado = (data[i][col.estado] || '').toString().trim();
       if (rowEmail !== email) continue;
-      if (rowEstado === 'Rechazada') continue;  // no cuentan los rechazados
+      if (rowEstado === 'Rechazada') continue;
 
       const rowFecha = _celdaADate(data[i][col.fecha]);
       if (!rowFecha || rowFecha < limite) continue;
@@ -159,14 +158,11 @@ function _sumaKmUltimos7Dias(email, fechaStr) {
 
 // ============================================================
 // REGLA B — Ponderación de carga
-// Retorna los km efectivos a acreditar, o null si la carga
-// manual no tiene los campos obligatorios.
 // ============================================================
 function _ponderarKm(km, tipoCarga) {
   if (tipoCarga === 'Sincronizada') {
-    return km;  // 100% — fuente oficial
+    return km;
   }
-  // Manual: aplica factor de ponderación, hora no requerida
   return Math.round(km * TRAIL_PTS.FACTOR_MANUAL * 100) / 100;
 }
 
@@ -181,7 +177,6 @@ function _guardarEntrenamiento(email, idZapa, kmBrutos, kmSumados, tipo,
 
   const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
 
-  // Columnas nuevas de Trail Points — agregar si no existen
   const nuevas = ['Tipo_Carga', 'KM_Brutos', 'KM_Sumados', 'Estado_Validacion', 'Motivo_Rechazo'];
   nuevas.forEach(h => {
     if (!headers.includes(h)) {
@@ -197,7 +192,6 @@ function _guardarEntrenamiento(email, idZapa, kmBrutos, kmSumados, tipo,
     if (i !== -1) newRow[i] = val;
   };
 
-  // Genera ID_Entreno si la columna existe pero la fila no tiene uno aún
   const idEntrenoIdx = headers.indexOf('ID_Entreno');
   if (idEntrenoIdx !== -1) newRow[idEntrenoIdx] = Utilities.getUuid();
 
@@ -217,7 +211,6 @@ function _guardarEntrenamiento(email, idZapa, kmBrutos, kmSumados, tipo,
 
 // ============================================================
 // REGLA C — Sumar KM a zapatilla + disparar cupón si corresponde
-// Devuelve el objeto cupón si se emitió, o null.
 // ============================================================
 function _sumarKmYVerificarUmbral(email, idZapa, kmAcreditados) {
   if (kmAcreditados <= 0) return null;
@@ -250,16 +243,13 @@ function _sumarKmYVerificarUmbral(email, idZapa, kmAcreditados) {
       const kmActuales  = Number(data[i][col.km]) || 0;
       const kmNuevos    = kmActuales + kmAcreditados;
 
-      // Actualizar KM en la hoja
       sheet.getRange(i + 1, col.km + 1).setValue(kmNuevos);
 
-      // Actualizar estado de desgaste
       const nuevoEstado = _calcularEstadoDesgaste(kmNuevos);
       sheet.getRange(i + 1, col.estado + 1).setValue(nuevoEstado);
 
       SpreadsheetApp.flush();
 
-      // Verificar si corresponde emitir cupón
       const yaEmitido = data[i][col.cuponEmitido];
       if (!yaEmitido && kmNuevos >= TRAIL_PTS.KM_UMBRAL_CUPON) {
         const marca  = (data[i][col.marca]  || '').toString().trim();
@@ -267,7 +257,6 @@ function _sumarKmYVerificarUmbral(email, idZapa, kmAcreditados) {
 
         const cupon = _emitirCupon(email, idZapa, marca, modelo, kmNuevos);
 
-        // Marcar en la zapatilla
         sheet.getRange(i + 1, col.cuponEmitido + 1).setValue(true);
         sheet.getRange(i + 1, col.cuponCodigo  + 1).setValue(cupon.codigo);
         sheet.getRange(i + 1, col.cuponFecha   + 1).setValue(cupon.fecha);
@@ -314,13 +303,12 @@ function _emitirCupon(email, idZapa, marca, modelo, kmAlEmitir) {
   cSheet.appendRow([codigo, email, idZapa, marca, modelo, kmAlEmitir, fecha, 'Disponible']);
   SpreadsheetApp.flush();
 
-  // Notificar al usuario en-app
   try {
     enviarNotificacion(
       'individual',
       email,
-      `Tus ${marca} ${modelo} llegaron a ${kmAlEmitir} km de trail. ` +
-      `Cupón de descuento: ${codigo}. ¡Usalo en tu próxima compra en Todo Trail!`,
+      `Tus ${marca} ${modelo} llegaron a ${kmAlEmitir} km. ` +
+      `Cupón de descuento: ${codigo}. ¡Usalo en tu próxima compra!`,
       'Premio'
     );
   } catch(_) {}
@@ -374,7 +362,6 @@ function getCuponDisponible(email) {
   }
 }
 
-// Marcar cupón como usado (llamar al canjear en Todo Trail)
 function marcarCuponUsado(email, codigo) {
   try {
     const ss    = SpreadsheetApp.openById(SHEET_ID);
@@ -407,7 +394,6 @@ function marcarCuponUsado(email, codigo) {
 // HELPERS INTERNOS
 // ============================================================
 
-// Asegura que una columna exista en la hoja y devuelve su índice (0-based)
 function _colEnsure(sheet, headers, nombre) {
   let idx = headers.indexOf(nombre);
   if (idx === -1) {
@@ -443,9 +429,16 @@ function _horaActual() {
 
 function _parseFechaStr(str) {
   if (!str) return new Date();
-  const parts = str.split('/');
+  const s = str.toString().split(' ')[0];
+  const parts = s.split('/');
   if (parts.length === 3) {
     return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
   }
   return new Date(str);
+}
+
+function _celdaADate(val) {
+  if (!val) return null;
+  if (val instanceof Date) return val;
+  return _parseFechaStr(val.toString());
 }
