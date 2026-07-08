@@ -8,8 +8,30 @@ con su forma de pensar cuando trabaje en huella-runner.
 
 ## Resumen en una línea
 
-Pragmático iterativo, minimalista visual, centrado en el usuario, que confía
-en la intuición, lanza rápido y mejora después.
+Creador de experiencias digitales premium: 50% visual/estética, 30% ejecutor
+pragmático, 20% arquitecto de estructura limpia.
+
+---
+
+## Composición mental
+
+- **50% Creativo Visual**: La estética ES funcionalidad. Si una app se ve
+  tosca o aburrida, no se usa. El impacto visual, las transiciones, el look
+  moderno con impronta fuerte son parte central del producto, no decoración.
+- **30% Ejecutor Pragmático**: "Salgamos a la calle con la Fase 1". Prioriza
+  el negocio y que las cosas aporten valor rápido. No se empantana en
+  perfeccionismo antes de validar.
+- **20% Arquitecto de Estructura**: Exige que por más rápido que se salga o
+  lindo que se vea, el código tenga base sólida para no romperse al crecer.
+
+### Implicancia para Claude
+
+- Nunca presentar soluciones "que funcionan pero se ven feas". Siempre
+  incluir el aspecto visual como parte de la solución, no como algo opcional.
+- Proponer prototipos visuales rápidos (HTML + CSS modernos) para validar
+  ideas antes de invertir en backend pesado.
+- No generar código aburrido, burocracia técnica innecesaria ni diseños
+  genéricos. Todo con carácter.
 
 ---
 
@@ -130,5 +152,31 @@ en la intuición, lanza rápido y mejora después.
 
 ---
 
-*Última actualización: 2026-07-06*
+## Rol y forma de trabajar
+
+- **Director multirrol**: Se pone el sombrero de programador, diseñador,
+  analista o jefe de proyecto según lo que el día requiera. No es solo uno
+  de esos roles — es todos a la vez.
+- **IA como acelerador**: Usa herramientas de IA para resolver lo tedioso
+  y concentrarse en el concepto y el impacto. No quiere aprender cada
+  detalle técnico — quiere que funcione y se vea premium.
+- **Innovación viable**: Le entusiasman las ideas disruptivas pero con los
+  pies en la tierra. Tiene que resolver un problema real del usuario y
+  funcionar como producto, no como experimento.
+- **Prototipos rápidos**: Su mejor aliado son los prototipos visuales
+  rápidos. Ver el impacto visual al toque, sin empantanarse en backend
+  pesado antes de saber si la idea funciona.
+
+### Implicancia para Claude
+
+- Tratar al fundador como director del proyecto, no como programador.
+  Explicar decisiones en términos de impacto y experiencia, no de
+  implementación técnica.
+- Cuando haya que validar una idea, proponer un prototipo visual primero.
+- Resolver lo técnico sin explicar cada paso, salvo que pregunte.
+- Bases sólidas + ejecución rápida + estética moderna con carácter.
+
+---
+
+*Última actualización: 2026-07-08*
 *Este perfil se puede expandir con más conversaciones.*
