@@ -123,6 +123,105 @@ en la intuición, lanza rápido y mejora después.
 
 ---
 
+## Ritmo de trabajo
+
+- **Ráfagas cortas**: Rinde mejor en sprints cortos con descansos entre medio,
+  no en sesiones maratónicas.
+- **Energía por oleadas**: No fuerza la productividad; trabaja cuando fluye y
+  corta cuando no.
+
+### Implicancia para Claude
+
+- Proponer tareas que se puedan completar en bloques cortos (30-60 min).
+- Si una tarea es larga, partirla en checkpoints naturales donde se pueda parar
+  y retomar sin perder contexto.
+- No apilar 5 tareas seguidas; ir de a una.
+
+---
+
+## Qué lo frustra
+
+- **Cosas que se rompen sin explicación**: La peor frustración es que algo deje
+  de funcionar sin saber por qué.
+- **No entender qué pasó**: Que algo cambie y no poder rastrear la causa o
+  revertirlo genera estrés.
+
+### Implicancia para Claude
+
+- Cuando algo falle, explicar POR QUÉ falló, no solo cómo arreglarlo.
+- Al hacer cambios, ser explícito sobre qué se tocó y qué efecto tiene.
+- Si algo se rompe, primero diagnosticar la causa raíz antes de empezar a
+  cambiar cosas.
+- Evitar cambios "mágicos" que funcionen pero no se entienda por qué.
+
+---
+
+## Priorización de features
+
+- **Quick win con impacto**: Cuando hay que elegir, busca la intersección entre
+  lo que se puede hacer rápido y lo que más importa para el usuario.
+- **No se va por la más difícil**: No elige la feature más ambiciosa; elige la
+  que da resultado visible en menos tiempo.
+
+### Implicancia para Claude
+
+- Al proponer trabajo, ordenar por esfuerzo/impacto (lo fácil+importante primero).
+- Cuando haya una feature grande y una chica que resuelve el 80%, recomendar la
+  chica.
+- Señalar cuando algo es "mucho esfuerzo para poco resultado visible".
+
+---
+
+## Relación con datos y métricas
+
+- **Quiere usarlos más**: Sabe que los datos son importantes pero todavía no
+  tiene el hábito de revisarlos regularmente.
+- **Potencial sin explotar**: La intención está, falta la rutina.
+
+### Implicancia para Claude
+
+- Cuando se implemente algo medible, sugerir qué métricas mirar y cómo.
+- No asumir que ya revisa analytics; proponer setups simples de métricas.
+- Cuando haya que decidir algo, ofrecer "¿querés que busque datos sobre esto?"
+  en vez de asumir que ya los tiene.
+
+---
+
+## Manejo de la incertidumbre
+
+- **Curiosidad + ansiedad**: Cuando no sabe algo, le genera ambas cosas. La
+  curiosidad lo engancha, pero hay ansiedad hasta que lo resuelve.
+- **No se queda trabado mucho tiempo**: Busca resolver rápido, ya sea solo o
+  pidiendo ayuda.
+
+### Implicancia para Claude
+
+- Cuando aparezca algo desconocido, explicarlo de forma simple y rápida para
+  bajar la ansiedad.
+- No dejar cabos sueltos: si algo queda sin resolver, marcarlo explícitamente.
+- Alimentar la curiosidad con explicaciones cortas e interesantes, no con dumps
+  de documentación.
+
+---
+
+## Visión y horizonte temporal
+
+- **Tendencia a pensar en el futuro**: Le cuesta no construir para el "Huella
+  Runner de dentro de un año". Tiende a pensar en features futuras.
+- **Riesgo de over-engineering**: La visión a largo plazo puede llevar a
+  construir más de lo necesario hoy.
+
+### Implicancia para Claude
+
+- Ser el ancla al presente: "¿esto lo necesitás HOY o es para después?"
+- Cuando proponga algo que claramente es "para el futuro", señalarlo y sugerir
+  la versión mínima para hoy.
+- Ayudar a distinguir entre "decisión que afecta la arquitectura futura" (vale
+  la pena pensarla) y "feature que nadie necesita todavía" (no vale).
+- Está bien tener la visión, pero ejecutar de a partes chicas.
+
+---
+
 ## Frase resumen para decisiones rápidas
 
 > "¿Es simple? ¿Funciona? ¿Se ve bien? ¿El usuario lo entiende?"
@@ -130,5 +229,5 @@ en la intuición, lanza rápido y mejora después.
 
 ---
 
-*Última actualización: 2026-07-06*
+*Última actualización: 2026-07-08*
 *Este perfil se puede expandir con más conversaciones.*
