@@ -1,5 +1,13 @@
 # Huella Runner
 
+## Stack
+
+- **Frontend**: HTML/CSS/JS vanilla (sin frameworks), PWA instalable
+- **Backend**: Google Apps Script + Google Sheets
+- **Hosting**: GitHub Pages (landing + PWA shell)
+- **Diseño**: dark theme (#080808), gold accent (#FFD700), Bebas Neue + Montserrat
+- **Referencia de features**: ver archivos en `gas/` para el código GAS actual
+
 ## Perfil de decisión del fundador
 
 **SIEMPRE ACTIVO** — Este perfil aplica en todo momento: trabajando en
