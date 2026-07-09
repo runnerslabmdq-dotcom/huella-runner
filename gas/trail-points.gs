@@ -165,9 +165,7 @@ function _ponderarKm(km, tipoCarga, fecha, hora) {
     return km;  // 100% — fuente oficial
   }
 
-  // Manual: requiere fecha Y hora explícitas
-  if (!fecha || !hora) return null;
-
+  // Manual: aplica factor de ponderación
   return Math.round(km * TP.FACTOR_MANUAL * 100) / 100;
 }
 
@@ -183,7 +181,7 @@ function _guardarEntrenamiento(email, idZapa, kmBrutos, kmSumados, tipo,
   const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
 
   // Columnas nuevas de Trail Points — agregar si no existen
-  const nuevas = ['Tipo_Carga', 'KM_Brutos', 'KM_Sumados', 'Estado_Validacion', 'Motivo_Rechazo'];
+  const nuevas = ['ID_Entreno', 'Tipo_Carga', 'KM_Brutos', 'KM_Sumados', 'Estado_Validacion', 'Motivo_Rechazo'];
   nuevas.forEach(h => {
     if (!headers.includes(h)) {
       const col = sheet.getLastColumn() + 1;
@@ -198,6 +196,7 @@ function _guardarEntrenamiento(email, idZapa, kmBrutos, kmSumados, tipo,
     if (i !== -1) newRow[i] = val;
   };
 
+  set('ID_Entreno',       Utilities.getUuid());
   set('Email_Usuario',    email);
   set('ID_Zapa',          idZapa);
   set('Fecha',            fecha);
@@ -314,10 +313,11 @@ function _emitirCupon(email, idZapa, marca, modelo, kmAlEmitir) {
   // Notificar al usuario en-app
   try {
     enviarNotificacion(
+      'individual',
       email,
-      '🏆 ¡Cupón Trail Points desbloqueado!',
-      `Tus ${marca} ${modelo} llegaron a ${kmAlEmitir} km de trail. ` +
-      `Cupón de descuento: ${codigo}. ¡Usalo en tu próxima compra en Todo Trail!`
+      `🏆 ¡Cupón Trail Points desbloqueado! Tus ${marca} ${modelo} llegaron a ${kmAlEmitir} km de trail. ` +
+      `Cupón de descuento: ${codigo}. ¡Usalo en tu próxima compra en Todo Trail!`,
+      'Premio'
     );
   } catch(_) {}
 

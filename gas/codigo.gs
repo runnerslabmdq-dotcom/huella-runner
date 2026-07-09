@@ -613,7 +613,6 @@ const TRAIN_HEADERS = ['ID_Entreno', 'Email_Usuario', 'ID_Zapa', 'KM_Sumados', '
 function logTraining(email, idZapatilla, kmNuevos) {
   if (!email) return { success: false, error: 'Email requerido.' };
 
-  // Delega a Trail Points: incluye validación anti-fraude, ponderación y cupones.
   const resultado = registrarActividadTrailPoints(
     email, idZapatilla, kmNuevos, 'Manual', null, null
   );

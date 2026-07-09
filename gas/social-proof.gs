@@ -147,8 +147,8 @@ function obtenerDataSocialProof(marca, modelo) {
 // -----------------------------------------------------------
 function registrarZapatillaConProof(email, marca, modelo, talle, genero, imagenUrl) {
   try {
-    // Reutiliza la función de registro existente en codigo.gs
-    const resultadoRegistro = addShoe(email, marca, modelo, talle, genero, imagenUrl);
+    const formData = { marca, modelo, talle, genero, imagenUrl: imagenUrl || '', km: 0 };
+    const resultadoRegistro = addShoe(email, formData);
 
     if (!resultadoRegistro || !resultadoRegistro.success) {
       return { success: false, error: (resultadoRegistro && resultadoRegistro.error) || 'Error al registrar.' };
@@ -233,8 +233,7 @@ function procesarNotificacionesDiferidas() {
       const email   = data[i][col.email].toString().trim();
       const mensaje = data[i][col.mensaje].toString();
 
-      // Reutiliza enviarNotificacion() del backend principal
-      enviarNotificacion(email, '🏃 Dato de tu zapatilla', mensaje);
+      enviarNotificacion('individual', email, mensaje, 'Mensaje');
 
       sheet.getRange(i + 1, col.enviado + 1).setValue(true);
     }
