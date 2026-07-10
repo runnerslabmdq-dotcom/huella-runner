@@ -116,7 +116,7 @@ self.addEventListener('fetch', function(e) {
 }
 
 function getAdminUrl() {
-  return ScriptApp.getService().getUrl() + '?page=admin';
+  return ScriptApp.getService().getUrl() + '?page=admin&token=' + ADMIN_TOKEN;
 }
 
 function getSheetAndHeaders(sheetName, defaultHeaders) {
@@ -723,7 +723,7 @@ function getGruposRunning() {
   }
 }
 
-function enviarNotificacion(destinatarioTipo, destinatarioValor, mensaje, tipo) {
+function enviarNotificacion(destinatarioTipo, destinatarioValor, mensaje, tipo, codigoVoucherManual) {
   try {
     if (!mensaje || mensaje.toString().trim() === '') {
       return { success: false, error: 'El mensaje no puede estar vacío.' };
@@ -789,7 +789,9 @@ function enviarNotificacion(destinatarioTipo, destinatarioValor, mensaje, tipo) 
 
     let insertados = 0;
     for (let d = 0; d < destinatarios.length; d++) {
-      const codigoVoucher = tipo === 'Premio' ? _generarCodigoVoucher() : '';
+      const codigoVoucher = tipo === 'Premio'
+        ? ((codigoVoucherManual && codigoVoucherManual.toString().trim()) || _generarCodigoVoucher())
+        : '';
       appendDataByHeader('Notificaciones', NOTIF_HEADERS, {
         'ID_Notif':       Utilities.getUuid(),
         'Email':          destinatarios[d],

@@ -165,9 +165,6 @@ function _ponderarKm(km, tipoCarga, fecha, hora) {
     return km;  // 100% — fuente oficial
   }
 
-  // Manual: requiere fecha Y hora explícitas
-  if (!fecha || !hora) return null;
-
   return Math.round(km * TP.FACTOR_MANUAL * 100) / 100;
 }
 
@@ -314,10 +311,10 @@ function _emitirCupon(email, idZapa, marca, modelo, kmAlEmitir) {
   // Notificar al usuario en-app
   try {
     enviarNotificacion(
+      'individual',
       email,
-      '🏆 ¡Cupón Trail Points desbloqueado!',
-      `Tus ${marca} ${modelo} llegaron a ${kmAlEmitir} km de trail. ` +
-      `Cupón de descuento: ${codigo}. ¡Usalo en tu próxima compra en Todo Trail!`
+      `🏆 ¡Cupón Trail Points desbloqueado! Tus ${marca} ${modelo} llegaron a ${kmAlEmitir} km de trail. Cupón de descuento: ${codigo}. ¡Usalo en tu próxima compra en Todo Trail!`,
+      'Premio'
     );
   } catch(_) {}
 
