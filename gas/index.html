@@ -172,7 +172,7 @@
     }
     .shoe-thumb:active { transform: scale(0.95); }
     .shoe-thumb:hover  {
-      border-color: 1px solid rgba(192,192,192,0.6);
+      border-color: rgba(192,192,192,0.6);
       box-shadow:
         inset 0 0 14px rgba(192,192,192,0.14),
         0 0 20px rgba(192,192,192,0.28),
@@ -2091,6 +2091,8 @@
         document.getElementById('user-name').innerText = res.nombre;
         switchView('view-dashboard');
         loadDashboard();
+        cargarBadgeNotificaciones();
+        setInterval(cargarBadgeNotificaciones, 60000);
       } else { err.innerText = res.error; err.style.display = 'block'; }
     }).registerUser(n, a, e, p, nivel, grupo, fechaNac, provincia, ciudad, celular);
   }
@@ -2164,7 +2166,7 @@
   // ── Fin Provincia/Ciudad ─────────────────────────────────────
 
   function doLogin() {
-    const e = document.getElementById('log-email').value;
+    const e = document.getElementById('log-email').value.trim();
     const p = document.getElementById('log-pass').value;
     const err = document.getElementById('log-error');
     if(!e || !p) return;

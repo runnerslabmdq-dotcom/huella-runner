@@ -507,6 +507,15 @@
   // Estado compartido entre las dos llamadas async (stats y dashboard).
   const _insState = { totalZapas: null, alertasCount: null };
 
+  function sanitize(str) {
+    return (str || '').toString()
+      .replace(/&/g,  '&amp;')
+      .replace(/</g,  '&lt;')
+      .replace(/>/g,  '&gt;')
+      .replace(/"/g,  '&quot;')
+      .replace(/'/g,  '&#39;');
+  }
+
   window.onload = function() { cargarTodo(); };
 
   function cargarTodo() {
@@ -570,13 +579,13 @@
     if (!lista || !lista.length) { cont.innerHTML = '<div class="loading-row">Sin datos</div>'; return; }
     const cls = ['gold','silver','bronze'];
     cont.innerHTML = lista.slice(0, 8).map(function(u, i) {
-      const ini = ((u.nombre[0]||'') + (u.apellido[0]||'')).toUpperCase() || '?';
+      const ini = sanitize(((u.nombre[0]||'') + (u.apellido[0]||'')).toUpperCase()) || '?';
       return `<div class="rank-item">
         <div class="rank-num ${cls[i]||''}">${i+1}</div>
         <div class="rank-avatar">${ini}</div>
         <div class="rank-info">
-          <div class="rank-name">${u.nombre} ${u.apellido}</div>
-          <div class="rank-detail">${u.zapatillas} zapa${u.zapatillas!==1?'s':''} · ${u.grupo||'Sin grupo'}</div>
+          <div class="rank-name">${sanitize(u.nombre)} ${sanitize(u.apellido)}</div>
+          <div class="rank-detail">${u.zapatillas} zapa${u.zapatillas!==1?'s':''} · ${sanitize(u.grupo||'Sin grupo')}</div>
         </div>
         <div class="rank-km">${u.kmTotales}<span>km</span></div>
       </div>`;
@@ -596,10 +605,10 @@
     const cont = document.getElementById('actividad-list');
     if (!eventos || !eventos.length) { cont.innerHTML = '<div class="loading-row">Sin actividad reciente</div>'; return; }
     cont.innerHTML = eventos.map(function(ev) {
-      const display = (ev.nombre && ev.nombre !== ev.email) ? ev.nombre : ev.email;
+      const display = sanitize((ev.nombre && ev.nombre !== ev.email) ? ev.nombre : ev.email);
       const dotCls  = ev.tipo === 'entrenamiento' ? '' : 'grey';
       const zapaTag = ev.zapatilla
-        ? `<span style="color:var(--metal);font-size:0.65rem;display:block;margin-top:1px;">${ev.zapatilla}</span>`
+        ? `<span style="color:var(--metal);font-size:0.65rem;display:block;margin-top:1px;">${sanitize(ev.zapatilla)}</span>`
         : '';
       const texto = ev.tipo === 'entrenamiento'
         ? `<strong>${display}</strong> sumó <strong style="color:var(--neon)">${ev.km} km</strong>${zapaTag}`
@@ -656,8 +665,8 @@
         return `<div class="alert-card">
           <div class="alert-card-top">
             <div>
-              <div class="alert-runner">${a.runner || 'Runner'}</div>
-              <div class="alert-zapa">${a.zapatilla || '—'}${a.grupo ? ' · '+a.grupo : ''}</div>
+              <div class="alert-runner">${sanitize(a.runner || 'Runner')}</div>
+              <div class="alert-zapa">${sanitize(a.zapatilla || '—')}${a.grupo ? ' · '+sanitize(a.grupo) : ''}</div>
             </div>
             <div class="alert-km-badge" style="color:${color};">${km}<span>km</span></div>
           </div>
@@ -728,12 +737,12 @@
       tbody.innerHTML = '<tr><td colspan="7" class="loading-row">Sin resultados</td></tr>'; return;
     }
     tbody.innerHTML = lista.map(function(u) {
-      const nom  = (u.nombre + ' ' + u.apellido).trim();
+      const nom  = sanitize((u.nombre + ' ' + u.apellido).trim());
       const esc  = nom.replace(/'/g, "\\'");
-      const escE = u.email.replace(/'/g, "\\'");
+      const escE = sanitize(u.email).replace(/'/g, "\\'");
       const dotCls = u.activoHoy ? 'online' : 'offline';
-      const grp  = u.grupo ? `<span class="pill grupo">${u.grupo}</span>` : '<span style="color:#333;">—</span>';
-      const niv  = u.nivel ? `<span class="pill nivel">${u.nivel}</span>` : '<span style="color:#333;">—</span>';
+      const grp  = u.grupo ? `<span class="pill grupo">${sanitize(u.grupo)}</span>` : '<span style="color:#333;">—</span>';
+      const niv  = u.nivel ? `<span class="pill nivel">${sanitize(u.nivel)}</span>` : '<span style="color:#333;">—</span>';
       return `<tr class="row-click" onclick="seleccionarDestinatario('${escE}','${esc}')">
         <td><span class="status-dot ${dotCls}" title="${u.activoHoy ? 'Entrenó hoy' : 'Inactivo hoy'}"></span></td>
         <td class="name">${nom}</td>
@@ -750,13 +759,13 @@
     const cont = document.getElementById('users-cards');
     if (!lista || !lista.length) { cont.innerHTML = '<div class="loading-row">Sin resultados</div>'; return; }
     cont.innerHTML = lista.map(function(u) {
-      const nom  = (u.nombre + ' ' + u.apellido).trim();
+      const nom  = sanitize((u.nombre + ' ' + u.apellido).trim());
       const esc  = nom.replace(/'/g, "\\'");
-      const escE = u.email.replace(/'/g, "\\'");
-      const ini  = ((u.nombre[0]||'') + (u.apellido[0]||'')).toUpperCase() || '?';
+      const escE = sanitize(u.email).replace(/'/g, "\\'");
+      const ini  = sanitize(((u.nombre[0]||'') + (u.apellido[0]||'')).toUpperCase()) || '?';
       const dotCls = u.activoHoy ? 'online' : 'offline';
-      const grp  = u.grupo ? `<span class="pill grupo">${u.grupo}</span>` : '';
-      const niv  = u.nivel ? `<span class="pill nivel">${u.nivel}</span>` : '';
+      const grp  = u.grupo ? `<span class="pill grupo">${sanitize(u.grupo)}</span>` : '';
+      const niv  = u.nivel ? `<span class="pill nivel">${sanitize(u.nivel)}</span>` : '';
       return `<div class="user-card" onclick="seleccionarDestinatario('${escE}','${esc}')">
         <div class="user-card-top">
           <div class="user-card-avatar">${ini}</div>
@@ -858,7 +867,7 @@
         btn.disabled = false; btn.textContent = 'Enviar notificación →';
         fb.className = 'nf-feedback err'; fb.textContent = '✗ Error de conexión.';
       })
-      .enviarNotificacion(dTipo, dValor, mensaje, tipo);
+      .enviarNotificacion(dTipo, dValor, mensaje, tipo, tipo === 'Premio' ? document.getElementById('nf-voucher').value.trim() : '');
   }
 
   /* ════════════════════════════════════
@@ -994,8 +1003,8 @@
         const pct   = Math.min(100, Math.round((km / 1000) * 100));
         return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--borde);">
           <div style="flex:1;min-width:0;">
-            <div style="font-size:0.8rem;font-weight:700;color:var(--plata);">${a.runner}</div>
-            <div style="font-size:0.65rem;color:var(--metal);">${a.zapatilla}</div>
+            <div style="font-size:0.8rem;font-weight:700;color:var(--plata);">${sanitize(a.runner)}</div>
+            <div style="font-size:0.65rem;color:var(--metal);">${sanitize(a.zapatilla)}</div>
           </div>
           <div style="width:80px;">
             <div style="height:5px;background:#111;border-radius:2px;overflow:hidden;">
@@ -1036,8 +1045,8 @@
             <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;">
               <div class="top-modelo-pos ${posC}">${i+1}</div>
               <div class="top-modelo-info">
-                <div class="top-modelo-name">${m.modelo || '—'}</div>
-                <div class="top-modelo-marca">${m.marca || '—'} · ${kmProm} km/prom · ${m.kmTotal} km total</div>
+                <div class="top-modelo-name">${sanitize(m.modelo || '—')}</div>
+                <div class="top-modelo-marca">${sanitize(m.marca || '—')} · ${kmProm} km/prom · ${m.kmTotal} km total</div>
               </div>
               <div class="top-modelo-count">${m.cantidad}<span>${m.cantidad !== 1 ? ' pares' : ' par'}</span></div>
             </div>
@@ -1074,8 +1083,8 @@
             return `<div class="top-modelo-item">
               <div class="top-modelo-pos ${posClass2[i]||''}">${i+1}</div>
               <div class="top-modelo-info">
-                <div class="top-modelo-name">${modelo}</div>
-                <div class="top-modelo-marca">${marca} · ${m.kmTotal} km acumulados</div>
+                <div class="top-modelo-name">${sanitize(modelo)}</div>
+                <div class="top-modelo-marca">${sanitize(marca)} · ${m.kmTotal} km acumulados</div>
               </div>
               <div class="top-modelo-count">${m.count}<span>${m.count!==1?'runners':'runner'}</span></div>
             </div>`;
@@ -1240,7 +1249,7 @@
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
           <div class="top-modelo-pos ${posClass[i]||''}">${i+1}</div>
           <div style="flex:1;min-width:0;">
-            <div style="font-size:0.84rem;font-weight:700;color:var(--plata);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${g.nombre}</div>
+            <div style="font-size:0.84rem;font-weight:700;color:var(--plata);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${sanitize(g.nombre)}</div>
             <div style="font-size:0.62rem;color:var(--metal);">${g.runners} runner${g.runners!==1?'s':''} · ${g.activos} activo${g.activos!==1?'s':''} hoy</div>
           </div>
           <div style="font-size:1rem;font-weight:900;color:var(--neon);white-space:nowrap;">${g.km}<span style="font-size:0.6rem;color:var(--metal);margin-left:2px;">km</span></div>
