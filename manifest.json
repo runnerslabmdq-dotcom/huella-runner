@@ -4,6 +4,7 @@
   "description": "Registrá el kilometraje de tus zapatillas de running",
   "start_url": "./index.html",
   "display": "standalone",
+  "display_override": ["fullscreen", "standalone"],
   "orientation": "portrait",
   "background_color": "#080808",
   "theme_color": "#FFD700",
