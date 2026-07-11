@@ -2092,7 +2092,8 @@
         switchView('view-dashboard');
         loadDashboard();
         cargarBadgeNotificaciones();
-        setInterval(cargarBadgeNotificaciones, 60000);
+        if (_badgeInterval) clearInterval(_badgeInterval);
+        _badgeInterval = setInterval(cargarBadgeNotificaciones, 60000);
       } else { err.innerText = res.error; err.style.display = 'block'; }
     }).registerUser(n, a, e, p, nivel, grupo, fechaNac, provincia, ciudad, celular);
   }
@@ -2165,6 +2166,8 @@
   }
   // ── Fin Provincia/Ciudad ─────────────────────────────────────
 
+  var _badgeInterval = null;
+
   function doLogin() {
     const e = document.getElementById('log-email').value.trim();
     const p = document.getElementById('log-pass').value;
@@ -2191,7 +2194,8 @@
         loadDashboard();
         // Cargar badge de notificaciones automáticamente
         cargarBadgeNotificaciones();
-        setInterval(cargarBadgeNotificaciones, 60000);
+        if (_badgeInterval) clearInterval(_badgeInterval);
+        _badgeInterval = setInterval(cargarBadgeNotificaciones, 60000);
       } else { err.innerText = res.error; err.style.display = 'block'; }
     }).loginUser(e, p);
   }
@@ -2205,6 +2209,7 @@
     // Limpiar badge
     var badge = document.getElementById('notif-badge');
     if (badge) { badge.innerText = ''; badge.classList.remove('visible'); }
+    if (_badgeInterval) { clearInterval(_badgeInterval); _badgeInterval = null; }
     switchView('view-login');
   }
 
