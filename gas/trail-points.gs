@@ -52,7 +52,7 @@ function registrarActividadTrailPoints(email, idZapa, kmBrutos, tipoCarga, fecha
     const km          = Math.abs(Number(kmBrutos)) || 0;
     const tipo        = (tipoCarga || 'Manual').toString().trim();
     const fechaStr    = fecha || _hoy();
-    const horaStr     = hora  || '';
+    const horaStr     = hora  || Utilities.formatDate(new Date(), 'America/Argentina/Buenos_Aires', 'HH:mm');
 
     if (km <= 0) return { success: false, error: 'KM debe ser mayor a cero.' };
 

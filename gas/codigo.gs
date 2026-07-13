@@ -565,6 +565,7 @@ function getShoeHistory(email, idZapatilla) {
     const idZapaCol    = headers.indexOf('ID_Zapa');
     const kmCol        = headers.indexOf('KM_Sumados');
     const fechaCol     = headers.indexOf('Fecha');
+    const horaCol      = headers.indexOf('Hora');
     const idEntrenoCol = headers.indexOf('ID_Entreno');
 
     if (emailCol === -1 || idZapaCol === -1 || kmCol === -1 || fechaCol === -1) {
@@ -572,17 +573,32 @@ function getShoeHistory(email, idZapatilla) {
       return [];
     }
 
-    function normalizarFecha(val) {
+    const tz = 'America/Argentina/Buenos_Aires';
+
+    // La Fecha se guarda sin hora; la Hora va en su propia columna.
+    // Combina ambas y evita mostrar el 00:00 de una fecha sin hora.
+    function normalizarFecha(val, horaVal) {
       if (!val) return '—';
+
+      var fechaTxt, horaDeFecha = '';
       if (val instanceof Date) {
-        var tz   = 'America/Argentina/Buenos_Aires';
-        var opts = { timeZone: tz, hour12: false,
-                     day: '2-digit', month: '2-digit', year: 'numeric',
-                     hour: '2-digit', minute: '2-digit' };
-        var partes = val.toLocaleString('es-AR', opts);
-        return partes.replace(',', '').replace(/\s+/, ' ').trim();
+        fechaTxt    = Utilities.formatDate(val, tz, 'dd/MM/yyyy');
+        horaDeFecha = Utilities.formatDate(val, tz, 'HH:mm');
+      } else {
+        fechaTxt = val.toString().trim();
       }
-      return val.toString();
+
+      var horaTxt = '';
+      if (horaVal instanceof Date) {
+        horaTxt = Utilities.formatDate(horaVal, tz, 'HH:mm');
+      } else if (horaVal) {
+        horaTxt = horaVal.toString().trim();
+      }
+      if (!horaTxt && horaDeFecha && horaDeFecha !== '00:00') {
+        horaTxt = horaDeFecha;
+      }
+
+      return horaTxt ? fechaTxt + ' ' + horaTxt : fechaTxt;
     }
 
     let history = [];
@@ -595,7 +611,7 @@ function getShoeHistory(email, idZapatilla) {
           : '';
         history.push({
           ID_Entreno: idEntreno,
-          Fecha:      normalizarFecha(data[i][fechaCol]),
+          Fecha:      normalizarFecha(data[i][fechaCol], horaCol !== -1 ? data[i][horaCol] : ''),
           KM_Sumados: Number(data[i][kmCol]) || 0
         });
       }
