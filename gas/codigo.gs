@@ -144,7 +144,7 @@ function appendDataByHeader(sheetName, defaultHeaders, dataObj) {
 
 // --- USUARIOS ---
 // CAMBIO v2906: Provincia y Ciudad agregados antes de Celular
-const USERS_HEADERS = ['Nombre', 'Apellido', 'Email', 'Password', 'Nivel', 'Grupo', 'FechaNacimiento', 'Provincia', 'Ciudad', 'Celular', 'Rol'];
+const USERS_HEADERS = ['Nombre', 'Apellido', 'Email', 'Password', 'Nivel', 'Grupo', 'FechaNacimiento', 'Provincia', 'Ciudad', 'Celular', 'Rol', 'Fecha_Registro'];
 
 // CAMBIO v2906: registerUser recibe provincia y ciudad
 function registerUser(nombre, apellido, email, password, nivel, grupo, fechaNac, provincia, ciudad, celular) {
@@ -179,7 +179,8 @@ function registerUser(nombre, apellido, email, password, nivel, grupo, fechaNac,
     'Provincia':       provincia || '',
     'Ciudad':          ciudad || '',
     'Celular':         celular || '',
-    'Rol':             ''
+    'Rol':             '',
+    'Fecha_Registro':  new Date()
   });
 
   enviarEmailBienvenida(emailClean, nombreClean);
@@ -608,7 +609,7 @@ function getShoeHistory(email, idZapatilla) {
 }
 
 // --- ENTRENAMIENTOS ---
-const TRAIN_HEADERS = ['ID_Entreno', 'Email_Usuario', 'ID_Zapa', 'KM_Sumados', 'Fecha'];
+const TRAIN_HEADERS = ['ID_Entreno', 'Email_Usuario', 'ID_Zapa', 'Fecha', 'Hora', 'KM_Brutos', 'KM_Sumados', 'Tipo_Carga', 'Estado_Validacion', 'Motivo_Rechazo'];
 
 function logTraining(email, idZapatilla, kmNuevos) {
   if (!email) return { success: false, error: 'Email requerido.' };
@@ -700,7 +701,7 @@ function deleteTraining(email, idEntreno, idZapatilla, kmADescontar) {
 // MÓDULO NOTIFICACIONES
 // ============================================================
 
-const NOTIF_HEADERS = ['ID_Notif', 'Email', 'Mensaje', 'Fecha', 'Leido', 'Tipo', 'Codigo_Voucher'];
+const NOTIF_HEADERS = ['ID_Notif', 'Email_Usuario', 'Mensaje', 'Fecha', 'Leido', 'Tipo', 'Codigo_Voucher', 'Oculto'];
 
 function getGruposRunning() {
   try {
@@ -794,7 +795,7 @@ function enviarNotificacion(destinatarioTipo, destinatarioValor, mensaje, tipo, 
         : '';
       appendDataByHeader('Notificaciones', NOTIF_HEADERS, {
         'ID_Notif':       Utilities.getUuid(),
-        'Email':          destinatarios[d],
+        'Email_Usuario':  destinatarios[d],
         'Mensaje':        mensaje.toString().trim(),
         'Fecha':          fecha,
         'Leido':          'FALSE',
@@ -833,7 +834,7 @@ function getNotificacionesUsuario(email) {
 
     const data    = sheet.getDataRange().getValues();
     const headers = data[0];
-    const emailCol   = headers.indexOf('Email');
+    const emailCol   = headers.indexOf('Email_Usuario');
     const idCol      = headers.indexOf('ID_Notif');
     const msgCol     = headers.indexOf('Mensaje');
     const fechaCol   = headers.indexOf('Fecha');
@@ -915,7 +916,7 @@ function contarNoLeidas(email) {
 
     const data    = sheet.getDataRange().getValues();
     const headers = data[0];
-    const emailCol  = headers.indexOf('Email');
+    const emailCol  = headers.indexOf('Email_Usuario');
     const leidoCol  = headers.indexOf('Leido');
     const ocultoCol = headers.indexOf('Oculto');
 
@@ -946,7 +947,7 @@ function deleteNotificacion(email, idNotif) {
     const data    = sheet.getDataRange().getValues();
     const headers = data[0];
     const idCol    = headers.indexOf('ID_Notif');
-    const emailCol = headers.indexOf('Email');
+    const emailCol = headers.indexOf('Email_Usuario');
 
     if (idCol === -1 || emailCol === -1) {
       return { success: false, error: 'Estructura de Notificaciones incorrecta.' };
