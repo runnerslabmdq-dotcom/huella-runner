@@ -2084,9 +2084,14 @@
     if (!n || !e || !p || !pc) { err.innerText = 'Completá todos los campos obligatorios.'; err.style.display = 'block'; return; }
     if (p !== pc) { err.innerText = 'Las contraseñas no coinciden.'; err.style.display = 'block'; return; }
     document.getElementById('btn-reg').innerText = 'CREANDO...';
-    google.script.run.withSuccessHandler(res => {
-      document.getElementById('btn-reg').innerText = 'Crear Cuenta';
-      if (res.success) {
+    google.script.run
+      .withSuccessHandler(res => {
+        document.getElementById('btn-reg').innerText = 'Crear Cuenta';
+        if (!res || !res.success) {
+          err.innerText = (res && res.error) ? res.error : 'Error desconocido al crear la cuenta.';
+          err.style.display = 'block';
+          return;
+        }
         currentUserEmail = res.email;
         document.getElementById('user-name').innerText = res.nombre;
         switchView('view-dashboard');
@@ -2094,8 +2099,13 @@
         cargarBadgeNotificaciones();
         if (_badgeInterval) clearInterval(_badgeInterval);
         _badgeInterval = setInterval(cargarBadgeNotificaciones, 60000);
-      } else { err.innerText = res.error; err.style.display = 'block'; }
-    }).registerUser(n, a, e, p, nivel, grupo, fechaNac, provincia, ciudad, celular);
+      })
+      .withFailureHandler(function(e2) {
+        document.getElementById('btn-reg').innerText = 'Crear Cuenta';
+        err.innerText = 'Error de conexión: ' + (e2 && e2.message ? e2.message : e2);
+        err.style.display = 'block';
+      })
+      .registerUser(n, a, e, p, nivel, grupo, fechaNac, provincia, ciudad, celular);
   }
 
   // ── Provincia → Ciudad dinámica via API Georef ──────────────
@@ -2169,25 +2179,37 @@
   var _badgeInterval = null;
 
   function doLogin() {
-    const e = document.getElementById('log-email').value.trim();
+    const e = document.getElementById('log-email').value.trim().toLowerCase();
     const p = document.getElementById('log-pass').value;
     const err = document.getElementById('log-error');
     if(!e || !p) return;
+    err.style.display = 'none';
     document.getElementById('btn-login').innerText = 'INICIANDO...';
-    google.script.run.withSuccessHandler(res => {
-      document.getElementById('btn-login').innerText = 'Iniciar Sesión';
-      if(res.success) {
-      if(res.esAdmin) {
-  // Es admin → pedir la URL real al backend y abrir el panel en la ventana superior
-  google.script.run.withSuccessHandler(function(adminUrl){
-    var a = document.createElement('a');
-    a.href = adminUrl;
-    a.target = '_top';
-    document.body.appendChild(a);
-    a.click();
-  }).getAdminUrl();
-  return;
-}
+    google.script.run
+      .withSuccessHandler(res => {
+        document.getElementById('btn-login').innerText = 'Iniciar Sesión';
+        if (!res || !res.success) {
+          err.innerText = (res && res.error) ? res.error : 'Error desconocido al iniciar sesión.';
+          err.style.display = 'block';
+          return;
+        }
+        if (res.esAdmin) {
+          // Es admin → pedir la URL real al backend y abrir el panel en la ventana superior
+          google.script.run
+            .withSuccessHandler(function(adminUrl) {
+              var a = document.createElement('a');
+              a.href = adminUrl;
+              a.target = '_top';
+              document.body.appendChild(a);
+              a.click();
+            })
+            .withFailureHandler(function(e2) {
+              err.innerText = 'No se pudo abrir el panel admin: ' + (e2 && e2.message ? e2.message : e2);
+              err.style.display = 'block';
+            })
+            .getAdminUrl();
+          return;
+        }
         currentUserEmail = res.email;
         document.getElementById('user-name').innerText = res.nombre || 'Runner';
         switchView('view-dashboard');
@@ -2196,8 +2218,13 @@
         cargarBadgeNotificaciones();
         if (_badgeInterval) clearInterval(_badgeInterval);
         _badgeInterval = setInterval(cargarBadgeNotificaciones, 60000);
-      } else { err.innerText = res.error; err.style.display = 'block'; }
-    }).loginUser(e, p);
+      })
+      .withFailureHandler(function(e2) {
+        document.getElementById('btn-login').innerText = 'Iniciar Sesión';
+        err.innerText = 'Error de conexión: ' + (e2 && e2.message ? e2.message : e2);
+        err.style.display = 'block';
+      })
+      .loginUser(e, p);
   }
 
   function doLogout() {
