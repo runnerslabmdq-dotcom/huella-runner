@@ -157,44 +157,49 @@ const USERS_HEADERS = ['Nombre', 'Apellido', 'Email', 'Password', 'Nivel', 'Grup
 
 // CAMBIO v2906: registerUser recibe provincia y ciudad
 function registerUser(nombre, apellido, email, password, nivel, grupo, fechaNac, provincia, ciudad, celular) {
-  if (!nombre || nombre.toString().trim() === '') {
-    return { success: false, error: 'El nombre es requerido.' };
-  }
-  if (!email) return { success: false, error: 'Email requerido.' };
-  const emailClean = email.toString().trim().toLowerCase();
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailClean)) {
-    return { success: false, error: 'El email no tiene un formato válido.' };
-  }
-  if (!password || password.toString().length < 6) {
-    return { success: false, error: 'La contraseña debe tener al menos 6 caracteres.' };
-  }
-  const nombreClean = nombre.toString().trim();
-  const { sheet, headers } = getSheetAndHeaders('Usuarios', USERS_HEADERS);
-  const data = sheet.getDataRange().getValues();
-  const emailCol = headers.indexOf('Email');
-  for (let i = 1; i < data.length; i++) {
-    const rowEmail = data[i][emailCol] ? data[i][emailCol].toString().trim().toLowerCase() : '';
-    if (rowEmail === emailClean) {
-      return { success: false, error: 'El email ya esta registrado.' };
+  try {
+    if (!nombre || nombre.toString().trim() === '') {
+      return { success: false, error: 'El nombre es requerido.' };
     }
-  }
-  appendDataByHeader('Usuarios', USERS_HEADERS, {
-    'Nombre':          nombreClean,
-    'Apellido':        apellido,
-    'Email':           emailClean,
-    'Password':        password,
-    'Nivel':           nivel || '',
-    'Grupo':           grupo || '',
-    'FechaNacimiento': fechaNac || '',
-    'Provincia':       provincia || '',
-    'Ciudad':          ciudad || '',
-    'Celular':         celular || '',
-    'Rol':             '',
-    'Fecha_Registro':  new Date()
-  });
+    if (!email) return { success: false, error: 'Email requerido.' };
+    const emailClean = email.toString().trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailClean)) {
+      return { success: false, error: 'El email no tiene un formato válido.' };
+    }
+    if (!password || password.toString().length < 6) {
+      return { success: false, error: 'La contraseña debe tener al menos 6 caracteres.' };
+    }
+    const nombreClean = nombre.toString().trim();
+    const { sheet, headers } = getSheetAndHeaders('Usuarios', USERS_HEADERS);
+    const data = sheet.getDataRange().getValues();
+    const emailCol = headers.indexOf('Email');
+    for (let i = 1; i < data.length; i++) {
+      const rowEmail = data[i][emailCol] ? data[i][emailCol].toString().trim().toLowerCase() : '';
+      if (rowEmail === emailClean) {
+        return { success: false, error: 'El email ya esta registrado.' };
+      }
+    }
+    appendDataByHeader('Usuarios', USERS_HEADERS, {
+      'Nombre':          nombreClean,
+      'Apellido':        apellido,
+      'Email':           emailClean,
+      'Password':        password,
+      'Nivel':           nivel || '',
+      'Grupo':           grupo || '',
+      'FechaNacimiento': fechaNac || '',
+      'Provincia':       provincia || '',
+      'Ciudad':          ciudad || '',
+      'Celular':         celular || '',
+      'Rol':             '',
+      'Fecha_Registro':  new Date()
+    });
 
-  enviarEmailBienvenida(emailClean, nombreClean);
-  return { success: true, email: emailClean, nombre: nombreClean };
+    enviarEmailBienvenida(emailClean, nombreClean);
+    return { success: true, email: emailClean, nombre: nombreClean };
+  } catch(e) {
+    Logger.log('registerUser ERROR: ' + e.toString());
+    return { success: false, error: 'Error interno al crear la cuenta.' };
+  }
 }
 
 function loginUser(email, password) {
