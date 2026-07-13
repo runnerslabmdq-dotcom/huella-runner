@@ -16,7 +16,7 @@
 //   ... columnas actuales ...
 //   + Tipo_Carga          (Manual / Sincronizada)
 //   + KM_Brutos           (número — los que ingresó el usuario)
-//   + KM_Sumados          (número — los efectivamente acreditados tras ponderación)
+//   + KM_Sumados          (número — los acreditados; hoy igual a KM_Brutos)
 //   + Estado_Validacion   (Aprobada / Sospechosa / Rechazada)
 //   + Motivo_Rechazo      (texto — detalle del filtro que activó)
 //
@@ -30,7 +30,6 @@ const TP = {
   KM_UMBRAL_CUPON:      650,    // km para disparar cupón
   KM_MAX_DIA:           120,    // filtro diario anti-fraude
   KM_MAX_SEMANA:        180,    // filtro semanal anti-fraude
-  FACTOR_MANUAL:        0.85,   // ponderación carga manual
   PREFIJO_CUPON:        'TT-DESGASTE-',
   SHEET_CUPONES:        'Cupones_Emitidos',
   SHEET_ZAPAS:          'Zapatillas',
@@ -52,7 +51,7 @@ function registrarActividadTrailPoints(email, idZapa, kmBrutos, tipoCarga, fecha
     const km          = Math.abs(Number(kmBrutos)) || 0;
     const tipo        = (tipoCarga || 'Manual').toString().trim();
     const fechaStr    = fecha || _hoy();
-    const horaStr     = hora  || Utilities.formatDate(new Date(), 'America/Argentina/Buenos_Aires', 'HH:mm');
+    const horaStr     = hora  || Utilities.formatDate(new Date(), TZ_AR, 'HH:mm');
 
     if (km <= 0) return { success: false, error: 'KM debe ser mayor a cero.' };
 
@@ -64,11 +63,8 @@ function registrarActividadTrailPoints(email, idZapa, kmBrutos, tipoCarga, fecha
       return { success: false, error: validacion.motivo, validacion: 'Rechazada' };
     }
 
-    // B: Ponderar según tipo de carga
-    const kmAcreditados = _ponderarKm(km, tipo, fechaStr, horaStr);
-    if (kmAcreditados === null) {
-      return { success: false, error: 'Carga manual requiere fecha y hora exacta.' };
-    }
+    // B: Los km se acreditan al 100%, sin ponderación por tipo de carga
+    const kmAcreditados = km;
 
     // Guardar entrenamiento aprobado
     _guardarEntrenamiento(emailClean, idZapa, km, kmAcreditados, tipo, fechaStr, horaStr,
@@ -111,7 +107,7 @@ function _validarUmbralesBiologicos(email, km, fechaStr) {
   if (total > TP.KM_MAX_SEMANA) {
     return {
       estado: 'Sospechosa',
-      motivo: `Acumulado semanal excede ${TP.KM_MAX_SEMANA} km (acumulado: ${kmSemana} km + nuevo: ${km} km = ${total} km). KM congelados.`
+      motivo: `Acumulado semanal excede ${TP.KM_MAX_SEMANA} km (acumulado: ${kmSemana} km + nuevo: ${km} km = ${total} km). Marcada para revisión.`
     };
   }
 
@@ -153,19 +149,6 @@ function _sumaKmUltimos7Dias(email, fechaStr) {
     Logger.log('_sumaKmUltimos7Dias ERROR: ' + e.toString());
     return 0;
   }
-}
-
-// ============================================================
-// REGLA B — Ponderación de carga
-// Retorna los km efectivos a acreditar, o null si la carga
-// manual no tiene los campos obligatorios.
-// ============================================================
-function _ponderarKm(km, tipoCarga, fecha, hora) {
-  if (tipoCarga === 'Sincronizada') {
-    return km;  // 100% — fuente oficial
-  }
-
-  return Math.round(km * TP.FACTOR_MANUAL * 100) / 100;
 }
 
 // ============================================================
@@ -399,10 +382,7 @@ function _generarCodigoAlfanumerico(longitud) {
 }
 
 function _hoy() {
-  const d  = new Date();
-  const dd = String(d.getDate()).padStart(2, '0');
-  const mm = String(d.getMonth() + 1).padStart(2, '0');
-  return dd + '/' + mm + '/' + d.getFullYear();
+  return Utilities.formatDate(new Date(), TZ_AR, 'dd/MM/yyyy');
 }
 
 function _parseFechaStr(str) {
