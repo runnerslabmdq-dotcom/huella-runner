@@ -173,40 +173,18 @@ function _ponderarKm(km, tipoCarga, fecha, hora) {
 // ============================================================
 function _guardarEntrenamiento(email, idZapa, kmBrutos, kmSumados, tipo,
                                fecha, hora, estadoVal, motivoRechazo) {
-  const ss    = SpreadsheetApp.openById(SHEET_ID);
-  const sheet = ss.getSheetByName(TP.SHEET_TRAIN);
-  if (!sheet) return;
-
-  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
-
-  // Columnas nuevas de Trail Points — agregar si no existen
-  const nuevas = ['Tipo_Carga', 'KM_Brutos', 'KM_Sumados', 'Estado_Validacion', 'Motivo_Rechazo'];
-  nuevas.forEach(h => {
-    if (!headers.includes(h)) {
-      const col = sheet.getLastColumn() + 1;
-      sheet.getRange(1, col).setValue(h);
-      headers.push(h);
-    }
+  appendDataByHeader('Entrenamientos', TRAIN_HEADERS, {
+    'ID_Entreno':        Utilities.getUuid(),
+    'Email_Usuario':     email,
+    'ID_Zapa':           idZapa,
+    'Fecha':             fecha,
+    'Hora':              hora || '',
+    'KM_Brutos':         kmBrutos,
+    'KM_Sumados':        kmSumados,
+    'Tipo_Carga':        tipo,
+    'Estado_Validacion': estadoVal,
+    'Motivo_Rechazo':    motivoRechazo || ''
   });
-
-  const newRow = new Array(headers.length).fill('');
-  const set = (key, val) => {
-    const i = headers.indexOf(key);
-    if (i !== -1) newRow[i] = val;
-  };
-
-  set('Email_Usuario',    email);
-  set('ID_Zapa',          idZapa);
-  set('Fecha',            fecha);
-  set('Hora',             hora);
-  set('KM_Brutos',        kmBrutos);
-  set('KM_Sumados',       kmSumados);
-  set('Tipo_Carga',       tipo);
-  set('Estado_Validacion', estadoVal);
-  set('Motivo_Rechazo',   motivoRechazo);
-
-  sheet.appendRow(newRow);
-  SpreadsheetApp.flush();
 }
 
 // ============================================================
