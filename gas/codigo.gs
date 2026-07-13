@@ -5,7 +5,7 @@
 //   2. ADMIN: getAdminDashboardData() ahora devuelve rankingCalzado
 // ============================================
 
-const SHEET_ID = '1zPS06n_ufECAw-4yWUHzQJDbpqYjxtoL24akjOo0Ofo';
+const SHEET_ID = '1nWJXp591hYHopPUZX94WvkO55dJIF0FQipRLh8rZX5M';
 const TZ_AR = 'America/Argentina/Buenos_Aires';
 
 function doGet(e) {
