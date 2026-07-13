@@ -100,7 +100,7 @@ self.addEventListener('fetch', function(e) {
         '<h2 style="font-family:sans-serif;color:#c00;padding:40px">Acceso denegado.</h2>'
       );
     }
-    return HtmlService.createTemplateFromFile('admin')
+    return HtmlService.createTemplateFromFile('Admin')
       .evaluate()
       .setTitle('Admin — Huella Runner')
       .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
