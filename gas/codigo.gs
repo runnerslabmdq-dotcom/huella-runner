@@ -6,6 +6,7 @@
 // ============================================
 
 const SHEET_ID = '1zPS06n_ufECAw-4yWUHzQJDbpqYjxtoL24akjOo0Ofo';
+const TZ_AR = 'America/Argentina/Buenos_Aires';
 
 function doGet(e) {
   const page = e && e.parameter ? e.parameter.page : '';
@@ -133,6 +134,14 @@ function getSheetAndHeaders(sheetName, defaultHeaders) {
 
 function appendDataByHeader(sheetName, defaultHeaders, dataObj) {
   const { sheet, headers } = getSheetAndHeaders(sheetName, defaultHeaders);
+  // Auto-reparación: si el sheet no tiene la columna de un dato, la crea.
+  // Sin esto, el valor se descartaba en silencio.
+  for (const key in dataObj) {
+    if (headers.indexOf(key) === -1) {
+      sheet.getRange(1, headers.length + 1).setValue(key);
+      headers.push(key);
+    }
+  }
   let newRow = new Array(headers.length).fill('');
   for (const key in dataObj) {
     const colIndex = headers.indexOf(key);
@@ -164,7 +173,8 @@ function registerUser(nombre, apellido, email, password, nivel, grupo, fechaNac,
   const data = sheet.getDataRange().getValues();
   const emailCol = headers.indexOf('Email');
   for (let i = 1; i < data.length; i++) {
-    if (data[i][emailCol].toString().trim().toLowerCase() === emailClean) {
+    const rowEmail = data[i][emailCol] ? data[i][emailCol].toString().trim().toLowerCase() : '';
+    if (rowEmail === emailClean) {
       return { success: false, error: 'El email ya esta registrado.' };
     }
   }
@@ -188,27 +198,36 @@ function registerUser(nombre, apellido, email, password, nivel, grupo, fechaNac,
 }
 
 function loginUser(email, password) {
-  if (!email) return { success: false, error: 'Email requerido.' };
-  const emailClean = email.toString().trim().toLowerCase();
-  const { sheet, headers } = getSheetAndHeaders('Usuarios', USERS_HEADERS);
-  const data = sheet.getDataRange().getValues();
-  const emailCol = headers.indexOf('Email');
-  const passCol  = headers.indexOf('Password');
-  const nomCol   = headers.indexOf('Nombre');
-  const rolCol   = headers.indexOf('Rol');
-  for (let i = 1; i < data.length; i++) {
-    if (data[i][emailCol].toString().trim().toLowerCase() === emailClean &&
-        data[i][passCol].toString() === password) {
-      const rol = rolCol !== -1 ? data[i][rolCol].toString().trim().toLowerCase() : '';
-      return {
-        success: true,
-        email:   data[i][emailCol].toString().trim().toLowerCase(),
-        nombre:  data[i][nomCol],
-        esAdmin: rol === 'admin'
-      };
+  try {
+    if (!email) return { success: false, error: 'Email requerido.' };
+    const emailClean = email.toString().trim().toLowerCase();
+    const { sheet, headers } = getSheetAndHeaders('Usuarios', USERS_HEADERS);
+    const data = sheet.getDataRange().getValues();
+    const emailCol = headers.indexOf('Email');
+    const passCol  = headers.indexOf('Password');
+    const nomCol   = headers.indexOf('Nombre');
+    const rolCol   = headers.indexOf('Rol');
+    if (emailCol === -1 || passCol === -1) {
+      return { success: false, error: 'Estructura de Usuarios incorrecta.' };
     }
+    for (let i = 1; i < data.length; i++) {
+      const rowEmail = data[i][emailCol] ? data[i][emailCol].toString().trim().toLowerCase() : '';
+      const rowPass  = data[i][passCol]  ? data[i][passCol].toString()                        : '';
+      if (rowEmail === emailClean && rowPass === password) {
+        const rol = rolCol !== -1 && data[i][rolCol] ? data[i][rolCol].toString().trim().toLowerCase() : '';
+        return {
+          success: true,
+          email:   rowEmail,
+          nombre:  nomCol !== -1 ? data[i][nomCol] : '',
+          esAdmin: rol === 'admin'
+        };
+      }
+    }
+    return { success: false, error: 'Email o contrasena incorrectos.' };
+  } catch(e) {
+    Logger.log('loginUser ERROR: ' + e.toString());
+    return { success: false, error: 'Error interno al iniciar sesión.' };
   }
-  return { success: false, error: 'Email o contrasena incorrectos.' };
 }
 
 // ============================================================
@@ -344,7 +363,7 @@ function addShoe(email, formData) {
     'Modelo':        formData.modelo,
     'Talle':         formData.talle,
     'Genero':        formData.genero,
-    'KM_Actuales':   Number(formData.km),
+    'KM_Actuales':   Number(formData.km) || 0,
     'Alias':         formData.alias || '',
     'Estado':        _calcularEstadoDesgaste(Number(formData.km) || 0)
   });
@@ -399,35 +418,43 @@ function deleteShoe(email, idZapatilla) {
     const emailClean = email.toString().trim().toLowerCase();
     const ss = SpreadsheetApp.openById(SHEET_ID);
 
+    const idBuscado = idZapatilla.toString().trim();
+
     const trainSheet = ss.getSheetByName('Entrenamientos');
     if (trainSheet && trainSheet.getLastRow() > 1) {
       const trainData = trainSheet.getDataRange().getValues();
       const trainHeaders = trainData[0];
       const tIdZapaCol = trainHeaders.indexOf('ID_Zapa');
       const tEmailCol  = trainHeaders.indexOf('Email_Usuario');
-      for (let i = trainData.length - 1; i >= 1; i--) {
-        if (trainData[i][tIdZapaCol] === idZapatilla &&
-            trainData[i][tEmailCol].toString().trim().toLowerCase() === emailClean) {
-          trainSheet.deleteRow(i + 1);
+      if (tIdZapaCol !== -1 && tEmailCol !== -1) {
+        for (let i = trainData.length - 1; i >= 1; i--) {
+          const rowZapaId = trainData[i][tIdZapaCol] ? trainData[i][tIdZapaCol].toString().trim() : '';
+          const rowEmail  = trainData[i][tEmailCol]  ? trainData[i][tEmailCol].toString().trim().toLowerCase() : '';
+          if (rowZapaId === idBuscado && rowEmail === emailClean) {
+            trainSheet.deleteRow(i + 1);
+          }
         }
+        SpreadsheetApp.flush();
       }
-      SpreadsheetApp.flush();
     }
 
     const shoeSheet = ss.getSheetByName('Zapatillas');
-    if (shoeSheet) {
+    if (shoeSheet && shoeSheet.getLastRow() > 1) {
       const shoeData = shoeSheet.getDataRange().getValues();
       const shoeHeaders = shoeData[0];
       const idCol    = shoeHeaders.indexOf('ID_Zapa');
       const emailCol = shoeHeaders.indexOf('Email_Usuario');
-      for (let i = shoeData.length - 1; i >= 1; i--) {
-        if (shoeData[i][idCol] === idZapatilla &&
-            shoeData[i][emailCol].toString().trim().toLowerCase() === emailClean) {
-          shoeSheet.deleteRow(i + 1);
-          break;
+      if (idCol !== -1 && emailCol !== -1) {
+        for (let i = shoeData.length - 1; i >= 1; i--) {
+          const rowId    = shoeData[i][idCol]    ? shoeData[i][idCol].toString().trim() : '';
+          const rowEmail = shoeData[i][emailCol] ? shoeData[i][emailCol].toString().trim().toLowerCase() : '';
+          if (rowId === idBuscado && rowEmail === emailClean) {
+            shoeSheet.deleteRow(i + 1);
+            break;
+          }
         }
+        SpreadsheetApp.flush();
       }
-      SpreadsheetApp.flush();
     }
 
     return { success: true };
@@ -526,6 +553,7 @@ function reactivateShoe(email, idZapatilla) {
     const idCol     = headers.indexOf('ID_Zapa');
     const emailCol  = headers.indexOf('Email_Usuario');
     const estadoCol = headers.indexOf('Estado');
+    const kmCol     = headers.indexOf('KM_Actuales');
 
     if (idCol === -1 || emailCol === -1 || estadoCol === -1) {
       return { success: false, error: 'Estructura de Zapatillas incorrecta.' };
@@ -535,7 +563,9 @@ function reactivateShoe(email, idZapatilla) {
       const rowId    = data[i][idCol]    ? data[i][idCol].toString()                        : '';
       const rowEmail = data[i][emailCol] ? data[i][emailCol].toString().trim().toLowerCase() : '';
       if (rowId === idZapatilla.toString() && rowEmail === emailClean) {
-        sheet.getRange(i + 1, estadoCol + 1).setValue('activa');
+        // Restaura el estado de desgaste según los km, no un texto fijo.
+        const km = kmCol !== -1 ? (Number(data[i][kmCol]) || 0) : 0;
+        sheet.getRange(i + 1, estadoCol + 1).setValue(_calcularEstadoDesgaste(km));
         SpreadsheetApp.flush();
         Logger.log('reactivateShoe OK: id=' + idZapatilla);
         return { success: true };
@@ -688,6 +718,7 @@ function deleteTraining(email, idEntreno, idZapatilla, kmADescontar) {
       const idCol       = shoeHeaders.indexOf('ID_Zapa');
       const kmCol       = shoeHeaders.indexOf('KM_Actuales');
       const sEmailCol   = shoeHeaders.indexOf('Email_Usuario');
+      const sEstadoCol  = shoeHeaders.indexOf('Estado');
 
       for (let i = 1; i < shoeData.length; i++) {
         const rowZapaId = shoeData[i][idCol]     ? shoeData[i][idCol].toString() : '';
@@ -697,6 +728,10 @@ function deleteTraining(email, idEntreno, idZapatilla, kmADescontar) {
           const kmRestar = Number(kmADescontar) || 0;
           const kmNuevo  = Math.max(kmActual - kmRestar, 0);
           shoeSheet.getRange(i + 1, kmCol + 1).setValue(kmNuevo);
+          const estadoActual = sEstadoCol !== -1 ? shoeData[i][sEstadoCol].toString().trim().toLowerCase() : '';
+          if (sEstadoCol !== -1 && estadoActual !== 'archivada') {
+            shoeSheet.getRange(i + 1, sEstadoCol + 1).setValue(_calcularEstadoDesgaste(kmNuevo));
+          }
           SpreadsheetApp.flush();
           Logger.log('deleteTraining: KM actualizados. Antes=' + kmActual + ' Restado=' + kmRestar + ' Ahora=' + kmNuevo);
           break;
@@ -796,13 +831,7 @@ function enviarNotificacion(destinatarioTipo, destinatarioValor, mensaje, tipo, 
       return { success: false, error: 'Tipo de destinatario inválido.' };
     }
 
-    const now  = new Date();
-    const dd   = String(now.getDate()).padStart(2, '0');
-    const mm   = String(now.getMonth() + 1).padStart(2, '0');
-    const yyyy = now.getFullYear();
-    const hh   = String(now.getHours()).padStart(2, '0');
-    const min  = String(now.getMinutes()).padStart(2, '0');
-    const fecha = dd + '/' + mm + '/' + yyyy + ' ' + hh + ':' + min;
+    const fecha = Utilities.formatDate(new Date(), TZ_AR, 'dd/MM/yyyy HH:mm');
 
     let insertados = 0;
     for (let d = 0; d < destinatarios.length; d++) {
@@ -1041,7 +1070,7 @@ function getAdminDashboardData() {
       }
     }
 
-    // — Alertas desgaste crítico (KM_Actuales >= 700) —
+    // — Alertas desgaste crítico (usa el mismo umbral que el estado 'Crítico') —
     var zapSheet = ss.getSheetByName('Zapatillas');
     var alertasDesgaste = [];
 
@@ -1075,7 +1104,7 @@ function getAdminDashboardData() {
         var km     = Number(zapData[i][zKmCol]) || 0;
 
         // ── Alertas de desgaste ──
-        if (km >= 700) {
+        if (km >= TP.KM_UMBRAL_CUPON) {
           var email = zEmailCol !== -1 ? zapData[i][zEmailCol].toString().trim().toLowerCase() : '';
           var uInfo = grupoMap[email] || { nombre: email, grupo: '' };
           alertasDesgaste.push({

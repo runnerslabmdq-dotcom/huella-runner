@@ -141,39 +141,7 @@ function obtenerDataSocialProof(marca, modelo) {
 }
 
 // -----------------------------------------------------------
-// A3. REGISTRO CON SOCIAL PROOF INCLUIDO
-//     Llama a addShoe() existente y agrega los datos de proof.
-//     Reemplaza la llamada a addShoe() en el frontend por esta.
-// -----------------------------------------------------------
-function registrarZapatillaConProof(email, marca, modelo, talle, genero, imagenUrl) {
-  try {
-    // Reutiliza la función de registro existente en codigo.gs
-    const resultadoRegistro = addShoe(email, marca, modelo, talle, genero, imagenUrl);
-
-    if (!resultadoRegistro || !resultadoRegistro.success) {
-      return { success: false, error: (resultadoRegistro && resultadoRegistro.error) || 'Error al registrar.' };
-    }
-
-    // Enriquece la respuesta con Social Proof
-    const proof = obtenerDataSocialProof(marca, modelo);
-
-    // Encola notificación diferida (simulada: guarda en hoja Notificaciones con fecha +24h)
-    _encolarNotificacionDiferida(email, marca, modelo, proof);
-
-    return {
-      success:          true,
-      shoeId:           resultadoRegistro.shoeId || '',
-      socialProof:      proof
-    };
-
-  } catch(e) {
-    Logger.log('registrarZapatillaConProof ERROR: ' + e.toString());
-    return { success: false, error: e.toString() };
-  }
-}
-
-// -----------------------------------------------------------
-// A4. NOTIFICACIÓN DIFERIDA (simulada en Sheets)
+// A3. NOTIFICACIÓN DIFERIDA (simulada en Sheets)
 //     Guarda una notificación con fecha de envío = ahora + 24h.
 //     Un cron separado (o la carga del dashboard) la procesa.
 // -----------------------------------------------------------
@@ -225,10 +193,12 @@ function procesarNotificacionesDiferidas() {
     const ahora = new Date();
 
     for (let i = 1; i < data.length; i++) {
-      if (data[i][col.enviado]) continue;
+      const flagEnviado = (data[i][col.enviado] === true)
+        || data[i][col.enviado].toString().trim().toUpperCase() === 'TRUE';
+      if (flagEnviado) continue;
 
-      const enviarEn = new Date(data[i][col.enviarEn]);
-      if (ahora < enviarEn) continue;
+      const enviarEn = _celdaADate(data[i][col.enviarEn]);
+      if (!enviarEn || ahora < enviarEn) continue;
 
       const email   = data[i][col.email].toString().trim();
       const mensaje = data[i][col.mensaje].toString();
