@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 14/07/2026 12:25 (hora Argentina)
-  Cambios en esta versión: Sin cambios en esta versión.
-    (revisado en la búsqueda de bugs: sintaxis JS validada, uso de
-    sanitize() verificado en historial/notificaciones, sin problemas
-    encontrados; mantiene: sin "Todo Trail" en el branding, acordeón
-    legal + toggle de tema, login/registro con manejo de errores)
+  Última actualización: 14/07/2026 13:00 (hora Argentina)
+  Cambios en esta versión:
+    - BUG REAL encontrado y arreglado: quedaba un subtítulo grande
+      "TODO TRAIL" debajo del logo en 3 pantallas (bienvenida, login
+      y registro). Estaba armado con dos <span> separados ("TODO" +
+      " TRAIL"), por eso no lo agarró la limpieza anterior de texto.
+      Se sacó por completo de las 3 pantallas.
+    - Mantiene: acordeón legal + toggle de tema, login/registro con
+      manejo de errores
 -->
 <html lang="es">
 <head>
@@ -1244,9 +1247,6 @@
       <span style="background:linear-gradient(180deg,#a0c080 0%,#6B8F5E 40%,#3d5c35 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">HUELLA</span>
       <span style="background:linear-gradient(180deg,#ffffff 0%,#d0d0d0 50%,#a0a0a0 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">RUNNER</span>
     </h1>
-    <span style="font-size:2.6rem;font-weight:900;
-      text-transform:uppercase;letter-spacing:5px;display:block;margin-top:10px;">
-      <span style="background:linear-gradient(180deg,#ffffff 0%,#d0d0d0 50%,#a0a0a0 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">TODO</span><span style="background:linear-gradient(180deg,#D4C570 0%,#C5B358 50%,#A89440 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;"> TRAIL</span></span>
   </div>
 
   <!-- Card central -->
@@ -1317,10 +1317,6 @@
         <span style="background:linear-gradient(180deg,#a0c080 0%,#6B8F5E 40%,#3d5c35 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">HUELLA</span>
         <span style="background:linear-gradient(180deg,#ffffff 0%,#d0d0d0 50%,#a0a0a0 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">RUNNER</span>
       </h1>
-      <span style="font-size:2.6rem;font-weight:900;
-        text-transform:uppercase;letter-spacing:5px;display:block;margin-top:10px;">
-        <span style="background:linear-gradient(180deg,#ffffff 0%,#d0d0d0 50%,#a0a0a0 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">TODO</span><span style="background:linear-gradient(180deg,#D4C570 0%,#C5B358 50%,#A89440 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;"> TRAIL</span>
-      </span>
     </div>
 
     <div class="card">
@@ -1368,10 +1364,6 @@
         <span style="background:linear-gradient(180deg,#a0c080 0%,#6B8F5E 40%,#3d5c35 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">HUELLA</span>
         <span style="background:linear-gradient(180deg,#ffffff 0%,#d0d0d0 50%,#a0a0a0 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">RUNNER</span>
       </h1>
-      <span style="font-size:2.6rem;font-weight:900;
-        text-transform:uppercase;letter-spacing:5px;display:block;margin-top:10px;">
-        <span style="background:linear-gradient(180deg,#ffffff 0%,#d0d0d0 50%,#a0a0a0 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">TODO</span><span style="background:linear-gradient(180deg,#D4C570 0%,#C5B358 50%,#A89440 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;"> TRAIL</span>
-      </span>
     </div>
 
     <div class="card">
