@@ -1,20 +1,22 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 14/07/2026 14:45 (hora Argentina)
+  Última actualización: 14/07/2026 15:30 (hora Argentina)
   Cambios en esta versión:
-    - BUG REAL encontrado y arreglado: el logo del dashboard (arriba de
-      todo, cuando ya iniciaste sesión) decía "Todo Trail" en minúsculas
-      ("Todo"/"Trail"), por eso no lo agarró la búsqueda anterior que
-      solo miraba mayúsculas. Ahora dice "Huella"/"Runner".
-    - Arreglado doRegister(): si algo fallaba antes de llegar al
-      servidor, no se veía ningún mensaje ("no pasa nada al tocar el
-      botón"). Ahora cualquier error se muestra en pantalla en vez de
-      quedar en silencio.
-    - Mismo arreglo en doLogin(): si dejás email o contraseña vacíos,
-      ahora avisa en vez de no hacer nada.
-    - Mantiene: sin "TODO TRAIL" en bienvenida/login/registro (versión
-      anterior), acordeón legal + toggle de tema
+    - Sacado el título grande "MIS ZAPAS" de la pantalla del armario;
+      "Tus zapatillas activas" ahora es más grande y ocupa su lugar.
+    - Sacado el campo "Apodo" del formulario de agregar zapatilla (ya
+      no se pide al registrar una zapa nueva).
+  Cambios en la versión anterior (14:45):
+    - BUG REAL arreglado: el logo del dashboard decía "Todo Trail" en
+      minúsculas ("Todo"/"Trail"), por eso no lo agarró la búsqueda
+      anterior que solo miraba mayúsculas. Ahora dice "Huella"/"Runner".
+      (Si todavía ves "TODO TRAIL" en el dashboard, es que falta volver
+      a pegar este archivo en el GAS — en este repo ya está arreglado.)
+    - doRegister() y doLogin(): si algo fallaba antes de llegar al
+      servidor, no se veía ningún mensaje. Ahora siempre avisa.
+    - Mantiene: sin "TODO TRAIL" en bienvenida/login/registro, acordeón
+      legal + toggle de tema
 -->
 <html lang="es">
 <head>
@@ -162,9 +164,7 @@
     .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
 
     .armario-header { margin: 10px 0 20px; display: flex; flex-direction: column; align-items: center; }
-    .armario-title { font-weight: 900; font-size: 1.6rem; text-transform: uppercase; letter-spacing: -1px; }
-    .armario-title span { color: var(--amarillo); }
-    .armario-subtitle { font-size: 0.65rem; color: var(--gris-texto); text-transform: uppercase; letter-spacing: 2px; margin-top: 3px; }
+    .armario-subtitle { font-size: 1.05rem; font-weight: 800; color: var(--plata); text-transform: uppercase; letter-spacing: 2px; margin-top: 3px; }
 
     /* =====================================================
        GRILLA DE ZAPATILLAS
@@ -1518,7 +1518,6 @@
       </div>
     </div>
     <div class="armario-header">
-      <div class="armario-title">MIS <span>ZAPAS</span></div>
       <div class="armario-subtitle">Tus zapatillas activas</div>
     </div>
     <!-- CARRUSEL COVERFLOW -->
@@ -1582,11 +1581,6 @@
         <label>KM Iniciales</label>
         <input type="number" id="shoe-km" placeholder="0" min="0" inputmode="decimal">
         <div class="field-hint">¿Ya las usaste? Ingresá los km que ya tienen</div>
-      </div>
-      <div class="form-group">
-        <label>Apodo <span style="color:#444;font-weight:400;text-transform:none;font-size:0.65rem;">(opcional)</span></label>
-        <input type="text" id="shoe-alias" placeholder="Ej: Las rojas" maxlength="30">
-        <div class="field-hint">Usalo para carga rápida: decí <strong>"10 km Speedgoat"</strong> y las encuentra sola ⚡</div>
       </div>
       <button class="btn-primary" id="btn-save-shoe" onclick="saveShoe()">Añadir a Mis Zapas</button>
     </div>
@@ -2627,14 +2621,13 @@
       talle:  document.getElementById('shoe-talle').value,
       genero: document.getElementById('shoe-genero').value,
       km:     kmVal,
-      alias:  document.getElementById('shoe-alias').value.trim()
+      alias:  ''
     };
     if (!d.marca || !d.modelo) return alert('Completá la información');
     document.getElementById('btn-save-shoe').innerText = 'GUARDANDO...';
     google.script.run
       .withSuccessHandler(() => {
         document.getElementById('btn-save-shoe').innerText = 'Añadir a Mis Zapas';
-        document.getElementById('shoe-alias').value = '';
         switchView('view-dashboard');
         setTimeout(loadDashboard, 800);
       })

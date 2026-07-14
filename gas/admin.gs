@@ -1,6 +1,6 @@
 // ============================================================
 // HUELLA RUNNER — admin.gs
-// Última actualización: 14/07/2026 14:45 (hora Argentina)
+// Última actualización: 14/07/2026 15:30 (hora Argentina)
 // Cambios en esta versión: Sin cambios en esta versión.
 // Cambios en la versión anterior (12:25):
 //   - Agregado ADMIN_EMAILS: huellarunner@gmail.com ahora es admin

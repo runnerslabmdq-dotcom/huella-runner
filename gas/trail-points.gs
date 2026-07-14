@@ -1,6 +1,6 @@
 // ============================================================
 // HUELLA RUNNER — trail-points.gs
-// Última actualización: 14/07/2026 14:45 (hora Argentina)
+// Última actualización: 14/07/2026 15:30 (hora Argentina)
 // Cambios en esta versión: Sin cambios en esta versión.
 //   (mantiene: 100% de km acreditados sin descuento del 85%, sin
 //    requisito de hora obligatoria, guardado vía appendDataByHeader)
