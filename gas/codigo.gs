@@ -1,6 +1,6 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 14/07/2026 15:30 (hora Argentina)
+// Última actualización: 14/07/2026 20:07 (hora Argentina)
 // Cambios en esta versión:
 //   - Agregada getAppUrl(): devuelve la URL de la app principal (sin
 //     ?page=admin). La usa el botón "Salir" del panel admin.
