@@ -1,11 +1,13 @@
 // ============================================
-// HUELLA RUNNER - BACKEND 2906 V1
-// CAMBIOS vs 2206_V1:
-//   1. USUARIOS: USERS_HEADERS + registerUser() con Provincia y Ciudad
-//   2. ADMIN: getAdminDashboardData() ahora devuelve rankingCalzado
+// HUELLA RUNNER — codigo.gs
+// Última actualización: 14/07/2026 09:35 (hora Argentina)
+// Cambios en esta versión:
+//   - SHEET_ID actualizado al sheet "Huella Runner Final 1407"
+//   - (mantiene: Fecha_Registro, TRAIN_HEADERS unificado, Email_Usuario en
+//     Notificaciones, try/catch en login/registro, auto-creación de columnas)
 // ============================================
 
-const SHEET_ID = '1nWJXp591hYHopPUZX94WvkO55dJIF0FQipRLh8rZX5M';
+const SHEET_ID = '1ThbstRTiGHL3Vfkc6mtX_BluSDYTxQx6-KOSu9QFTPk';
 const TZ_AR = 'America/Argentina/Buenos_Aires';
 
 function doGet(e) {

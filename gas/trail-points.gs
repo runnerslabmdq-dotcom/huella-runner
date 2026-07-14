@@ -1,6 +1,9 @@
 // ============================================================
-// HUELLA RUNNER — TRAIL POINTS: FIDELIZACIÓN + ANTI-FRAUDE
-// Archivo: trail-points.gs
+// HUELLA RUNNER — trail-points.gs
+// Última actualización: 14/07/2026 09:35 (hora Argentina)
+// Cambios en esta versión: Sin cambios en esta versión.
+//   (mantiene: 100% de km acreditados sin descuento del 85%, sin
+//    requisito de hora obligatoria, guardado vía appendDataByHeader)
 // ============================================================
 // ARQUITECTURA DE SHEETS REQUERIDA:
 //
