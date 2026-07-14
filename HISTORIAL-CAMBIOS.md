@@ -99,9 +99,28 @@ el GAS es la versión más nueva.
 
 - Branding "Todo Trail" reemplazado por "Huella Runner" (título, tag,
   texto de instalación en el footer).
+- Capturas de pantalla actualizadas — varias de las que se usaban en la
+  landing eran de antes de las correcciones de marca y todavía mostraban
+  "TODO TRAIL" bien legible (logo, botón de tienda, un mensaje de prueba
+  en notificaciones):
+  - `dashboard.jpg` y `login.jpg` se borraron (ya no se usan, eran las que
+    mostraban la marca vieja más grande y visible).
+  - Nueva captura `desgaste-zapatilla.jpg` (limpia) las reemplaza en el
+    header y en la sección "comunidad".
+  - `onboarding.jpg`, `nueva-zapatilla.jpg` y `notificaciones.jpg` se
+    recortaron o reemplazaron para sacar el texto viejo.
+  - `historial.jpg`, `locker.jpg`, `archivar.jpg` y `registrar-km.jpg` no
+    hacía falta tocarlas: el logo queda borroso de fondo ahí, no se lee.
 - **Pendiente / diferido a pedido explícito del fundador**: la sección
   `<span class="tag">Para Todo Trail</span>` y el texto "inteligencia
   comercial para Todo Trail" del pitch a sponsors siguen como están.
+- **Pendiente**: al fundador le quedaron 2 capturas del teléfono con la
+  versión vieja de la app todavía pegada en el GAS (pantalla "Mis Zapas"
+  vacía y el formulario "Nueva Zapatilla" con el campo Apodo) — no se
+  usaron acá porque ya no reflejan el código actual. Cuando repegue el
+  Index.html nuevo y saque fotos frescas, se pueden sumar más capturas
+  reales (login, notificaciones completas, etc.) para variar un poco las
+  que se repiten.
 
 ## Raíz del proyecto (index.html, manifest.json, service-worker.js)
 
