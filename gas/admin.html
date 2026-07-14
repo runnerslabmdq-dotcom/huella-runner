@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Admin.html
-  Última actualización: 14/07/2026 12:25 (hora Argentina)
-  Cambios en esta versión: Sin cambios en esta versión.
-    (revisado en la búsqueda de bugs: sintaxis JS validada, uso de
-    sanitize() verificado en tablas de usuarios/ranking/actividad, sin
-    problemas encontrados; mantiene: sin "Todo Trail" en el branding)
+  Última actualización: 14/07/2026 13:00 (hora Argentina)
+  Cambios en esta versión:
+    - Agregado botón "⏻ Salir" al lado de "↺ Actualizar" en el header,
+      para volver al login sin tener que cerrar la pestaña ni borrar
+      la URL a mano.
 -->
 <html lang="es">
 <head>
@@ -316,6 +316,7 @@
     </div>
     <div class="adm-header-right">
       <button class="adm-refresh" onclick="cargarTodo()">↺ Actualizar</button>
+      <button class="adm-refresh" onclick="salirDelPanelAdmin()" title="Volver al login">⏻ Salir</button>
       <div class="adm-badge">Admin</div>
     </div>
   </div>
@@ -534,6 +535,11 @@
     cargarUsuarios();
     cargarGrupos();
     cargarActividadPorDia();
+  }
+
+  // Vuelve a la app principal (login/dashboard), sacando ?page=admin&token=... de la URL.
+  function salirDelPanelAdmin() {
+    window.top.location.href = window.top.location.pathname;
   }
 
   /* ════════════════════════════════════

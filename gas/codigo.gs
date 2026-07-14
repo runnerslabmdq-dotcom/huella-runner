@@ -1,7 +1,9 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 14/07/2026 12:25 (hora Argentina)
-// Cambios en esta versión:
+// Última actualización: 14/07/2026 13:00 (hora Argentina)
+// Cambios en esta versión: Sin cambios en esta versión.
+//   (el bug de "TODO TRAIL" de esta ronda estaba en Index.html, no acá)
+// Cambios en la versión anterior (12:25):
 //   - Revisión general de bugs: sin bugs nuevos encontrados (se verificó
 //     login, zapatillas, entrenamientos, notificaciones, admin dashboard)
 //   - loginUser: ahora también es admin si el email está en ADMIN_EMAILS
