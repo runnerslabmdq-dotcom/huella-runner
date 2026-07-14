@@ -79,10 +79,11 @@ el GAS es la versión más nueva.
 - Sacado el título grande "MIS ZAPAS" de la pantalla del armario —
   "Tus zapatillas activas" ahora es más grande y hace de título.
 - Sacado el campo "Apodo" del formulario de agregar zapatilla.
-- **Pendiente / diferido a pedido explícito del fundador** (no tocar sin
-  que lo pida): el botón "Ver en tienda", la función `irATodoTrail()`, la
-  clase CSS `.cf-btn-todotrail` y los links a `todotrail.com.ar` siguen
-  como están.
+- Botón "Ver en tienda" de cada zapatilla: sacado el link a
+  `todotrail.com.ar` y el texto "todo trail". Ahora dice
+  "🛒 Próximamente" sin acción (deshabilitado), hasta que haya un destino
+  real. `irATodoTrail()` queda sin usar, lista para reactivar con un link
+  real cuando lo haya.
 
 ## Admin.html (panel de administración)
 
