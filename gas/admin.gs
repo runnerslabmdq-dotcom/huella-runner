@@ -1,7 +1,7 @@
 // ============================================================
-// HUELLA RUNNER — ADMIN PANEL BACKEND
-// Archivo separado: admin.gs
-// NO modifica ninguna función existente del GS principal.
+// HUELLA RUNNER — admin.gs
+// Última actualización: 14/07/2026 09:35 (hora Argentina)
+// Cambios en esta versión: Sin cambios en esta versión.
 // ============================================================
 
 // ⚠️ REEMPLAZAR el doGet() del archivo principal (Code.gs) por este:
