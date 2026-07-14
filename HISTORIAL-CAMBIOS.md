@@ -117,3 +117,5 @@ el GAS es la versión más nueva.
 - Sheet: se revisaron las pestañas Usuarios, Notif_Diferidas, Zapatillas,
   Entrenamientos, Notificaciones, Cupones_Emitidos y Catálogo.
 - Se corrigió el `SHEET_ID` que apuntaba a un spreadsheet viejo.
+- Se borró `TAREAS.md`: quedó obsoleto (bugs que ya se arreglaron, URL de
+  GAS vieja, branch que ya no existe). Lo que hacía falta ya está acá.
