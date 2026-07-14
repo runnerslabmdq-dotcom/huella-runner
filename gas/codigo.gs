@@ -1,10 +1,14 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 14/07/2026 09:35 (hora Argentina)
+// Última actualización: 14/07/2026 12:25 (hora Argentina)
 // Cambios en esta versión:
-//   - SHEET_ID actualizado al sheet "Huella Runner Final 1407"
-//   - (mantiene: Fecha_Registro, TRAIN_HEADERS unificado, Email_Usuario en
-//     Notificaciones, try/catch en login/registro, auto-creación de columnas)
+//   - Revisión general de bugs: sin bugs nuevos encontrados (se verificó
+//     login, zapatillas, entrenamientos, notificaciones, admin dashboard)
+//   - loginUser: ahora también es admin si el email está en ADMIN_EMAILS
+//     (ver admin.gs), sin depender de la columna Rol del sheet
+//   - (mantiene: SHEET_ID "Huella Runner Final 1407", Fecha_Registro,
+//     TRAIN_HEADERS unificado, Email_Usuario en Notificaciones, try/catch
+//     en login/registro, auto-creación de columnas)
 // ============================================
 
 const SHEET_ID = '1ThbstRTiGHL3Vfkc6mtX_BluSDYTxQx6-KOSu9QFTPk';
@@ -226,7 +230,7 @@ function loginUser(email, password) {
           success: true,
           email:   rowEmail,
           nombre:  nomCol !== -1 ? data[i][nomCol] : '',
-          esAdmin: rol === 'admin'
+          esAdmin: rol === 'admin' || _esEmailAdmin(rowEmail)
         };
       }
     }

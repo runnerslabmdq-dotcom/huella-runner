@@ -1,7 +1,9 @@
 // ============================================================
 // HUELLA RUNNER — admin.gs
-// Última actualización: 14/07/2026 09:35 (hora Argentina)
-// Cambios en esta versión: Sin cambios en esta versión.
+// Última actualización: 14/07/2026 12:25 (hora Argentina)
+// Cambios en esta versión:
+//   - Agregado ADMIN_EMAILS: huellarunner@gmail.com ahora es admin
+//     automáticamente (sin depender de la columna Rol del sheet)
 // ============================================================
 
 // ⚠️ REEMPLAZAR el doGet() del archivo principal (Code.gs) por este:
@@ -33,8 +35,17 @@
 // ============================================================
 const ADMIN_TOKEN = 'huella-admin-2024';
 
+// Emails que son admin automáticamente, sin importar la columna Rol
+// del sheet Usuarios. Para sacar a alguien de acá, borrar su email.
+const ADMIN_EMAILS = ['huellarunner@gmail.com'];
+
 function _adminAutorizado(token) {
   return token && token.toString() === ADMIN_TOKEN;
+}
+
+function _esEmailAdmin(email) {
+  const emailClean = (email || '').toString().trim().toLowerCase();
+  return ADMIN_EMAILS.indexOf(emailClean) !== -1;
 }
 
 // ============================================================
