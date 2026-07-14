@@ -1,11 +1,16 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Admin.html
-  Última actualización: 14/07/2026 13:00 (hora Argentina)
+  Última actualización: 14/07/2026 14:45 (hora Argentina)
   Cambios en esta versión:
-    - Agregado botón "⏻ Salir" al lado de "↺ Actualizar" en el header,
-      para volver al login sin tener que cerrar la pestaña ni borrar
-      la URL a mano.
+    - BUG REAL arreglado: el botón "Salir" no hacía nada al tocarlo.
+      Causa: Apps Script muestra este panel adentro de un iframe de
+      otro dominio, y el navegador bloquea en silencio el acceso
+      directo a la URL de arriba (window.top) por seguridad. Ahora
+      pide la URL real al backend (getAppUrl, en codigo.gs) y navega
+      con un link target="_top", igual que ya se usa para entrar al
+      panel admin desde el login.
+    - Mantiene: botón "⏻ Salir" agregado en la versión anterior.
 -->
 <html lang="es">
 <head>
@@ -316,7 +321,7 @@
     </div>
     <div class="adm-header-right">
       <button class="adm-refresh" onclick="cargarTodo()">↺ Actualizar</button>
-      <button class="adm-refresh" onclick="salirDelPanelAdmin()" title="Volver al login">⏻ Salir</button>
+      <button class="adm-refresh" onclick="salirDelPanelAdmin(this)" title="Volver al login">⏻ Salir</button>
       <div class="adm-badge">Admin</div>
     </div>
   </div>
@@ -537,9 +542,26 @@
     cargarActividadPorDia();
   }
 
-  // Vuelve a la app principal (login/dashboard), sacando ?page=admin&token=... de la URL.
-  function salirDelPanelAdmin() {
-    window.top.location.href = window.top.location.pathname;
+  // Vuelve a la app principal (login/dashboard).
+  // Apps Script muestra este panel adentro de un iframe de otro dominio, así que
+  // no se puede leer/escribir window.top.location directo (el navegador lo bloquea
+  // por seguridad, sin avisar). Por eso se pide la URL real al backend y se navega
+  // con un link target="_top", igual que el login usa para entrar al panel admin.
+  function salirDelPanelAdmin(btn) {
+    if (btn) { btn.disabled = true; btn.innerText = '...'; }
+    google.script.run
+      .withSuccessHandler(function(appUrl) {
+        var a = document.createElement('a');
+        a.href = appUrl;
+        a.target = '_top';
+        document.body.appendChild(a);
+        a.click();
+      })
+      .withFailureHandler(function(e) {
+        if (btn) { btn.disabled = false; btn.innerText = '⏻ Salir'; }
+        alert('No se pudo salir: ' + (e && e.message ? e.message : e));
+      })
+      .getAppUrl();
   }
 
   /* ════════════════════════════════════

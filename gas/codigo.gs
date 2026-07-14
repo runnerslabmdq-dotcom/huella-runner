@@ -1,11 +1,10 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 14/07/2026 13:00 (hora Argentina)
-// Cambios en esta versión: Sin cambios en esta versión.
-//   (el bug de "TODO TRAIL" de esta ronda estaba en Index.html, no acá)
-// Cambios en la versión anterior (12:25):
-//   - Revisión general de bugs: sin bugs nuevos encontrados (se verificó
-//     login, zapatillas, entrenamientos, notificaciones, admin dashboard)
+// Última actualización: 14/07/2026 14:45 (hora Argentina)
+// Cambios en esta versión:
+//   - Agregada getAppUrl(): devuelve la URL de la app principal (sin
+//     ?page=admin). La usa el botón "Salir" del panel admin.
+// Cambios en versiones anteriores:
 //   - loginUser: ahora también es admin si el email está en ADMIN_EMAILS
 //     (ver admin.gs), sin depender de la columna Rol del sheet
 //   - (mantiene: SHEET_ID "Huella Runner Final 1407", Fecha_Registro,
@@ -126,6 +125,11 @@ self.addEventListener('fetch', function(e) {
 
 function getAdminUrl() {
   return ScriptApp.getService().getUrl() + '?page=admin&token=' + ADMIN_TOKEN;
+}
+
+// URL de la app principal (sin ?page=admin), para el botón "Salir" del panel admin.
+function getAppUrl() {
+  return ScriptApp.getService().getUrl();
 }
 
 function getSheetAndHeaders(sheetName, defaultHeaders) {

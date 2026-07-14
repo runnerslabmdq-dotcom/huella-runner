@@ -1,15 +1,20 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 14/07/2026 13:00 (hora Argentina)
+  Última actualización: 14/07/2026 14:45 (hora Argentina)
   Cambios en esta versión:
-    - BUG REAL encontrado y arreglado: quedaba un subtítulo grande
-      "TODO TRAIL" debajo del logo en 3 pantallas (bienvenida, login
-      y registro). Estaba armado con dos <span> separados ("TODO" +
-      " TRAIL"), por eso no lo agarró la limpieza anterior de texto.
-      Se sacó por completo de las 3 pantallas.
-    - Mantiene: acordeón legal + toggle de tema, login/registro con
-      manejo de errores
+    - BUG REAL encontrado y arreglado: el logo del dashboard (arriba de
+      todo, cuando ya iniciaste sesión) decía "Todo Trail" en minúsculas
+      ("Todo"/"Trail"), por eso no lo agarró la búsqueda anterior que
+      solo miraba mayúsculas. Ahora dice "Huella"/"Runner".
+    - Arreglado doRegister(): si algo fallaba antes de llegar al
+      servidor, no se veía ningún mensaje ("no pasa nada al tocar el
+      botón"). Ahora cualquier error se muestra en pantalla en vez de
+      quedar en silencio.
+    - Mismo arreglo en doLogin(): si dejás email o contraseña vacíos,
+      ahora avisa en vez de no hacer nada.
+    - Mantiene: sin "TODO TRAIL" en bienvenida/login/registro (versión
+      anterior), acordeón legal + toggle de tema
 -->
 <html lang="es">
 <head>
@@ -1499,7 +1504,7 @@
   <div id="view-dashboard" style="display: none;">
     <div class="top-bar">
       <a href="#" class="nav-logo-inline">
-        <span class="logo-name-row" style="margin-top:3px;"><span class="logo-open">Todo</span> <span class="logo-sports">Trail</span></span>
+        <span class="logo-name-row" style="margin-top:3px;"><span class="logo-open">Huella</span> <span class="logo-sports">Runner</span></span>
       </a>
       <div style="display:flex; align-items:center; gap:12px;">
         <div style="font-size: 0.75rem; color: var(--gris-texto);">Hola, <span id="user-name" style="color: var(--amarillo); font-weight: 900;">Corredor</span></div>
@@ -2101,48 +2106,62 @@
   }
 
   function doRegister() {
-    const n  = document.getElementById('reg-nombre').value.trim();
-    const a  = document.getElementById('reg-apellido').value.trim();
-    const e  = document.getElementById('reg-email').value.trim();
-    const p  = document.getElementById('reg-pass').value;
-    const pc = document.getElementById('reg-pass-confirm').value;
-    const nivel     = document.getElementById('reg-nivel').value;
-    const fechaNac  = document.getElementById('reg-fecha-nac').value;
-    const celular   = document.getElementById('reg-celular').value.trim();
-    const provincia = document.getElementById('reg-provincia').value;
-    const ciudadEl  = document.getElementById('reg-ciudad');
-    const ciudad    = ciudadEl.value && ciudadEl.value !== '' ? ciudadEl.value : '';
-    const grupoSel  = document.getElementById('reg-grupo').value;
-    const grupo = grupoSel === '__otro__'
-      ? document.getElementById('reg-grupo-manual').value.trim()
-      : grupoSel;
-    const err = document.getElementById('reg-error');
-    err.style.display = 'none';
-    if (!n || !e || !p || !pc) { err.innerText = 'Completá todos los campos obligatorios.'; err.style.display = 'block'; return; }
-    if (p !== pc) { err.innerText = 'Las contraseñas no coinciden.'; err.style.display = 'block'; return; }
-    document.getElementById('btn-reg').innerText = 'CREANDO...';
-    google.script.run
-      .withSuccessHandler(res => {
-        document.getElementById('btn-reg').innerText = 'Crear Cuenta';
-        if (!res || !res.success) {
-          err.innerText = (res && res.error) ? res.error : 'Error desconocido al crear la cuenta.';
+    // Todo el armado de datos va en un try/catch: si algo de esto explota
+    // (un campo que no cargó a tiempo, etc.) antes se quedaba todo en
+    // silencio sin mostrar nada. Ahora siempre se ve un mensaje de error.
+    try {
+      var n  = document.getElementById('reg-nombre').value.trim();
+      var a  = document.getElementById('reg-apellido').value.trim();
+      var e  = document.getElementById('reg-email').value.trim();
+      var p  = document.getElementById('reg-pass').value;
+      var pc = document.getElementById('reg-pass-confirm').value;
+      var nivel     = document.getElementById('reg-nivel').value;
+      var fechaNac  = document.getElementById('reg-fecha-nac').value;
+      var celular   = document.getElementById('reg-celular').value.trim();
+      var provincia = document.getElementById('reg-provincia').value;
+      var ciudadEl  = document.getElementById('reg-ciudad');
+      var ciudad    = ciudadEl.value && ciudadEl.value !== '' ? ciudadEl.value : '';
+      var grupoSel  = document.getElementById('reg-grupo').value;
+      var grupo = grupoSel === '__otro__'
+        ? document.getElementById('reg-grupo-manual').value.trim()
+        : grupoSel;
+      var err = document.getElementById('reg-error');
+      err.style.display = 'none';
+      if (!n || !e || !p || !pc) { err.innerText = 'Completá todos los campos obligatorios.'; err.style.display = 'block'; return; }
+      if (p !== pc) { err.innerText = 'Las contraseñas no coinciden.'; err.style.display = 'block'; return; }
+      document.getElementById('btn-reg').innerText = 'CREANDO...';
+      google.script.run
+        .withSuccessHandler(res => {
+          document.getElementById('btn-reg').innerText = 'Crear Cuenta';
+          if (!res || !res.success) {
+            err.innerText = (res && res.error) ? res.error : 'Error desconocido al crear la cuenta.';
+            err.style.display = 'block';
+            return;
+          }
+          currentUserEmail = res.email;
+          document.getElementById('user-name').innerText = res.nombre;
+          switchView('view-dashboard');
+          loadDashboard();
+          cargarBadgeNotificaciones();
+          if (_badgeInterval) clearInterval(_badgeInterval);
+          _badgeInterval = setInterval(cargarBadgeNotificaciones, 60000);
+        })
+        .withFailureHandler(function(e2) {
+          document.getElementById('btn-reg').innerText = 'Crear Cuenta';
+          err.innerText = 'Error de conexión: ' + (e2 && e2.message ? e2.message : e2);
           err.style.display = 'block';
-          return;
-        }
-        currentUserEmail = res.email;
-        document.getElementById('user-name').innerText = res.nombre;
-        switchView('view-dashboard');
-        loadDashboard();
-        cargarBadgeNotificaciones();
-        if (_badgeInterval) clearInterval(_badgeInterval);
-        _badgeInterval = setInterval(cargarBadgeNotificaciones, 60000);
-      })
-      .withFailureHandler(function(e2) {
-        document.getElementById('btn-reg').innerText = 'Crear Cuenta';
-        err.innerText = 'Error de conexión: ' + (e2 && e2.message ? e2.message : e2);
-        err.style.display = 'block';
-      })
-      .registerUser(n, a, e, p, nivel, grupo, fechaNac, provincia, ciudad, celular);
+        })
+        .registerUser(n, a, e, p, nivel, grupo, fechaNac, provincia, ciudad, celular);
+    } catch (exGlobal) {
+      console.error('doRegister ERROR:', exGlobal);
+      var errEl = document.getElementById('reg-error');
+      var btnEl = document.getElementById('btn-reg');
+      if (btnEl) btnEl.innerText = 'Crear Cuenta';
+      if (errEl) {
+        errEl.innerText = 'No se pudo procesar el formulario: ' + (exGlobal && exGlobal.message ? exGlobal.message : exGlobal);
+        errEl.style.display = 'block';
+      }
+    }
   }
 
   // ── Provincia → Ciudad dinámica via API Georef ──────────────
@@ -2219,7 +2238,11 @@
     const e = document.getElementById('log-email').value.trim().toLowerCase();
     const p = document.getElementById('log-pass').value;
     const err = document.getElementById('log-error');
-    if(!e || !p) return;
+    if (!e || !p) {
+      err.innerText = 'Completá el email y la contraseña.';
+      err.style.display = 'block';
+      return;
+    }
     err.style.display = 'none';
     document.getElementById('btn-login').innerText = 'INICIANDO...';
     google.script.run
