@@ -1,5 +1,5 @@
 // ============================================
-// HUELLA RUNNER TODO TRAIL - BACKEND 2906 V1
+// HUELLA RUNNER - BACKEND 2906 V1
 // CAMBIOS vs 2206_V1:
 //   1. USUARIOS: USERS_HEADERS + registerUser() con Provincia y Ciudad
 //   2. ADMIN: getAdminDashboardData() ahora devuelve rankingCalzado
@@ -17,7 +17,7 @@ function doGet(e) {
     const manifest = {
       name:             'Huella Runner',
       short_name:       'Huella Runner',
-      description:      'Tu zapatilla de trail, siempre bajo control. Todo Trail.',
+      description:      'Tu zapatilla de trail, siempre bajo control.',
       start_url:        appUrl,
       scope:            appUrl,
       display:          'standalone',
@@ -290,12 +290,12 @@ function recoverPassword(email) {
   try {
     MailApp.sendEmail({
       to:      emailClean,
-      subject: 'Huella Runner Todo Trail — Recuperación de contraseña',
+      subject: 'Huella Runner — Recuperación de contraseña',
       body:    '',
       htmlBody:
         '<div style="font-family:Arial,sans-serif;background:#080808;padding:32px;border-radius:16px;max-width:480px;margin:auto;">' +
         '<h1 style="color:#dcfd8b;font-size:1.5rem;margin-bottom:4px;">HUELLA <span style="color:#E8E8E8;">RUNNER</span></h1>' +
-        '<p style="color:#888;font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;margin-top:0;">Powered by Huella Runner MDQ · Todo Trail</p>' +
+        '<p style="color:#888;font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;margin-top:0;">Powered by Huella Runner MDQ</p>' +
         '<hr style="border:none;border-top:1px solid #1f1f1f;margin:20px 0;">' +
         '<p style="color:#E8E8E8;font-size:1rem;">Hola, <strong>' + nombreUsuario + '</strong> 👋</p>' +
         '<p style="color:#888888;font-size:0.85rem;line-height:1.6;">Recibiste este correo porque solicitaste recuperar tu contraseña.</p>' +
@@ -305,9 +305,9 @@ function recoverPassword(email) {
         '</div>' +
         '<p style="color:#555;font-size:0.75rem;">Si no solicitaste esto, ignorá este mensaje.</p>' +
         '<hr style="border:none;border-top:1px solid #1f1f1f;margin:20px 0;">' +
-        '<p style="color:#333;font-size:0.65rem;">— Equipo Huella Runner Todo Trail · Huella Runner MDQ</p>' +
+        '<p style="color:#333;font-size:0.65rem;">— Equipo Huella Runner MDQ</p>' +
         '</div>',
-      name: 'Huella Runner Todo Trail'
+      name: 'Huella Runner MDQ'
     });
     Logger.log('recoverPassword: email enviado a ' + emailClean);
     return { success: true };
@@ -327,15 +327,15 @@ function enviarEmailBienvenida(emailUsuario, nombreUsuario) {
 
     MailApp.sendEmail({
       to:      emailUsuario.toString().trim(),
-      subject: '¡Bienvenido/a a Huella Runner Todo Trail, ' + nombre + '! 🏔️',
+      subject: '¡Bienvenido/a a Huella Runner, ' + nombre + '! 🏔️',
       body:    '',
       htmlBody:
         '<div style="font-family:Arial,sans-serif;background:#080808;padding:32px;border-radius:16px;max-width:480px;margin:auto;">' +
         '<h1 style="color:#dcfd8b;font-size:1.5rem;margin-bottom:4px;">HUELLA <span style="color:#E8E8E8;">RUNNER</span></h1>' +
-        '<p style="color:#888;font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;margin-top:0;">Powered by Huella Runner MDQ · Todo Trail</p>' +
+        '<p style="color:#888;font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;margin-top:0;">Powered by Huella Runner MDQ</p>' +
         '<hr style="border:none;border-top:1px solid #1f1f1f;margin:20px 0;">' +
         '<p style="color:#E8E8E8;font-size:1rem;">¡Hola, <strong>' + nombre + '</strong>! 🎉</p>' +
-        '<p style="color:#888888;font-size:0.85rem;line-height:1.6;">Ya sos parte de la familia <strong style="color:#dcfd8b;">Huella Runner Todo Trail</strong>. Nos alegra tenerte con nosotros.</p>' +
+        '<p style="color:#888888;font-size:0.85rem;line-height:1.6;">Ya sos parte de la familia <strong style="color:#dcfd8b;">Huella Runner</strong>. Nos alegra tenerte con nosotros.</p>' +
         '<div style="background:#111111;border:1px solid #1f1f1f;border-radius:12px;padding:16px 20px;margin:20px 0;">' +
         '<p style="color:#888;font-size:0.65rem;text-transform:uppercase;letter-spacing:2px;margin:0 0 12px;">Desde hoy disfrutás de</p>' +
         '<p style="color:#E8E8E8;font-size:0.85rem;margin:6px 0;">🏔️ &nbsp;Catálogo exclusivo de calzado trail</p>' +
@@ -345,9 +345,9 @@ function enviarEmailBienvenida(emailUsuario, nombreUsuario) {
         '</div>' +
         '<p style="color:#888888;font-size:0.85rem;line-height:1.6;">Estamos acá para acompañarte en cada sendero. 🏔️</p>' +
         '<hr style="border:none;border-top:1px solid #1f1f1f;margin:20px 0;">' +
-        '<p style="color:#333;font-size:0.65rem;">— Equipo Huella Runner Todo Trail · Huella Runner MDQ</p>' +
+        '<p style="color:#333;font-size:0.65rem;">— Equipo Huella Runner MDQ</p>' +
         '</div>',
-      name: 'Huella Runner Todo Trail'
+      name: 'Huella Runner MDQ'
     });
     Logger.log('enviarEmailBienvenida: email enviado a ' + emailUsuario);
   } catch(e) {

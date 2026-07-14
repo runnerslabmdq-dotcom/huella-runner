@@ -274,7 +274,7 @@ function _emitirCupon(email, idZapa, marca, modelo, kmAlEmitir) {
     enviarNotificacion(
       'individual',
       email,
-      `🏆 ¡Cupón Trail Points desbloqueado! Tus ${marca} ${modelo} llegaron a ${kmAlEmitir} km de trail. Cupón de descuento: ${codigo}. ¡Usalo en tu próxima compra en Todo Trail!`,
+      `🏆 ¡Cupón Trail Points desbloqueado! Tus ${marca} ${modelo} llegaron a ${kmAlEmitir} km de trail. Cupón de descuento: ${codigo}. ¡Usalo en tu próxima compra en Huella Runner!`,
       'Premio'
     );
   } catch(_) {}
@@ -328,7 +328,7 @@ function getCuponDisponible(email) {
   }
 }
 
-// Marcar cupón como usado (llamar al canjear en Todo Trail)
+// Marcar cupón como usado (llamar al canjear en Huella Runner)
 function marcarCuponUsado(email, codigo) {
   try {
     const ss    = SpreadsheetApp.openById(SHEET_ID);
