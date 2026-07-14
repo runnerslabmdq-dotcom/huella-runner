@@ -29,3 +29,9 @@ Consultar `.claude/thinking-profile.md` para el perfil completo.
 6. **Pocas opciones**: No presentar más de 2-3 alternativas, con recomendación.
 7. **Sin apego**: Si algo mejor aparece, pivotar sin drama.
 8. **Código limpio**: No dejar desprolijidades ni hacks sin resolver.
+
+## Registro de cambios
+
+Antes de investigar si algo "ya se arregló", revisar `HISTORIAL-CAMBIOS.md`
+(raíz del repo) — ahí está el resumen de qué se cambió en cada archivo
+`.gs`/`.html`. Actualizarlo cada vez que se mergea un cambio de código.
