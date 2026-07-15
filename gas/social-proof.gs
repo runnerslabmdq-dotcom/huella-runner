@@ -1,7 +1,10 @@
 // ============================================================
 // HUELLA RUNNER — social-proof.gs
-// Última actualización: 15/07/2026 13:06 (hora Argentina)
-// Cambios en esta versión: Sin cambios en esta versión.
+// Última actualización: 15/07/2026 15:55 (hora Argentina)
+// Cambios en esta versión:
+//   - procesarNotificacionesDiferidas() ahora usa LockService para
+//     evitar mandar la misma notificación diferida dos veces si dos
+//     visitas casi simultáneas la disparan al mismo tiempo.
 // ============================================================
 // TRIGGER NOCTURNO: En Apps Script Editor →
 //   Extensiones → Apps Script → Activadores → "+ Añadir activador"
@@ -175,6 +178,13 @@ function _encolarNotificacionDiferida(email, marca, modelo, proof) {
 // Configurar otro trigger diario para esta función (ej: 8:00 AM)
 // -----------------------------------------------------------
 function procesarNotificacionesDiferidas() {
+  // Ahora se llama desde 2 lugares en cada visita (getNotificacionesUsuario
+  // y contarNoLeidas), así que dos ejecuciones casi simultáneas podrían leer
+  // la misma fila "no enviada" antes de que ninguna la marque, y mandar la
+  // notificación duplicada. El lock evita esa carrera.
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(3000)) return; // otra ejecución ya está procesando, no hace falta esperar
+
   try {
     const ss    = SpreadsheetApp.openById(SHEET_ID);
     const sheet = ss.getSheetByName('Notif_Diferidas');
@@ -212,5 +222,7 @@ function procesarNotificacionesDiferidas() {
     SpreadsheetApp.flush();
   } catch(e) {
     Logger.log('procesarNotificacionesDiferidas ERROR: ' + e.toString());
+  } finally {
+    lock.releaseLock();
   }
 }
