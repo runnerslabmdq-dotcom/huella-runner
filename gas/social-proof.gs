@@ -1,6 +1,6 @@
 // ============================================================
 // HUELLA RUNNER — social-proof.gs
-// Última actualización: 14/07/2026 20:07 (hora Argentina)
+// Última actualización: 15/07/2026 13:06 (hora Argentina)
 // Cambios en esta versión: Sin cambios en esta versión.
 // ============================================================
 // TRIGGER NOCTURNO: En Apps Script Editor →
