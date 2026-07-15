@@ -1,9 +1,15 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 14/07/2026 20:07 (hora Argentina)
+// Última actualización: 15/07/2026 12:56 (hora Argentina)
 // Cambios en esta versión:
-//   - Agregada getAppUrl(): devuelve la URL de la app principal (sin
-//     ?page=admin). La usa el botón "Salir" del panel admin.
+//   - BUG REAL arreglado: las notificaciones diferidas de Social Proof
+//     quedaban encoladas en Notif_Diferidas para siempre y nunca
+//     llegaban a la app. Causa: procesarNotificacionesDiferidas() (en
+//     social-proof.gs) solo corre si hay un trigger horario configurado
+//     a mano en Apps Script, y nunca se conectó como respaldo. Ahora
+//     getNotificacionesUsuario() y contarNoLeidas() la llaman solas
+//     cada vez que alguien abre o revisa su buzón, así no depende de
+//     que el trigger esté configurado.
 // Cambios en versiones anteriores:
 //   - loginUser: ahora también es admin si el email está en ADMIN_EMAILS
 //     (ver admin.gs), sin depender de la columna Rol del sheet
@@ -889,6 +895,10 @@ function _generarCodigoVoucher() {
 function getNotificacionesUsuario(email) {
   try {
     if (!email) return [];
+    // Respaldo del cron: procesa notificaciones diferidas vencidas (social
+    // proof) cada vez que alguien abre su buzón, por si no hay trigger
+    // horario configurado en Apps Script para procesarNotificacionesDiferidas.
+    try { procesarNotificacionesDiferidas(); } catch(_) {}
     const emailClean = email.toString().trim().toLowerCase();
     const ss = SpreadsheetApp.openById(SHEET_ID);
     const sheet = ss.getSheetByName('Notificaciones');
@@ -971,6 +981,10 @@ function marcarLeido(idNotif) {
 function contarNoLeidas(email) {
   try {
     if (!email) return 0;
+    // Mismo respaldo que getNotificacionesUsuario(): esta función se
+    // llama sola cada 60s desde el frontend, así que sirve como red
+    // adicional para que las notificaciones diferidas no queden colgadas.
+    try { procesarNotificacionesDiferidas(); } catch(_) {}
     const emailClean = email.toString().trim().toLowerCase();
     const ss = SpreadsheetApp.openById(SHEET_ID);
     const sheet = ss.getSheetByName('Notificaciones');

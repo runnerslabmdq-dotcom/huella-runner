@@ -30,6 +30,12 @@ el GAS es la versión más nueva.
   en `ADMIN_EMAILS` (ver admin.gs), sin depender de la columna Rol.
 - `getAppUrl()`: nueva función, devuelve la URL de la app principal (sin
   `?page=admin`). La usa el botón "Salir" del panel admin.
+- BUG REAL arreglado: las notificaciones diferidas de Social Proof
+  quedaban encoladas en `Notif_Diferidas` para siempre y nunca llegaban
+  a la app (dependían de un trigger horario configurado a mano en Apps
+  Script para `procesarNotificacionesDiferidas()`, que nunca se conectó
+  como respaldo). Ahora `getNotificacionesUsuario()` y `contarNoLeidas()`
+  la llaman solas cada vez que alguien abre o revisa su buzón.
 
 ## admin.gs
 
@@ -55,6 +61,10 @@ el GAS es la versión más nueva.
   una zapatilla, vía la hoja `Notif_Diferidas`.
 - Se sacó una función muerta (`registrarZapatillaConProof`, firma rota,
   no se usaba).
+- `procesarNotificacionesDiferidas()` ya no depende únicamente del
+  trigger horario manual — codigo.gs la llama sola como respaldo (ver
+  arriba). El trigger sigue siendo válido si lo tenés configurado, pero
+  ya no es obligatorio para que las notificaciones lleguen.
 - Nota: existe un archivo aparte, `gas/social-proof-ui.html`, con un
   diseño más vistoso (banner + acordeón) que **no está pegado** en
   Index.html todavía — es una propuesta sin integrar, no un bug.
@@ -139,3 +149,6 @@ el GAS es la versión más nueva.
 - Se corrigió el `SHEET_ID` que apuntaba a un spreadsheet viejo.
 - Se borró `TAREAS.md`: quedó obsoleto (bugs que ya se arreglaron, URL de
   GAS vieja, branch que ya no existe). Lo que hacía falta ya está acá.
+- Sheet: pestaña "Entrenamiento" (singular, vacía) duplicada de
+  "Entrenamientos" — ningún código la usa, se puede borrar directamente
+  en el Sheet sin miedo.
