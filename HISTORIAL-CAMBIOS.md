@@ -36,6 +36,9 @@ el GAS es la versión más nueva.
   Script para `procesarNotificacionesDiferidas()`, que nunca se conectó
   como respaldo). Ahora `getNotificacionesUsuario()` y `contarNoLeidas()`
   la llaman solas cada vez que alguien abre o revisa su buzón.
+- Sacado "trail" del mail de bienvenida (catálogo, comunidad, desgaste,
+  despedida) y de la descripción del manifest PWA. Emojis de montaña 🏔️
+  cambiados por 🏃.
 
 ## admin.gs
 
@@ -77,6 +80,8 @@ el GAS es la versión más nueva.
     debajo del logo en bienvenida/login/registro.
   - Logo del dashboard, que decía "Todo"/"Trail" en minúsculas (la primera
     búsqueda solo miraba texto en mayúsculas).
+  - Los 2 párrafos de la pantalla de bienvenida (onboarding) también
+    decían "trail" ("zapatillas trail", "comunidad trail").
 - Recuperados: acordeón legal "VER LEGALES +" y toggle de tema 🌙/☀️
   (existían en el GAS en vivo pero no en GitHub).
 - `doLogin()` / `doRegister()`: ahora atrapan cualquier error antes de

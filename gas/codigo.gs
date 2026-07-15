@@ -1,7 +1,11 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 15/07/2026 12:56 (hora Argentina)
+// Última actualización: 15/07/2026 13:06 (hora Argentina)
 // Cambios en esta versión:
+//   - Sacado "trail" y "sendero" del mail de bienvenida (catálogo,
+//     comunidad, desgaste, despedida) y de la descripción del manifest
+//     PWA. Emojis de montaña 🏔️ cambiados por 🏃.
+// Cambios en versiones anteriores:
 //   - BUG REAL arreglado: las notificaciones diferidas de Social Proof
 //     quedaban encoladas en Notif_Diferidas para siempre y nunca
 //     llegaban a la app. Causa: procesarNotificacionesDiferidas() (en
@@ -10,7 +14,6 @@
 //     getNotificacionesUsuario() y contarNoLeidas() la llaman solas
 //     cada vez que alguien abre o revisa su buzón, así no depende de
 //     que el trigger esté configurado.
-// Cambios en versiones anteriores:
 //   - loginUser: ahora también es admin si el email está en ADMIN_EMAILS
 //     (ver admin.gs), sin depender de la columna Rol del sheet
 //   - (mantiene: SHEET_ID "Huella Runner Final 1407", Fecha_Registro,
@@ -30,7 +33,7 @@ function doGet(e) {
     const manifest = {
       name:             'Huella Runner',
       short_name:       'Huella Runner',
-      description:      'Tu zapatilla de trail, siempre bajo control.',
+      description:      'Tu zapatilla, siempre bajo control.',
       start_url:        appUrl,
       scope:            appUrl,
       display:          'standalone',
@@ -345,7 +348,7 @@ function enviarEmailBienvenida(emailUsuario, nombreUsuario) {
 
     MailApp.sendEmail({
       to:      emailUsuario.toString().trim(),
-      subject: '¡Bienvenido/a a Huella Runner, ' + nombre + '! 🏔️',
+      subject: '¡Bienvenido/a a Huella Runner, ' + nombre + '! 🏃',
       body:    '',
       htmlBody:
         '<div style="font-family:Arial,sans-serif;background:#080808;padding:32px;border-radius:16px;max-width:480px;margin:auto;">' +
@@ -356,12 +359,12 @@ function enviarEmailBienvenida(emailUsuario, nombreUsuario) {
         '<p style="color:#888888;font-size:0.85rem;line-height:1.6;">Ya sos parte de la familia <strong style="color:#dcfd8b;">Huella Runner</strong>. Nos alegra tenerte con nosotros.</p>' +
         '<div style="background:#111111;border:1px solid #1f1f1f;border-radius:12px;padding:16px 20px;margin:20px 0;">' +
         '<p style="color:#888;font-size:0.65rem;text-transform:uppercase;letter-spacing:2px;margin:0 0 12px;">Desde hoy disfrutás de</p>' +
-        '<p style="color:#E8E8E8;font-size:0.85rem;margin:6px 0;">🏔️ &nbsp;Catálogo exclusivo de calzado trail</p>' +
+        '<p style="color:#E8E8E8;font-size:0.85rem;margin:6px 0;">👟 &nbsp;Catálogo exclusivo de calzado running</p>' +
         '<p style="color:#E8E8E8;font-size:0.85rem;margin:6px 0;">✅ &nbsp;Novedades y lanzamientos antes que nadie</p>' +
-        '<p style="color:#E8E8E8;font-size:0.85rem;margin:6px 0;">✅ &nbsp;Ofertas y beneficios exclusivos para la comunidad trail</p>' +
-        '<p style="color:#E8E8E8;font-size:0.85rem;margin:6px 0;">✅ &nbsp;Seguí el desgaste de tus zapatillas en cada sendero</p>' +
+        '<p style="color:#E8E8E8;font-size:0.85rem;margin:6px 0;">✅ &nbsp;Ofertas y beneficios exclusivos para la comunidad Huella Runner</p>' +
+        '<p style="color:#E8E8E8;font-size:0.85rem;margin:6px 0;">✅ &nbsp;Seguí el desgaste real de tus zapatillas, kilómetro a kilómetro</p>' +
         '</div>' +
-        '<p style="color:#888888;font-size:0.85rem;line-height:1.6;">Estamos acá para acompañarte en cada sendero. 🏔️</p>' +
+        '<p style="color:#888888;font-size:0.85rem;line-height:1.6;">Estamos acá para acompañarte en cada kilómetro. 🏃</p>' +
         '<hr style="border:none;border-top:1px solid #1f1f1f;margin:20px 0;">' +
         '<p style="color:#333;font-size:0.65rem;">— Equipo Huella Runner MDQ</p>' +
         '</div>',
