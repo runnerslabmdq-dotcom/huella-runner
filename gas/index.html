@@ -1,11 +1,19 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 16/07/2026 09:11 (hora Argentina)
+  Última actualización: 16/07/2026 20:29 (hora Argentina)
   Cambios en esta versión:
+    - Agregadas 7 marcas street al desplegable de zapatillas (Adidas,
+      Asics, Fila, New Balance, Nike, Skechers, Under Armour) con su
+      foto genérica. Todavía sin modelos específicos cargados (usan
+      "Otros..." para el modelo).
+    - Arreglada la genérica de Saucony: usaba por error una foto de la
+      Peregrine 16 en vez de una foto genérica de marca.
+    - Nuevo docs/cloudinarys-zapatillas.md con el catálogo ordenado de
+      todos los links de Cloudinary usados.
+  Cambios en versiones anteriores:
     - Agregado "VERSIÓN DEMO" en neon/fluo (#CCFF00) debajo del título
       HUELLA RUNNER en la pantalla de bienvenida.
-  Cambios en versiones anteriores:
     - Sacado "trail" de los 2 párrafos de la pantalla de bienvenida
       (onboarding): "Registra tus zapatillas" y "comunidad Huella
       Runner".
@@ -1563,6 +1571,13 @@
           <option value="Osx">Osx</option>
           <option value="Salomon">Salomon</option>
           <option value="Saucony">Saucony</option>
+          <option value="Adidas">Adidas</option>
+          <option value="Asics">Asics</option>
+          <option value="Fila">Fila</option>
+          <option value="New Balance">New Balance</option>
+          <option value="Nike">Nike</option>
+          <option value="Skechers">Skechers</option>
+          <option value="Under Armour">Under Armour</option>
           <option value="__otras__">Otras...</option>
         </select>
         <div class="input-manual-wrap" id="wrap-marca-manual">
@@ -1958,13 +1973,20 @@
   // Genéricas por marca (fallback cuando el modelo no tiene foto propia).
   // Solo marcas que existen en el desplegable de "Nueva zapatilla".
   const brandImages = {
-  "hoka":        "https://res.cloudinary.com/dlayzh9ln/image/upload/v1782223352/Hoka_Genericas_TT_2_ybq5az.png",
-  "saucony":     "https://res.cloudinary.com/dlayzh9ln/image/upload/v1782216017/Saucony_Peregrine_16_W_TT_xpchn3.png",
-  "salomon":     "https://res.cloudinary.com/dlayzh9ln/image/upload/v1782223426/Salomon_Genericas_2_lujglk.png",
-  "la_sportiva": "https://res.cloudinary.com/dlayzh9ln/image/upload/v1782223423/La_Sportiva_Genericas_2_bbvwd1.png",
-  "dynafit":     "https://res.cloudinary.com/dlayzh9ln/image/upload/v1782223420/Dynafit_Genericas_2_oqh9du.png",
-  "nnormal":     "https://res.cloudinary.com/dlayzh9ln/image/upload/v1782223417/Nnormal_Genericas_2_hsble4.png",
-  "osx":         "https://res.cloudinary.com/dlayzh9ln/image/upload/v1782223343/OSX_Genericas_TT_2_ueeikj.png"
+  "hoka":          "https://res.cloudinary.com/dlayzh9ln/image/upload/v1782223352/Hoka_Genericas_TT_2_ybq5az.png",
+  "saucony":       "https://res.cloudinary.com/dlayzh9ln/image/upload/v1782400518/Saucony_Generica_nvxa2y.png",
+  "salomon":       "https://res.cloudinary.com/dlayzh9ln/image/upload/v1782223426/Salomon_Genericas_2_lujglk.png",
+  "la_sportiva":   "https://res.cloudinary.com/dlayzh9ln/image/upload/v1782223423/La_Sportiva_Genericas_2_bbvwd1.png",
+  "dynafit":       "https://res.cloudinary.com/dlayzh9ln/image/upload/v1782223420/Dynafit_Genericas_2_oqh9du.png",
+  "nnormal":       "https://res.cloudinary.com/dlayzh9ln/image/upload/v1782223417/Nnormal_Genericas_2_hsble4.png",
+  "osx":           "https://res.cloudinary.com/dlayzh9ln/image/upload/v1782223343/OSX_Genericas_TT_2_ueeikj.png",
+  "adidas":        "https://res.cloudinary.com/dlayzh9ln/image/upload/v1782400534/Adidas_Generica_jrfipe.png",
+  "asics":         "https://res.cloudinary.com/dlayzh9ln/image/upload/v1782400529/Asics_Generica_doftjr.png",
+  "new_balance":   "https://res.cloudinary.com/dlayzh9ln/image/upload/v1782400526/New_Balance_Generica_wdysml.png",
+  "fila":          "https://res.cloudinary.com/dlayzh9ln/image/upload/v1782400522/Fila_Generica_tstudf.png",
+  "nike":          "https://res.cloudinary.com/dlayzh9ln/image/upload/v1782400516/Nike_Generica_d3yhht.png",
+  "skechers":      "https://res.cloudinary.com/dlayzh9ln/image/upload/v1782400510/Sketchers_Generica_cgss7k.png",
+  "under_armour":  "https://res.cloudinary.com/dlayzh9ln/image/upload/v1782400498/Under_Armour_Generica_svvvik.png"
 };
 
   // Resolución única: modelo específico → genérica de marca → IMAGEN NO DISPONIBLE.
@@ -2028,6 +2050,13 @@
       "Peregrine 16 Carbon",
       "Xodus 4"
     ],
+    "Adidas":       [],
+    "Asics":        [],
+    "Fila":         [],
+    "New Balance":  [],
+    "Nike":         [],
+    "Skechers":     [],
+    "Under Armour": [],
   };
 
   function getBrandBadgeClass(marca) {

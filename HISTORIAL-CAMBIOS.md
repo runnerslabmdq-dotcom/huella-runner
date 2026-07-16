@@ -109,6 +109,17 @@ el GAS es la versión más nueva.
   "🛒 Próximamente" sin acción (deshabilitado), hasta que haya un destino
   real. `irATodoTrail()` queda sin usar, lista para reactivar con un link
   real cuando lo haya.
+- Agregadas 7 marcas street al desplegable de zapatillas: Adidas, Asics,
+  Fila, New Balance, Nike, Skechers, Under Armour — con su foto
+  genérica de Cloudinary. Todavía sin modelos específicos cargados (el
+  desplegable de modelo para estas marcas ofrece solo "Otros...", carga
+  manual). Ver `docs/cloudinarys-zapatillas.md` para el detalle.
+- Arreglada la genérica de Saucony: usaba por error una foto de la
+  Peregrine 16 (una zapatilla específica) como si fuera la genérica de
+  marca. Ahora usa una foto genérica real. La Peregrine 16 ya estaba
+  bien puesta como modelo específico, no se tocó.
+- Ninguna de las marcas/fotos trail existentes se tocó — se verificó
+  cada una contra lo que ya había antes de agregar nada.
 
 ## Admin.html (panel de administración)
 
