@@ -1,6 +1,6 @@
 // ============================================================
 // HUELLA RUNNER — social-proof.gs
-// Última actualización: 16/07/2026 09:11 (hora Argentina)
+// Última actualización: 16/07/2026 20:29 (hora Argentina)
 // Cambios en esta versión:
 //   - procesarNotificacionesDiferidas() ahora usa LockService para
 //     evitar mandar la misma notificación diferida dos veces si dos
