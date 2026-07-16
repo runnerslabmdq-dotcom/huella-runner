@@ -1,9 +1,10 @@
 // ============================================================
 // HUELLA RUNNER — trail-points.gs
-// Última actualización: 15/07/2026 13:06 (hora Argentina)
-// Cambios en esta versión: Sin cambios en esta versión.
-//   (mantiene: 100% de km acreditados sin descuento del 85%, sin
-//    requisito de hora obligatoria, guardado vía appendDataByHeader)
+// Última actualización: 15/07/2026 15:55 (hora Argentina)
+// Cambios en esta versión:
+//   - Sacado "km de trail" del mensaje del cupón (quedaba "de trail"
+//     colgado sin sentido). Prefijo de código de cupón cambiado de
+//     "TT-DESGASTE-" a "HR-DESGASTE-" (era un resto de Todo Trail).
 // ============================================================
 // ARQUITECTURA DE SHEETS REQUERIDA:
 //
@@ -33,7 +34,7 @@ const TP = {
   KM_UMBRAL_CUPON:      650,    // km para disparar cupón
   KM_MAX_DIA:           120,    // filtro diario anti-fraude
   KM_MAX_SEMANA:        180,    // filtro semanal anti-fraude
-  PREFIJO_CUPON:        'TT-DESGASTE-',
+  PREFIJO_CUPON:        'HR-DESGASTE-',
   SHEET_CUPONES:        'Cupones_Emitidos',
   SHEET_ZAPAS:          'Zapatillas',
   SHEET_TRAIN:          'Entrenamientos',
@@ -277,7 +278,7 @@ function _emitirCupon(email, idZapa, marca, modelo, kmAlEmitir) {
     enviarNotificacion(
       'individual',
       email,
-      `🏆 ¡Cupón Trail Points desbloqueado! Tus ${marca} ${modelo} llegaron a ${kmAlEmitir} km de trail. Cupón de descuento: ${codigo}. ¡Usalo en tu próxima compra en Huella Runner!`,
+      `🏆 ¡Cupón Trail Points desbloqueado! Tus ${marca} ${modelo} llegaron a ${kmAlEmitir} km. Cupón de descuento: ${codigo}. ¡Usalo en tu próxima compra en Huella Runner!`,
       'Premio'
     );
   } catch(_) {}

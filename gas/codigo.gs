@@ -1,11 +1,11 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 15/07/2026 13:06 (hora Argentina)
-// Cambios en esta versión:
+// Última actualización: 15/07/2026 15:55 (hora Argentina)
+// Cambios en esta versión: Sin cambios en esta versión.
+// Cambios en versiones anteriores:
 //   - Sacado "trail" y "sendero" del mail de bienvenida (catálogo,
 //     comunidad, desgaste, despedida) y de la descripción del manifest
 //     PWA. Emojis de montaña 🏔️ cambiados por 🏃.
-// Cambios en versiones anteriores:
 //   - BUG REAL arreglado: las notificaciones diferidas de Social Proof
 //     quedaban encoladas en Notif_Diferidas para siempre y nunca
 //     llegaban a la app. Causa: procesarNotificacionesDiferidas() (en

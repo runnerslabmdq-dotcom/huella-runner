@@ -56,6 +56,12 @@ el GAS es la versión más nueva.
   había hora exacta, rechazaba la carga).
 - `_guardarEntrenamiento()` usa `appendDataByHeader()` (auto-reparación de
   columnas) en vez de escribir directo a celdas fijas.
+- Sacado "km de trail" del mensaje del cupón (quedaba "de trail" colgado
+  sin sentido).
+- Prefijo del código de cupón cambiado de `TT-DESGASTE-` a
+  `HR-DESGASTE-` (el "TT" era un resto de Todo Trail; los cupones ya
+  emitidos con el prefijo viejo quedan como están, solo cambian los
+  nuevos).
 
 ## social-proof.gs
 
@@ -71,6 +77,10 @@ el GAS es la versión más nueva.
 - Nota: existe un archivo aparte, `gas/social-proof-ui.html`, con un
   diseño más vistoso (banner + acordeón) que **no está pegado** en
   Index.html todavía — es una propuesta sin integrar, no un bug.
+- `procesarNotificacionesDiferidas()` ahora usa `LockService` para que
+  dos visitas casi simultáneas no manden la misma notificación diferida
+  dos veces (podía pasar porque ahora se llama desde 2 lugares distintos
+  en cada visita, ver codigo.gs arriba).
 
 ## Index.html (app principal)
 
@@ -110,6 +120,8 @@ el GAS es la versión más nueva.
     acceso directo a `window.top` por seguridad. Arreglado pidiendo la URL
     real al backend (`getAppUrl()`) y navegando con un link
     `target="_top"`, igual que ya usa el login para entrar al panel.
+- Sacado "calzado trail" de un texto de insights (ahora dice "calzado
+  running").
 
 ## landing.html
 

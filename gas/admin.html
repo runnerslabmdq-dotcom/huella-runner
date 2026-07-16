@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Admin.html
-  Última actualización: 15/07/2026 13:06 (hora Argentina)
+  Última actualización: 15/07/2026 15:55 (hora Argentina)
   Cambios en esta versión:
+    - Sacado "calzado trail" de un texto de insights (ahora dice
+      "calzado running").
+  Cambios en versiones anteriores:
     - BUG REAL arreglado: el botón "Salir" no hacía nada al tocarlo.
       Causa: Apps Script muestra este panel adentro de un iframe de
       otro dominio, y el navegador bloquea en silencio el acceso
@@ -10,7 +13,6 @@
       pide la URL real al backend (getAppUrl, en codigo.gs) y navega
       con un link target="_top", igual que ya se usa para entrar al
       panel admin desde el login.
-    - Mantiene: botón "⏻ Salir" agregado en la versión anterior.
 -->
 <html lang="es">
 <head>
@@ -1204,7 +1206,7 @@
       {
         icon: '🔥', num: listosCambio,
         title: listosCambio + ' runners listos para renovar zapatillas',
-        desc: 'Tienen zapatillas en zona crítica (>700 km). Momento ideal para una campaña de descuento en calzado trail.',
+        desc: 'Tienen zapatillas en zona crítica (>700 km). Momento ideal para una campaña de descuento en calzado running.',
         action: 'Ver y notificar',
         onClick: "irANotificar('todos','¡Tus zapatillas ya cumplieron su ciclo! Es momento de renovarlas. Tenemos opciones especiales para vos. 🏃')"
       },
