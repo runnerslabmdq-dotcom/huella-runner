@@ -1,4 +1,4 @@
-const CACHE_NAME = 'huella-runner-v2';
+const CACHE_NAME = 'huella-runner-v3';
 
 const STATIC_ASSETS = [
   './',
@@ -26,11 +26,20 @@ self.addEventListener('activate', event => {
   self.clients.claim();
 });
 
+// Red primero: siempre busca la versión más nueva del servidor. Solo usa la
+// copia guardada si no hay conexión — así una actualización (como esta
+// misma) le llega a todos sin que tengan que borrar caché ni reinstalar nada.
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
-  if (url.origin === location.origin) {
-    event.respondWith(
-      caches.match(event.request).then(cached => cached || fetch(event.request))
-    );
-  }
+  if (url.origin !== location.origin) return;
+
+  event.respondWith(
+    fetch(event.request)
+      .then(response => {
+        const clone = response.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+        return response;
+      })
+      .catch(() => caches.match(event.request))
+  );
 });
