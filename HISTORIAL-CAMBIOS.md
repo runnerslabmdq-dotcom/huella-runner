@@ -189,6 +189,15 @@ el GAS es la versión más nueva.
   Google Apps Script" — ese cartel pertenece a la página real de
   script.google.com, no a esta cascarita, así que redirigiendo (como
   está ahora) sigue apareciendo.
+- BUG REAL arreglado: el redirect a la app (`window.location.href = GAS_URL`)
+  siempre apuntaba a la misma URL exacta, así que el navegador del celular
+  (sobre todo en modo "ícono de pantalla de inicio") podía servir una copia
+  vieja de esa página desde su caché normal en vez de pedirla de nuevo —
+  por eso un celular llegó a mostrar "imagen no disponible" en una
+  zapatilla Adidas mientras la PC (que sí volvía a pedir la página) la
+  mostraba bien. Ahora el redirect agrega `?v=` + un número que cambia en
+  cada carga (`Date.now()`), así cada visita es una URL "nueva" para el
+  navegador y siempre trae la versión más reciente del GAS.
 
 ## Otros
 
