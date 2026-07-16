@@ -160,9 +160,18 @@ el GAS es la versión más nueva.
   funcionan igual después de moverlos. Ver `pwa/README.md`.
 - Es la "cascarita" PWA (pantalla de bienvenida + redirección a la app
   de Apps Script) — no tiene lógica de negocio, es un sitio estático.
-- Pendiente: confirmar la URL `/exec` actual del deploy de Apps Script,
-  porque la que está hardcodeada en `pwa/index.html` puede estar
-  desactualizada.
+- URL del GAS en `pwa/index.html` actualizada a la del deployment
+  actual confirmado por el fundador (16/07/2026).
+- BUG REAL arreglado: `service-worker.js` guardaba la página en caché
+  y la servía siempre de memoria, sin importar si había una versión
+  nueva en el servidor — por eso una actualización recién publicada en
+  Vercel no le llegaba a quien ya había visitado la PWA antes (quedaba
+  viendo la URL del GAS vieja para siempre, aunque el código ya
+  estuviera arreglado). Cambiado a "red primero, caché de respaldo":
+  ahora siempre busca la versión más nueva cuando hay conexión, y solo
+  usa la copia guardada si no hay internet. Con esto, de acá en más,
+  cada actualización que se suba llega sola, sin que nadie tenga que
+  borrar caché ni reinstalar la app.
 - Pendiente/experimental (no confirmado que funcione): probar si
   meter la app de Apps Script en un iframe en vez de redirigir con
   `window.location.href` saca el cartel de "creado por un usuario de
