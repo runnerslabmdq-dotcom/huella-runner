@@ -150,14 +150,25 @@ el GAS es la versión más nueva.
   reales (login, notificaciones completas, etc.) para variar un poco las
   que se repiten.
 
-## Raíz del proyecto (index.html, manifest.json, service-worker.js)
+## pwa/ (antes estaba todo esto suelto en la raíz del repo)
 
-- Estos 3 archivos son la "cascarita" PWA (pantalla de bienvenida +
-  redirección a la app de Apps Script) — van a Netlify o Vercel, **no** al
-  GAS. Están separados de todo lo de `gas/`.
+- Se movieron `index.html`, `manifest.json`, `service-worker.js` e
+  `icons/` a una carpeta `pwa/` propia, para que quede clarísimo qué se
+  sube a Vercel/Netlify (esta carpeta, apuntando el "Root Directory" del
+  deploy acá) y qué no (todo lo demás, sobre todo `gas/` y
+  `landing.html`). Los paths internos son todos relativos, así que
+  funcionan igual después de moverlos. Ver `pwa/README.md`.
+- Es la "cascarita" PWA (pantalla de bienvenida + redirección a la app
+  de Apps Script) — no tiene lógica de negocio, es un sitio estático.
 - Pendiente: confirmar la URL `/exec` actual del deploy de Apps Script,
-  porque la que está hardcodeada en este `index.html` puede estar
+  porque la que está hardcodeada en `pwa/index.html` puede estar
   desactualizada.
+- Pendiente/experimental (no confirmado que funcione): probar si
+  meter la app de Apps Script en un iframe en vez de redirigir con
+  `window.location.href` saca el cartel de "creado por un usuario de
+  Google Apps Script" — ese cartel pertenece a la página real de
+  script.google.com, no a esta cascarita, así que redirigiendo (como
+  está ahora) sigue apareciendo.
 
 ## Otros
 
