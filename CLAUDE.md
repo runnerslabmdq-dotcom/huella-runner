@@ -36,6 +36,13 @@ Antes de investigar si algo "ya se arregló", revisar `HISTORIAL-CAMBIOS.md`
 (raíz del repo) — ahí está el resumen de qué se cambió en cada archivo
 `.gs`/`.html`. Actualizarlo cada vez que se mergea un cambio de código.
 
+**El encabezado de fecha de cada archivo (`Última actualización: ...`)
+SIEMPRE debe llevar fecha Y hora** (ej. `17/07/2026 14:42 (hora
+Argentina)`), nunca solo la fecha — el fundador necesita la hora exacta
+para no confundirse sobre qué versión tiene pegada en el GAS. Para la
+hora real, correr `TZ='America/Argentina/Buenos_Aires' date '+%d/%m/%Y
+%H:%M'` en vez de inventarla.
+
 ## Regla permanente: cómo publicar cambios en Apps Script
 
 Cuando el fundador pegue código nuevo en el editor de Apps Script y quiera
