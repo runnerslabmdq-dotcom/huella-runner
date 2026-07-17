@@ -84,6 +84,9 @@ el GAS es la versión más nueva.
 
 ## Index.html (app principal)
 
+- "VERSIÓN DEMO" agrandada (0.6rem → 0.85rem) en la pantalla de bienvenida,
+  y agregada también en la pantalla de login (antes solo estaba en la
+  bienvenida) — a pedido del fundador (17/07/2026).
 - Todo el branding "Todo Trail" reemplazado por "Huella Runner", incluyendo
   dos casos escondidos que no agarró la primera limpieza:
   - Subtítulo grande "TODO TRAIL" partido en dos `<span>` separados,
