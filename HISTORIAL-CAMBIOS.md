@@ -198,6 +198,17 @@ el GAS es la versión más nueva.
   mostraba bien. Ahora el redirect agrega `?v=` + un número que cambia en
   cada carga (`Date.now()`), así cada visita es una URL "nueva" para el
   navegador y siempre trae la versión más reciente del GAS.
+- CAUSA REAL de fondo del bug de arriba (no era solo caché): la URL de
+  GAS guardada en `pwa/index.html` (`AKfycbz6jPZr...`) apuntaba a una
+  **implementación vieja** de Apps Script, de antes de agregar Adidas —
+  se había creado una implementación nueva (con otra URL,
+  `AKfycbwxh1GR...`) en vez de actualizar la existente, y Vercel se quedó
+  con la dirección vieja anotada. Corregido: `GAS_URL` actualizada a
+  `AKfycbwxh1GR...` (17/07/2026). Para que esto no se repita: en Apps
+  Script, siempre usar **Implementar → Administrar implementaciones →
+  Editar (lápiz) → Nueva versión → Implementar** sobre la implementación
+  ya existente, nunca "Nueva implementación" (eso genera una URL
+  distinta y hay que volver a actualizar `pwa/index.html`).
 
 ## Otros
 
