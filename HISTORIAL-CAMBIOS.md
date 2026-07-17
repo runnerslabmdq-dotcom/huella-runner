@@ -84,6 +84,13 @@ el GAS es la versión más nueva.
 
 ## Index.html (app principal)
 
+- Agregados 11 modelos de Adidas (street) al `catalogo` y `modelImages`,
+  cada uno con foto propia (no la genérica): Adizero Evo, Ultrarun 5,
+  Duramo SL2, Supernova Glise, Supernova Rise 3, Duramo Speed, Adistar
+  ByD, Supernova 2, Questar 3, Adizero Drive, Response 2 (17/07/2026).
+  Se verificó que ningún nombre se repita con modelos ya existentes
+  (todos los demás son marcas trail, sin superposición). Ver
+  `docs/cloudinarys-zapatillas.md` para el detalle y los links.
 - "VERSIÓN DEMO" agrandada (0.6rem → 0.85rem) en la pantalla de bienvenida,
   y agregada también en la pantalla de login (antes solo estaba en la
   bienvenida) — a pedido del fundador (17/07/2026).

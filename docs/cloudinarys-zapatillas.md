@@ -35,10 +35,12 @@ Se usan como foto de fondo/tarjeta cuando el modelo no tiene foto propia
 | Skechers | https://res.cloudinary.com/dlayzh9ln/image/upload/v1782400510/Sketchers_Generica_cgss7k.png |
 | Under Armour | https://res.cloudinary.com/dlayzh9ln/image/upload/v1782400498/Under_Armour_Generica_svvvik.png |
 
-**Pendiente**: estas 7 marcas street están en el desplegable de "Marca" pero
-todavía **sin modelos cargados** — el desplegable de "Modelo" para estas
-marcas solo ofrece "Otros..." (carga manual del nombre). Cuando pases
-modelos específicos con su foto, se agregan al `catalogo` y `modelImages`.
+**Pendiente**: de estas 7 marcas street, **Adidas ya tiene 11 modelos**
+cargados (ver tabla de "Modelos específicos" abajo, agregados 17/07/2026).
+Asics, New Balance, Fila, Nike, Skechers y Under Armour siguen **sin
+modelos cargados** — el desplegable de "Modelo" para esas marcas solo
+ofrece "Otros..." (carga manual del nombre). Cuando pases modelos
+específicos con su foto, se agregan al `catalogo` y `modelImages`.
 
 ---
 
@@ -70,6 +72,17 @@ modelos específicos con su foto, se agregan al `catalogo` y `modelImages`.
 | Salomon | Ultra Glide 4 Trail | https://res.cloudinary.com/dlayzh9ln/image/upload/v1781797817/Salomon_Ultra_Glide_4_Trail_TT_pytavn.png |
 | Salomon | Ultra Flow 2 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1781797820/Salomon_Ultra_Flow_2_TT_jlpf2h.png |
 | Salomon | Aero Glide 4 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1781797825/Salomon_Aero_Glide_4_TT_kiwztx.png |
+| Adidas | Adizero Evo | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784309382/Adidas_Adizero_Evo_ST_ccf06u.png |
+| Adidas | Ultrarun 5 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784309382/Adidas_Ultrarun_5_ST_dbncgx.png |
+| Adidas | Duramo SL2 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784309380/Adidas_Duramo_SL2_ST_cbk5qi.png |
+| Adidas | Supernova Glise | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784309381/Adidas_Supernova_Glise_ST_id2jov.png |
+| Adidas | Supernova Rise 3 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784309381/Adidas_Supernova_Rise_3_ST_hffj6b.png |
+| Adidas | Duramo Speed | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784309380/Adidas_Duramo_Speed_ST_mwspb4.png |
+| Adidas | Adistar ByD | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784309380/Adidas_Adistar_ByD_ST_objw8i.png |
+| Adidas | Supernova 2 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784309378/Adidas_Supernova_2_ST_lu23kb.png |
+| Adidas | Questar 3 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784309378/Adidas_Questar_3_ST_fef5fp.png |
+| Adidas | Adizero Drive | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784309378/Adidas_Adizero_Drive_ST_isu6bf.png |
+| Adidas | Response 2 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784309378/Adidas_Response_2_ST_puheud.png |
 
 ---
 
