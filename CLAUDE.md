@@ -35,3 +35,18 @@ Consultar `.claude/thinking-profile.md` para el perfil completo.
 Antes de investigar si algo "ya se arregló", revisar `HISTORIAL-CAMBIOS.md`
 (raíz del repo) — ahí está el resumen de qué se cambió en cada archivo
 `.gs`/`.html`. Actualizarlo cada vez que se mergea un cambio de código.
+
+## Regla permanente: cómo publicar cambios en Apps Script
+
+Cuando el fundador pegue código nuevo en el editor de Apps Script y quiera
+publicarlo, SIEMPRE recordarle este camino exacto:
+
+**Implementar → Administrar implementaciones → lápiz (Editar) → Nueva
+versión → Implementar**, sobre la implementación que ya existe.
+
+**NUNCA** "Nueva implementación" — eso genera una URL distinta de Google,
+y como esa URL está guardada en `pwa/index.html` (`GAS_URL`), si cambia,
+la PWA de Vercel se queda apuntando a la versión vieja y hay que
+actualizar y volver a mergear `pwa/index.html` a mano. Ya pasó más de una
+vez (ver `HISTORIAL-CAMBIOS.md`, sección `pwa/`) y es la causa más común
+de "esto en la PC anda bien pero en el celu no".
