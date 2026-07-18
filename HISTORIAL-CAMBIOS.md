@@ -219,6 +219,19 @@ el GAS es la versión más nueva.
   Editar (lápiz) → Nueva versión → Implementar** sobre la implementación
   ya existente, nunca "Nueva implementación" (eso genera una URL
   distinta y hay que volver a actualizar `pwa/index.html`).
+- Unificado el color de acento dorado con el de la app real: la PWA
+  (splash, `theme-color`, `manifest.json`) usaba `#FFD700` (amarillo
+  brillante, resto de la etapa Open Sports), pero `gas/index.html` ya
+  usa `#C5B358` (dorado apagado, tipo champagne) desde antes. Cambiado
+  en `pwa/index.html` (meta theme-color, título, barra de carga) y
+  `pwa/manifest.json` (`theme_color`) — ahora los tres coinciden:
+  fondo `#080808`, dorado `#C5B358`, plata `#E8E8E8` (17/07/2026).
+- **Pendiente**: el ícono de la PWA (`icons/icon-192.png` e
+  `icon-512.png`) sigue con el amarillo brillante viejo de fondo —
+  es una imagen ya armada, no un color de CSS, así que no se puede
+  unificar solo con código. Hay que regenerar/exportar un ícono nuevo
+  con el dorado `#C5B358` desde el diseño original (Canva/Photoshop/etc.)
+  y reemplazar esos dos archivos.
 
 ## Otros
 
