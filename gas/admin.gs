@@ -1,8 +1,18 @@
 // ============================================================
 // HUELLA RUNNER — admin.gs
-// Última actualización: 16/07/2026 20:29 (hora Argentina)
-// Cambios en esta versión: Sin cambios en esta versión.
-// Cambios en la versión anterior (12:25):
+// Última actualización: 19/07/2026 08:52 (hora Argentina)
+// Cambios en esta versión:
+//   - BUG DE SEGURIDAD arreglado: getAdminStats, getAdminUsuarios,
+//     getRankingUsuarios, getActividadReciente y getActividadPorDia no
+//     revisaban el token de admin — solo se protegía qué PANTALLA se
+//     mostraba, no las funciones en sí, así que cualquiera podía
+//     llamarlas directo desde la consola del navegador sin loguearse.
+//     Ahora piden el token y lo validan igual que la pantalla.
+//   - ADMIN_TOKEN ya no está escrito en este archivo (que está en
+//     GitHub) — se mudó a Propiedades del script de Apps Script.
+//     _getAdminToken() lo lee de ahí. Sin configurar esa propiedad,
+//     nadie puede entrar al panel (falla "cerrado", no "abierto").
+// Cambios en versiones anteriores:
 //   - Agregado ADMIN_EMAILS: huellarunner@gmail.com ahora es admin
 //     automáticamente (sin depender de la columna Rol del sheet)
 // ============================================================
@@ -31,17 +41,26 @@
 
 // ============================================================
 // CONFIGURACIÓN ADMIN
-// Cambiá ADMIN_TOKEN por una clave secreta tuya
+// El token real NO vive en este archivo (este código está en GitHub,
+// público) — vive en Propiedades del script de Apps Script, para que
+// nadie que solo lea el código en GitHub se entere de la clave real.
+// Cómo configurarlo: Apps Script → ⚙️ Configuración del proyecto →
+// Propiedades del script → Añadir propiedad → nombre "ADMIN_TOKEN".
 // Acceso: ...exec?page=admin&token=TU_CLAVE
 // ============================================================
-const ADMIN_TOKEN = 'huella-admin-2024';
 
 // Emails que son admin automáticamente, sin importar la columna Rol
 // del sheet Usuarios. Para sacar a alguien de acá, borrar su email.
 const ADMIN_EMAILS = ['huellarunner@gmail.com'];
 
+function _getAdminToken() {
+  return PropertiesService.getScriptProperties().getProperty('ADMIN_TOKEN') || '';
+}
+
 function _adminAutorizado(token) {
-  return token && token.toString() === ADMIN_TOKEN;
+  const real = _getAdminToken();
+  if (!real) return false; // sin token configurado en Propiedades, nadie entra
+  return !!token && token.toString() === real;
 }
 
 function _esEmailAdmin(email) {
@@ -61,7 +80,8 @@ function verificarAdmin(token) {
 // Retorna: usuariosTotales, activosHoy, zapatillasTotales,
 //          zapasArchivadas, kmHoy, kmSemana, notifEnviadas
 // ============================================================
-function getAdminStats() {
+function getAdminStats(token) {
+  if (!_adminAutorizado(token)) return { success: false, error: 'No autorizado.' };
   try {
     const ss = SpreadsheetApp.openById(SHEET_ID);
 
@@ -156,7 +176,8 @@ function getAdminStats() {
 // TABLA COMPLETA DE USUARIOS
 // Retorna array con datos de cada usuario + sus km totales
 // ============================================================
-function getAdminUsuarios() {
+function getAdminUsuarios(token) {
+  if (!_adminAutorizado(token)) return [];
   try {
     const ss = SpreadsheetApp.openById(SHEET_ID);
 
@@ -236,9 +257,10 @@ function getAdminUsuarios() {
 // ============================================================
 // RANKING DE USUARIOS POR KM TOTALES
 // ============================================================
-function getRankingUsuarios() {
+function getRankingUsuarios(token) {
+  if (!_adminAutorizado(token)) return [];
   try {
-    const usuarios = getAdminUsuarios();
+    const usuarios = getAdminUsuarios(token);
     return usuarios
       .sort(function(a, b) { return b.kmTotales - a.kmTotales; })
       .slice(0, 10);
@@ -252,7 +274,8 @@ function getRankingUsuarios() {
 // ACTIVIDAD RECIENTE (últimos 10 eventos combinados)
 // Tipo: 'entrenamiento' | 'registro'
 // ============================================================
-function getActividadReciente() {
+function getActividadReciente(token) {
+  if (!_adminAutorizado(token)) return [];
   try {
     const ss = SpreadsheetApp.openById(SHEET_ID);
     const eventos = [];
@@ -354,7 +377,8 @@ function getActividadReciente() {
 // ACTIVIDAD POR DÍA — últimos 7 días para el gráfico de barras
 // Retorna array de 7 objetos: { dia, label, cantidad, km }
 // ============================================================
-function getActividadPorDia() {
+function getActividadPorDia(token) {
+  if (!_adminAutorizado(token)) return [];
   try {
     const ss         = SpreadsheetApp.openById(SHEET_ID);
     const trainSheet = ss.getSheetByName('Entrenamientos');

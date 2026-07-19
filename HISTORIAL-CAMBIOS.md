@@ -39,6 +39,24 @@ el GAS es la versión más nueva.
 - Sacado "trail" del mail de bienvenida (catálogo, comunidad, desgaste,
   despedida) y de la descripción del manifest PWA. Emojis de montaña 🏔️
   cambiados por 🏃.
+- **BUG DE SEGURIDAD arreglado (19/07/2026)**: `getAdminDashboardData()`
+  y `enviarNotificacion()` (envíos a "todos"/"grupo") no revisaban
+  ningún token — cualquiera que abriera la app normal podía llamarlas
+  directo desde la consola del navegador, sin loguearse como admin.
+  Ahora las dos piden el token y lo validan con `_adminAutorizado()`.
+  Detalle completo abajo, en `admin.gs`.
+- **BUG DE SEGURIDAD arreglado (19/07/2026)**: las contraseñas se
+  guardaban y se reenviaban por mail en texto plano. Ahora se guardan
+  hasheadas (`_hashPassword()`, formato `salt$hash`, SHA-256). Los
+  usuarios que ya estaban registrados se migran solos al formato nuevo
+  la próxima vez que inicien sesión — no hace falta tocar la planilla
+  a mano ni avisarles nada. "Olvidé mi contraseña" ya no puede reenviar
+  la contraseña vieja (un hash no se puede leer para atrás): ahora
+  genera una nueva al azar, la guarda hasheada, y la manda por mail —
+  mismo botón, mismo flujo de siempre, solo cambia el contenido del mail.
+- `getAdminUrl()` ahora arma el link con el token leído de Propiedades
+  del script (ver `_getAdminToken()` en `admin.gs`), no de una
+  constante escrita en el código.
 
 ## admin.gs
 
@@ -47,6 +65,29 @@ el GAS es la versión más nueva.
   login (sin depender de la columna Rol del sheet). Hoy incluye
   `huellarunner@gmail.com`.
 - `_esEmailAdmin(email)`: helper que usa `loginUser()` en codigo.gs.
+- **BUG DE SEGURIDAD arreglado (19/07/2026)**: `_adminAutorizado(token)`
+  solo se usaba para decidir qué *pantalla* mostrar (`?page=admin`),
+  pero en Apps Script todas las funciones del proyecto quedan
+  accesibles desde cualquier página del mismo proyecto — o sea,
+  `getAdminStats`, `getAdminUsuarios`, `getRankingUsuarios`,
+  `getActividadReciente` y `getActividadPorDia` se podían llamar
+  directo desde la consola del navegador (`google.script.run...`) sin
+  pasar por el candado de la pantalla. Ahora las 5 piden el token como
+  primer/último parámetro y lo validan igual que la pantalla; si no es
+  válido devuelven vacío/error, no explotan.
+- `ADMIN_TOKEN` ya no está escrito en este archivo (que está en
+  GitHub, público) — se movió a **Propiedades del script** de Apps
+  Script (`PropertiesService`), leído por la nueva `_getAdminToken()`.
+  Sin esa propiedad configurada, `_adminAutorizado()` rechaza todo
+  (falla "cerrado", no "abierto"). El token viejo (`huella-admin-2024`)
+  quedaba expuesto en el código público — el nuevo lo generó Claude y
+  se lo pasó al fundador solo por chat, nunca se subió a git.
+- Panel admin (`Admin.html`): al abrirse, `doGet()` (en `codigo.gs`)
+  le pasa el token ya validado como variable de plantilla
+  (`tpl.adminToken`), así el panel lo tiene disponible para mandarlo
+  de vuelta en cada pedido de datos — no hace falta ningún login nuevo
+  ni pantalla extra, la entrada al panel (login normal → redirección
+  automática si sos admin) sigue exactamente igual que antes.
 
 ## trail-points.gs
 
