@@ -1,7 +1,20 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 16/07/2026 20:29 (hora Argentina)
-// Cambios en esta versión: Sin cambios en esta versión.
+// Última actualización: 19/07/2026 08:52 (hora Argentina)
+// Cambios en esta versión:
+//   - BUG DE SEGURIDAD arreglado: getAdminDashboardData() y
+//     enviarNotificacion() (envíos a "todos"/"grupo") no revisaban el
+//     token de admin. Ahora sí — ver detalle en admin.gs.
+//   - BUG DE SEGURIDAD arreglado: las contraseñas se guardaban y se
+//     reenviaban por mail en texto plano. Ahora se guardan hasheadas
+//     (_hashPassword, formato "salt$hash"). Los usuarios ya registrados
+//     se migran solos al formato nuevo la próxima vez que inicien
+//     sesión, sin hacer nada distinto. "Olvidé mi contraseña" ya no
+//     reenvía la contraseña vieja (no se puede leer de un hash) — ahora
+//     genera una nueva y la manda por mail, mismo flujo de siempre.
+//   - getAdminUrl() ahora arma el link con el token real leído de
+//     Propiedades del script (ver admin.gs), no de una constante en
+//     este código.
 // Cambios en versiones anteriores:
 //   - Sacado "trail" y "sendero" del mail de bienvenida (catálogo,
 //     comunidad, desgaste, despedida) y de la descripción del manifest
@@ -117,8 +130,9 @@ self.addEventListener('fetch', function(e) {
         '<h2 style="font-family:sans-serif;color:#c00;padding:40px">Acceso denegado.</h2>'
       );
     }
-    return HtmlService.createTemplateFromFile('Admin')
-      .evaluate()
+    const tpl = HtmlService.createTemplateFromFile('Admin');
+    tpl.adminToken = token; // el panel lo necesita para pedir sus propios datos
+    return tpl.evaluate()
       .setTitle('Admin — Huella Runner')
       .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
       .addMetaTag('viewport', 'width=device-width, initial-scale=1.0');
@@ -133,7 +147,7 @@ self.addEventListener('fetch', function(e) {
 }
 
 function getAdminUrl() {
-  return ScriptApp.getService().getUrl() + '?page=admin&token=' + ADMIN_TOKEN;
+  return ScriptApp.getService().getUrl() + '?page=admin&token=' + _getAdminToken();
 }
 
 // URL de la app principal (sin ?page=admin), para el botón "Salir" del panel admin.
@@ -176,6 +190,45 @@ function appendDataByHeader(sheetName, defaultHeaders, dataObj) {
 // CAMBIO v2906: Provincia y Ciudad agregados antes de Celular
 const USERS_HEADERS = ['Nombre', 'Apellido', 'Email', 'Password', 'Nivel', 'Grupo', 'FechaNacimiento', 'Provincia', 'Ciudad', 'Celular', 'Rol', 'Fecha_Registro'];
 
+// ============================================================
+// CONTRASEÑAS: se guardan hasheadas ("salt$hash"), nunca en texto
+// plano. _hashPassword no se puede "desarmar" para recuperar la
+// contraseña original — por eso recoverPassword() genera una nueva
+// en vez de reenviar la vieja.
+// ============================================================
+function _hashPassword(password, salt) {
+  const raw = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, password + ':' + salt, Utilities.Charset.UTF_8);
+  return raw.map(function(b) { return ('0' + (b & 0xFF).toString(16)).slice(-2); }).join('');
+}
+
+// Compara la contraseña ingresada contra la guardada. Soporta el formato
+// nuevo hasheado ("salt$hash") y, para cuentas creadas antes de este
+// cambio, el formato viejo en texto plano — si coincide, la migra sola
+// al formato hasheado en ese mismo login, sin que el usuario note nada.
+function _verificarPassword(guardada, ingresada, sheet, filaIndex, colIndex) {
+  if (guardada.indexOf('$') !== -1) {
+    const partes = guardada.split('$');
+    return _hashPassword(ingresada, partes[0]) === partes[1];
+  }
+  if (guardada === ingresada) {
+    const salt = Utilities.getUuid();
+    const hash = _hashPassword(ingresada, salt);
+    sheet.getRange(filaIndex + 1, colIndex + 1).setValue(salt + '$' + hash);
+    SpreadsheetApp.flush();
+    return true;
+  }
+  return false;
+}
+
+function _generarPasswordTemporal() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
+  let pass = '';
+  for (let i = 0; i < 10; i++) {
+    pass += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return pass;
+}
+
 // CAMBIO v2906: registerUser recibe provincia y ciudad
 function registerUser(nombre, apellido, email, password, nivel, grupo, fechaNac, provincia, ciudad, celular) {
   try {
@@ -200,11 +253,13 @@ function registerUser(nombre, apellido, email, password, nivel, grupo, fechaNac,
         return { success: false, error: 'El email ya esta registrado.' };
       }
     }
+    const salt = Utilities.getUuid();
+    const hash = _hashPassword(password.toString(), salt);
     appendDataByHeader('Usuarios', USERS_HEADERS, {
       'Nombre':          nombreClean,
       'Apellido':        apellido,
       'Email':           emailClean,
-      'Password':        password,
+      'Password':        salt + '$' + hash,
       'Nivel':           nivel || '',
       'Grupo':           grupo || '',
       'FechaNacimiento': fechaNac || '',
@@ -238,16 +293,17 @@ function loginUser(email, password) {
     }
     for (let i = 1; i < data.length; i++) {
       const rowEmail = data[i][emailCol] ? data[i][emailCol].toString().trim().toLowerCase() : '';
-      const rowPass  = data[i][passCol]  ? data[i][passCol].toString()                        : '';
-      if (rowEmail === emailClean && rowPass === password) {
-        const rol = rolCol !== -1 && data[i][rolCol] ? data[i][rolCol].toString().trim().toLowerCase() : '';
-        return {
-          success: true,
-          email:   rowEmail,
-          nombre:  nomCol !== -1 ? data[i][nomCol] : '',
-          esAdmin: rol === 'admin' || _esEmailAdmin(rowEmail)
-        };
-      }
+      if (rowEmail !== emailClean) continue;
+      const rowPass = data[i][passCol] ? data[i][passCol].toString() : '';
+      if (!_verificarPassword(rowPass, password.toString(), sheet, i, passCol)) continue;
+
+      const rol = rolCol !== -1 && data[i][rolCol] ? data[i][rolCol].toString().trim().toLowerCase() : '';
+      return {
+        success: true,
+        email:   rowEmail,
+        nombre:  nomCol !== -1 ? data[i][nomCol] : '',
+        esAdmin: rol === 'admin' || _esEmailAdmin(rowEmail)
+      };
     }
     return { success: false, error: 'Email o contrasena incorrectos.' };
   } catch(e) {
@@ -290,16 +346,16 @@ function recoverPassword(email) {
     return { success: false, error: 'Error interno en la estructura de datos.' };
   }
 
-  var encontrado      = false;
-  var nombreUsuario   = '';
-  var passwordUsuario = '';
+  var encontrado    = false;
+  var nombreUsuario = '';
+  var filaEncontrada = -1;
 
   for (var i = 1; i < data.length; i++) {
     var rowEmail = data[i][emailCol] ? data[i][emailCol].toString().trim().toLowerCase() : '';
     if (rowEmail === emailClean) {
-      encontrado       = true;
-      nombreUsuario    = nomCol !== -1 ? data[i][nomCol].toString() : 'Runner';
-      passwordUsuario  = data[i][passCol].toString();
+      encontrado      = true;
+      nombreUsuario   = nomCol !== -1 ? data[i][nomCol].toString() : 'Runner';
+      filaEncontrada  = i;
       break;
     }
   }
@@ -307,6 +363,14 @@ function recoverPassword(email) {
   if (!encontrado) {
     return { success: false, error: 'No encontramos una cuenta con ese email.' };
   }
+
+  // La contraseña guardada está hasheada — no se puede "leer" para atrás.
+  // Se genera una nueva, se guarda hasheada, y esa es la que se manda.
+  var passwordUsuario = _generarPasswordTemporal();
+  var saltNuevo = Utilities.getUuid();
+  var hashNuevo = _hashPassword(passwordUsuario, saltNuevo);
+  sheet.getRange(filaEncontrada + 1, passCol + 1).setValue(saltNuevo + '$' + hashNuevo);
+  SpreadsheetApp.flush();
 
   try {
     MailApp.sendEmail({
@@ -319,12 +383,12 @@ function recoverPassword(email) {
         '<p style="color:#888;font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;margin-top:0;">Powered by Huella Runner MDQ</p>' +
         '<hr style="border:none;border-top:1px solid #1f1f1f;margin:20px 0;">' +
         '<p style="color:#E8E8E8;font-size:1rem;">Hola, <strong>' + nombreUsuario + '</strong> 👋</p>' +
-        '<p style="color:#888888;font-size:0.85rem;line-height:1.6;">Recibiste este correo porque solicitaste recuperar tu contraseña.</p>' +
+        '<p style="color:#888888;font-size:0.85rem;line-height:1.6;">Recibiste este correo porque solicitaste recuperar tu contraseña. Generamos una nueva para vos:</p>' +
         '<div style="background:#111111;border:1px solid #1f1f1f;border-radius:12px;padding:16px 20px;margin:20px 0;">' +
-        '<p style="color:#888;font-size:0.65rem;text-transform:uppercase;letter-spacing:2px;margin:0 0 6px;">Tu contraseña</p>' +
+        '<p style="color:#888;font-size:0.65rem;text-transform:uppercase;letter-spacing:2px;margin:0 0 6px;">Tu contraseña nueva</p>' +
         '<p style="color:#dcfd8b;font-size:1.3rem;font-weight:900;margin:0;letter-spacing:1px;">' + passwordUsuario + '</p>' +
         '</div>' +
-        '<p style="color:#555;font-size:0.75rem;">Si no solicitaste esto, ignorá este mensaje.</p>' +
+        '<p style="color:#555;font-size:0.75rem;">Ya podés iniciar sesión con esta contraseña. Si no solicitaste esto, ignorá este mensaje.</p>' +
         '<hr style="border:none;border-top:1px solid #1f1f1f;margin:20px 0;">' +
         '<p style="color:#333;font-size:0.65rem;">— Equipo Huella Runner MDQ</p>' +
         '</div>',
@@ -801,8 +865,14 @@ function getGruposRunning() {
   }
 }
 
-function enviarNotificacion(destinatarioTipo, destinatarioValor, mensaje, tipo, codigoVoucherManual) {
+function enviarNotificacion(destinatarioTipo, destinatarioValor, mensaje, tipo, codigoVoucherManual, token) {
   try {
+    // Los envíos masivos (a todos o a un grupo entero) son la parte
+    // riesgosa — requieren el token de admin. Los individuales quedan
+    // libres porque el propio sistema los usa (cupones, social proof).
+    if ((destinatarioTipo === 'todos' || destinatarioTipo === 'grupo') && !_adminAutorizado(token)) {
+      return { success: false, error: 'No autorizado.' };
+    }
     if (!mensaje || mensaje.toString().trim() === '') {
       return { success: false, error: 'El mensaje no puede estar vacío.' };
     }
@@ -1060,7 +1130,8 @@ function deleteNotificacion(email, idNotif) {
 // ADMIN DASHBOARD — Métricas operativas
 // CAMBIO v2906: agrega rankingCalzado al objeto de retorno
 // ============================================================
-function getAdminDashboardData() {
+function getAdminDashboardData(token) {
+  if (!_adminAutorizado(token)) return { success: false, error: 'No autorizado.' };
   try {
     var ss = SpreadsheetApp.openById(SHEET_ID);
 
