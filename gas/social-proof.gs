@@ -1,6 +1,6 @@
 // ============================================================
 // HUELLA RUNNER — social-proof.gs
-// Última actualización: 19/07/2026 09:15 (hora Argentina)
+// Última actualización: 19/07/2026 12:45 (hora Argentina)
 // Cambios en esta versión:
 //   - Sacada la cola de "notificación diferida 24hs" (a pedido del
 //     fundador): sin push real no cumplía su función, y llegaba a
