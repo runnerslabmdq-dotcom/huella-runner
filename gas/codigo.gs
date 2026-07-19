@@ -1,7 +1,14 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 19/07/2026 08:52 (hora Argentina)
+// Última actualización: 19/07/2026 12:45 (hora Argentina)
 // Cambios en esta versión:
+//   - addShoe() ya no encola la notificación de "dato de comunidad"
+//     para mandar 24hs después — ahora la manda al toque (y solo si
+//     hay datos reales), vía _notificarDatoComunidadSiHayDatos() en
+//     social-proof.gs. Sacadas las llamadas de respaldo a
+//     procesarNotificacionesDiferidas() en getNotificacionesUsuario()
+//     y contarNoLeidas() (esa función ya no existe, ver social-proof.gs).
+// Cambios en versiones anteriores:
 //   - BUG DE SEGURIDAD arreglado: getAdminDashboardData() y
 //     enviarNotificacion() (envíos a "todos"/"grupo") no revisaban el
 //     token de admin. Ahora sí — ver detalle en admin.gs.
@@ -15,7 +22,6 @@
 //   - getAdminUrl() ahora arma el link con el token real leído de
 //     Propiedades del script (ver admin.gs), no de una constante en
 //     este código.
-// Cambios en versiones anteriores:
 //   - Sacado "trail" y "sendero" del mail de bienvenida (catálogo,
 //     comunidad, desgaste, despedida) y de la descripción del manifest
 //     PWA. Emojis de montaña 🏔️ cambiados por 🏃.
@@ -458,10 +464,11 @@ function addShoe(email, formData) {
     'Estado':        _calcularEstadoDesgaste(Number(formData.km) || 0)
   });
 
-  // Encola notificación diferida con datos de comunidad (Social Proof).
+  // Notifica dato de comunidad al toque, solo si ya hay datos reales de
+  // otros usuarios con esa marca/modelo (ver social-proof.gs).
   try {
     const proof = obtenerDataSocialProof(formData.marca, formData.modelo);
-    _encolarNotificacionDiferida(emailClean, formData.marca, formData.modelo, proof);
+    _notificarDatoComunidadSiHayDatos(emailClean, formData.marca, formData.modelo, proof);
   } catch(_) {}
 
   return { success: true };
@@ -968,10 +975,6 @@ function _generarCodigoVoucher() {
 function getNotificacionesUsuario(email) {
   try {
     if (!email) return [];
-    // Respaldo del cron: procesa notificaciones diferidas vencidas (social
-    // proof) cada vez que alguien abre su buzón, por si no hay trigger
-    // horario configurado en Apps Script para procesarNotificacionesDiferidas.
-    try { procesarNotificacionesDiferidas(); } catch(_) {}
     const emailClean = email.toString().trim().toLowerCase();
     const ss = SpreadsheetApp.openById(SHEET_ID);
     const sheet = ss.getSheetByName('Notificaciones');
@@ -1054,10 +1057,6 @@ function marcarLeido(idNotif) {
 function contarNoLeidas(email) {
   try {
     if (!email) return 0;
-    // Mismo respaldo que getNotificacionesUsuario(): esta función se
-    // llama sola cada 60s desde el frontend, así que sirve como red
-    // adicional para que las notificaciones diferidas no queden colgadas.
-    try { procesarNotificacionesDiferidas(); } catch(_) {}
     const emailClean = email.toString().trim().toLowerCase();
     const ss = SpreadsheetApp.openById(SHEET_ID);
     const sheet = ss.getSheetByName('Notificaciones');

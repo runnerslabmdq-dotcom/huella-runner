@@ -106,7 +106,33 @@ el GAS es la versión más nueva.
 
 ## social-proof.gs
 
-- `_encolarNotificacionDiferida()`: notificación de "dato de comunidad"
+- **CAMBIO DE DISEÑO (19/07/2026)**: se sacó la cola de "notificación
+  diferida 24hs" (`_encolarNotificacionDiferida` /
+  `procesarNotificacionesDiferidas`, ambas eliminadas). Motivo: el
+  fundador notó en el celu que estas notificaciones ("¡Dato de
+  comunidad! Las X duran en promedio 750 km...") le llegaban todas
+  juntas con la misma hora, y siempre con el mismo "750 km" — dos
+  problemas reales, no cosmética:
+  - El delay de 24hs no cumplía su función sin una notificación push
+    real (el celu no avisa solo) — la notificación quedaba esperando
+    en la hoja `Notif_Diferidas` hasta la próxima vez que el usuario
+    abría la pantalla de Notificaciones, momento en el que todas las
+    pendientes se disparaban juntas, pareciendo spam.
+  - El "750 km" es un valor de relleno que se usa cuando **no hay
+    ningún dato real de comunidad todavía** para esa marca/modelo —
+    se estaba mostrando como si fuera un dato real cuando no lo era.
+  - Reemplazado por `_notificarDatoComunidadSiHayDatos()`: manda el
+    mensaje al toque, al registrar la zapa, y **solo si ya hay datos
+    reales** (`proof.esNuevo === false`). Si el modelo es nuevo sin
+    comunidad detrás, no se manda nada — ya no se inventa un número.
+  - Si tenías un trigger horario configurado en Apps Script para
+    `procesarNotificacionesDiferidas`, se puede borrar (Activadores →
+    buscarlo → ✕) — la función ya no existe.
+  - La hoja `Notif_Diferidas` queda como está (con historial viejo),
+    no se borra sola; se puede limpiar a mano si molesta, no es
+    obligatorio.
+- `_encolarNotificacionDiferida()` (HISTÓRICO, ya eliminada — ver
+  arriba): notificación de "dato de comunidad"
   (ej. "las X duran en promedio Y km") se manda 24hs después de agregar
   una zapatilla, vía la hoja `Notif_Diferidas`.
 - Se sacó una función muerta (`registrarZapatillaConProof`, firma rota,
