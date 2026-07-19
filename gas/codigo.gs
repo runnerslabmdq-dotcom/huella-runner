@@ -1,14 +1,19 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 19/07/2026 12:45 (hora Argentina)
+// Última actualización: 19/07/2026 14:45 (hora Argentina)
 // Cambios en esta versión:
-//   - addShoe() ya no encola la notificación de "dato de comunidad"
-//     para mandar 24hs después — ahora la manda al toque (y solo si
-//     hay datos reales), vía _notificarDatoComunidadSiHayDatos() en
-//     social-proof.gs. Sacadas las llamadas de respaldo a
+//   - addShoe() ya no manda ninguna notificación al buzón — ahora
+//     devuelve el dato de comunidad (socialProof) directo en la
+//     respuesta, para que Index.html lo muestre al toque en una
+//     ventanita (modal) al registrar la zapatilla.
+// Cambios en versiones anteriores:
+//   - addShoe() encolaba la notificación de "dato de comunidad" para
+//     mandar 24hs después — se sacó ese delay, mandándola al toque (y
+//     solo si hay datos reales) vía _notificarDatoComunidadSiHayDatos()
+//     en social-proof.gs (esa función también se sacó después, ver
+//     arriba). Sacadas las llamadas de respaldo a
 //     procesarNotificacionesDiferidas() en getNotificacionesUsuario()
 //     y contarNoLeidas() (esa función ya no existe, ver social-proof.gs).
-// Cambios en versiones anteriores:
 //   - BUG DE SEGURIDAD arreglado: getAdminDashboardData() y
 //     enviarNotificacion() (envíos a "todos"/"grupo") no revisaban el
 //     token de admin. Ahora sí — ver detalle en admin.gs.
@@ -464,14 +469,15 @@ function addShoe(email, formData) {
     'Estado':        _calcularEstadoDesgaste(Number(formData.km) || 0)
   });
 
-  // Notifica dato de comunidad al toque, solo si ya hay datos reales de
-  // otros usuarios con esa marca/modelo (ver social-proof.gs).
+  // Dato de comunidad: se lo devolvemos al frontend para mostrar en el
+  // momento (ventanita), en vez de mandarlo al buzón de notificaciones.
+  // El frontend decide si corresponde mostrarla (solo si esNuevo es false).
+  let socialProof = null;
   try {
-    const proof = obtenerDataSocialProof(formData.marca, formData.modelo);
-    _notificarDatoComunidadSiHayDatos(emailClean, formData.marca, formData.modelo, proof);
+    socialProof = obtenerDataSocialProof(formData.marca, formData.modelo);
   } catch(_) {}
 
-  return { success: true };
+  return { success: true, socialProof: socialProof };
 }
 
 function getUserShoes(email) {

@@ -1,7 +1,8 @@
 // ============================================================
 // HUELLA RUNNER — admin.gs
-// Última actualización: 19/07/2026 08:52 (hora Argentina)
-// Cambios en esta versión:
+// Última actualización: 19/07/2026 14:45 (hora Argentina)
+// Cambios en esta versión: Sin cambios en esta versión.
+// Cambios en versiones anteriores:
 //   - BUG DE SEGURIDAD arreglado: getAdminStats, getAdminUsuarios,
 //     getRankingUsuarios, getActividadReciente y getActividadPorDia no
 //     revisaban el token de admin — solo se protegía qué PANTALLA se
@@ -12,7 +13,6 @@
 //     GitHub) — se mudó a Propiedades del script de Apps Script.
 //     _getAdminToken() lo lee de ahí. Sin configurar esa propiedad,
 //     nadie puede entrar al panel (falla "cerrado", no "abierto").
-// Cambios en versiones anteriores:
 //   - Agregado ADMIN_EMAILS: huellarunner@gmail.com ahora es admin
 //     automáticamente (sin depender de la columna Rol del sheet)
 // ============================================================

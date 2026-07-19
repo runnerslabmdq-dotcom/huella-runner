@@ -1,8 +1,15 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 19/07/2026 08:52 (hora Argentina)
-  Cambios en esta versión: Sin cambios en esta versión.
+  Última actualización: 19/07/2026 14:45 (hora Argentina)
+  Cambios en esta versión:
+    - Integrado el modal "dato de comunidad" (diseñado hace tiempo en
+      social-proof-ui.html, nunca pegado) que se abre al registrar una
+      zapatilla: "¡Zapatilla registrada!" + cuántos runners más usan esa
+      marca/modelo + km globales acumulados, con botón "¡A entrenar! 🏃".
+      Solo se muestra si ya hay datos reales de comunidad (si el modelo
+      es nuevo, no se abre nada). Reemplaza el aviso por buzón de
+      notificaciones que se había armado antes para esto mismo.
   Cambios en versiones anteriores:
     - Agregados 11 modelos de Adidas (street) al catálogo, cada uno con
       su foto propia: Adizero Evo, Ultrarun 5, Duramo SL2, Supernova
@@ -804,6 +811,44 @@
     .btn-delete-training:active { transform: scale(0.88); }
     .btn-delete-training.no-id  { opacity: 0.2; cursor: not-allowed; pointer-events: none; }
     .historial-loading { text-align: center; padding: 20px; color: var(--gris-texto); font-size: 0.75rem; }
+
+    /* ── Modal "dato de comunidad" al registrar zapatilla ── */
+    .modal-socialproof-content {
+      background: var(--card-bg); width: 90%; max-width: 380px;
+      padding: 30px 24px 24px; border-radius: 20px; border: 1px solid var(--borde);
+      position: relative; box-shadow: 0 0 48px rgba(197,179,88,0.12), 0 24px 64px rgba(0,0,0,0.7);
+    }
+    .sp-check {
+      width: 52px; height: 52px; margin: 0 auto 18px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--amarillo-top) 0%, var(--amarillo-dark) 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; color: #080808;
+    }
+    .sp-title {
+      font-family: 'Montserrat', sans-serif; font-size: 0.7rem; font-weight: 700;
+      color: var(--amarillo); text-transform: uppercase; letter-spacing: 3px;
+      text-align: center; margin-bottom: 14px;
+    }
+    .sp-msg {
+      font-size: 0.9rem; font-weight: 500; color: var(--plata);
+      text-align: center; line-height: 1.6; margin: 0 0 22px;
+    }
+    .sp-msg strong { color: var(--amarillo); font-weight: 700; }
+    .sp-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 22px; }
+    .sp-stat {
+      background: var(--bg-color); border: 1px solid var(--borde); border-radius: 10px;
+      padding: 14px 10px; text-align: center;
+    }
+    .sp-stat-value { font-family: 'Bebas Neue', 'Montserrat', sans-serif; font-size: 1.7rem; color: var(--amarillo); line-height: 1; margin-bottom: 4px; }
+    .sp-stat-label { font-size: 0.6rem; color: var(--gris-texto); text-transform: uppercase; letter-spacing: 1.5px; }
+    .sp-cta {
+      width: 100%; border: none; border-radius: 10px; padding: 14px; cursor: pointer;
+      background: linear-gradient(90deg, var(--amarillo-top) 0%, var(--amarillo-dark) 100%);
+      color: #080808; font-family: 'Montserrat', sans-serif; font-size: 0.82rem;
+      font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+      transition: transform 0.15s;
+    }
+    .sp-cta:active { transform: scale(0.98); }
 
     .modal-confirm-training-content {
       background: var(--card-bg); width: 90%; max-width: 340px;
@@ -1780,6 +1825,27 @@
   </div>
 </div>
 
+<!-- MODAL DATO DE COMUNIDAD (aparece al registrar una zapatilla con datos reales) -->
+<div class="modal-overlay" id="social-proof-modal">
+  <div class="modal-socialproof-content">
+    <button class="close-modal" onclick="cerrarSocialProofModal()">✕</button>
+    <div class="sp-check">✓</div>
+    <div class="sp-title">¡Zapatilla registrada!</div>
+    <p class="sp-msg" id="sp-mensaje"></p>
+    <div class="sp-stats">
+      <div class="sp-stat">
+        <div class="sp-stat-value" id="sp-stat-usuarios">—</div>
+        <div class="sp-stat-label">Runners activos</div>
+      </div>
+      <div class="sp-stat">
+        <div class="sp-stat-value" id="sp-stat-km">—</div>
+        <div class="sp-stat-label">KM globales</div>
+      </div>
+    </div>
+    <button class="sp-cta" onclick="cerrarSocialProofModal()">¡A entrenar! 🏃</button>
+  </div>
+</div>
+
 <!-- MODAL CONFIRMAR BORRAR ENTRENAMIENTO INDIVIDUAL -->
 <div class="modal-overlay" id="confirm-delete-training-modal">
   <div class="modal-confirm-training-content">
@@ -2694,16 +2760,37 @@
     if (!d.marca || !d.modelo) return alert('Completá la información');
     document.getElementById('btn-save-shoe').innerText = 'GUARDANDO...';
     google.script.run
-      .withSuccessHandler(() => {
+      .withSuccessHandler((res) => {
         document.getElementById('btn-save-shoe').innerText = 'Añadir a Mis Zapas';
         switchView('view-dashboard');
         setTimeout(loadDashboard, 800);
+        // Solo se muestra si ya hay datos reales de otros usuarios con esa
+        // marca/modelo — para una zapa nueva sin comunidad, no se muestra nada.
+        if (res && res.socialProof && res.socialProof.esNuevo === false) {
+          mostrarSocialProofModal(d.marca, d.modelo, res.socialProof);
+        }
       })
       .withFailureHandler(err => {
         document.getElementById('btn-save-shoe').innerText = 'Añadir a Mis Zapas';
         alert('Error al guardar: ' + (err.message || err));
       })
       .addShoe(currentUserEmail, d);
+  }
+
+  // ── Modal "dato de comunidad" (ver social-proof-ui.html, diseño original) ──
+  function mostrarSocialProofModal(marca, modelo, proof) {
+    const usuarios = proof.totalUsuarios || 1;
+    const kmTotal   = Math.round(proof.totalKmGlobales || 0).toLocaleString('es-AR');
+    document.getElementById('sp-mensaje').innerHTML =
+      'Formás parte de los <strong>' + sanitize(String(usuarios)) + '</strong> runners en Huella Runner ' +
+      'que entrenan con las <strong>' + sanitize(marca + ' ' + modelo) + '</strong>. Entre todos ya llevan ' +
+      'acumulados <strong>' + sanitize(kmTotal) + ' km</strong> en este modelo.';
+    document.getElementById('sp-stat-usuarios').textContent = usuarios;
+    document.getElementById('sp-stat-km').textContent       = kmTotal;
+    document.getElementById('social-proof-modal').style.display = 'flex';
+  }
+  function cerrarSocialProofModal() {
+    document.getElementById('social-proof-modal').style.display = 'none';
   }
 
   function openModalFromDetail() {

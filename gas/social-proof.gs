@@ -1,19 +1,21 @@
 // ============================================================
 // HUELLA RUNNER — social-proof.gs
-// Última actualización: 19/07/2026 12:45 (hora Argentina)
+// Última actualización: 19/07/2026 14:45 (hora Argentina)
 // Cambios en esta versión:
+//   - _notificarDatoComunidadSiHayDatos() se sacó — el dato de
+//     comunidad ya no se manda como notificación de ningún tipo.
+//     obtenerDataSocialProof() ahora la usa directo addShoe() (en
+//     codigo.gs) para mostrar una ventanita (modal) al toque en
+//     Index.html, en vez de una notificación al buzón.
+// Cambios en versiones anteriores:
 //   - Sacada la cola de "notificación diferida 24hs" (a pedido del
 //     fundador): sin push real no cumplía su función, y llegaba a
 //     mostrar un dato de relleno (750 km) como si fuera real para
 //     modelos sin ningún usuario todavía. _encolarNotificacionDiferida
-//     y procesarNotificacionesDiferidas() se sacaron; reemplazadas por
-//     _notificarDatoComunidadSiHayDatos(), que manda el mensaje al
-//     toque al registrar la zapa, y solo si ya hay datos reales de
-//     comunidad para esa marca/modelo (proof.esNuevo === false).
+//     y procesarNotificacionesDiferidas() se sacaron.
 //   - Si tenés un trigger horario configurado en Apps Script para
 //     procesarNotificacionesDiferidas, se puede borrar — la función ya
 //     no existe en el código (Activadores → buscarlo → ✕).
-// Cambios en versiones anteriores:
 //   - procesarNotificacionesDiferidas() usaba LockService para evitar
 //     mandar la misma notificación diferida dos veces si dos visitas
 //     casi simultáneas la disparaban al mismo tiempo.
@@ -157,25 +159,13 @@ function obtenerDataSocialProof(marca, modelo) {
 }
 
 // -----------------------------------------------------------
-// A3. NOTIFICACIÓN DE DATO DE COMUNIDAD — inmediata, solo si hay datos reales
-//     Antes se guardaba en una cola para mandar 24hs después. Se sacó
-//     el delay: sin notificación push real, el usuario solo la veía la
-//     próxima vez que abría la app —a veces junto con otras acumuladas
-//     de una sola vez, pareciendo spam— y encima, para un modelo sin
-//     ningún usuario real todavía, mostraba un promedio de relleno
-//     (750 km) como si fuera un dato real de comunidad. Ahora: se
-//     manda al toque al registrar la zapa, y solo si proof.esNuevo es
-//     false (ya hay al menos otro usuario real con esa marca/modelo).
+// A3. NOTA: el "dato de comunidad" ya no se manda como notificación.
+//     addShoe() (en codigo.gs) devuelve obtenerDataSocialProof() directo
+//     en la respuesta, y el frontend (Index.html) lo muestra al toque en
+//     una ventanita al registrar la zapatilla — solo si esNuevo es false
+//     (ya hay al menos otro usuario real con esa marca/modelo). Antes
+//     pasó por dos etapas: primero una cola de 24hs, después el buzón de
+//     notificaciones; ninguna de las dos se sentía tan inmediata como
+//     esta ventanita, que ya estaba diseñada en social-proof-ui.html
+//     desde antes pero nunca se había integrado.
 // -----------------------------------------------------------
-function _notificarDatoComunidadSiHayDatos(email, marca, modelo, proof) {
-  try {
-    if (!proof || proof.esNuevo) return; // sin datos reales todavía, no se manda nada
-    const kmStr = proof.promedioKmCritico > 0
-      ? proof.promedioKmCritico + ' km'
-      : 'muchos kilómetros';
-    const mensaje = `¡Dato de comunidad! Las ${marca} ${modelo} duran en promedio ${kmStr} en Huella Runner. ¡Seguí entrenando!`;
-    enviarNotificacion('individual', email, mensaje, 'Mensaje');
-  } catch(e) {
-    Logger.log('_notificarDatoComunidadSiHayDatos ERROR: ' + e.toString());
-  }
-}
