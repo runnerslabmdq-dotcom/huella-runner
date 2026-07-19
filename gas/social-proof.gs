@@ -1,11 +1,22 @@
 // ============================================================
 // HUELLA RUNNER — social-proof.gs
-// Última actualización: 19/07/2026 08:52 (hora Argentina)
-// Cambios en esta versión: Sin cambios en esta versión.
+// Última actualización: 19/07/2026 09:15 (hora Argentina)
+// Cambios en esta versión:
+//   - Sacada la cola de "notificación diferida 24hs" (a pedido del
+//     fundador): sin push real no cumplía su función, y llegaba a
+//     mostrar un dato de relleno (750 km) como si fuera real para
+//     modelos sin ningún usuario todavía. _encolarNotificacionDiferida
+//     y procesarNotificacionesDiferidas() se sacaron; reemplazadas por
+//     _notificarDatoComunidadSiHayDatos(), que manda el mensaje al
+//     toque al registrar la zapa, y solo si ya hay datos reales de
+//     comunidad para esa marca/modelo (proof.esNuevo === false).
+//   - Si tenés un trigger horario configurado en Apps Script para
+//     procesarNotificacionesDiferidas, se puede borrar — la función ya
+//     no existe en el código (Activadores → buscarlo → ✕).
 // Cambios en versiones anteriores:
-//   - procesarNotificacionesDiferidas() ahora usa LockService para
-//     evitar mandar la misma notificación diferida dos veces si dos
-//     visitas casi simultáneas la disparan al mismo tiempo.
+//   - procesarNotificacionesDiferidas() usaba LockService para evitar
+//     mandar la misma notificación diferida dos veces si dos visitas
+//     casi simultáneas la disparaban al mismo tiempo.
 // ============================================================
 // TRIGGER NOCTURNO: En Apps Script Editor →
 //   Extensiones → Apps Script → Activadores → "+ Añadir activador"
@@ -146,84 +157,25 @@ function obtenerDataSocialProof(marca, modelo) {
 }
 
 // -----------------------------------------------------------
-// A3. NOTIFICACIÓN DIFERIDA (simulada en Sheets)
-//     Guarda una notificación con fecha de envío = ahora + 24h.
-//     Un cron separado (o la carga del dashboard) la procesa.
+// A3. NOTIFICACIÓN DE DATO DE COMUNIDAD — inmediata, solo si hay datos reales
+//     Antes se guardaba en una cola para mandar 24hs después. Se sacó
+//     el delay: sin notificación push real, el usuario solo la veía la
+//     próxima vez que abría la app —a veces junto con otras acumuladas
+//     de una sola vez, pareciendo spam— y encima, para un modelo sin
+//     ningún usuario real todavía, mostraba un promedio de relleno
+//     (750 km) como si fuera un dato real de comunidad. Ahora: se
+//     manda al toque al registrar la zapa, y solo si proof.esNuevo es
+//     false (ya hay al menos otro usuario real con esa marca/modelo).
 // -----------------------------------------------------------
-function _encolarNotificacionDiferida(email, marca, modelo, proof) {
+function _notificarDatoComunidadSiHayDatos(email, marca, modelo, proof) {
   try {
-    const ss            = SpreadsheetApp.openById(SHEET_ID);
-    const NOTIF_DEFERRED = 'Notif_Diferidas';
-    let sheet = ss.getSheetByName(NOTIF_DEFERRED);
-    if (!sheet) {
-      sheet = ss.insertSheet(NOTIF_DEFERRED);
-      sheet.appendRow(['Email', 'Marca', 'Modelo', 'Mensaje', 'EnviarEn', 'Enviado']);
-    }
-
-    const enviarEn = new Date(Date.now() + 24 * 60 * 60 * 1000);
-    const kmStr    = proof.promedioKmCritico > 0
+    if (!proof || proof.esNuevo) return; // sin datos reales todavía, no se manda nada
+    const kmStr = proof.promedioKmCritico > 0
       ? proof.promedioKmCritico + ' km'
       : 'muchos kilómetros';
-
     const mensaje = `¡Dato de comunidad! Las ${marca} ${modelo} duran en promedio ${kmStr} en Huella Runner. ¡Seguí entrenando!`;
-
-    sheet.appendRow([email, marca, modelo, mensaje, enviarEn, false]);
-    SpreadsheetApp.flush();
+    enviarNotificacion('individual', email, mensaje, 'Mensaje');
   } catch(e) {
-    Logger.log('_encolarNotificacionDiferida ERROR: ' + e.toString());
-  }
-}
-
-// -----------------------------------------------------------
-// CRON: Procesar notificaciones diferidas ya vencidas
-// Configurar otro trigger diario para esta función (ej: 8:00 AM)
-// -----------------------------------------------------------
-function procesarNotificacionesDiferidas() {
-  // Ahora se llama desde 2 lugares en cada visita (getNotificacionesUsuario
-  // y contarNoLeidas), así que dos ejecuciones casi simultáneas podrían leer
-  // la misma fila "no enviada" antes de que ninguna la marque, y mandar la
-  // notificación duplicada. El lock evita esa carrera.
-  const lock = LockService.getScriptLock();
-  if (!lock.tryLock(3000)) return; // otra ejecución ya está procesando, no hace falta esperar
-
-  try {
-    const ss    = SpreadsheetApp.openById(SHEET_ID);
-    const sheet = ss.getSheetByName('Notif_Diferidas');
-    if (!sheet || sheet.getLastRow() < 2) return;
-
-    const data    = sheet.getDataRange().getValues();
-    const headers = data[0];
-    const col = {
-      email:    headers.indexOf('Email'),
-      marca:    headers.indexOf('Marca'),
-      modelo:   headers.indexOf('Modelo'),
-      mensaje:  headers.indexOf('Mensaje'),
-      enviarEn: headers.indexOf('EnviarEn'),
-      enviado:  headers.indexOf('Enviado'),
-    };
-
-    const ahora = new Date();
-
-    for (let i = 1; i < data.length; i++) {
-      const flagEnviado = (data[i][col.enviado] === true)
-        || data[i][col.enviado].toString().trim().toUpperCase() === 'TRUE';
-      if (flagEnviado) continue;
-
-      const enviarEn = _celdaADate(data[i][col.enviarEn]);
-      if (!enviarEn || ahora < enviarEn) continue;
-
-      const email   = data[i][col.email].toString().trim();
-      const mensaje = data[i][col.mensaje].toString();
-
-      enviarNotificacion('individual', email, mensaje, 'Mensaje');
-
-      sheet.getRange(i + 1, col.enviado + 1).setValue(true);
-    }
-
-    SpreadsheetApp.flush();
-  } catch(e) {
-    Logger.log('procesarNotificacionesDiferidas ERROR: ' + e.toString());
-  } finally {
-    lock.releaseLock();
+    Logger.log('_notificarDatoComunidadSiHayDatos ERROR: ' + e.toString());
   }
 }
