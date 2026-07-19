@@ -106,7 +106,17 @@ el GAS es la versión más nueva.
 
 ## social-proof.gs
 
-- **CAMBIO DE DISEÑO (19/07/2026)**: se sacó la cola de "notificación
+- **CAMBIO DE DISEÑO (19/07/2026, tarde)**: el dato de comunidad dejó
+  de mandarse como notificación (ni al buzón, ni diferida) — ahora
+  `addShoe()` devuelve `obtenerDataSocialProof()` directo en la
+  respuesta, y `Index.html` lo muestra al toque en una ventanita
+  (modal) al registrar la zapatilla. `_notificarDatoComunidadSiHayDatos()`
+  se sacó (quedó un rato usándose, ver entrada de abajo, pero duró
+  poco: el fundador se acordó de que ya existía un diseño de ventanita
+  hecho hace tiempo — `social-proof-ui.html` — que nunca se había
+  integrado, y quedaba mejor que mandarlo al buzón). Ver `Index.html`
+  para el detalle del modal.
+- **CAMBIO DE DISEÑO (19/07/2026, mediodía)**: se sacó la cola de "notificación
   diferida 24hs" (`_encolarNotificacionDiferida` /
   `procesarNotificacionesDiferidas`, ambas eliminadas). Motivo: el
   fundador notó en el celu que estas notificaciones ("¡Dato de
@@ -141,15 +151,32 @@ el GAS es la versión más nueva.
   trigger horario manual — codigo.gs la llama sola como respaldo (ver
   arriba). El trigger sigue siendo válido si lo tenés configurado, pero
   ya no es obligatorio para que las notificaciones lleguen.
-- Nota: existe un archivo aparte, `gas/social-proof-ui.html`, con un
-  diseño más vistoso (banner + acordeón) que **no está pegado** en
-  Index.html todavía — es una propuesta sin integrar, no un bug.
+- Nota (actualizada 19/07/2026): `gas/social-proof-ui.html` tenía dos
+  piezas de diseño sin integrar — el **banner** (ventanita al
+  registrar zapatilla) y un **acordeón** ("¿Cómo rinde esta zapatilla
+  en la comunidad?") para cada tarjeta. El banner **ya se integró** en
+  Index.html (ver esa sección abajo). El acordeón sigue sin integrar,
+  el archivo queda como referencia para eso si se quiere sumar más
+  adelante.
 - `procesarNotificacionesDiferidas()` ahora usa `LockService` para que
   dos visitas casi simultáneas no manden la misma notificación diferida
   dos veces (podía pasar porque ahora se llama desde 2 lugares distintos
   en cada visita, ver codigo.gs arriba).
 
 ## Index.html (app principal)
+
+- **Modal "dato de comunidad" integrado (19/07/2026)**: al registrar
+  una zapatilla, si ya hay datos reales de otros usuarios con esa
+  marca/modelo, se abre una ventanita — "¡Zapatilla registrada!",
+  cuántos runners más la usan, km globales acumulados, botón
+  "¡A entrenar! 🏃" — antes de volver al dashboard. Si el modelo es
+  nuevo sin comunidad detrás, no se abre nada (no se inventa un dato).
+  Es el diseño que ya existía en `social-proof-ui.html` desde hace
+  tiempo pero nunca se había pegado; el fundador se acordó de que
+  existía y pidió integrarlo en vez de mandar el dato al buzón de
+  notificaciones (que fue el paso intermedio de hoy a la mañana).
+  Colores adaptados a la paleta actual de la app (dorado apagado
+  `#C5B358`, no el amarillo brillante del diseño original).
 
 - Agregados 11 modelos de Adidas (street) al `catalogo` y `modelImages`,
   cada uno con foto propia (no la genérica): Adizero Evo, Ultrarun 5,
