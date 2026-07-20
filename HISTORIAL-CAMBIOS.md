@@ -43,6 +43,19 @@ de abajo (codigo.gs, Index.html, admin.html).
    visita a la app, sin excepción, incluso ya logueado. Ahora se guarda en
    el celu (localStorage) que ya se vio, y va directo al login.
 
+## 19/07/2026 (noche) — Tanda 2 de la revisión completa
+
+- **Agregar zapatilla — miniatura en vivo.** Al elegir marca (y después
+  modelo) en el formulario de nueva zapatilla, aparece una foto de vista
+  previa que se actualiza sola — usa `getShoeImage()`, la misma función
+  que ya arma la tarjeta final, así que lo que ves acá es exactamente lo
+  que vas a tener después.
+- El resto de la Tanda 2 (login, registro, notificaciones, panel chico)
+  ya había quedado resuelto dentro de los 4 bugs de arriba — Registro ya
+  tenía doble ingreso de contraseña desde antes, y "marcar todas como
+  leídas" en Notificaciones ya pasa sola al abrir el buzón (no hacía
+  falta un botón nuevo).
+
 ---
 
 ## codigo.gs
