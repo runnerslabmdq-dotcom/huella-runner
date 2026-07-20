@@ -93,6 +93,12 @@ con su foto, se agregan al `catalogo` y `modelImages`.
 | Asics | Cayano 32 W | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784515581/Asics_Cayano_32_W_ST_oea9vg.png |
 | Asics | Novablast | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784515580/Asics_Novablast_ST_yrkh4e.png |
 | Asics | Novablast 5 Lite | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784515579/Asics_Novablast_5_Lite_ST_degekm.png |
+| Hoka | Bondi 9 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784566173/Hoka_Bondi_9_ST_prrffp.png *(actualizada 20/07 — reemplaza la foto anterior, mismo modelo)* |
+| Hoka | Cielo X1 2.0 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784566173/Hoka_Cielo_X1_2.0_ST_vaozia.png |
+| Hoka | Arahi 7 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784566172/Hoka_Arahi_7_ST_gl0sob.png |
+| Hoka | Clifton 8 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784566172/Hoka_Clifton_8_ST_pi3zrx.png |
+| Hoka | Clifton 10 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784566172/Hoka_Clifton_10_ST_lv5tzi.png |
+| Hoka | Rocket X2 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784566172/Hoka_Rocket_X2_ST_op1myq.png |
 
 ---
 
