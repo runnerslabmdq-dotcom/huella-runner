@@ -1,8 +1,14 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 19/07/2026 22:10 (hora Argentina)
-  Cambios en esta versión (4 bugs reales de la revisión completa):
+  Última actualización: 19/07/2026 22:19 (hora Argentina)
+  Cambios en esta versión (Tanda 2 de la revisión completa):
+    - Agregar zapatilla: miniatura de la foto (genérica o de modelo) que
+      se actualiza en vivo apenas elegís marca, y de nuevo cuando además
+      elegís modelo — usa la misma resolución de imagen de siempre
+      (getShoeImage), así que nunca se desincroniza de lo que ves después
+      en la tarjeta ya guardada.
+  Cambios en versiones anteriores (4 bugs reales de la revisión completa):
     - Eliminado el panel admin chico dentro de la app (view-admin-notif,
       abrirPanelAdmin, adminEnviarNotificacion y todo lo asociado) —
       había quedado roto por el candado de seguridad, y duplicaba al
@@ -1595,7 +1601,10 @@
       <button onclick="switchView('view-dashboard')" style="background:none; border:none; color:var(--gris-texto); cursor:pointer; font-weight:700;">← Volver</button>
     </div>
     <div class="card">
-      <h3 style="text-align:center; margin-bottom:20px; font-size:1rem; text-transform:uppercase;">Nueva Zapatilla</h3>
+      <h3 style="text-align:center; margin-bottom:16px; font-size:1rem; text-transform:uppercase;">Nueva Zapatilla</h3>
+      <div id="shoe-preview-wrap" style="display:none; text-align:center; margin-bottom:18px;">
+        <img id="shoe-preview-img" src="" alt="" style="width:120px;height:120px;object-fit:contain;border-radius:16px;background:var(--bg-color);border:1px solid var(--borde);padding:8px;">
+      </div>
       <div class="form-group">
         <label>Marca</label>
         <select id="shoe-marca" onchange="onMarcaChange()">
@@ -1617,14 +1626,14 @@
           <option value="__otras__">Otras...</option>
         </select>
         <div class="input-manual-wrap" id="wrap-marca-manual">
-          <input type="text" id="shoe-marca-manual" placeholder="Escribí la marca...">
+          <input type="text" id="shoe-marca-manual" placeholder="Escribí la marca..." oninput="actualizarPreviewZapatilla()">
         </div>
       </div>
       <div class="form-group">
         <label>Modelo</label>
         <select id="shoe-modelo" onchange="onModeloChange()"><option value="">Primero elige marca</option></select>
         <div class="input-manual-wrap" id="wrap-modelo-manual">
-          <input type="text" id="shoe-modelo-manual" placeholder="Escribí el modelo...">
+          <input type="text" id="shoe-modelo-manual" placeholder="Escribí el modelo..." oninput="actualizarPreviewZapatilla()">
         </div>
       </div>
       <div style="display: flex; gap: 10px;">
@@ -2151,6 +2160,29 @@
       const oVacio = document.createElement('option');
       oVacio.value = ''; oVacio.text = 'Primero elige marca'; s.add(oVacio);
     }
+    actualizarPreviewZapatilla();
+  }
+
+  // Miniatura en vivo: apenas se elige marca ya muestra la genérica de esa
+  // marca; cuando también se elige modelo, se actualiza a la foto
+  // específica si existe (misma resolución que getShoeImage de siempre).
+  function actualizarPreviewZapatilla() {
+    const marcaSel = document.getElementById('shoe-marca').value;
+    const marca = marcaSel === '__otras__'
+      ? document.getElementById('shoe-marca-manual').value.trim()
+      : marcaSel;
+    const modeloSel = document.getElementById('shoe-modelo').value;
+    const modelo = modeloSel === '__otros__'
+      ? document.getElementById('shoe-modelo-manual').value.trim()
+      : modeloSel;
+
+    const wrap = document.getElementById('shoe-preview-wrap');
+    const img  = document.getElementById('shoe-preview-img');
+    if (!marca) { wrap.style.display = 'none'; return; }
+
+    img.src = getShoeImage(marca, modelo || '');
+    img.alt = (marca + ' ' + (modelo || '')).trim();
+    wrap.style.display = 'block';
   }
 
   function onModeloChange() {
@@ -2163,6 +2195,7 @@
       wrap.classList.remove('visible');
       document.getElementById('shoe-modelo-manual').value = '';
     }
+    actualizarPreviewZapatilla();
   }
 
   function onGrupoChange() {
