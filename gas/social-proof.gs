@@ -1,13 +1,16 @@
 // ============================================================
 // HUELLA RUNNER — social-proof.gs
-// Última actualización: 19/07/2026 22:26 (hora Argentina)
+// Última actualización: 19/07/2026 22:33 (hora Argentina)
 // Cambios en esta versión:
+//   - actualizarCacheModelosNocturno() ahora guarda cuándo corrió por
+//     última vez (Propiedades del script), para mostrarlo en la sección
+//     "Salud del sistema" del panel admin.
+// Cambios en versiones anteriores:
 //   - _notificarDatoComunidadSiHayDatos() se sacó — el dato de
 //     comunidad ya no se manda como notificación de ningún tipo.
 //     obtenerDataSocialProof() ahora la usa directo addShoe() (en
 //     codigo.gs) para mostrar una ventanita (modal) al toque en
 //     Index.html, en vez de una notificación al buzón.
-// Cambios en versiones anteriores:
 //   - Sacada la cola de "notificación diferida 24hs" (a pedido del
 //     fundador): sin push real no cumplía su función, y llegaba a
 //     mostrar un dato de relleno (750 km) como si fuera real para
@@ -103,6 +106,7 @@ function actualizarCacheModelosNocturno() {
   });
 
   SpreadsheetApp.flush();
+  PropertiesService.getScriptProperties().setProperty('CACHE_MODELOS_ULTIMA_CORRIDA', new Date().toISOString());
   Logger.log('Cache_Modelos actualizado: ' + Object.keys(grupos).length + ' modelos.');
 }
 

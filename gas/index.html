@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 19/07/2026 22:26 (hora Argentina)
-  Cambios en esta versión (Tanda 3 de la revisión completa — modales):
+  Última actualización: 19/07/2026 22:33 (hora Argentina)
+  Cambios en esta versión (Tanda 4 de la revisión completa — carrusel):
+    - Carrusel de zapatillas activas: indicador "2 de 5" debajo de los
+      puntitos, además de los puntitos ya existentes. Solo cuenta
+      zapatillas reales, no la tarjeta de "agregar".
+  Cambios en versiones anteriores (Tanda 3 de la revisión completa — modales):
     - Registrar KM: botones rápidos 5K/10K/21K/42K además del campo libre.
     - Historial: nuevo botón ✏️ para corregir el km de un registro ya
       cargado (típico error de tipeo), sin borrar y perder la fecha
@@ -637,6 +641,10 @@
       background: var(--amarillo) !important;
       width: 18px !important;
       border-radius: 3px !important;
+    }
+    .cf-slide-counter {
+      text-align: center; font-size: 0.62rem; font-weight: 700;
+      color: var(--gris-texto); letter-spacing: 1px; margin-top: 6px;
     }
 
     /* ── Pantallas chicas (≤ 390px): cf-actions más compacto ── */
@@ -2757,9 +2765,28 @@
     var paginationEl = document.createElement('div');
     paginationEl.className = 'swiper-pagination';
 
+    // Contador numérico "2 de 5" (solo cuenta zapatillas reales, no la
+    // tarjeta de "agregar" que va al final del carrusel).
+    var counterEl = document.createElement('div');
+    counterEl.className = 'cf-slide-counter';
+    counterEl.id = 'cf-slide-counter';
+
     swiperEl.appendChild(wrapperEl);
     swiperEl.appendChild(paginationEl);
+    swiperEl.appendChild(counterEl);
     grid.appendChild(swiperEl);
+
+    function _actualizarContadorSlide(swiper) {
+      var el = document.getElementById('cf-slide-counter');
+      if (!el) return;
+      var idx = swiper.activeIndex;
+      if (idx < shoes.length) {
+        el.textContent = (idx + 1) + ' de ' + shoes.length;
+        el.style.display = 'block';
+      } else {
+        el.style.display = 'none';
+      }
+    }
 
     // ── Inicializar Swiper ────────────────────────────
     _swiperInstance = new Swiper('.swiper-coverflow', {
@@ -2782,8 +2809,8 @@
         dynamicBullets: true
       },
       on: {
-        slideChange: function() {},
-        afterInit:   function() {}
+        slideChange: function() { _actualizarContadorSlide(this); },
+        afterInit:   function() { _actualizarContadorSlide(this); }
       }
     });
     _pendingActiveShoeIndex = 0; // reset después de usar

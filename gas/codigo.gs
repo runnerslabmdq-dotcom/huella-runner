@@ -1,13 +1,13 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 19/07/2026 22:26 (hora Argentina)
-// Cambios en esta versión:
+// Última actualización: 19/07/2026 22:33 (hora Argentina)
+// Cambios en esta versión: Sin cambios en esta versión.
+// Cambios en versiones anteriores:
 //   - Nueva función editarEntrenamiento(email, idEntreno, idZapatilla,
 //     kmNuevo): corrige el km de un registro ya cargado sin borrarlo,
 //     ajustando el km de la zapatilla por la diferencia (delta).
 //   - archiveShoe() ahora guarda la fecha de archivado
 //     (Fecha_Archivado), para mostrarla en el Locker.
-// Cambios en versiones anteriores:
 //   - enviarNotificacion() ya no genera código de voucher ni distingue
 //     tipo "Premio" — se sacó todo lo de Open Sports/voucher del envío
 //     de notificaciones (a pedido del fundador). Se guarda 'Mensaje'

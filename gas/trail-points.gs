@@ -1,6 +1,6 @@
 // ============================================================
 // HUELLA RUNNER — trail-points.gs
-// Última actualización: 19/07/2026 22:26 (hora Argentina)
+// Última actualización: 19/07/2026 22:33 (hora Argentina)
 // Cambios en esta versión: Sin cambios en esta versión.
 // Cambios en versiones anteriores:
 //   - Sacado "km de trail" del mensaje del cupón (quedaba "de trail"
