@@ -273,6 +273,12 @@ probar en la calle con datos móviles (4G/5G), no solo con wifi.
 
 ## Index.html (app principal)
 
+- **10 modelos de Asics (street) agregados (20/07/2026)**: Gel Nimbus 26,
+  Soniblast, Cayano 32, Gel Rocket 11, Megablast, Gel Trebuco 13, Gel
+  Cumulus 27, Cayano 32 W, Novablast, Novablast 5 Lite — cada uno con
+  foto propia (no la genérica). Se verificó que ningún nombre se repita
+  con lo que ya existía (Asics no tenía modelos cargados todavía, solo
+  la genérica de marca). Ver `docs/cloudinarys-zapatillas.md`.
 - **Modal "dato de comunidad" integrado (19/07/2026)**: al registrar
   una zapatilla, si ya hay datos reales de otros usuarios con esa
   marca/modelo, se abre una ventanita — "¡Zapatilla registrada!",

@@ -35,12 +35,12 @@ Se usan como foto de fondo/tarjeta cuando el modelo no tiene foto propia
 | Skechers | https://res.cloudinary.com/dlayzh9ln/image/upload/v1782400510/Sketchers_Generica_cgss7k.png |
 | Under Armour | https://res.cloudinary.com/dlayzh9ln/image/upload/v1782400498/Under_Armour_Generica_svvvik.png |
 
-**Pendiente**: de estas 7 marcas street, **Adidas ya tiene 11 modelos**
-cargados (ver tabla de "Modelos específicos" abajo, agregados 17/07/2026).
-Asics, New Balance, Fila, Nike, Skechers y Under Armour siguen **sin
-modelos cargados** — el desplegable de "Modelo" para esas marcas solo
-ofrece "Otros..." (carga manual del nombre). Cuando pases modelos
-específicos con su foto, se agregan al `catalogo` y `modelImages`.
+**Pendiente**: de estas 7 marcas street, **Adidas (11) y Asics (10) ya
+tienen modelos** cargados (ver tabla de "Modelos específicos" abajo).
+New Balance, Fila, Nike, Skechers y Under Armour siguen **sin modelos
+cargados** — el desplegable de "Modelo" para esas marcas solo ofrece
+"Otros..." (carga manual del nombre). Cuando pases modelos específicos
+con su foto, se agregan al `catalogo` y `modelImages`.
 
 ---
 
@@ -83,6 +83,16 @@ específicos con su foto, se agregan al `catalogo` y `modelImages`.
 | Adidas | Questar 3 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784309378/Adidas_Questar_3_ST_fef5fp.png |
 | Adidas | Adizero Drive | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784309378/Adidas_Adizero_Drive_ST_isu6bf.png |
 | Adidas | Response 2 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784309378/Adidas_Response_2_ST_puheud.png |
+| Asics | Gel Nimbus 26 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784516015/Asics_Gel_Nimbus_26_y9xxun.png |
+| Asics | Soniblast | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784516014/Asics_Soniblast_ST_q6yctt.png |
+| Asics | Cayano 32 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784515590/Asics_Cayano_32_ST_t1micm.png |
+| Asics | Gel Rocket 11 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784515588/Asics_Gel_Rocket_11_ST_au0xy6.png |
+| Asics | Megablast | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784515587/Asics_Megablast_ST_l21b6u.png |
+| Asics | Gel Trebuco 13 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784515585/Asics_Gel_Trebuco_13_ST_mrokpf.png |
+| Asics | Gel Cumulus 27 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784515584/Asics_Gel_Cumulus_27_ST_vqxl1b.png |
+| Asics | Cayano 32 W | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784515581/Asics_Cayano_32_W_ST_oea9vg.png |
+| Asics | Novablast | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784515580/Asics_Novablast_ST_yrkh4e.png |
+| Asics | Novablast 5 Lite | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784515579/Asics_Novablast_5_Lite_ST_degekm.png |
 
 ---
 
