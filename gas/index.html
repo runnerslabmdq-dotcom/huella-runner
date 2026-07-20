@@ -1,8 +1,15 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 19/07/2026 23:10 (hora Argentina)
+  Última actualización: 19/07/2026 23:14 (hora Argentina)
   Cambios en esta versión:
+    - Mismo arreglo de peso de imagen (_cloudinaryChica) aplicado también
+      a las fotos grandes del carrusel principal (480px) y del Locker
+      (400px) — antes solo estaba en la miniatura de "Nueva Zapatilla".
+      No pierde calidad visible: nunca agranda una foto más chica que el
+      original, solo evita bajar más resolución de la que el celu puede
+      mostrar.
+  Cambios en versiones anteriores:
     - BUG REAL arreglado: la miniatura de "Nueva Zapatilla" (Tanda 2)
       bajaba la foto original completa de Cloudinary y recién ahí la
       achicaba con CSS a 120x120 — pesaba mucho y hacía tardar más la
@@ -2674,7 +2681,7 @@
         ? '<div class="cf-warn">' + (perc >= 85 ? '⚠️' : '🔶') + '</div>'
         : '';
       var badgeCls  = getBrandBadgeClass(s.Marca);
-      var shoeImg   = getShoeImage(s.Marca, s.Modelo);
+      var shoeImg   = _cloudinaryChica(getShoeImage(s.Marca, s.Modelo), 480);
       var aliasHtml = sAlias
         ? '<div class="cf-alias">' + sAlias + '</div>'
         : '';
@@ -3206,7 +3213,7 @@
     grid.innerHTML = '';
     archived.forEach(function(s) {
       var km      = Number(s.KM_Actuales) || 0;
-      var shoeImg = getShoeImage(s.Marca, s.Modelo);
+      var shoeImg = _cloudinaryChica(getShoeImage(s.Marca, s.Modelo), 400);
       var sMarca  = sanitize(s.Marca);
       var sModelo = sanitize(s.Modelo);
       var sTalle  = sanitize(s.Talle);
