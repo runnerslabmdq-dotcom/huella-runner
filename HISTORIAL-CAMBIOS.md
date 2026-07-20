@@ -107,10 +107,16 @@ son editoriales, pesan bastante) y recién ahí la achicaba a 120x120 con
 CSS — o sea, gastaba el mismo ancho de banda que si se mostrara gigante.
 Arreglado con `_cloudinaryChica()`: le pide a Cloudinary una versión ya
 redimensionada (240px) y comprimida (`q_auto,f_auto`) directo en la URL,
-en vez de bajar el archivo entero. Mismo truco se podría aplicar a las
-fotos grandes del carrusel y del Locker si en algún momento se nota lento
-ahí también — por ahora se dejó solo en la miniatura, que era la que se
-reportó.
+en vez de bajar el archivo entero.
+
+**Extendido (mismo día, más tarde)**: a pedido del fundador, el mismo
+arreglo se aplicó también a las fotos grandes del carrusel principal
+(480px) y del Locker (400px) — antes solo estaba en la miniatura. Se
+confirmó antes de aplicarlo que no hay pérdida de calidad visible
+(`c_limit` nunca agranda una foto más chica que el original) ni riesgo
+de romper nada (si la URL no es de Cloudinary o no matchea el patrón
+esperado, la función devuelve la imagen original tal cual). Pendiente:
+probar en la calle con datos móviles (4G/5G), no solo con wifi.
 
 ---
 
