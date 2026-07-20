@@ -1,7 +1,16 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 19/07/2026 22:33 (hora Argentina)
-// Cambios en esta versión: Sin cambios en esta versión.
+// Última actualización: 20/07/2026 00:35 (hora Argentina)
+// Cambios en esta versión:
+//   - Paso 1 del límite de km por zapatilla: addShoe() ahora acepta un
+//     límite de km opcional por zapatilla (formData.kmLimite). Si no se
+//     indica, usa el umbral global de siempre (TP.KM_UMBRAL_CUPON, 650)
+//     como valor por defecto. Se guarda en la columna nueva KM_Limite
+//     de la hoja Zapatillas (se crea sola si no existe).
+//   - reactivateShoe(), deleteTraining() y editarEntrenamiento() ahora
+//     recalculan el estado de desgaste usando el KM_Limite propio de
+//     cada zapatilla (con fallback a 650 para las zapatillas viejas que
+//     no tienen ese dato guardado), en vez del umbral global fijo.
 // Cambios en versiones anteriores:
 //   - Nueva función editarEntrenamiento(email, idEntreno, idZapatilla,
 //     kmNuevo): corrige el km de un registro ya cargado sin borrarlo,
@@ -24,7 +33,6 @@
 //     devuelve el dato de comunidad (socialProof) directo en la
 //     respuesta, para que Index.html lo muestre al toque en una
 //     ventanita (modal) al registrar la zapatilla.
-// Cambios en versiones anteriores:
 //   - addShoe() encolaba la notificación de "dato de comunidad" para
 //     mandar 24hs después — se sacó ese delay, mandándola al toque (y
 //     solo si hay datos reales) vía _notificarDatoComunidadSiHayDatos()
@@ -520,6 +528,13 @@ const SHOES_HEADERS = ['ID_Zapa', 'Email_Usuario', 'Marca', 'Modelo', 'Talle', '
 function addShoe(email, formData) {
   if (!email || !formData) return { success: false, error: 'Datos incompletos.' };
   const emailClean = email.toString().trim().toLowerCase();
+  const kmInicial = Number(formData.km) || 0;
+  // Límite de km opcional por zapatilla: si el usuario no eligió uno
+  // propio, se usa el umbral global (TP.KM_UMBRAL_CUPON, definido en
+  // trail-points.gs) como valor por defecto.
+  const kmLimite = (formData.kmLimite && Number(formData.kmLimite) > 0)
+    ? Number(formData.kmLimite)
+    : TP.KM_UMBRAL_CUPON;
   appendDataByHeader('Zapatillas', SHOES_HEADERS, {
     'ID_Zapa':       Utilities.getUuid(),
     'Email_Usuario': emailClean,
@@ -527,9 +542,10 @@ function addShoe(email, formData) {
     'Modelo':        formData.modelo,
     'Talle':         formData.talle,
     'Genero':        formData.genero,
-    'KM_Actuales':   Number(formData.km) || 0,
+    'KM_Actuales':   kmInicial,
     'Alias':         formData.alias || '',
-    'Estado':        _calcularEstadoDesgaste(Number(formData.km) || 0)
+    'Estado':        _calcularEstadoDesgaste(kmInicial, kmLimite),
+    'KM_Limite':     kmLimite
   });
 
   // Dato de comunidad: se lo devolvemos al frontend para mostrar en el
@@ -722,6 +738,7 @@ function reactivateShoe(email, idZapatilla) {
     const emailCol  = headers.indexOf('Email_Usuario');
     const estadoCol = headers.indexOf('Estado');
     const kmCol     = headers.indexOf('KM_Actuales');
+    const limiteCol = headers.indexOf('KM_Limite');
 
     if (idCol === -1 || emailCol === -1 || estadoCol === -1) {
       return { success: false, error: 'Estructura de Zapatillas incorrecta.' };
@@ -732,8 +749,9 @@ function reactivateShoe(email, idZapatilla) {
       const rowEmail = data[i][emailCol] ? data[i][emailCol].toString().trim().toLowerCase() : '';
       if (rowId === idZapatilla.toString() && rowEmail === emailClean) {
         // Restaura el estado de desgaste según los km, no un texto fijo.
-        const km = kmCol !== -1 ? (Number(data[i][kmCol]) || 0) : 0;
-        sheet.getRange(i + 1, estadoCol + 1).setValue(_calcularEstadoDesgaste(km));
+        const km      = kmCol !== -1 ? (Number(data[i][kmCol]) || 0) : 0;
+        const limite  = limiteCol !== -1 ? (Number(data[i][limiteCol]) || TP.KM_UMBRAL_CUPON) : TP.KM_UMBRAL_CUPON;
+        sheet.getRange(i + 1, estadoCol + 1).setValue(_calcularEstadoDesgaste(km, limite));
         SpreadsheetApp.flush();
         Logger.log('reactivateShoe OK: id=' + idZapatilla);
         return { success: true };
@@ -887,6 +905,7 @@ function deleteTraining(email, idEntreno, idZapatilla, kmADescontar) {
       const kmCol       = shoeHeaders.indexOf('KM_Actuales');
       const sEmailCol   = shoeHeaders.indexOf('Email_Usuario');
       const sEstadoCol  = shoeHeaders.indexOf('Estado');
+      const limiteCol   = shoeHeaders.indexOf('KM_Limite');
 
       for (let i = 1; i < shoeData.length; i++) {
         const rowZapaId = shoeData[i][idCol]     ? shoeData[i][idCol].toString() : '';
@@ -895,10 +914,11 @@ function deleteTraining(email, idEntreno, idZapatilla, kmADescontar) {
           const kmActual = Number(shoeData[i][kmCol]) || 0;
           const kmRestar = Number(kmADescontar) || 0;
           const kmNuevo  = Math.max(kmActual - kmRestar, 0);
+          const limite   = limiteCol !== -1 ? (Number(shoeData[i][limiteCol]) || TP.KM_UMBRAL_CUPON) : TP.KM_UMBRAL_CUPON;
           shoeSheet.getRange(i + 1, kmCol + 1).setValue(kmNuevo);
           const estadoActual = sEstadoCol !== -1 ? shoeData[i][sEstadoCol].toString().trim().toLowerCase() : '';
           if (sEstadoCol !== -1 && estadoActual !== 'archivada') {
-            shoeSheet.getRange(i + 1, sEstadoCol + 1).setValue(_calcularEstadoDesgaste(kmNuevo));
+            shoeSheet.getRange(i + 1, sEstadoCol + 1).setValue(_calcularEstadoDesgaste(kmNuevo, limite));
           }
           SpreadsheetApp.flush();
           Logger.log('deleteTraining: KM actualizados. Antes=' + kmActual + ' Restado=' + kmRestar + ' Ahora=' + kmNuevo);
@@ -983,6 +1003,7 @@ function editarEntrenamiento(email, idEntreno, idZapatilla, kmNuevo) {
       const kmCol       = shoeHeaders.indexOf('KM_Actuales');
       const sEmailCol   = shoeHeaders.indexOf('Email_Usuario');
       const sEstadoCol  = shoeHeaders.indexOf('Estado');
+      const limiteCol   = shoeHeaders.indexOf('KM_Limite');
 
       for (let i = 1; i < shoeData.length; i++) {
         const rowZapaId = shoeData[i][idCol]     ? shoeData[i][idCol].toString() : '';
@@ -990,10 +1011,11 @@ function editarEntrenamiento(email, idEntreno, idZapatilla, kmNuevo) {
         if (rowZapaId === idZapatilla.toString() && rowEmail === emailClean) {
           const kmActual   = Number(shoeData[i][kmCol]) || 0;
           const kmAjustado = Math.max(kmActual + delta, 0);
+          const limite     = limiteCol !== -1 ? (Number(shoeData[i][limiteCol]) || TP.KM_UMBRAL_CUPON) : TP.KM_UMBRAL_CUPON;
           shoeSheet.getRange(i + 1, kmCol + 1).setValue(kmAjustado);
           const estadoActual = sEstadoCol !== -1 ? shoeData[i][sEstadoCol].toString().trim().toLowerCase() : '';
           if (sEstadoCol !== -1 && estadoActual !== 'archivada') {
-            shoeSheet.getRange(i + 1, sEstadoCol + 1).setValue(_calcularEstadoDesgaste(kmAjustado));
+            shoeSheet.getRange(i + 1, sEstadoCol + 1).setValue(_calcularEstadoDesgaste(kmAjustado, limite));
           }
           SpreadsheetApp.flush();
           break;

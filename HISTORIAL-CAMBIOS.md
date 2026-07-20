@@ -12,6 +12,29 @@ el GAS es la versión más nueva.
 
 ---
 
+## 20/07/2026 (madrugada) — Límite de km por zapatilla (Paso 1)
+
+Primer paso de la idea de "cada zapatilla con su propio límite de km",
+propuesta por el fundador. Sin categorías por material todavía (eso queda
+para más adelante, cuando haya datos de uso reales para validarlo) — por
+ahora es solo un número opcional que cada uno puede poner al cargar una
+zapatilla.
+
+- **"Nueva Zapatilla"** tiene un campo nuevo opcional, "Límite de km". Si
+  se deja vacío, se usa 650 km (el mismo número de siempre).
+- Ese límite se guarda por zapatilla (columna nueva `KM_Limite` en la hoja
+  Zapatillas, se crea sola la primera vez que se usa).
+- El estado de desgaste (Normal/Positivo/Bajo/Crítico) y el cupón por
+  desgaste (`HR-DESGASTE-`) ahora se calculan contra el límite propio de
+  cada zapatilla, no contra un número fijo para todas. Las zapatillas que
+  ya existían (sin este dato guardado) siguen funcionando igual que
+  antes, con 650 km de límite por defecto.
+- **De paso, un arreglo real:** la barra de progreso del carrusel usaba un
+  número fijo distinto (`MAX_KM = 900`) al que usaba todo lo demás para
+  "zapatilla gastada" (650). Convivían dos límites distintos sin que
+  nadie lo hubiera decidido así. Ahora la barra usa el mismo límite que
+  el resto de la app (el de cada zapatilla, con 650 de default).
+
 ## 19/07/2026 (noche) — Los 4 bugs de la revisión completa
 
 Resumen de la tanda grande: se sacaron los 4 problemas reales que encontró

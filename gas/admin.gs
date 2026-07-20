@@ -1,12 +1,12 @@
 // ============================================================
 // HUELLA RUNNER — admin.gs
-// Última actualización: 19/07/2026 22:33 (hora Argentina)
-// Cambios en esta versión:
+// Última actualización: 20/07/2026 00:35 (hora Argentina)
+// Cambios en esta versión: Sin cambios en esta versión.
+// Cambios en versiones anteriores:
 //   - Nueva función getSystemHealth(token): cupones emitidos
 //     (total/disponibles/usados) y última corrida del cron nocturno de
 //     Cache_Modelos. La usa la sección nueva "Salud del sistema" del
 //     panel (Admin.html).
-// Cambios en versiones anteriores:
 //   - BUG DE SEGURIDAD arreglado: getAdminStats, getAdminUsuarios,
 //     getRankingUsuarios, getActividadReciente y getActividadPorDia no
 //     revisaban el token de admin — solo se protegía qué PANTALLA se
