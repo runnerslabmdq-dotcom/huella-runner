@@ -1,8 +1,31 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 19/07/2026 14:45 (hora Argentina)
-  Cambios en esta versión:
+  Última actualización: 19/07/2026 22:10 (hora Argentina)
+  Cambios en esta versión (4 bugs reales de la revisión completa):
+    - Eliminado el panel admin chico dentro de la app (view-admin-notif,
+      abrirPanelAdmin, adminEnviarNotificacion y todo lo asociado) —
+      había quedado roto por el candado de seguridad, y duplicaba al
+      panel completo (Admin.html) con una variable de admin distinta
+      (ADMIN_EMAIL). Ahora hay un solo camino de admin.
+    - Sacado todo lo de voucher/Open Sports: badge "Premio" y tarjeta de
+      código en las notificaciones, checkbox "¿Es un Premio?" (vivía en
+      el panel chico que se eliminó). El sistema de cupones por desgaste
+      (trail-points.gs, HR-DESGASTE-) no se tocó, es independiente.
+    - Nueva pantalla "Elegí tu contraseña nueva" (view-set-password):
+      aparece automáticamente después de iniciar sesión con una
+      contraseña temporal (la de "Olvidé mi contraseña"). Pide la
+      contraseña nueva dos veces (mismo patrón que ya tenía Registro) y
+      recién después deja pasar al dashboard. Agregado también un botón
+      de mostrar/ocultar contraseña (👁️) en Login, Registro y esta
+      pantalla nueva.
+    - "Recuperar contraseña": el texto ya no promete "tus credenciales"
+      (imposible desde que se hashean) — ahora explica que se manda una
+      temporal y que después se elige una definitiva.
+    - Bienvenida (onboarding): ya no se muestra en cada visita — se
+      guarda en el celu que ya se vio (localStorage) y va directo al
+      login. Antes tapaba la pantalla completa cada vez, sin excepción.
+  Cambios en versiones anteriores:
     - Integrado el modal "dato de comunidad" (diseñado hace tiempo en
       social-proof-ui.html, nunca pegado) que se abre al registrar una
       zapatilla: "¡Zapatilla registrada!" + cuántos runners más usan esa
@@ -174,6 +197,16 @@
     }
     input:focus, select:focus { border-color: var(--amarillo); }
     select option { background: #1a1a1a; color: white; }
+
+    /* ── Mostrar/ocultar contraseña ── */
+    .password-field-wrap { position: relative; }
+    .password-field-wrap input { padding-right: 44px; }
+    .btn-toggle-pass {
+      position: absolute; right: 2px; top: 0; bottom: 0;
+      background: none; border: none; color: var(--gris-texto);
+      font-size: 1rem; cursor: pointer; padding: 0 12px; line-height: 1;
+    }
+    .btn-toggle-pass:hover { color: var(--plata); }
 
     .btn-primary {
       width: 100%;
@@ -1180,43 +1213,8 @@
       letter-spacing: 1.5px; padding: 3px 8px; border-radius: 4px;
     }
     .notif-tipo-badge.mensaje { background: rgba(192,192,192,0.12); color: #C0C0C0; border: 1px solid rgba(192,192,192,0.2); }
-    .notif-tipo-badge.premio  { background: rgba(240,255,0,0.12);   color: var(--amarillo); border: 1px solid rgba(240,255,0,0.3); }
     .notif-fecha { font-size: 0.58rem; color: var(--gris-texto); font-weight: 700; }
     .notif-mensaje { font-size: 0.82rem; color: var(--plata); line-height: 1.55; margin-bottom: 10px; }
-
-    /* Tarjeta VIP voucher */
-    .voucher-card {
-      background: linear-gradient(135deg, #0d0d00 0%, #1a1a00 50%, #111100 100%);
-      border: 1.5px dashed rgba(240,255,0,0.5);
-      border-radius: 12px;
-      padding: 14px 16px;
-      margin: 8px 0 10px;
-      position: relative;
-      overflow: hidden;
-    }
-    .voucher-card::before {
-      content: '';
-      position: absolute; top: 0; left: 0; right: 0; height: 2px;
-      background: linear-gradient(90deg, transparent, var(--amarillo), transparent);
-      opacity: 0.8;
-    }
-    .voucher-card::after {
-      content: '';
-      position: absolute; bottom: -20px; right: -20px;
-      width: 80px; height: 80px; border-radius: 50%;
-      background: radial-gradient(circle, rgba(240,255,0,0.08) 0%, transparent 70%);
-    }
-    .voucher-label { font-size: 0.52rem; color: #888; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 4px; }
-    .voucher-code {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.6rem;
-      color: var(--amarillo);
-      letter-spacing: 3px;
-      line-height: 1;
-      margin-bottom: 6px;
-    }
-    .voucher-brand { font-size: 0.58rem; color: #888; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; }
-    .voucher-hint  { font-size: 0.6rem; color: rgba(240,255,0,0.5); margin-top: 8px; font-weight: 700; line-height: 1.4; }
 
     .notif-actions {
       display: flex;
@@ -1248,44 +1246,6 @@
     .notif-empty { text-align: center; padding: 50px 20px; }
     .notif-empty-icon { font-size: 3rem; margin-bottom: 12px; }
     .notif-empty-text { color: var(--gris-texto); font-size: 0.82rem; line-height: 1.6; }
-
-    /* =====================================================
-       VISTA ADMIN — PANEL NOTIFICACIONES
-       ===================================================== */
-    .admin-badge {
-      display: inline-flex; align-items: center; gap: 5px;
-      background: rgba(240,255,0,0.1); border: 1px solid rgba(240,255,0,0.3);
-      color: var(--amarillo); font-size: 0.55rem; font-weight: 900;
-      text-transform: uppercase; letter-spacing: 2px;
-      padding: 4px 10px; border-radius: 6px; margin-bottom: 16px;
-    }
-    .admin-section-title {
-      font-weight: 900; font-size: 0.75rem; text-transform: uppercase;
-      letter-spacing: 1px; color: var(--plata); margin-bottom: 12px;
-      border-bottom: 1px solid var(--borde); padding-bottom: 8px;
-    }
-    .radio-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
-    .radio-option {
-      display: flex; align-items: center; gap: 10px;
-      background: #1a1a1a; border: 1px solid #333; border-radius: 10px;
-      padding: 11px 14px; cursor: pointer; transition: border-color 0.2s;
-    }
-    .radio-option input[type="radio"] { accent-color: var(--amarillo); width: 16px; height: 16px; cursor: pointer; }
-    .radio-option label { font-size: 0.78rem; color: var(--plata); font-weight: 700; cursor: pointer; text-transform: none; margin: 0; }
-    .radio-option:has(input:checked) { border-color: var(--amarillo); background: #141400; }
-
-    .premio-toggle-wrap { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: #1a1a1a; border: 1px solid #333; border-radius: 10px; margin-bottom: 12px; cursor: pointer; transition: border-color 0.2s; }
-    .premio-toggle-wrap:has(input:checked) { border-color: var(--amarillo); background: #141400; }
-    .premio-toggle-wrap input[type="checkbox"] { accent-color: var(--amarillo); width: 18px; height: 18px; cursor: pointer; }
-    .premio-toggle-label { font-size: 0.78rem; color: var(--plata); font-weight: 700; cursor: pointer; }
-    .premio-toggle-sub   { font-size: 0.62rem; color: var(--gris-texto); margin-top: 1px; }
-
-    .admin-result {
-      border-radius: 10px; padding: 12px 14px; font-size: 0.75rem;
-      font-weight: 700; text-align: center; margin-top: 12px; display: none;
-    }
-    .admin-result.ok    { background: rgba(105,240,174,0.1); border: 1px solid rgba(105,240,174,0.25); color: #69f0ae; }
-    .admin-result.error { background: rgba(239,68,68,0.1);   border: 1px solid rgba(239,68,68,0.3);   color: #ef4444; }
   </style>
 </head>
 <body>
@@ -1372,6 +1332,17 @@
     </button>
   </div>
 </div>
+<script>
+  // Si ya se aceptó la bienvenida antes en este celu/navegador, no se
+  // vuelve a mostrar — va directo al login. Se oculta acá (apenas se
+  // parsea, antes de que se termine de cargar el resto de la página)
+  // para que no haya ni un parpadeo de la pantalla completa.
+  try {
+    if (localStorage.getItem('hr_onboarding_visto') === '1') {
+      document.getElementById('onboarding-screen').style.display = 'none';
+    }
+  } catch(e) {}
+</script>
 
 <!-- TOAST CONFIRMACIÓN KM -->
 <div id="km-toast">✅ +0 km guardados</div>
@@ -1404,7 +1375,10 @@
       </div>
       <div class="form-group">
         <label>Contraseña</label>
-        <input type="password" id="log-pass" placeholder="••••••••">
+        <div class="password-field-wrap">
+          <input type="password" id="log-pass" placeholder="••••••••">
+          <button type="button" class="btn-toggle-pass" onclick="toggleVerPassword('log-pass', this)">👁️</button>
+        </div>
       </div>
       <button class="btn-primary" id="btn-login" onclick="doLogin()">Iniciar Sesión</button>
 
@@ -1461,11 +1435,17 @@
       </div>
       <div class="form-group">
         <label>Contraseña</label>
-        <input type="password" id="reg-pass" placeholder="••••••••">
+        <div class="password-field-wrap">
+          <input type="password" id="reg-pass" placeholder="••••••••">
+          <button type="button" class="btn-toggle-pass" onclick="toggleVerPassword('reg-pass', this)">👁️</button>
+        </div>
       </div>
       <div class="form-group">
         <label>Confirmar Contraseña</label>
-        <input type="password" id="reg-pass-confirm" placeholder="••••••••">
+        <div class="password-field-wrap">
+          <input type="password" id="reg-pass-confirm" placeholder="••••••••">
+          <button type="button" class="btn-toggle-pass" onclick="toggleVerPassword('reg-pass-confirm', this)">👁️</button>
+        </div>
       </div>
       <div class="form-group">
         <label>Fecha de Nacimiento <span style="color:#444;font-weight:400;text-transform:none;font-size:0.65rem;">(opcional)</span></label>
@@ -1680,76 +1660,36 @@
     </div>
   </div>
 
-  <!-- VISTA: ADMIN NOTIFICACIONES (solo runnerslabmdq@gmail.com) -->
-  <div id="view-admin-notif" style="display: none;">
-    <div class="top-bar">
-      <button onclick="switchView('view-dashboard')" style="background:none; border:none; color:var(--gris-texto); cursor:pointer; font-weight:700; font-size:0.9rem;">← Volver</button>
-      <div style="font-size: 0.7rem; color: var(--amarillo); text-transform: uppercase; letter-spacing: 1px; font-weight: 900;">Admin</div>
+  <!-- VISTA: ELEGIR CONTRASEÑA NUEVA (tras entrar con una temporal) -->
+  <div id="view-set-password" style="display: none;">
+    <div style="text-align:center;position:relative;z-index:1;margin-top:8px;margin-bottom:16px;">
+      <h1 style="font-size:2.4rem;font-weight:900;margin:0;
+        letter-spacing:-1px;line-height:1.05;font-family:'Montserrat',sans-serif;">
+        <span style="background:linear-gradient(180deg,#a0c080 0%,#6B8F5E 40%,#3d5c35 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">HUELLA</span>
+        <span style="background:linear-gradient(180deg,#ffffff 0%,#d0d0d0 50%,#a0a0a0 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">RUNNER</span>
+      </h1>
     </div>
     <div class="card">
-      <div class="admin-badge">⚙️ Panel Admin · Notificaciones</div>
-
-      <div class="admin-section-title">Destinatarios</div>
-      <div class="radio-group">
-        <div class="radio-option">
-          <input type="radio" name="admin-dest-tipo" id="radio-todos" value="todos" checked onchange="onAdminDestinoChange()">
-          <label for="radio-todos">Todos los runners</label>
-        </div>
-        <div class="radio-option">
-          <input type="radio" name="admin-dest-tipo" id="radio-grupo" value="grupo" onchange="onAdminDestinoChange()">
-          <label for="radio-grupo">Por grupo de running</label>
-        </div>
-        <div class="radio-option">
-          <input type="radio" name="admin-dest-tipo" id="radio-individual" value="individual" onchange="onAdminDestinoChange()">
-          <label for="radio-individual">Email individual</label>
-        </div>
-      </div>
-
-      <!-- Selector de grupo (oculto por defecto) -->
-      <div id="admin-grupo-wrap" style="display:none; margin-bottom:12px;">
-        <div class="form-group" style="margin-bottom:0;">
-          <label>Grupo</label>
-          <select id="admin-grupo-select">
-            <option value="">Cargando grupos...</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Input email individual (oculto por defecto) -->
-      <div id="admin-individual-wrap" style="display:none; margin-bottom:12px;">
-        <div class="form-group" style="margin-bottom:0;">
-          <label>Email del runner</label>
-          <input type="email" id="admin-email-individual" placeholder="runner@email.com">
-        </div>
-      </div>
-
-      <div class="admin-section-title" style="margin-top:16px;">Mensaje</div>
+      <h3 style="text-align:center; margin-bottom:8px; font-size:1rem; text-transform:uppercase;">Elegí tu contraseña nueva</h3>
+      <p style="text-align:center;color:var(--gris-texto);font-size:0.8rem;line-height:1.5;margin-bottom:20px;">
+        Entraste con una contraseña temporal. Elegí una nueva para tu cuenta antes de continuar.
+      </p>
       <div class="form-group">
-        <textarea id="admin-mensaje" placeholder="Escribí el comunicado o mensaje para el runner..." rows="4"
-          style="width:100%; background:#1a1a1a; border:1px solid #333; border-radius:10px; padding:12px; color:white; font-family:'Montserrat',sans-serif; font-size:0.85rem; outline:none; resize:vertical; transition:border-color 0.3s;"></textarea>
-      </div>
-
-      <div class="admin-section-title" style="margin-top:4px;">Tipo</div>
-      <div class="premio-toggle-wrap">
-        <input type="checkbox" id="admin-es-premio" onchange="onPremioToggle()">
-        <div>
-          <div class="premio-toggle-label">🏆 ¿Es un Premio / Voucher?</div>
-          <div class="premio-toggle-sub">Se generará un código Open Sports automáticamente</div>
+        <label>Contraseña nueva</label>
+        <div class="password-field-wrap">
+          <input type="password" id="setpass-nueva" placeholder="••••••••">
+          <button type="button" class="btn-toggle-pass" onclick="toggleVerPassword('setpass-nueva', this)">👁️</button>
         </div>
       </div>
-
-      <!-- Preview voucher -->
-      <div id="admin-voucher-preview" style="display:none; margin-bottom:12px;">
-        <div class="voucher-card">
-          <div class="voucher-label">Vista previa — Código generado al enviar</div>
-          <div class="voucher-code">HR-OPEN-••••</div>
-          <div class="voucher-brand">Open Sports · Beneficio exclusivo</div>
-          <div class="voucher-hint">📲 El runner presenta este código en caja</div>
+      <div class="form-group">
+        <label>Repetir contraseña</label>
+        <div class="password-field-wrap">
+          <input type="password" id="setpass-confirm" placeholder="••••••••">
+          <button type="button" class="btn-toggle-pass" onclick="toggleVerPassword('setpass-confirm', this)">👁️</button>
         </div>
       </div>
-
-      <button class="btn-primary" id="btn-admin-enviar" onclick="adminEnviarNotificacion()" style="margin-top:8px;">Enviar Comunicado</button>
-      <div class="admin-result" id="admin-result"></div>
+      <button class="btn-primary" id="btn-set-password" onclick="guardarNuevaPassword()">Guardar y continuar</button>
+      <p id="setpass-error" style="color:#ef4444; font-size:0.8rem; text-align:center; margin-top:10px; display:none;"></p>
     </div>
   </div>
 
@@ -1878,7 +1818,7 @@
     <button class="close-modal" onclick="closeRecoverModal()">✕</button>
     <div class="recover-icon">🔑</div>
     <div class="recover-title">Recuperar Contraseña</div>
-    <div class="recover-desc">Ingresá tu email y te enviaremos tus credenciales.</div>
+    <div class="recover-desc">Ingresá tu email y te enviaremos una contraseña temporal para entrar. Después vas a poder elegir una nueva.</div>
     <div class="form-group">
       <label>Email</label>
       <input type="email" id="recover-email" placeholder="tu@email.com">
@@ -1952,12 +1892,12 @@
 <script>
   let currentUserEmail = '';
   const MAX_KM = 900;
-  const ADMIN_EMAIL = 'runnerslabmdq@gmail.com';
 
   // =====================================================
   // ONBOARDING INICIAL
   // =====================================================
   function cerrarPantallaOnboarding() {
+    try { localStorage.setItem('hr_onboarding_visto', '1'); } catch(e) {}
     var ob = document.getElementById('onboarding-screen');
     if (!ob) return;
     ob.style.transition = 'opacity 0.4s ease';
@@ -2110,7 +2050,7 @@
 
   let currentDetailShoe = null;
   let allUserShoes = [];
-  const ALL_VIEWS = ['view-login','view-register','view-dashboard','view-add-shoe','view-notificaciones','view-admin-notif'];
+  const ALL_VIEWS = ['view-login','view-register','view-dashboard','view-add-shoe','view-notificaciones','view-set-password'];
 
   function switchView(viewId) {
     ALL_VIEWS.forEach(id => { document.getElementById(id).style.display = 'none'; });
@@ -2235,6 +2175,13 @@
       wrap.classList.remove('visible');
       document.getElementById('reg-grupo-manual').value = '';
     }
+  }
+
+  function toggleVerPassword(inputId, btnEl) {
+    var input = document.getElementById(inputId);
+    var esOculta = input.type === 'password';
+    input.type = esOculta ? 'text' : 'password';
+    btnEl.textContent = esOculta ? '🙈' : '👁️';
   }
 
   function doRegister() {
@@ -2385,6 +2332,15 @@
           err.style.display = 'block';
           return;
         }
+        if (res.requiereCambioPassword) {
+          // Entró con una contraseña temporal (la mandó "Olvidé mi
+          // contraseña") — antes de dejarla pasar a cualquier lado
+          // (incluido el panel admin), tiene que elegir una definitiva.
+          currentUserEmail = res.email;
+          document.getElementById('user-name').innerText = res.nombre || 'Runner';
+          switchView('view-set-password');
+          return;
+        }
         if (res.esAdmin) {
           // Es admin → pedir la URL real al backend y abrir el panel en la ventana superior
           google.script.run
@@ -2417,6 +2373,39 @@
         err.style.display = 'block';
       })
       .loginUser(e, p);
+  }
+
+  function guardarNuevaPassword() {
+    var p1  = document.getElementById('setpass-nueva').value;
+    var p2  = document.getElementById('setpass-confirm').value;
+    var err = document.getElementById('setpass-error');
+    err.style.display = 'none';
+    if (!p1 || !p2) { err.innerText = 'Completá los dos campos.'; err.style.display = 'block'; return; }
+    if (p1.length < 6) { err.innerText = 'La contraseña debe tener al menos 6 caracteres.'; err.style.display = 'block'; return; }
+    if (p1 !== p2) { err.innerText = 'Las contraseñas no coinciden.'; err.style.display = 'block'; return; }
+    document.getElementById('btn-set-password').innerText = 'GUARDANDO...';
+    google.script.run
+      .withSuccessHandler(function(res) {
+        document.getElementById('btn-set-password').innerText = 'Guardar y continuar';
+        if (!res || !res.success) {
+          err.innerText = (res && res.error) ? res.error : 'Error al guardar la contraseña.';
+          err.style.display = 'block';
+          return;
+        }
+        document.getElementById('setpass-nueva').value   = '';
+        document.getElementById('setpass-confirm').value = '';
+        switchView('view-dashboard');
+        loadDashboard();
+        cargarBadgeNotificaciones();
+        if (_badgeInterval) clearInterval(_badgeInterval);
+        _badgeInterval = setInterval(cargarBadgeNotificaciones, 60000);
+      })
+      .withFailureHandler(function(e2) {
+        document.getElementById('btn-set-password').innerText = 'Guardar y continuar';
+        err.innerText = 'Error de conexión: ' + (e2 && e2.message ? e2.message : e2);
+        err.style.display = 'block';
+      })
+      .establecerNuevaPassword(currentUserEmail, p1);
   }
 
   function doLogout() {
@@ -3160,11 +3149,6 @@
   // NOTIFICACIONES — ABRIR BUZÓN
   // =====================================================
   function abrirNotificaciones() {
-    // Si es admin, abrir panel admin
-    if (currentUserEmail.trim().toLowerCase() === ADMIN_EMAIL.trim().toLowerCase()) {
-      abrirPanelAdmin();
-      return;
-    }
     switchView('view-notificaciones');
     var listEl = document.getElementById('notif-list');
     listEl.innerHTML = '<div class="notif-empty"><div class="notif-empty-icon"><span class="zapa-loading">👟</span></div><div class="notif-empty-text">Cargando...</div></div>';
@@ -3193,13 +3177,12 @@
   function renderNotificaciones(notifs) {
     var listEl = document.getElementById('notif-list');
     if (!notifs || notifs.length === 0) {
-      listEl.innerHTML = '<div class="notif-empty"><div class="notif-empty-icon">📭</div><div class="notif-empty-text">No tenés notificaciones por ahora.<br>Acá aparecerán tus avisos y premios.</div></div>';
+      listEl.innerHTML = '<div class="notif-empty"><div class="notif-empty-icon">📭</div><div class="notif-empty-text">No tenés notificaciones por ahora.<br>Acá aparecerán tus avisos.</div></div>';
       return;
     }
     listEl.innerHTML = '';
     notifs.forEach(function(n) {
       var esLeida  = (n.Leido || '').toString().toUpperCase() === 'TRUE';
-      var esPremio = (n.Tipo  || '').toString() === 'Premio';
       var idSafe   = sanitize(n.ID_Notif);
 
       var fechaFormateada = (function(raw) {
@@ -3221,28 +3204,17 @@
       card.id = 'notif-card-' + idSafe;
 
       var headerHtml = '<div class="notif-card-header">'
-        + '<span class="notif-tipo-badge ' + (esPremio ? 'premio' : 'mensaje') + '">'
-        + (esPremio ? '🏆 Premio' : '📢 Aviso') + '</span>'
+        + '<span class="notif-tipo-badge mensaje">📢 Aviso</span>'
         + '<span class="notif-fecha">' + sanitize(fechaFormateada) + '</span>'
         + '</div>';
 
       var mensajeHtml = '<div class="notif-mensaje">' + sanitize(n.Mensaje || '') + '</div>';
 
-      var voucherHtml = '';
-      if (esPremio && n.Codigo_Voucher) {
-        voucherHtml = '<div class="voucher-card">'
-          + '<div class="voucher-label">Tu código exclusivo Open Sports</div>'
-          + '<div class="voucher-code">' + sanitize(n.Codigo_Voucher) + '</div>'
-          + '<div class="voucher-brand">Open Sports · Beneficio exclusivo Huella Runner</div>'
-          + '<div class="voucher-hint">📲 Presentá este código en caja al momento de tu compra</div>'
-          + '</div>';
-      }
-
       var actionsHtml = '<div class="notif-actions">'
         + '<button class="btn-borrar-notif" title="Borrar notificación" onclick="openConfirmDeleteNotif(\'' + idSafe + '\')">🗑</button>'
         + '</div>';
 
-      card.innerHTML = headerHtml + mensajeHtml + voucherHtml + actionsHtml;
+      card.innerHTML = headerHtml + mensajeHtml + actionsHtml;
       listEl.appendChild(card);
     });
   }
@@ -3289,159 +3261,6 @@
         alert('Error de conexión: ' + (err.message || err));
       })
       .deleteNotificacion(currentUserEmail, idABorrar);
-  }
-
-    // =====================================================
-  // PANEL ADMIN
-  // =====================================================
-  function abrirPanelAdmin() {
-    switchView('view-admin-notif');
-
-    // Cargar métricas dashboard
-    var tblAlertas   = document.getElementById('dash-table-alertas')   ? document.getElementById('dash-table-alertas').querySelector('tbody')   : null;
-    var tblActividad = document.getElementById('dash-table-actividad') ? document.getElementById('dash-table-actividad').querySelector('tbody') : null;
-    var txtUsuarios  = document.getElementById('dash-txt-usuarios');
-
-    google.script.run
-      .withSuccessHandler(function(data) {
-        if (!data || !data.success) return;
-        if (txtUsuarios) txtUsuarios.innerText = data.totalUsuarios || 0;
-        if (tblAlertas) {
-          if (!data.alertasDesgaste || data.alertasDesgaste.length === 0) {
-            tblAlertas.innerHTML = '<tr><td colspan="3" style="text-align:center;padding:10px;color:var(--gris-texto);">✅ Sin desgaste crítico.</td></tr>';
-          } else {
-            tblAlertas.innerHTML = '';
-            data.alertasDesgaste.forEach(function(item) {
-              var tr = document.createElement('tr');
-              tr.innerHTML = '<td style="padding:10px;border-bottom:1px solid #141414;color:var(--plata);"><strong>' + sanitize(item.runner) + '</strong><br><span style="color:#666;font-size:0.65rem;">' + sanitize(item.grupo) + '</span></td>' +
-                '<td style="padding:10px;border-bottom:1px solid #141414;color:var(--plata);">' + sanitize(item.zapatilla) + '</td>' +
-                '<td style="padding:10px;border-bottom:1px solid #141414;text-align:right;"><span style="background:rgba(229,57,53,0.15);color:#ef4444;border:1px solid rgba(229,57,53,0.3);padding:2px 6px;border-radius:4px;font-weight:700;">' + item.kilometraje + ' KM</span></td>';
-              tblAlertas.appendChild(tr);
-            });
-          }
-        }
-        if (tblActividad) {
-          if (!data.rankingActividad || data.rankingActividad.length === 0) {
-            tblActividad.innerHTML = '<tr><td colspan="3" style="text-align:center;padding:10px;color:var(--gris-texto);">Sin registros.</td></tr>';
-          } else {
-            tblActividad.innerHTML = '';
-            data.rankingActividad.forEach(function(user) {
-              var tr = document.createElement('tr');
-              tr.innerHTML = '<td style="padding:10px;border-bottom:1px solid #141414;color:var(--plata);">' + sanitize(user.nombre) + '<br><span style="color:#555;font-size:0.65rem;">' + sanitize(user.email) + '</span></td>' +
-                '<td style="padding:10px;border-bottom:1px solid #141414;color:var(--plata);">' + sanitize(user.grupo) + '</td>' +
-                '<td style="padding:10px;border-bottom:1px solid #141414;text-align:right;font-weight:700;color:var(--amarillo);">' + Number(user.kmCargados).toFixed(1) + ' km</td>';
-              tblActividad.appendChild(tr);
-            });
-          }
-        }
-      })
-      .withFailureHandler(function() {
-        if (tblAlertas)   tblAlertas.innerHTML   = '<tr><td colspan="3" style="text-align:center;color:#ef4444;">Error al cargar.</td></tr>';
-        if (tblActividad) tblActividad.innerHTML = '<tr><td colspan="3" style="text-align:center;color:#ef4444;">Error al cargar.</td></tr>';
-      })
-      .getAdminDashboardData();
-
-    // Cargar grupos desde Sheet
-    var sel = document.getElementById('admin-grupo-select');
-    sel.innerHTML = '<option value="">Cargando grupos...</option>';
-    google.script.run
-      .withSuccessHandler(function(grupos) {
-        sel.innerHTML = '<option value="">Seleccionar grupo...</option>';
-        if (grupos && grupos.length > 0) {
-          grupos.forEach(function(g) {
-            var opt = document.createElement('option');
-            opt.value = g; opt.text = g;
-            sel.appendChild(opt);
-          });
-        } else {
-          sel.innerHTML = '<option value="">No hay grupos registrados</option>';
-        }
-      })
-      .withFailureHandler(function() {
-        sel.innerHTML = '<option value="">Error al cargar grupos</option>';
-      })
-      .getGruposRunning();
-    // Reset form
-    document.getElementById('admin-mensaje').value       = '';
-    document.getElementById('admin-es-premio').checked   = false;
-    document.getElementById('admin-voucher-preview').style.display = 'none';
-    document.getElementById('admin-result').style.display = 'none';
-    document.querySelector('input[name="admin-dest-tipo"][value="todos"]').checked = true;
-    onAdminDestinoChange();
-  }
-
-  function onAdminDestinoChange() {
-    var tipo = document.querySelector('input[name="admin-dest-tipo"]:checked').value;
-    document.getElementById('admin-grupo-wrap').style.display      = tipo === 'grupo'      ? 'block' : 'none';
-    document.getElementById('admin-individual-wrap').style.display = tipo === 'individual' ? 'block' : 'none';
-  }
-
-  function onPremioToggle() {
-    var checked = document.getElementById('admin-es-premio').checked;
-    document.getElementById('admin-voucher-preview').style.display = checked ? 'block' : 'none';
-  }
-
-  function adminEnviarNotificacion() {
-    var tipo = document.querySelector('input[name="admin-dest-tipo"]:checked').value;
-    var valor = '';
-    if (tipo === 'grupo')      valor = document.getElementById('admin-grupo-select').value;
-    if (tipo === 'individual') valor = document.getElementById('admin-email-individual').value.trim();
-    var mensaje   = document.getElementById('admin-mensaje').value.trim();
-    var esPremio  = document.getElementById('admin-es-premio').checked;
-    var tipoNotif = esPremio ? 'Premio' : 'Mensaje';
-
-    var resultEl = document.getElementById('admin-result');
-    resultEl.style.display = 'none';
-    resultEl.className     = 'admin-result';
-
-    if (!mensaje) {
-      resultEl.innerText      = 'El mensaje no puede estar vacío.';
-      resultEl.className     += ' error';
-      resultEl.style.display  = 'block';
-      return;
-    }
-    if (tipo === 'grupo' && !valor) {
-      resultEl.innerText      = 'Seleccioná un grupo.';
-      resultEl.className     += ' error';
-      resultEl.style.display  = 'block';
-      return;
-    }
-    if (tipo === 'individual' && !valor) {
-      resultEl.innerText      = 'Ingresá el email del destinatario.';
-      resultEl.className     += ' error';
-      resultEl.style.display  = 'block';
-      return;
-    }
-
-    var btn = document.getElementById('btn-admin-enviar');
-    btn.innerText = 'Enviando...';
-    btn.disabled  = true;
-
-    google.script.run
-      .withSuccessHandler(function(res) {
-        btn.innerText = 'Enviar Comunicado';
-        btn.disabled  = false;
-        if (res && res.success) {
-          resultEl.innerText      = '✅ Enviado correctamente a ' + res.enviados + ' runner' + (res.enviados !== 1 ? 's' : '') + '.';
-          resultEl.className     += ' ok';
-          resultEl.style.display  = 'block';
-          document.getElementById('admin-mensaje').value     = '';
-          document.getElementById('admin-es-premio').checked = false;
-          document.getElementById('admin-voucher-preview').style.display = 'none';
-        } else {
-          resultEl.innerText      = '❌ Error: ' + ((res && res.error) ? res.error : 'desconocido');
-          resultEl.className     += ' error';
-          resultEl.style.display  = 'block';
-        }
-      })
-      .withFailureHandler(function(err) {
-        btn.innerText = 'Enviar Comunicado';
-        btn.disabled  = false;
-        resultEl.innerText      = '❌ Error de conexión: ' + (err.message || err);
-        resultEl.className     += ' error';
-        resultEl.style.display  = 'block';
-      })
-      .enviarNotificacion(tipo, valor, mensaje, tipoNotif);
   }
 
   // =====================================================

@@ -1,7 +1,20 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 19/07/2026 14:45 (hora Argentina)
+// Última actualización: 19/07/2026 22:10 (hora Argentina)
 // Cambios en esta versión:
+//   - enviarNotificacion() ya no genera código de voucher ni distingue
+//     tipo "Premio" — se sacó todo lo de Open Sports/voucher del envío
+//     de notificaciones (a pedido del fundador). Se guarda 'Mensaje'
+//     siempre. _generarCodigoVoucher() eliminada.
+//   - loginUser() ahora devuelve requiereCambioPassword: true cuando la
+//     cuenta entró con una contraseña temporal (la que genera
+//     recoverPassword). recoverPassword() marca la cuenta con la
+//     columna nueva Requiere_Cambio_Password al mandar la temporal.
+//   - Nueva función establecerNuevaPassword(email, nuevaPassword): la
+//     usa la pantalla nueva "Elegí tu contraseña nueva" (Index.html)
+//     para que el usuario defina su contraseña definitiva después de
+//     entrar con la temporal, con doble ingreso.
+// Cambios en versiones anteriores:
 //   - addShoe() ya no manda ninguna notificación al buzón — ahora
 //     devuelve el dato de comunidad (socialProof) directo en la
 //     respuesta, para que Index.html lo muestre al toque en una
@@ -295,10 +308,11 @@ function loginUser(email, password) {
     const emailClean = email.toString().trim().toLowerCase();
     const { sheet, headers } = getSheetAndHeaders('Usuarios', USERS_HEADERS);
     const data = sheet.getDataRange().getValues();
-    const emailCol = headers.indexOf('Email');
-    const passCol  = headers.indexOf('Password');
-    const nomCol   = headers.indexOf('Nombre');
-    const rolCol   = headers.indexOf('Rol');
+    const emailCol   = headers.indexOf('Email');
+    const passCol    = headers.indexOf('Password');
+    const nomCol     = headers.indexOf('Nombre');
+    const rolCol     = headers.indexOf('Rol');
+    const reqCambioCol = headers.indexOf('Requiere_Cambio_Password');
     if (emailCol === -1 || passCol === -1) {
       return { success: false, error: 'Estructura de Usuarios incorrecta.' };
     }
@@ -309,11 +323,13 @@ function loginUser(email, password) {
       if (!_verificarPassword(rowPass, password.toString(), sheet, i, passCol)) continue;
 
       const rol = rolCol !== -1 && data[i][rolCol] ? data[i][rolCol].toString().trim().toLowerCase() : '';
+      const requiereCambio = reqCambioCol !== -1 && data[i][reqCambioCol] === true;
       return {
         success: true,
         email:   rowEmail,
         nombre:  nomCol !== -1 ? data[i][nomCol] : '',
-        esAdmin: rol === 'admin' || _esEmailAdmin(rowEmail)
+        esAdmin: rol === 'admin' || _esEmailAdmin(rowEmail),
+        requiereCambioPassword: requiereCambio
       };
     }
     return { success: false, error: 'Email o contrasena incorrectos.' };
@@ -376,11 +392,15 @@ function recoverPassword(email) {
   }
 
   // La contraseña guardada está hasheada — no se puede "leer" para atrás.
-  // Se genera una nueva, se guarda hasheada, y esa es la que se manda.
-  var passwordUsuario = _generarPasswordTemporal();
+  // Se genera una temporal, se guarda hasheada, y se marca la cuenta para
+  // que en el próximo login la app le pida elegir una definitiva (con
+  // doble ingreso) en vez de dejarla seguir con la temporal indefinidamente.
+  var passwordTemporal = _generarPasswordTemporal();
   var saltNuevo = Utilities.getUuid();
-  var hashNuevo = _hashPassword(passwordUsuario, saltNuevo);
+  var hashNuevo = _hashPassword(passwordTemporal, saltNuevo);
   sheet.getRange(filaEncontrada + 1, passCol + 1).setValue(saltNuevo + '$' + hashNuevo);
+  var reqCambioCol = _colEnsure(sheet, headers, 'Requiere_Cambio_Password');
+  sheet.getRange(filaEncontrada + 1, reqCambioCol + 1).setValue(true);
   SpreadsheetApp.flush();
 
   try {
@@ -394,12 +414,13 @@ function recoverPassword(email) {
         '<p style="color:#888;font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;margin-top:0;">Powered by Huella Runner MDQ</p>' +
         '<hr style="border:none;border-top:1px solid #1f1f1f;margin:20px 0;">' +
         '<p style="color:#E8E8E8;font-size:1rem;">Hola, <strong>' + nombreUsuario + '</strong> 👋</p>' +
-        '<p style="color:#888888;font-size:0.85rem;line-height:1.6;">Recibiste este correo porque solicitaste recuperar tu contraseña. Generamos una nueva para vos:</p>' +
+        '<p style="color:#888888;font-size:0.85rem;line-height:1.6;">Recibiste este correo porque solicitaste recuperar tu contraseña. Generamos una temporal para vos:</p>' +
         '<div style="background:#111111;border:1px solid #1f1f1f;border-radius:12px;padding:16px 20px;margin:20px 0;">' +
-        '<p style="color:#888;font-size:0.65rem;text-transform:uppercase;letter-spacing:2px;margin:0 0 6px;">Tu contraseña nueva</p>' +
-        '<p style="color:#dcfd8b;font-size:1.3rem;font-weight:900;margin:0;letter-spacing:1px;">' + passwordUsuario + '</p>' +
+        '<p style="color:#888;font-size:0.65rem;text-transform:uppercase;letter-spacing:2px;margin:0 0 6px;">Tu contraseña temporal</p>' +
+        '<p style="color:#dcfd8b;font-size:1.3rem;font-weight:900;margin:0;letter-spacing:1px;">' + passwordTemporal + '</p>' +
         '</div>' +
-        '<p style="color:#555;font-size:0.75rem;">Ya podés iniciar sesión con esta contraseña. Si no solicitaste esto, ignorá este mensaje.</p>' +
+        '<p style="color:#888888;font-size:0.85rem;line-height:1.6;">Iniciá sesión con esta contraseña — al entrar, te vamos a pedir que elijas una definitiva.</p>' +
+        '<p style="color:#555;font-size:0.75rem;">Si no solicitaste esto, ignorá este mensaje.</p>' +
         '<hr style="border:none;border-top:1px solid #1f1f1f;margin:20px 0;">' +
         '<p style="color:#333;font-size:0.65rem;">— Equipo Huella Runner MDQ</p>' +
         '</div>',
@@ -410,6 +431,43 @@ function recoverPassword(email) {
   } catch(e) {
     Logger.log('recoverPassword ERROR al enviar email: ' + e.toString());
     return { success: false, error: 'No se pudo enviar el correo. Verificá los permisos del script. (' + e.message + ')' };
+  }
+}
+
+// ============================================================
+// ESTABLECER CONTRASEÑA DEFINITIVA
+// Se llama después de un login exitoso con contraseña temporal
+// (requiereCambioPassword === true en la respuesta de loginUser).
+// ============================================================
+function establecerNuevaPassword(email, nuevaPassword) {
+  try {
+    if (!email) return { success: false, error: 'Email requerido.' };
+    if (!nuevaPassword || nuevaPassword.toString().length < 6) {
+      return { success: false, error: 'La contraseña debe tener al menos 6 caracteres.' };
+    }
+    const emailClean = email.toString().trim().toLowerCase();
+    const { sheet, headers } = getSheetAndHeaders('Usuarios', USERS_HEADERS);
+    const data = sheet.getDataRange().getValues();
+    const emailCol = headers.indexOf('Email');
+    const passCol  = headers.indexOf('Password');
+    if (emailCol === -1 || passCol === -1) {
+      return { success: false, error: 'Estructura de Usuarios incorrecta.' };
+    }
+    for (let i = 1; i < data.length; i++) {
+      const rowEmail = data[i][emailCol] ? data[i][emailCol].toString().trim().toLowerCase() : '';
+      if (rowEmail !== emailClean) continue;
+      const salt = Utilities.getUuid();
+      const hash = _hashPassword(nuevaPassword.toString(), salt);
+      sheet.getRange(i + 1, passCol + 1).setValue(salt + '$' + hash);
+      const reqCambioCol = _colEnsure(sheet, headers, 'Requiere_Cambio_Password');
+      sheet.getRange(i + 1, reqCambioCol + 1).setValue(false);
+      SpreadsheetApp.flush();
+      return { success: true };
+    }
+    return { success: false, error: 'Usuario no encontrado.' };
+  } catch(e) {
+    Logger.log('establecerNuevaPassword ERROR: ' + e.toString());
+    return { success: false, error: e.toString() };
   }
 }
 
@@ -889,9 +947,6 @@ function enviarNotificacion(destinatarioTipo, destinatarioValor, mensaje, tipo, 
     if (!mensaje || mensaje.toString().trim() === '') {
       return { success: false, error: 'El mensaje no puede estar vacío.' };
     }
-    if (!tipo || (tipo !== 'Mensaje' && tipo !== 'Premio')) {
-      return { success: false, error: 'Tipo inválido. Debe ser Mensaje o Premio.' };
-    }
 
     const ss = SpreadsheetApp.openById(SHEET_ID);
     const usersSheet = ss.getSheetByName('Usuarios');
@@ -944,38 +999,24 @@ function enviarNotificacion(destinatarioTipo, destinatarioValor, mensaje, tipo, 
 
     let insertados = 0;
     for (let d = 0; d < destinatarios.length; d++) {
-      const codigoVoucher = tipo === 'Premio'
-        ? ((codigoVoucherManual && codigoVoucherManual.toString().trim()) || _generarCodigoVoucher())
-        : '';
       appendDataByHeader('Notificaciones', NOTIF_HEADERS, {
         'ID_Notif':       Utilities.getUuid(),
         'Email_Usuario':  destinatarios[d],
         'Mensaje':        mensaje.toString().trim(),
         'Fecha':          fecha,
         'Leido':          'FALSE',
-        'Tipo':           tipo,
-        'Codigo_Voucher': codigoVoucher
+        'Tipo':           'Mensaje'
       });
       insertados++;
     }
 
-    Logger.log('enviarNotificacion OK: ' + insertados + ' notif insertadas. Tipo=' + tipo);
+    Logger.log('enviarNotificacion OK: ' + insertados + ' notif insertadas.');
     return { success: true, enviados: insertados };
 
   } catch(e) {
     Logger.log('enviarNotificacion ERROR: ' + e.toString());
     return { success: false, error: e.toString() };
   }
-}
-
-function _generarCodigoVoucher() {
-  var chars  = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  var codigo = 'HR-OPEN-';
-  for (var i = 0; i < 4; i++) {
-    codigo += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  codigo += String(Math.floor(Math.random() * 90) + 10);
-  return codigo;
 }
 
 function getNotificacionesUsuario(email) {

@@ -12,6 +12,39 @@ el GAS es la versión más nueva.
 
 ---
 
+## 19/07/2026 (noche) — Los 4 bugs de la revisión completa
+
+Resumen de la tanda grande: se sacaron los 4 problemas reales que encontró
+la revisión pantalla por pantalla, más el ojito de mostrar/ocultar
+contraseña en Login, Registro y la pantalla nueva. Detalle en cada sección
+de abajo (codigo.gs, Index.html, admin.html).
+
+1. **Panel admin chico eliminado.** Vivía adentro de la app normal
+   (`view-admin-notif`), duplicaba al panel completo (Admin.html) con una
+   variable de admin distinta (`ADMIN_EMAIL` vs `ADMIN_EMAILS`), y había
+   quedado roto por el candado de seguridad de hace unos días. Ahora hay
+   un solo camino de admin: login normal → redirección automática si el
+   email está en `ADMIN_EMAILS`.
+2. **Voucher/Open Sports eliminado.** Badge "Premio", tarjeta de código,
+   checkbox "¿Es un Premio?", pestaña "Premio / Promo" en Admin.html,
+   `_generarCodigoVoucher()`. El sistema de cupones por desgaste
+   (`trail-points.gs`, prefijo `HR-DESGASTE-`) es independiente y no se
+   tocó — sigue funcionando igual, manda el código dentro del mensaje de
+   texto, no por la tarjeta de voucher que se sacó.
+3. **Flujo de contraseña temporal → definitiva.** "Olvidé mi contraseña"
+   ahora marca la cuenta (columna nueva `Requiere_Cambio_Password`). En el
+   próximo login con esa temporal, antes de dejar pasar a cualquier lado
+   (dashboard o panel admin), la app muestra una pantalla nueva ("Elegí tu
+   contraseña nueva") pidiendo la contraseña definitiva dos veces — mismo
+   patrón que ya tenía Registro. De paso, se sumó un botón de
+   mostrar/ocultar contraseña (👁️) en Login, Registro y esta pantalla
+   nueva.
+4. **Bienvenida ya no se repite.** Antes tapaba toda la pantalla en cada
+   visita a la app, sin excepción, incluso ya logueado. Ahora se guarda en
+   el celu (localStorage) que ya se vio, y va directo al login.
+
+---
+
 ## codigo.gs
 
 - SHEET_ID corregido para apuntar al sheet real ("Huella Runner Final 1407").
