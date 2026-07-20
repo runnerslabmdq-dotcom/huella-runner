@@ -1,7 +1,11 @@
 // ============================================================
 // HUELLA RUNNER — admin.gs
-// Última actualización: 19/07/2026 22:26 (hora Argentina)
-// Cambios en esta versión: Sin cambios en esta versión.
+// Última actualización: 19/07/2026 22:33 (hora Argentina)
+// Cambios en esta versión:
+//   - Nueva función getSystemHealth(token): cupones emitidos
+//     (total/disponibles/usados) y última corrida del cron nocturno de
+//     Cache_Modelos. La usa la sección nueva "Salud del sistema" del
+//     panel (Admin.html).
 // Cambios en versiones anteriores:
 //   - BUG DE SEGURIDAD arreglado: getAdminStats, getAdminUsuarios,
 //     getRankingUsuarios, getActividadReciente y getActividadPorDia no
@@ -430,6 +434,53 @@ function getActividadPorDia(token) {
   } catch(e) {
     Logger.log('getActividadPorDia ERROR: ' + e.toString());
     return [];
+  }
+}
+
+// ============================================================
+// SALUD DEL SISTEMA — cupones emitidos + última corrida del cron
+// nocturno de Cache_Modelos (social-proof.gs). Pensado para que el
+// fundador se entere de un problema (ej. el cron dejó de correr) antes
+// que un usuario.
+// ============================================================
+function getSystemHealth(token) {
+  if (!_adminAutorizado(token)) return { success: false, error: 'No autorizado.' };
+  try {
+    const ss = SpreadsheetApp.openById(SHEET_ID);
+
+    let cuponesTotal = 0, cuponesDisponibles = 0, cuponesUsados = 0;
+    const cSheet = ss.getSheetByName('Cupones_Emitidos');
+    if (cSheet && cSheet.getLastRow() > 1) {
+      const cData    = cSheet.getDataRange().getValues();
+      const cHeaders = cData[0];
+      const estadoCol = cHeaders.indexOf('Estado');
+      cuponesTotal = cData.length - 1;
+      for (let i = 1; i < cData.length; i++) {
+        const estado = estadoCol !== -1 ? (cData[i][estadoCol] || '').toString().trim().toLowerCase() : '';
+        if (estado === 'disponible') cuponesDisponibles++;
+        else if (estado === 'usado') cuponesUsados++;
+      }
+    }
+
+    let ultimaCorridaCache = 'Nunca corrió';
+    const ultimaCorridaRaw = PropertiesService.getScriptProperties().getProperty('CACHE_MODELOS_ULTIMA_CORRIDA');
+    if (ultimaCorridaRaw) {
+      const d = new Date(ultimaCorridaRaw);
+      if (!isNaN(d.getTime())) {
+        ultimaCorridaCache = Utilities.formatDate(d, TZ_AR, 'dd/MM/yyyy HH:mm');
+      }
+    }
+
+    return {
+      success: true,
+      cuponesTotal: cuponesTotal,
+      cuponesDisponibles: cuponesDisponibles,
+      cuponesUsados: cuponesUsados,
+      ultimaCorridaCache: ultimaCorridaCache
+    };
+  } catch(e) {
+    Logger.log('getSystemHealth ERROR: ' + e.toString());
+    return { success: false, error: e.toString() };
   }
 }
 

@@ -78,6 +78,26 @@ de abajo (codigo.gs, Index.html, admin.html).
 - **Confirmar borrar notificación**: se deja como está, a pedido del
   fundador — es el modal menos crítico del proyecto.
 
+## 19/07/2026 (noche) — Tanda 4 de la revisión completa (carrusel + panel admin)
+
+- **Carrusel de zapatillas activas**: indicador numérico "2 de 5" debajo
+  de los puntitos, contando solo zapatillas reales (no la tarjeta de
+  "agregar" al final).
+- **Panel admin — paleta unificada**: el acento del panel era negro +
+  neón lima (`#CCFF00`), ahora usa el mismo dorado apagado (`#C5B358`)
+  que la app y la PWA. El fondo negro se mantiene — es la identidad
+  propia del panel, no una inconsistencia. La escala de colores por
+  nivel de corredor (verde→lima→amarillo→naranja→rojo en Insights) no
+  se tocó — es una paleta categórica con su propio significado, no el
+  acento de marca.
+- **Panel admin — sección "Salud del sistema" nueva**: cupones emitidos
+  (total, disponibles, usados) y última corrida del cron nocturno de
+  `Cache_Modelos`. Ojo: la idea original también incluía "notificaciones
+  fallidas", pero no hay ningún mecanismo que registre fallos de envío
+  hoy (las notificaciones se escriben directo a la hoja, no hay entrega
+  asincrónica que pueda fallar después) — se dejó afuera en vez de
+  inventar un dato falso.
+
 ---
 
 ## codigo.gs

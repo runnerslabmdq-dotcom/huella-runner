@@ -1,8 +1,18 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Admin.html
-  Última actualización: 19/07/2026 22:26 (hora Argentina)
+  Última actualización: 19/07/2026 22:33 (hora Argentina)
   Cambios en esta versión:
+    - Paleta unificada con el resto de la app: el acento del panel era
+      negro + neón lima (#CCFF00), ahora usa el mismo dorado apagado
+      (#C5B358) que ya tienen la app y la PWA. Solo cambia el color de
+      acento — el fondo negro del panel se mantiene igual, es una
+      identidad intencional.
+    - Nueva sección "Salud del sistema": cupones emitidos (total,
+      disponibles, usados) y última corrida del cron nocturno de
+      Cache_Modelos, para enterarse acá si algo se rompió antes que un
+      usuario. Usa la nueva getSystemHealth() de admin.gs.
+  Cambios en versiones anteriores:
     - Sacado todo lo de voucher/Open Sports del envío de notificaciones:
       pestaña "Premio / Promo", campo de código, selector de Tipo (ya
       no hace falta, solo queda un tipo de mensaje). El panel ahora
@@ -39,9 +49,9 @@
       --bg2:       #080808;
       --card:      #0d0d0d;
       --card2:     #0a0a0a;
-      --neon:      #CCFF00;
-      --neon-dim:  #a8d400;
-      --neon-glow: rgba(204,255,0,0.12);
+      --neon:      #C5B358;
+      --neon-dim:  #A89440;
+      --neon-glow: rgba(197,179,88,0.12);
       --plata:     #F0F0F0;
       --gris:      #C8C8C8;
       --metal:     #808080;
@@ -84,8 +94,8 @@
     .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
     @media (max-width: 700px) { .metrics-grid { grid-template-columns: repeat(2, 1fr); } }
     .metric-card { background: var(--card); border: 1px solid var(--borde); border-radius: 12px; padding: 20px 16px; position: relative; overflow: hidden; transition: border-color 0.2s; }
-    .metric-card.accent { border-color: rgba(204,255,0,0.2); background: linear-gradient(135deg, #0a0d00 0%, #0d0d0d 100%); }
-    .metric-card.accent::after { content: ''; position: absolute; top: 0; right: 0; width: 60px; height: 60px; background: radial-gradient(circle at top right, rgba(204,255,0,0.08), transparent 70%); }
+    .metric-card.accent { border-color: rgba(197,179,88,0.2); background: linear-gradient(135deg, #0d0c05 0%, #0d0d0d 100%); }
+    .metric-card.accent::after { content: ''; position: absolute; top: 0; right: 0; width: 60px; height: 60px; background: radial-gradient(circle at top right, rgba(197,179,88,0.08), transparent 70%); }
     .metric-lbl { font-size: 0.62rem; font-weight: 700; color: var(--metal); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; }
     .metric-val { font-size: 2.6rem; font-weight: 900; color: var(--plata); line-height: 1; letter-spacing: -1px; }
     .metric-card.accent .metric-val { color: var(--neon); }
@@ -165,7 +175,7 @@
     /* ══ PILLS ══ */
     .pill { display: inline-block; font-size: 0.58rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; padding: 4px 9px; border-radius: 4px; }
     .pill.grupo { background: #0a0f1a; color: #7799EE; border: 1px solid #1a2240; }
-    .pill.nivel { background: #0a0a00; color: var(--neon); border: 1px solid rgba(204,255,0,0.2); }
+    .pill.nivel { background: #0d0c05; color: var(--neon); border: 1px solid rgba(197,179,88,0.2); }
 
     /* ══ NOTIF BTN ══ */
     .notif-btn { font-size: 0.6rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; padding: 5px 10px; border-radius: 5px; background: transparent; color: var(--metal); border: 1px solid var(--borde2); cursor: pointer; transition: all 0.15s; white-space: nowrap; }
@@ -196,7 +206,7 @@
     .nf-select, .nf-textarea { width: 100%; background: var(--bg); border: 1px solid var(--borde2); border-radius: 8px; color: var(--plata); font-family: 'Montserrat', sans-serif; font-size: 0.86rem; padding: 11px 14px; outline: none; margin-bottom: 14px; transition: border-color 0.2s; }
     .nf-select:focus, .nf-textarea:focus { border-color: var(--neon); }
     .nf-textarea { resize: vertical; min-height: 90px; }
-    .nf-chip { display: inline-flex; align-items: center; gap: 8px; background: rgba(204,255,0,0.06); border: 1px solid rgba(204,255,0,0.25); border-radius: 7px; padding: 8px 12px; font-size: 0.8rem; font-weight: 700; color: var(--neon); margin-bottom: 14px; }
+    .nf-chip { display: inline-flex; align-items: center; gap: 8px; background: rgba(197,179,88,0.06); border: 1px solid rgba(197,179,88,0.25); border-radius: 7px; padding: 8px 12px; font-size: 0.8rem; font-weight: 700; color: var(--neon); margin-bottom: 14px; }
     .nf-chip button { background: none; border: none; color: var(--metal); cursor: pointer; font-size: 1rem; padding: 0; line-height: 1; }
     .nf-chip button:hover { color: var(--rojo); }
     .nf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -305,7 +315,7 @@
     .insight-desc  { font-size: 0.72rem; color: var(--metal); line-height: 1.5; }
     .insight-action {
       font-size: 0.62rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1.5px;
-      color: var(--neon); border: 1px solid rgba(204,255,0,0.3); border-radius: 5px;
+      color: var(--neon); border: 1px solid rgba(197,179,88,0.3); border-radius: 5px;
       padding: 5px 10px; cursor: pointer; background: transparent; margin-top: 10px;
       transition: all 0.15s; display: inline-block;
     }
@@ -503,6 +513,21 @@
 
     </div><!-- /insights-panel -->
 
+    <!-- 7. SALUD DEL SISTEMA -->
+    <div class="sec-label">Salud del sistema</div>
+    <div class="two-col">
+      <div class="metric-card">
+        <div class="metric-lbl">Cupones emitidos</div>
+        <div class="metric-val" id="health-cupones-total">—</div>
+        <div class="metric-sub" id="health-cupones-detalle">—</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-lbl">Caché de comunidad</div>
+        <div class="metric-val" id="health-cache-fecha" style="font-size:1.15rem;">—</div>
+        <div class="metric-sub">última actualización (cron nocturno)</div>
+      </div>
+    </div>
+
   </div><!-- /wrap -->
 </div><!-- /dashboard -->
 
@@ -548,6 +573,23 @@
     cargarUsuarios();
     cargarGrupos();
     cargarActividadPorDia();
+    cargarSaludSistema();
+  }
+
+  /* ════════════════════════════════════
+     SALUD DEL SISTEMA
+  ════════════════════════════════════ */
+  function cargarSaludSistema() {
+    google.script.run
+      .withSuccessHandler(function(data) {
+        if (!data || !data.success) return;
+        document.getElementById('health-cupones-total').textContent = data.cuponesTotal;
+        document.getElementById('health-cupones-detalle').textContent =
+          data.cuponesDisponibles + ' disponibles · ' + data.cuponesUsados + ' usados';
+        document.getElementById('health-cache-fecha').textContent = data.ultimaCorridaCache;
+      })
+      .withFailureHandler(function() {})
+      .getSystemHealth(ADMIN_TOKEN);
   }
 
   // Vuelve a la app principal (login/dashboard).
