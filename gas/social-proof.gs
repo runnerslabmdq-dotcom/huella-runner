@@ -1,6 +1,6 @@
 // ============================================================
 // HUELLA RUNNER — social-proof.gs
-// Última actualización: 19/07/2026 14:45 (hora Argentina)
+// Última actualización: 19/07/2026 22:10 (hora Argentina)
 // Cambios en esta versión:
 //   - _notificarDatoComunidadSiHayDatos() se sacó — el dato de
 //     comunidad ya no se manda como notificación de ningún tipo.

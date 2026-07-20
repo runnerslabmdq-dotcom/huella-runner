@@ -1,8 +1,13 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Admin.html
-  Última actualización: 19/07/2026 14:45 (hora Argentina)
+  Última actualización: 19/07/2026 22:10 (hora Argentina)
   Cambios en esta versión:
+    - Sacado todo lo de voucher/Open Sports del envío de notificaciones:
+      pestaña "Premio / Promo", campo de código, selector de Tipo (ya
+      no hace falta, solo queda un tipo de mensaje). El panel ahora
+      solo tiene 3 pestañas: Todos / Por grupo / Individual.
+  Cambios en versiones anteriores:
     - BUG DE SEGURIDAD arreglado: el panel pedía sus datos
       (getAdminStats, getAdminUsuarios, ranking, actividad,
       notificaciones, etc.) sin mandar ningún token — el backend ahora
@@ -399,7 +404,6 @@
         <div class="ntab active"   onclick="setTab('todos')">Todos</div>
         <div class="ntab inactive" onclick="setTab('grupo')">Por grupo</div>
         <div class="ntab inactive" onclick="setTab('individual')">Individual</div>
-        <div class="ntab inactive" onclick="setTab('premio')">Premio / Promo</div>
       </div>
       <div class="nf-label" id="nf-destino-label">Destinatarios</div>
       <select class="nf-select" id="nf-destino" style="display:none;"></select>
@@ -418,18 +422,7 @@
       </div>
       <div class="nf-label">Mensaje</div>
       <textarea class="nf-textarea" id="nf-mensaje" placeholder="Escribí el mensaje que recibirán..."></textarea>
-      <div id="voucher-wrap" style="display:none;">
-        <div class="nf-label">Código voucher</div>
-        <input class="nf-select" id="nf-voucher" placeholder="Opcional: forzar un código específico">
-      </div>
-      <div class="nf-row">
-        <div>
-          <div class="nf-label">Tipo</div>
-          <select class="nf-select" id="nf-tipo" onchange="onTipoChange()" style="margin-bottom:0;">
-            <option value="Mensaje">Mensaje</option>
-            <option value="Premio">Premio / Promo</option>
-          </select>
-        </div>
+      <div class="nf-row" style="justify-content:flex-end;">
         <div style="display:flex;align-items:flex-end;">
           <button class="nf-btn" id="nf-btn" onclick="enviarNotif()">Enviar notificación →</button>
         </div>
@@ -872,26 +865,19 @@
   function setTab(tab) {
     tabActual = tab;
     document.querySelectorAll('.ntab').forEach(function(el, i) {
-      const tabs = ['todos','grupo','individual','premio'];
+      const tabs = ['todos','grupo','individual'];
       el.className = 'ntab ' + (tabs[i] === tab ? 'active' : 'inactive');
     });
     document.getElementById('nf-destino').style.display         = tab === 'grupo'      ? 'block' : 'none';
     document.getElementById('nf-individual-wrap').style.display = tab === 'individual' ? 'block' : 'none';
-    document.getElementById('nf-destino-todos').style.display   = (tab === 'todos' || tab === 'premio') ? 'block' : 'none';
-    document.getElementById('voucher-wrap').style.display       = tab === 'premio'     ? 'block' : 'none';
-    document.getElementById('nf-tipo').value = tab === 'premio' ? 'Premio' : 'Mensaje';
-  }
-  function onTipoChange() {
-    document.getElementById('voucher-wrap').style.display =
-      document.getElementById('nf-tipo').value === 'Premio' ? 'block' : 'none';
+    document.getElementById('nf-destino-todos').style.display   = tab === 'todos' ? 'block' : 'none';
   }
   function enviarNotif() {
     const mensaje = document.getElementById('nf-mensaje').value.trim();
-    const tipo    = document.getElementById('nf-tipo').value;
     const btn     = document.getElementById('nf-btn');
     const fb      = document.getElementById('nf-feedback');
     if (!mensaje) { fb.className = 'nf-feedback err'; fb.textContent = 'El mensaje no puede estar vacío.'; return; }
-    let dTipo = tabActual === 'premio' ? 'todos' : tabActual;
+    let dTipo = tabActual;
     let dValor = '';
     if (tabActual === 'grupo') {
       dValor = document.getElementById('nf-destino').value;
@@ -918,7 +904,7 @@
         btn.disabled = false; btn.textContent = 'Enviar notificación →';
         fb.className = 'nf-feedback err'; fb.textContent = '✗ Error de conexión.';
       })
-      .enviarNotificacion(dTipo, dValor, mensaje, tipo, tipo === 'Premio' ? document.getElementById('nf-voucher').value.trim() : '', ADMIN_TOKEN);
+      .enviarNotificacion(dTipo, dValor, mensaje, 'Mensaje', '', ADMIN_TOKEN);
   }
 
   /* ════════════════════════════════════
