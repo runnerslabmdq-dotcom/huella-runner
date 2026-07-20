@@ -56,6 +56,28 @@ de abajo (codigo.gs, Index.html, admin.html).
   leídas" en Notificaciones ya pasa sola al abrir el buzón (no hacía
   falta un botón nuevo).
 
+## 19/07/2026 (noche) — Tanda 3 de la revisión completa (modales)
+
+- **Registrar KM**: botones rápidos 5K/10K/21K/42K junto al campo libre.
+- **Historial**: botón ✏️ nuevo para corregir el km de un registro sin
+  borrarlo (nueva función `editarEntrenamiento()` en `codigo.gs`, ajusta
+  el km de la zapatilla por la diferencia). Usa un prompt nativo simple,
+  no un modal aparte — si en algún momento se quiere algo más prolijo,
+  se puede reemplazar después.
+- **Confirmar eliminar zapatilla**: "Eliminar para siempre" ahora avisa
+  cuántos km de historial se pierden, si la zapatilla tiene alguno.
+- **Locker**: cada zapatilla archivada muestra desde cuándo está guardada
+  (`archiveShoe()` ahora guarda `Fecha_Archivado`).
+- **Modal de voz**: más ejemplos de frases válidas en el texto de ayuda.
+- **Modal "dato de comunidad"**: botón "📤 Compartir" — usa el selector
+  nativo del celu (WhatsApp, Instagram, etc. según lo que tenga
+  instalado) y cae a un link de WhatsApp si el navegador no lo soporta
+  (típico en desktop).
+- **Confirmar borrar entrenamiento**: ya mostraba fecha y km específico
+  del registro — se revisó y no hacía falta tocarlo.
+- **Confirmar borrar notificación**: se deja como está, a pedido del
+  fundador — es el modal menos crítico del proyecto.
+
 ---
 
 ## codigo.gs
