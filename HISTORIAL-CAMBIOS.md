@@ -12,6 +12,15 @@ el GAS es la versión más nueva.
 
 ---
 
+## 20/07/2026 (tarde) — 5 modelos nuevos de Hoka
+
+Agregados al catálogo (`gas/index.html`) con foto propia: Cielo X1 2.0,
+Arahi 7, Clifton 8, Clifton 10, Rocket X2. También se actualizó la foto
+de Hoka Bondi 9 (mismo modelo, el fundador mandó un link nuevo). Detalle
+de links en `docs/cloudinarys-zapatillas.md`. De paso se documentó el
+flujo fijo para agregar zapatillas en `docs/como-agregar-zapatillas.md`,
+para no tener que re-explicarlo cada vez.
+
 ## 20/07/2026 (madrugada) — Límite de km por zapatilla (Paso 1)
 
 Primer paso de la idea de "cada zapatilla con su propio límite de km",
