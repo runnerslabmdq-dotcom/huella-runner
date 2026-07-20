@@ -1,11 +1,11 @@
 // ============================================================
 // HUELLA RUNNER — social-proof.gs
-// Última actualización: 19/07/2026 22:33 (hora Argentina)
-// Cambios en esta versión:
+// Última actualización: 20/07/2026 00:35 (hora Argentina)
+// Cambios en esta versión: Sin cambios en esta versión.
+// Cambios en versiones anteriores:
 //   - actualizarCacheModelosNocturno() ahora guarda cuándo corrió por
 //     última vez (Propiedades del script), para mostrarlo en la sección
 //     "Salud del sistema" del panel admin.
-// Cambios en versiones anteriores:
 //   - _notificarDatoComunidadSiHayDatos() se sacó — el dato de
 //     comunidad ya no se manda como notificación de ningún tipo.
 //     obtenerDataSocialProof() ahora la usa directo addShoe() (en

@@ -1,7 +1,15 @@
 // ============================================================
 // HUELLA RUNNER — trail-points.gs
-// Última actualización: 19/07/2026 22:33 (hora Argentina)
-// Cambios en esta versión: Sin cambios en esta versión.
+// Última actualización: 20/07/2026 00:35 (hora Argentina)
+// Cambios en esta versión:
+//   - Paso 1 del límite de km por zapatilla: _calcularEstadoDesgaste(km,
+//     limite) ahora recibe el límite propio de cada zapatilla (columna
+//     nueva KM_Limite en Zapatillas) en vez de usar siempre el umbral
+//     global TP.KM_UMBRAL_CUPON (650). Si una zapatilla no tiene límite
+//     propio guardado (las ya existentes), se sigue usando 650 como
+//     antes — no rompe nada para zapatillas viejas.
+//   - _sumarKmYVerificarUmbral() ahora también dispara el cupón cuando
+//     se supera el límite PROPIO de la zapatilla, no el umbral global.
 // Cambios en versiones anteriores:
 //   - Sacado "km de trail" del mensaje del cupón (quedaba "de trail"
 //     colgado sin sentido). Prefijo de código de cupón cambiado de
@@ -196,6 +204,7 @@ function _sumarKmYVerificarUmbral(email, idZapa, kmAcreditados) {
       estado:      headers.indexOf('Estado'),
       marca:       headers.indexOf('Marca'),
       modelo:      headers.indexOf('Modelo'),
+      limite:       _colEnsure(sheet, headers, 'KM_Limite'),
       cuponEmitido: _colEnsure(sheet, headers, 'Cupon_Emitido'),
       cuponCodigo:  _colEnsure(sheet, headers, 'Cupon_Codigo'),
       cuponFecha:   _colEnsure(sheet, headers, 'Cupon_FechaEmision'),
@@ -209,19 +218,20 @@ function _sumarKmYVerificarUmbral(email, idZapa, kmAcreditados) {
 
       const kmActuales  = Number(data[i][col.km]) || 0;
       const kmNuevos    = kmActuales + kmAcreditados;
+      const limite      = Number(data[i][col.limite]) || TP.KM_UMBRAL_CUPON;
 
       // Actualizar KM en la hoja
       sheet.getRange(i + 1, col.km + 1).setValue(kmNuevos);
 
-      // Actualizar estado de desgaste
-      const nuevoEstado = _calcularEstadoDesgaste(kmNuevos);
+      // Actualizar estado de desgaste (según el límite propio de esta zapatilla)
+      const nuevoEstado = _calcularEstadoDesgaste(kmNuevos, limite);
       sheet.getRange(i + 1, col.estado + 1).setValue(nuevoEstado);
 
       SpreadsheetApp.flush();
 
-      // Verificar si corresponde emitir cupón
+      // Verificar si corresponde emitir cupón (también según el límite propio)
       const yaEmitido = data[i][col.cuponEmitido];
-      if (!yaEmitido && kmNuevos >= TP.KM_UMBRAL_CUPON) {
+      if (!yaEmitido && kmNuevos >= limite) {
         const marca  = (data[i][col.marca]  || '').toString().trim();
         const modelo = (data[i][col.modelo] || '').toString().trim();
 
@@ -247,10 +257,11 @@ function _sumarKmYVerificarUmbral(email, idZapa, kmAcreditados) {
   }
 }
 
-function _calcularEstadoDesgaste(km) {
-  if (km >= TP.KM_UMBRAL_CUPON) return 'Crítico';
-  if (km >= TP.KM_UMBRAL_CUPON * 0.80) return 'Bajo';
-  if (km >= TP.KM_UMBRAL_CUPON * 0.55) return 'Positivo';
+function _calcularEstadoDesgaste(km, limite) {
+  const lim = Number(limite) || TP.KM_UMBRAL_CUPON;
+  if (km >= lim) return 'Crítico';
+  if (km >= lim * 0.80) return 'Bajo';
+  if (km >= lim * 0.55) return 'Positivo';
   return 'Normal';
 }
 

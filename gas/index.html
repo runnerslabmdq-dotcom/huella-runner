@@ -1,20 +1,27 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 20/07/2026 00:02 (hora Argentina)
+  Última actualización: 20/07/2026 00:35 (hora Argentina)
   Cambios en esta versión:
+    - Paso 1 del límite de km por zapatilla: en "Nueva Zapatilla" ahora
+      hay un campo opcional "Límite de km" (si se deja vacío, usa 650
+      como antes). El carrusel ya no usa el número fijo MAX_KM=900 para
+      la barra de progreso — ahora usa el límite propio de cada
+      zapatilla (KM_Limite), que es el mismo que dispara el estado
+      Crítico y el cupón de desgaste. Antes convivían dos números de
+      "límite" distintos sin querer (900 en la barra, 650 en todo lo
+      demás); ahora es uno solo.
+  Cambios en versiones anteriores:
     - Agregados 10 modelos de Asics (street) al catálogo, cada uno con
       su foto propia: Gel Nimbus 26, Soniblast, Cayano 32, Gel Rocket 11,
       Megablast, Gel Trebuco 13, Gel Cumulus 27, Cayano 32 W, Novablast,
       Novablast 5 Lite. Ver docs/cloudinarys-zapatillas.md.
-  Cambios en versiones anteriores:
     - Mismo arreglo de peso de imagen (_cloudinaryChica) aplicado también
       a las fotos grandes del carrusel principal (480px) y del Locker
       (400px) — antes solo estaba en la miniatura de "Nueva Zapatilla".
       No pierde calidad visible: nunca agranda una foto más chica que el
       original, solo evita bajar más resolución de la que el celu puede
       mostrar.
-  Cambios en versiones anteriores:
     - BUG REAL arreglado: la miniatura de "Nueva Zapatilla" (Tanda 2)
       bajaba la foto original completa de Cloudinary y recién ahí la
       achicaba con CSS a 120x120 — pesaba mucho y hacía tardar más la
@@ -1708,6 +1715,11 @@
         <input type="number" id="shoe-km" placeholder="0" min="0" inputmode="decimal">
         <div class="field-hint">¿Ya las usaste? Ingresá los km que ya tienen</div>
       </div>
+      <div class="form-group">
+        <label>Límite de km (opcional)</label>
+        <input type="number" id="shoe-km-limite" placeholder="650" min="0" inputmode="decimal">
+        <div class="field-hint">A partir de cuántos km la considerás "gastada". Si no ponés nada, usamos 650 km.</div>
+      </div>
       <button class="btn-primary" id="btn-save-shoe" onclick="saveShoe()">Añadir a Mis Zapas</button>
     </div>
   </div>
@@ -1964,7 +1976,7 @@
 
 <script>
   let currentUserEmail = '';
-  const MAX_KM = 900;
+  const KM_LIMITE_DEFAULT = 650; // igual al umbral global de trail-points.gs (TP.KM_UMBRAL_CUPON)
 
   // =====================================================
   // ONBOARDING INICIAL
@@ -2686,9 +2698,10 @@
     // Slides de zapatillas (más reciente primero = reverse)
     shoes.slice().reverse().forEach(function(s) {
       var km        = Number(s.KM_Actuales) || 0;
-      var perc      = Math.min((km / MAX_KM) * 100, 100);
+      var limite    = Number(s.KM_Limite) || KM_LIMITE_DEFAULT;
+      var perc      = Math.min((km / limite) * 100, 100);
       var percFixed = perc.toFixed(0);
-      var kmRestantes = Math.max(MAX_KM - km, 0);
+      var kmRestantes = Math.max(limite - km, 0);
       var sMarca    = sanitize(s.Marca);
       var sModelo   = sanitize(s.Modelo);
       var sTalle    = sanitize(s.Talle);
@@ -2742,7 +2755,7 @@
                 '<div class="cf-bar-fill" style="width:' + perc + '%; background:' + barColor + ';"></div>' +
               '</div>' +
               '<div class="cf-km">' +
-                '<span>' + km + ' km / ' + MAX_KM + ' km</span>' +
+                '<span>' + km + ' km / ' + limite + ' km</span>' +
                 '<span class="km-val">' + percFixed + '%</span>' +
               '</div>' +
             '</div>' +
@@ -2888,13 +2901,16 @@
     }
     const kmVal = parseFloat(document.getElementById('shoe-km').value) || 0;
     if (kmVal < 0) return alert('Los KM iniciales no pueden ser negativos');
+    const kmLimiteVal = parseFloat(document.getElementById('shoe-km-limite').value) || 0;
+    if (kmLimiteVal < 0) return alert('El límite de km no puede ser negativo');
     const d = {
-      marca:  marcaFinal,
-      modelo: modeloFinal,
-      talle:  document.getElementById('shoe-talle').value,
-      genero: document.getElementById('shoe-genero').value,
-      km:     kmVal,
-      alias:  ''
+      marca:     marcaFinal,
+      modelo:    modeloFinal,
+      talle:     document.getElementById('shoe-talle').value,
+      genero:    document.getElementById('shoe-genero').value,
+      km:        kmVal,
+      kmLimite:  kmLimiteVal,
+      alias:     ''
     };
     if (!d.marca || !d.modelo) return alert('Completá la información');
     document.getElementById('btn-save-shoe').innerText = 'GUARDANDO...';
