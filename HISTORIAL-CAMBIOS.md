@@ -98,6 +98,20 @@ de abajo (codigo.gs, Index.html, admin.html).
   asincrónica que pueda fallar después) — se dejó afuera en vez de
   inventar un dato falso.
 
+## 19/07/2026 (noche) — BUG REAL: miniatura de "Nueva Zapatilla" pesada
+
+El fundador notó que la pantalla de "Nueva Zapatilla" tardaba más en
+aparecer desde que se agregó la miniatura (Tanda 2). Causa: la miniatura
+bajaba la foto **original completa** de Cloudinary (las fotos genéricas
+son editoriales, pesan bastante) y recién ahí la achicaba a 120x120 con
+CSS — o sea, gastaba el mismo ancho de banda que si se mostrara gigante.
+Arreglado con `_cloudinaryChica()`: le pide a Cloudinary una versión ya
+redimensionada (240px) y comprimida (`q_auto,f_auto`) directo en la URL,
+en vez de bajar el archivo entero. Mismo truco se podría aplicar a las
+fotos grandes del carrusel y del Locker si en algún momento se nota lento
+ahí también — por ahora se dejó solo en la miniatura, que era la que se
+reportó.
+
 ---
 
 ## codigo.gs

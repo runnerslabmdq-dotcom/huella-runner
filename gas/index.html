@@ -1,8 +1,15 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 19/07/2026 22:33 (hora Argentina)
-  Cambios en esta versión (Tanda 4 de la revisión completa — carrusel):
+  Última actualización: 19/07/2026 23:10 (hora Argentina)
+  Cambios en esta versión:
+    - BUG REAL arreglado: la miniatura de "Nueva Zapatilla" (Tanda 2)
+      bajaba la foto original completa de Cloudinary y recién ahí la
+      achicaba con CSS a 120x120 — pesaba mucho y hacía tardar más la
+      pantalla en aparecer, sobre todo con 3G/4G. Ahora se le pide a
+      Cloudinary una versión ya redimensionada (240px, comprimida) vía
+      parámetros en la URL (_cloudinaryChica()), no el archivo entero.
+  Cambios en versiones anteriores (Tanda 4 de la revisión completa — carrusel):
     - Carrusel de zapatillas activas: indicador "2 de 5" debajo de los
       puntitos, además de los puntitos ya existentes. Solo cuenta
       zapatillas reales, no la tarjeta de "agregar".
@@ -2211,6 +2218,19 @@
   // Miniatura en vivo: apenas se elige marca ya muestra la genérica de esa
   // marca; cuando también se elige modelo, se actualiza a la foto
   // específica si existe (misma resolución que getShoeImage de siempre).
+  // Pide a Cloudinary una versión ya redimensionada y liviana de la foto,
+  // en vez de bajar el archivo original completo para después achicarlo
+  // con CSS — las fotos genéricas pesan bastante y esto era lo que hacía
+  // tardar más la pantalla de "Nueva zapatilla" en aparecer.
+  function _cloudinaryChica(url, ancho) {
+    if (!url || url.indexOf('res.cloudinary.com') === -1) return url;
+    var marcador = '/upload/';
+    var idx = url.indexOf(marcador);
+    if (idx === -1) return url;
+    var transformacion = 'w_' + ancho + ',c_limit,q_auto,f_auto/';
+    return url.slice(0, idx + marcador.length) + transformacion + url.slice(idx + marcador.length);
+  }
+
   function actualizarPreviewZapatilla() {
     const marcaSel = document.getElementById('shoe-marca').value;
     const marca = marcaSel === '__otras__'
@@ -2225,7 +2245,7 @@
     const img  = document.getElementById('shoe-preview-img');
     if (!marca) { wrap.style.display = 'none'; return; }
 
-    img.src = getShoeImage(marca, modelo || '');
+    img.src = _cloudinaryChica(getShoeImage(marca, modelo || ''), 240);
     img.alt = (marca + ' ' + (modelo || '')).trim();
     wrap.style.display = 'block';
   }
