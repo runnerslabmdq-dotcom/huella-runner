@@ -1,8 +1,21 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 19/07/2026 22:19 (hora Argentina)
-  Cambios en esta versión (Tanda 2 de la revisión completa):
+  Última actualización: 19/07/2026 22:26 (hora Argentina)
+  Cambios en esta versión (Tanda 3 de la revisión completa — modales):
+    - Registrar KM: botones rápidos 5K/10K/21K/42K además del campo libre.
+    - Historial: nuevo botón ✏️ para corregir el km de un registro ya
+      cargado (típico error de tipeo), sin borrar y perder la fecha
+      original. Usa un prompt nativo simple, no un modal nuevo.
+    - Confirmar eliminar zapatilla: el botón "Eliminar para siempre" ahora
+      avisa cuántos km de historial se van a perder, si hay alguno.
+    - Locker: cada zapatilla archivada muestra desde cuándo está guardada.
+    - Modal de voz: más ejemplos de frases válidas (antes solo uno).
+    - Modal "dato de comunidad": botón "📤 Compartir" (Web Share API en
+      el celu, WhatsApp como respaldo en desktop).
+    - Confirmar borrar entrenamiento ya mostraba fecha y km específico
+      del registro — no hizo falta tocarlo, ya estaba bien.
+  Cambios en versiones anteriores (Tanda 2 de la revisión completa):
     - Agregar zapatilla: miniatura de la foto (genérica o de modelo) que
       se actualiza en vivo apenas elegís marca, y de nuevo cuando además
       elegís modelo — usa la misma resolución de imagen de siempre
@@ -203,6 +216,15 @@
     }
     input:focus, select:focus { border-color: var(--amarillo); }
     select option { background: #1a1a1a; color: white; }
+
+    /* ── Botones rápidos de km (modal Registrar KM) ── */
+    .km-quick-row { display: flex; gap: 8px; margin-top: 10px; }
+    .btn-km-quick {
+      flex: 1; background: #1a1a1a; border: 1px solid #333; border-radius: 8px;
+      padding: 9px 0; color: var(--plata); font-family: 'Montserrat', sans-serif;
+      font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: 0.2s;
+    }
+    .btn-km-quick:hover, .btn-km-quick:active { border-color: var(--amarillo); color: var(--amarillo); }
 
     /* ── Mostrar/ocultar contraseña ── */
     .password-field-wrap { position: relative; }
@@ -888,6 +910,13 @@
       transition: transform 0.15s;
     }
     .sp-cta:active { transform: scale(0.98); }
+    .sp-share {
+      width: 100%; border: 1px solid var(--borde); border-radius: 10px; padding: 12px;
+      cursor: pointer; background: transparent; color: var(--plata);
+      font-family: 'Montserrat', sans-serif; font-size: 0.78rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1px; margin-top: 10px; transition: 0.2s;
+    }
+    .sp-share:hover { border-color: var(--amarillo); color: var(--amarillo); }
 
     .modal-confirm-training-content {
       background: var(--card-bg); width: 90%; max-width: 340px;
@@ -939,6 +968,7 @@
     .locker-card-model { font-weight: 900; font-size: 0.72rem; color: #666; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .locker-card-sub   { font-size: 0.54rem; color: #444; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
     .locker-card-km    { font-size: 0.54rem; color: #444; font-weight: 700; margin-top: 4px; }
+    .locker-card-fecha { font-size: 0.52rem; color: #555; margin-top: 2px; }
     .btn-reactivate {
       width: 100%; background: transparent; border: 1px solid #2a2a2a; color: #555;
       padding: 8px; border-radius: 8px; font-family: 'Montserrat', sans-serif;
@@ -1712,6 +1742,12 @@
     <div class="form-group">
       <label>Kilómetros recorridos</label>
       <input type="number" id="train-km" placeholder="Ej. 10" min="0.1" step="0.1" inputmode="decimal">
+      <div class="km-quick-row">
+        <button type="button" class="btn-km-quick" onclick="setKmRapido(5)">5K</button>
+        <button type="button" class="btn-km-quick" onclick="setKmRapido(10)">10K</button>
+        <button type="button" class="btn-km-quick" onclick="setKmRapido(21)">21K</button>
+        <button type="button" class="btn-km-quick" onclick="setKmRapido(42)">42K</button>
+      </div>
     </div>
     <input type="hidden" id="train-shoe-id">
     <button class="btn-primary" id="btn-save-train" onclick="saveTraining()">Guardar Entrenamiento</button>
@@ -1750,7 +1786,7 @@
     <button class="btn-confirm-delete" id="btn-confirm-delete-ok" onclick="executeDeleteShoe()">
       🗑️ &nbsp;ELIMINAR PARA SIEMPRE
     </button>
-    <div class="confirm-option-hint" style="color:#e53935;">Se borra la zapatilla y todo su historial. No se puede deshacer.</div>
+    <div class="confirm-option-hint" style="color:#e53935;" id="confirm-delete-hint">Se borra la zapatilla y todo su historial. No se puede deshacer.</div>
     <!-- Cancelar -->
     <button class="btn-confirm-cancel" style="margin-top:10px;" onclick="closeConfirmDelete()">Cancelar</button>
   </div>
@@ -1792,6 +1828,7 @@
       </div>
     </div>
     <button class="sp-cta" onclick="cerrarSocialProofModal()">¡A entrenar! 🏃</button>
+    <button class="sp-share" id="sp-btn-share" onclick="compartirSocialProof()">📤 Compartir</button>
   </div>
 </div>
 
@@ -1843,7 +1880,7 @@
   <div class="modal-voice-content">
     <button class="close-modal" onclick="closeVoiceModal()">✕</button>
     <div class="voice-modal-title" id="voice-modal-title">Registrar Entrenamiento</div>
-    <div class="voice-modal-sub"   id="voice-modal-sub">Usá el 🎙️ del teclado o escribí:<br><em>"12 km Speedgoat"</em></div>
+    <div class="voice-modal-sub"   id="voice-modal-sub">Usá el 🎙️ del teclado o escribí, por ejemplo:<br><em>"12 km Speedgoat"</em> · <em>"8,5 km Hoka"</em> · <em>"diez kilómetros"</em></div>
     <div class="voice-listening-wrap" id="voice-listening-wrap">
       <div class="voice-input-hint" id="voice-input-hint">
         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-bottom:8px;">
@@ -2800,6 +2837,7 @@
   }
 
   // ── Modal "dato de comunidad" (ver social-proof-ui.html, diseño original) ──
+  var _spShareTexto = '';
   function mostrarSocialProofModal(marca, modelo, proof) {
     const usuarios = proof.totalUsuarios || 1;
     const kmTotal   = Math.round(proof.totalKmGlobales || 0).toLocaleString('es-AR');
@@ -2810,9 +2848,18 @@
     document.getElementById('sp-stat-usuarios').textContent = usuarios;
     document.getElementById('sp-stat-km').textContent       = kmTotal;
     document.getElementById('social-proof-modal').style.display = 'flex';
+    _spShareTexto = '¡Sumé mis ' + marca + ' ' + modelo + ' a Huella Runner! 🏃 Ya somos ' +
+      usuarios + ' runners con este modelo, llevamos ' + kmTotal + ' km acumulados entre todos.';
   }
   function cerrarSocialProofModal() {
     document.getElementById('social-proof-modal').style.display = 'none';
+  }
+  function compartirSocialProof() {
+    if (navigator.share) {
+      navigator.share({ text: _spShareTexto }).catch(function() {});
+    } else {
+      window.open('https://wa.me/?text=' + encodeURIComponent(_spShareTexto), '_blank');
+    }
   }
 
   function openModalFromDetail() {
@@ -2825,6 +2872,10 @@
     document.getElementById('train-modal').style.display = 'flex';
   }
   function closeModal() { document.getElementById('train-modal').style.display = 'none'; }
+
+  function setKmRapido(valor) {
+    document.getElementById('train-km').value = valor;
+  }
 
   function saveTraining() {
     const id  = document.getElementById('train-shoe-id').value;
@@ -2882,6 +2933,15 @@
           kmDiv.className = 'historial-km';
           kmDiv.innerHTML = (Number(h.KM_Sumados) || 0) + '<span>km</span>';
           left.appendChild(kmDiv);
+          var btnEditar = document.createElement('button');
+          btnEditar.className = 'btn-delete-training' + (h.ID_Entreno ? '' : ' no-id');
+          btnEditar.title     = h.ID_Entreno ? 'Corregir el km de este registro' : 'Registro sin ID, no se puede editar';
+          btnEditar.innerHTML = '✏️';
+          if (h.ID_Entreno) {
+            (function(idEntreno, kmSumados) {
+              btnEditar.onclick = function() { editarKmEntrenamiento(idEntreno, kmSumados); };
+            })(h.ID_Entreno, Number(h.KM_Sumados) || 0);
+          }
           var btnBorrar = document.createElement('button');
           btnBorrar.className = 'btn-delete-training' + (h.ID_Entreno ? '' : ' no-id');
           btnBorrar.title     = h.ID_Entreno ? 'Borrar este registro' : 'Registro sin ID, no se puede borrar';
@@ -2892,6 +2952,7 @@
             })(h.ID_Entreno, Number(h.KM_Sumados) || 0, sanitize(h.Fecha || ''));
           }
           item.appendChild(left);
+          item.appendChild(btnEditar);
           item.appendChild(btnBorrar);
           listEl.appendChild(item);
         });
@@ -2903,6 +2964,26 @@
   }
 
   function closeHistorial() { document.getElementById('historial-modal').style.display = 'none'; }
+
+  function editarKmEntrenamiento(idEntreno, kmActual) {
+    var nuevoStr = prompt('Corregir los kilómetros de este registro:', kmActual);
+    if (nuevoStr === null) return; // canceló
+    var nuevo = parseFloat(nuevoStr.toString().replace(',', '.'));
+    if (isNaN(nuevo) || nuevo <= 0) { alert('Ingresá un número válido, mayor a 0.'); return; }
+    google.script.run
+      .withSuccessHandler(function(res) {
+        if (res && res.success) {
+          _cargarHistorial();
+          loadDashboard(); // refresca el km de la zapatilla en el armario
+        } else {
+          alert('Error al corregir: ' + (res ? res.error : 'desconocido'));
+        }
+      })
+      .withFailureHandler(function(err) {
+        alert('Error de conexión: ' + (err.message || err));
+      })
+      .editarEntrenamiento(currentUserEmail, idEntreno, currentDetailShoe.ID_Zapa, nuevo);
+  }
 
   // =====================================================
   // BORRAR ENTRENAMIENTO INDIVIDUAL
@@ -2974,6 +3055,14 @@
     document.getElementById('btn-confirm-archive').disabled   = false;
     document.getElementById('btn-confirm-delete-ok').innerText = '🗑️  ELIMINAR PARA SIEMPRE';
     document.getElementById('btn-confirm-delete-ok').disabled  = false;
+    // Resumen de lo que se pierde, para que "eliminar para siempre" sea
+    // una decisión informada, no un texto genérico.
+    var shoe = allUserShoes.find(function(x){ return x.ID_Zapa === shoeId; });
+    var km = shoe ? (Number(shoe.KM_Actuales) || 0) : 0;
+    document.getElementById('confirm-delete-hint').innerText =
+      km > 0
+        ? 'Se borra la zapatilla y sus ' + km + ' km de historial. No se puede deshacer.'
+        : 'Se borra la zapatilla y todo su historial. No se puede deshacer.';
     document.getElementById('confirm-delete-modal').style.display = 'flex';
   }
   function closeConfirmDelete() {
@@ -3074,6 +3163,7 @@
       var sMarca  = sanitize(s.Marca);
       var sModelo = sanitize(s.Modelo);
       var sTalle  = sanitize(s.Talle);
+      var sFecha  = sanitize(s.Fecha_Archivado || '');
       var rawId   = (s.ID_Zapa || '').toString().replace(/'/g, "\\'");
       var rawMod  = (s.Modelo  || '').toString().replace(/'/g, "\\'");
 
@@ -3087,6 +3177,7 @@
           '<div class="locker-card-model">' + sModelo + '</div>' +
           '<div class="locker-card-sub">' + sMarca + ' · EU ' + sTalle + '</div>' +
           '<div class="locker-card-km">' + km + ' km</div>' +
+          (sFecha ? '<div class="locker-card-fecha">Archivada el ' + sFecha + '</div>' : '') +
           '<button class="btn-reactivate" onclick="reactivarZapa(\'' + rawId + '\', \'' + rawMod + '\')">↩ Reactivar</button>' +
         '</div>';
       grid.appendChild(card);
@@ -3356,7 +3447,7 @@
     _voiceParsedKm = 0; _voiceMatchedShoes = []; _voiceSelectedShoe = null;
     cerrarOnboardingFab();
     document.getElementById('voice-modal-title').innerText        = 'Registrar Entrenamiento';
-    document.getElementById('voice-modal-sub').innerHTML          = 'Usá el 🎙️ del teclado o escribí:<br><em>"12 km Speedgoat"</em>';
+    document.getElementById('voice-modal-sub').innerHTML          = 'Usá el 🎙️ del teclado o escribí, por ejemplo:<br><em>"12 km Speedgoat"</em> · <em>"8,5 km Hoka"</em> · <em>"diez kilómetros"</em>';
     document.getElementById('voice-input-field').value            = '';
     document.getElementById('voice-input-hint').style.display     = 'block';
     document.getElementById('voice-listening-wrap').style.display = 'flex';

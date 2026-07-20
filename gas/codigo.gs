@@ -1,7 +1,13 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 19/07/2026 22:10 (hora Argentina)
+// Última actualización: 19/07/2026 22:26 (hora Argentina)
 // Cambios en esta versión:
+//   - Nueva función editarEntrenamiento(email, idEntreno, idZapatilla,
+//     kmNuevo): corrige el km de un registro ya cargado sin borrarlo,
+//     ajustando el km de la zapatilla por la diferencia (delta).
+//   - archiveShoe() ahora guarda la fecha de archivado
+//     (Fecha_Archivado), para mostrarla en el Locker.
+// Cambios en versiones anteriores:
 //   - enviarNotificacion() ya no genera código de voucher ni distingue
 //     tipo "Premio" — se sacó todo lo de Open Sports/voucher del envío
 //     de notificaciones (a pedido del fundador). Se guarda 'Mensaje'
@@ -14,7 +20,6 @@
 //     usa la pantalla nueva "Elegí tu contraseña nueva" (Index.html)
 //     para que el usuario defina su contraseña definitiva después de
 //     entrar con la temporal, con doble ingreso.
-// Cambios en versiones anteriores:
 //   - addShoe() ya no manda ninguna notificación al buzón — ahora
 //     devuelve el dato de comunidad (socialProof) directo en la
 //     respuesta, para que Index.html lo muestre al toque en una
@@ -651,6 +656,8 @@ function archiveShoe(email, idZapatilla) {
       const rowEmail = data[i][emailCol] ? data[i][emailCol].toString().trim().toLowerCase() : '';
       if (rowId === idZapatilla.toString() && rowEmail === emailClean) {
         sheet.getRange(i + 1, estadoCol + 1).setValue('archivada');
+        const fechaArchivadoCol = _colEnsure(sheet, headers, 'Fecha_Archivado');
+        sheet.getRange(i + 1, fechaArchivadoCol + 1).setValue(Utilities.formatDate(new Date(), TZ_AR, 'dd/MM/yyyy'));
         SpreadsheetApp.flush();
         Logger.log('archiveShoe OK: id=' + idZapatilla);
         return { success: true };
@@ -905,6 +912,100 @@ function deleteTraining(email, idEntreno, idZapatilla, kmADescontar) {
 
   } catch(e) {
     Logger.log('deleteTraining ERROR: ' + e.toString());
+    return { success: false, error: e.toString() };
+  }
+}
+
+// ============================================================
+// EDITAR ENTRENAMIENTO INDIVIDUAL
+// Corrige el km de un registro ya cargado (típico: error de tipeo) sin
+// perder la fecha original ni tener que borrar y volver a cargar.
+// Ajusta el km de la zapatilla por la diferencia (delta), no lo reemplaza
+// entero, para no pisar otros entrenamientos ya sumados.
+// ============================================================
+function editarEntrenamiento(email, idEntreno, idZapatilla, kmNuevo) {
+  try {
+    if (!email || !idEntreno || !idZapatilla) {
+      return { success: false, error: 'Datos incompletos.' };
+    }
+    const kmNuevoNum = Number(kmNuevo);
+    if (!kmNuevoNum || kmNuevoNum <= 0) {
+      return { success: false, error: 'Ingresá un kilometraje válido.' };
+    }
+    const emailClean = email.toString().trim().toLowerCase();
+    const ss = SpreadsheetApp.openById(SHEET_ID);
+
+    const trainSheet = ss.getSheetByName('Entrenamientos');
+    if (!trainSheet || trainSheet.getLastRow() <= 1) {
+      return { success: false, error: 'No se encontró la hoja de Entrenamientos.' };
+    }
+
+    const trainData    = trainSheet.getDataRange().getValues();
+    const trainHeaders = trainData[0];
+    const idEntrenoCol = trainHeaders.indexOf('ID_Entreno');
+    const tEmailCol    = trainHeaders.indexOf('Email_Usuario');
+    const kmBrutosCol  = trainHeaders.indexOf('KM_Brutos');
+    const kmSumadosCol = trainHeaders.indexOf('KM_Sumados');
+
+    if (idEntrenoCol === -1 || tEmailCol === -1 || kmSumadosCol === -1) {
+      return { success: false, error: 'Estructura de Entrenamientos incorrecta.' };
+    }
+
+    let kmViejo = null;
+    let filaEditada = -1;
+    for (let i = 1; i < trainData.length; i++) {
+      const rowIdEntreno = trainData[i][idEntrenoCol] ? trainData[i][idEntrenoCol].toString() : '';
+      const rowEmail     = trainData[i][tEmailCol]    ? trainData[i][tEmailCol].toString().trim().toLowerCase() : '';
+      if (rowIdEntreno === idEntreno.toString() && rowEmail === emailClean) {
+        kmViejo = Number(trainData[i][kmSumadosCol]) || 0;
+        filaEditada = i;
+        break;
+      }
+    }
+
+    if (filaEditada === -1) {
+      return { success: false, error: 'No se encontró el entrenamiento.' };
+    }
+
+    trainSheet.getRange(filaEditada + 1, kmSumadosCol + 1).setValue(kmNuevoNum);
+    if (kmBrutosCol !== -1) {
+      trainSheet.getRange(filaEditada + 1, kmBrutosCol + 1).setValue(kmNuevoNum);
+    }
+    SpreadsheetApp.flush();
+
+    const delta = kmNuevoNum - kmViejo;
+
+    const shoeSheet = ss.getSheetByName('Zapatillas');
+    if (shoeSheet && shoeSheet.getLastRow() > 1) {
+      const shoeData    = shoeSheet.getDataRange().getValues();
+      const shoeHeaders = shoeData[0];
+      const idCol       = shoeHeaders.indexOf('ID_Zapa');
+      const kmCol       = shoeHeaders.indexOf('KM_Actuales');
+      const sEmailCol   = shoeHeaders.indexOf('Email_Usuario');
+      const sEstadoCol  = shoeHeaders.indexOf('Estado');
+
+      for (let i = 1; i < shoeData.length; i++) {
+        const rowZapaId = shoeData[i][idCol]     ? shoeData[i][idCol].toString() : '';
+        const rowEmail  = shoeData[i][sEmailCol] ? shoeData[i][sEmailCol].toString().trim().toLowerCase() : '';
+        if (rowZapaId === idZapatilla.toString() && rowEmail === emailClean) {
+          const kmActual   = Number(shoeData[i][kmCol]) || 0;
+          const kmAjustado = Math.max(kmActual + delta, 0);
+          shoeSheet.getRange(i + 1, kmCol + 1).setValue(kmAjustado);
+          const estadoActual = sEstadoCol !== -1 ? shoeData[i][sEstadoCol].toString().trim().toLowerCase() : '';
+          if (sEstadoCol !== -1 && estadoActual !== 'archivada') {
+            shoeSheet.getRange(i + 1, sEstadoCol + 1).setValue(_calcularEstadoDesgaste(kmAjustado));
+          }
+          SpreadsheetApp.flush();
+          break;
+        }
+      }
+    }
+
+    Logger.log('editarEntrenamiento OK: idEntreno=' + idEntreno + ' kmViejo=' + kmViejo + ' kmNuevo=' + kmNuevoNum);
+    return { success: true };
+
+  } catch(e) {
+    Logger.log('editarEntrenamiento ERROR: ' + e.toString());
     return { success: false, error: e.toString() };
   }
 }
