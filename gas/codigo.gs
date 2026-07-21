@@ -1,7 +1,13 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 20/07/2026 00:35 (hora Argentina)
+// Última actualización: 21/07/2026 12:31 (hora Argentina)
 // Cambios en esta versión:
+//   - BUG arreglado: getAdminDashboardData() (alertas de desgaste del
+//     panel admin) comparaba el km de cada zapatilla contra el umbral
+//     global fijo (TP.KM_UMBRAL_CUPON, 650) en vez del KM_Limite propio
+//     de cada zapatilla — quedó desincronizado del Paso 1 del límite
+//     por zapatilla. Encontrado en revisión de bugs del 20/07.
+// Cambios en versiones anteriores:
 //   - Paso 1 del límite de km por zapatilla: addShoe() ahora acepta un
 //     límite de km opcional por zapatilla (formData.kmLimite). Si no se
 //     indica, usa el umbral global de siempre (TP.KM_UMBRAL_CUPON, 650)
@@ -11,7 +17,6 @@
 //     recalculan el estado de desgaste usando el KM_Limite propio de
 //     cada zapatilla (con fallback a 650 para las zapatillas viejas que
 //     no tienen ese dato guardado), en vez del umbral global fijo.
-// Cambios en versiones anteriores:
 //   - Nueva función editarEntrenamiento(email, idEntreno, idZapatilla,
 //     kmNuevo): corrige el km de un registro ya cargado sin borrarlo,
 //     ajustando el km de la zapatilla por la diferencia (delta).
@@ -1362,6 +1367,7 @@ function getAdminDashboardData(token) {
       var zKmCol     = zapHeaders.indexOf('KM_Actuales');
       var zEstadoCol = zapHeaders.indexOf('Estado');
       var zGeneroCol = zapHeaders.indexOf('Genero');
+      var zLimiteCol = zapHeaders.indexOf('KM_Limite');
 
       // Mapa para rankingCalzado: clave = "Marca||Modelo"
       var calzadoMap = {};
@@ -1376,9 +1382,10 @@ function getAdminDashboardData(token) {
         var modelo = zModeloCol !== -1 ? (zapData[i][zModeloCol] || '').toString().trim() : '';
         var genero = zGeneroCol !== -1 ? (zapData[i][zGeneroCol] || '').toString().trim() : '';
         var km     = Number(zapData[i][zKmCol]) || 0;
+        var limite = zLimiteCol !== -1 ? (Number(zapData[i][zLimiteCol]) || TP.KM_UMBRAL_CUPON) : TP.KM_UMBRAL_CUPON;
 
-        // ── Alertas de desgaste ──
-        if (km >= TP.KM_UMBRAL_CUPON) {
+        // ── Alertas de desgaste (usa el límite propio de cada zapatilla) ──
+        if (km >= limite) {
           var email = zEmailCol !== -1 ? zapData[i][zEmailCol].toString().trim().toLowerCase() : '';
           var uInfo = grupoMap[email] || { nombre: email, grupo: '' };
           alertasDesgaste.push({

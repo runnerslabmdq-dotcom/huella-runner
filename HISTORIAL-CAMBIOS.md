@@ -12,6 +12,49 @@ el GAS es la versión más nueva.
 
 ---
 
+## 21/07/2026 (mediodía) — Revisión de bugs + 3 arreglos
+
+Pedido explícito del fundador: revisión estricta de todo el proyecto,
+de adelante para atrás y al revés, buscando bugs sin arreglar nada
+hasta comentarlo primero. Se usó un agente para leer los 6 archivos
+completos y cruzar cada función/ID/columna, y cada hallazgo se
+verificó a mano antes de reportarlo (no todo lo que el agente marcó
+resultó ser un bug real).
+
+1. **Alertas de desgaste del panel admin desincronizadas del límite
+   por zapatilla.** `getAdminDashboardData()` (codigo.gs) seguía
+   comparando el km de cada zapatilla contra el umbral global fijo
+   (650) en vez del `KM_Limite` propio que se agregó en el Paso 1 del
+   20/07 — quedó un lugar sin actualizar cuando se hizo esa feature.
+   Efecto real: una zapatilla con límite bajo (ej. 400) llegaba a
+   "Crítico" para el usuario y el cupón, pero no aparecía como alerta
+   en el admin; y una con límite alto podía aparecer como alerta falsa
+   sin estar realmente gastada. Arreglado — ahora usa el límite propio
+   de cada fila, con el mismo fallback a 650 que el resto del sistema.
+2. **Fecha de notificaciones, parseo ambiguo.** El buzón de
+   notificaciones (Index.html) parseaba la fecha con `new Date(raw)`
+   sobre un string en formato argentino ("dd/MM/yyyy"), que JS puede
+   confundir con MM/dd/yyyy. No se pudo confirmar al 100% que esté
+   fallando en producción (depende de si Google Sheets devuelve esa
+   celda como texto o como fecha real), pero se corrigió de todos
+   modos parseándola a mano, mismo criterio que ya usa `_formatFecha`
+   en Admin.html.
+3. **Botones rápidos de km invisibles en modo claro.** Los botones
+   5K/10K/21K/42K (modal Registrar KM) tenían el fondo oscuro
+   hardcodeado y el texto con la variable `--plata` — en modo claro esa
+   variable pasa a ser un color oscuro también, así que quedaba texto
+   oscuro sobre fondo oscuro, invisible. Ahora el fondo usa las
+   variables de tema (`--card-bg`/`--borde`), visibles en los dos
+   modos. Se revisó el resto del archivo por el mismo patrón (fondo
+   fijo + `--plata`) y no había otro caso igual.
+
+Hallazgos menores, sin arreglar por ahora (no son bugs urgentes): el
+sistema de cupón de desgaste no tiene pantalla propia en la app (hoy
+solo se avisa por el texto de la notificación); una métrica interna de
+`social-proof.gs` tiene un comentario que no coincide del todo con lo
+que calcula, pero no se muestra en ningún lado hoy; y sobra un poco de
+CSS sin usar (`.detail-model`).
+
 ## 20/07/2026 (tarde) — 5 modelos nuevos de Hoka
 
 Agregados al catálogo (`gas/index.html`) con foto propia: Cielo X1 2.0,
