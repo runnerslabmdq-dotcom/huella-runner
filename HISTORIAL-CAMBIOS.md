@@ -12,6 +12,13 @@ el GAS es la versión más nueva.
 
 ---
 
+## 21/07/2026 (noche) — Desplegable de marcas alfabético
+
+El `<select>` de "Marca" en Nueva Zapatilla estaba ordenado por
+categoría (trail primero, calle después). Se pasó a orden alfabético
+puro, que es más fácil de escanear a medida que se siguen agregando
+marcas. "Otras..." se mantiene siempre al final.
+
 ## 21/07/2026 (tarde) — 11 modelos nuevos de Nike
 
 Agregados al catálogo (`gas/index.html`) con foto propia: Vomero 17,
