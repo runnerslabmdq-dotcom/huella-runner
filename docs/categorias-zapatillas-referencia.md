@@ -35,3 +35,49 @@ Balance/Nike específicos) todavía no están en el catálogo de la app —
 ver `docs/cloudinarys-zapatillas.md` para lo que sí está cargado. Esta
 tabla es solo la categorización conceptual, no implica que haya que
 agregar fotos de estas marcas todavía.
+
+---
+
+## Por objetivo/distancia (fuente: @running_peak, Instagram, 20/07/2026)
+
+Mismo modelo de marca, pero clasificado por qué se corre con él en vez
+de por categoría general:
+
+| Marca | 21K/42K (maratón) | 5K/10K | Tempo | Long run (fondo) |
+|---|---|---|---|---|
+| Nike | Alphafly 3 | Streakfly 2 | Zoom Fly 6 | Vomero Plus |
+| Adidas | Adios Pro 4 | Takumi Sen 11 | EVO SL | Hyperboost Edge |
+| Asics | MetaSpeed Tokyo | MetaSpeed Ray | Megablast | Superblast 3 |
+| Puma | Fast-R 3 | Deviate Elite 4 | Deviate 4 | MagMax 2 |
+| Hoka | Rocket X 3 | Cielo X1 3.0 | Mach X 3 | Bondi 9 |
+| New Balance | SC Elite v5 | SC Pacer v2 | Rebel v5 | SC Trainer v3 |
+| Saucony | Endorphin Elite 3 | Endorphin Pro 5 | Endorphin Speed 5 | Endorphin Azura |
+
+## Hoka, con "personalidad" por modelo (fuente: @roadrunningreview, Instagram, 20/07/2026)
+
+Cada modelo con una palabra + descripción corta — este formato (una
+palabra + frase) es un buen candidato de texto para el toast, es más
+corto que la tabla de categorías general:
+
+| Modelo | Palabra | Descripción |
+|---|---|---|
+| Bondi 9 | Maximalista | Regenerativo, tirada larga suave |
+| Gaviota 6 | Segura | Soporte y máxima amortiguación |
+| Clifton Pro | Novedad | Entrenamiento diario más vivo |
+| Clifton 11 | Infalible | Entrenamiento diario |
+| Arahi 9 | Estable | Entrenamiento diario con soporte ligero |
+| Mach 7 | Divertida | Entrenamientos alegres, correr rápido sin placa |
+
+## Asics vs Nike, por categoría (fuente: @roadrunningreview, Instagram, 20/07/2026)
+
+Comparación modelo a modelo entre las dos marcas, misma categoría:
+
+| Categoría | Asics | Nike |
+|---|---|---|
+| Máxima amortiguación / entrenamientos | Gel Nimbus 28 | Vomero 18 |
+| Estabilidad y soporte | Gel Kayano 33 | Structure 26 |
+| Súper trainer | Superblast 3 | Vomero Plus |
+| Entrenamiento diario versátil | Gel Cumulus 28 | Pegasus 42 |
+| Entrenamiento específico | Sonicblast | Zoom Fly 6 |
+| Competición élite | MetaSpeed Edge Tokyo | Alphafly Next% 3 |
+| Competición élite | MetaSpeed Sky Tokyo | Vaporfly Next% 4 |
