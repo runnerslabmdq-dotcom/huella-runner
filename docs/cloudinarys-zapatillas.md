@@ -35,12 +35,12 @@ Se usan como foto de fondo/tarjeta cuando el modelo no tiene foto propia
 | Skechers | https://res.cloudinary.com/dlayzh9ln/image/upload/v1782400510/Sketchers_Generica_cgss7k.png |
 | Under Armour | https://res.cloudinary.com/dlayzh9ln/image/upload/v1782400498/Under_Armour_Generica_svvvik.png |
 
-**Pendiente**: de estas 7 marcas street, **Adidas (11) y Asics (10) ya
-tienen modelos** cargados (ver tabla de "Modelos específicos" abajo).
-New Balance, Fila, Nike, Skechers y Under Armour siguen **sin modelos
-cargados** — el desplegable de "Modelo" para esas marcas solo ofrece
-"Otros..." (carga manual del nombre). Cuando pases modelos específicos
-con su foto, se agregan al `catalogo` y `modelImages`.
+**Pendiente**: de estas 7 marcas street, **Adidas (11), Asics (10) y
+Nike (11) ya tienen modelos** cargados (ver tabla de "Modelos
+específicos" abajo). New Balance, Fila, Skechers y Under Armour siguen
+**sin modelos cargados** — el desplegable de "Modelo" para esas marcas
+solo ofrece "Otros..." (carga manual del nombre). Cuando pases modelos
+específicos con su foto, se agregan al `catalogo` y `modelImages`.
 
 ---
 
@@ -99,6 +99,22 @@ con su foto, se agregan al `catalogo` y `modelImages`.
 | Hoka | Clifton 8 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784566172/Hoka_Clifton_8_ST_pi3zrx.png |
 | Hoka | Clifton 10 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784566172/Hoka_Clifton_10_ST_lv5tzi.png |
 | Hoka | Rocket X2 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784566172/Hoka_Rocket_X2_ST_op1myq.png |
+| Nike | Vomero 17 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784652140/Nike_Vomero_17_ST_vfjbd2.png |
+| Nike | Run Defy | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784652132/Nike_Run_Defy_ST_orldn0.png |
+| Nike | Winflo 11 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784652128/Nike_Winflo_11_k27h8n.png |
+| Nike | Revolution 7 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784652127/Nike_Revolution_7_a4z8wi.png |
+| Nike | Revolution 8 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784652123/Nike_Revolution_8_ST_pmt33a.png |
+| Nike | Renew Run 3 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784652120/Nike_Renew_Run_3_ST_j57fuj.png |
+| Nike | Pegasus Plus | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784652087/Nike_Pegasus_Plus_ST_w8dzpr.png |
+| Nike | LunarSpider | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784652085/Nike_LunarSpider_ST_hihmqo.png |
+| Nike | Pegasus 41 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784652085/Nike_Pegasus_41_ST_k5m7zj.png |
+| Nike | Downshifter 13 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784652082/Nike_Downshifter_13_ST_vv5tcv.png |
+| Nike | Quest 5 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784652082/Nike_Quest_5_ST_bojiig.png |
+
+**Sin usar (duplicado):** `Nike_Renew_Run_3_ST_obrzyh.png` — llegó un segundo
+link con el mismo nombre de modelo ("Renew Run 3") que el de arriba. Se
+usó el primero (`j57fuj`); si el segundo era en realidad un modelo o
+color distinto, avisar para agregarlo aparte.
 
 ---
 
