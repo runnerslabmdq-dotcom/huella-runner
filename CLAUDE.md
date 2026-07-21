@@ -57,3 +57,14 @@ la PWA de Vercel se queda apuntando a la versión vieja y hay que
 actualizar y volver a mergear `pwa/index.html` a mano. Ya pasó más de una
 vez (ver `HISTORIAL-CAMBIOS.md`, sección `pwa/`) y es la causa más común
 de "esto en la PC anda bien pero en el celu no".
+
+## Regla permanente: confirmación antes de cambiar algo
+
+Desde el 20/07/2026, antes de hacer CUALQUIER cambio al proyecto (editar
+código, commitear, mergear un PR), pedirle al fundador que confirme con
+una palabra clave que él tiene. **La palabra no se guarda en este
+archivo ni en ningún archivo del repo** (mismo criterio que el
+`ADMIN_TOKEN`: un secreto no va en un repo compartido) — se la vuelve a
+pedir cada vez, en la conversación. Leer o investigar el código sin
+modificar nada no requiere esta confirmación, solo aplica antes de
+escribir/commitear/mergear.
