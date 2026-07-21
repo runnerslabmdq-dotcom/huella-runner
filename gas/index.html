@@ -1,13 +1,23 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 20/07/2026 13:56 (hora Argentina)
+  Última actualización: 21/07/2026 12:31 (hora Argentina)
   Cambios en esta versión:
+    - BUG arreglado: los botones rápidos de km (5K/10K/21K/42K, modal
+      Registrar KM) tenían fondo oscuro hardcodeado (#1a1a1a) con texto
+      var(--plata) — en modo claro, --plata pasa a ser oscuro también,
+      así que el texto quedaba invisible (oscuro sobre oscuro). Ahora
+      usan var(--card-bg)/var(--borde), que sí cambian según el tema.
+    - BUG (dudoso, arreglado igual): el parseo de fecha en el buzón de
+      notificaciones usaba new Date(raw) sobre un string "dd/MM/yyyy",
+      que en JS se puede confundir con formato MM/dd/yyyy. Ahora se
+      parsea a mano (mismo criterio que ya usa _formatFecha en
+      Admin.html), sea que llegue como texto o como objeto Date.
+  Cambios en versiones anteriores:
     - Agregados 5 modelos de Hoka al catálogo, cada uno con su foto
       propia: Cielo X1 2.0, Arahi 7, Clifton 8, Clifton 10, Rocket X2.
       De paso, se actualizó la foto de Hoka Bondi 9 (mismo modelo, foto
       nueva). Ver docs/cloudinarys-zapatillas.md.
-  Cambios en versiones anteriores:
     - Paso 1 del límite de km por zapatilla: en "Nueva Zapatilla" ahora
       hay un campo opcional "Límite de km" (si se deja vacío, usa 650
       como antes). El carrusel ya no usa el número fijo MAX_KM=900 para
@@ -254,7 +264,7 @@
     /* ── Botones rápidos de km (modal Registrar KM) ── */
     .km-quick-row { display: flex; gap: 8px; margin-top: 10px; }
     .btn-km-quick {
-      flex: 1; background: #1a1a1a; border: 1px solid #333; border-radius: 8px;
+      flex: 1; background: var(--card-bg); border: 1px solid var(--borde); border-radius: 8px;
       padding: 9px 0; color: var(--plata); font-family: 'Montserrat', sans-serif;
       font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: 0.2s;
     }
@@ -3416,7 +3426,17 @@
 
       var fechaFormateada = (function(raw) {
         if (!raw) return '';
-        var d = new Date(raw);
+        var d;
+        if (raw instanceof Date) {
+          d = raw;
+        } else {
+          // El backend guarda "dd/MM/yyyy HH:mm" (formato AR) — parsearlo
+          // a mano evita que new Date(string) lo confunda con MM/dd/yyyy.
+          var partes = raw.toString().trim().split(' ');
+          var dp = partes[0].split('/');
+          var tp = partes[1] ? partes[1].split(':') : ['0', '0'];
+          d = new Date(+dp[2], +dp[1] - 1, +dp[0], +tp[0], +tp[1]);
+        }
         if (isNaN(d.getTime())) {
           return raw.toString().substring(0, 14);
         }
