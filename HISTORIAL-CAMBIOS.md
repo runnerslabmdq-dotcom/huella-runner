@@ -12,6 +12,16 @@ el GAS es la versión más nueva.
 
 ---
 
+## 21/07/2026 (mediodía, más tarde) — "Ver legales" también en Login
+
+El acordeón de "Privacidad y Tratamiento de Datos" solo vivía en la
+pantalla de onboarding, que solo se muestra la primera vez (después
+queda guardado en el celu y ya no vuelve a aparecer). No había forma de
+volver a leer ese texto sin borrar datos del navegador. Se agregó el
+mismo botón "VER LEGALES +" con el mismo acordeón al final de la
+pantalla de Login (id de acordeón distinto para no chocar con el del
+onboarding).
+
 ## 21/07/2026 (mediodía) — Revisión de bugs + 3 arreglos
 
 Pedido explícito del fundador: revisión estricta de todo el proyecto,

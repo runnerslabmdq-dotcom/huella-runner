@@ -1,8 +1,15 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 21/07/2026 12:31 (hora Argentina)
+  Última actualización: 21/07/2026 12:51 (hora Argentina)
   Cambios en esta versión:
+    - "VER LEGALES +" ahora también está en la pantalla de Login, no
+      solo en el onboarding inicial. Antes, una vez que se aceptaba el
+      onboarding una vez (queda guardado en el celu), no había forma de
+      volver a ver el texto de privacidad sin borrar datos del
+      navegador. Mismo texto, mismo diseño, id de acordeón distinto
+      (legales-acordeon-login) para no chocar con el del onboarding.
+  Cambios en versiones anteriores:
     - BUG arreglado: los botones rápidos de km (5K/10K/21K/42K, modal
       Registrar KM) tenían fondo oscuro hardcodeado (#1a1a1a) con texto
       var(--plata) — en modo claro, --plata pasa a ser oscuro también,
@@ -13,7 +20,6 @@
       que en JS se puede confundir con formato MM/dd/yyyy. Ahora se
       parsea a mano (mismo criterio que ya usa _formatFecha en
       Admin.html), sea que llegue como texto o como objeto Date.
-  Cambios en versiones anteriores:
     - Agregados 5 modelos de Hoka al catálogo, cada uno con su foto
       propia: Cielo X1 2.0, Arahi 7, Clifton 8, Clifton 10, Rocket X2.
       De paso, se actualizó la foto de Hoka Bondi 9 (mismo modelo, foto
@@ -1484,6 +1490,23 @@
       <button class="btn-recover" onclick="openRecoverModal()">¿Olvidaste tu contraseña?</button>
       <button class="btn-ghost" onclick="switchView('view-register')">¿No tienes cuenta? Regístrate</button>
       <p id="log-error" style="color:#ef4444; font-size:0.8rem; text-align:center; margin-top:10px; display:none;"></p>
+
+      <div style="text-align:center;margin-top:16px;">
+        <button onclick="var el=document.getElementById('legales-acordeon-login');el.style.display=el.style.display==='none'?'block':'none';this.innerText=el.style.display==='none'?'VER LEGALES +':'CERRAR LEGALES −';" style="
+          background:none;border:none;color:#A89440;font-size:0.68rem;font-weight:700;
+          cursor:pointer;letter-spacing:2px;text-transform:uppercase;
+          font-family:'Montserrat',sans-serif;padding:4px 0;">VER LEGALES +</button>
+        <div id="legales-acordeon-login" style="display:none;text-align:left;background:#0d0d0d;border:1px solid #1f1f1f;
+          border-radius:12px;padding:16px 18px;margin:10px auto 0;max-width:380px;width:100%;
+          font-size:0.72rem;color:#999;line-height:1.7;">
+          <p style="color:#d8d8d8;font-weight:700;margin:0 0 10px;font-size:0.75rem;">Privacidad y Tratamiento de Datos</p>
+          <p style="margin:0 0 8px;">Nuestra prioridad es proteger tu información. Solo recolectamos los datos estrictamente necesarios para el funcionamiento y mejora de la aplicación.</p>
+          <p style="margin:0 0 8px;"><strong style="color:#bbb;">Uso interno:</strong> La información proporcionada se utiliza exclusivamente con fines analíticos y estadísticos para optimizar la experiencia del usuario y mejorar el rendimiento técnico.</p>
+          <p style="margin:0 0 8px;"><strong style="color:#bbb;">No compartición:</strong> Bajo ninguna circunstancia vendemos, alquilamos ni compartimos tus datos personales con terceros con fines comerciales o de marketing ajenos a nuestra plataforma.</p>
+          <p style="margin:0 0 8px;"><strong style="color:#bbb;">Seguridad:</strong> Implementamos medidas técnicas y organizativas para garantizar la confidencialidad y protección de tus datos frente a accesos no autorizados.</p>
+          <p style="margin:0;"><strong style="color:#bbb;">Tus derechos:</strong> Puedes solicitar la consulta, modificación o eliminación de tus datos en cualquier momento contactando a nuestro equipo de soporte.</p>
+        </div>
+      </div>
     </div>
   </div>
 
