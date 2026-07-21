@@ -12,6 +12,16 @@ el GAS es la versión más nueva.
 
 ---
 
+## 21/07/2026 (tarde) — 11 modelos nuevos de Nike
+
+Agregados al catálogo (`gas/index.html`) con foto propia: Vomero 17,
+Run Defy, Winflo 11, Revolution 7, Revolution 8, Renew Run 3, Pegasus
+Plus, LunarSpider, Pegasus 41, Downshifter 13, Quest 5. Llegaron 12
+links pero dos tenían el mismo nombre de modelo ("Renew Run 3") — se
+usó uno solo, ver nota en `docs/cloudinarys-zapatillas.md` por si el
+segundo era un modelo o color distinto. Nike pasa a tener modelos
+propios (antes solo ofrecía "Otros..." en el desplegable).
+
 ## 21/07/2026 (mediodía, más tarde) — "Ver legales" también en Login
 
 El acordeón de "Privacidad y Tratamiento de Datos" solo vivía en la
