@@ -12,6 +12,19 @@ el GAS es la versión más nueva.
 
 ---
 
+## 22/07/2026 (tarde) — Texto chico del panel admin, más legible
+
+El fundador no veía bien las letras chicas grises del panel (etiquetas,
+subtítulos, horarios). Causa: casi todo ese texto usa una sola variable
+de color (`--metal`), que estaba en un gris apagado (#808080) sobre
+fondo negro. Se subió a `#E8E8E8` (mismo "plata" que usa el resto de la
+app) — un solo cambio arregla decenas de lugares a la vez, porque todos
+dependen de la misma variable. También se charló la posibilidad de
+modo claro/oscuro para el panel admin (como tiene el resto de la app);
+se dejó pendiente — es factible pero no trivial (~30 colores
+hardcodeados para revisar), y como el panel lo usa solo el fundador, no
+es tan prioritario como en la app de los corredores.
+
 ## 22/07/2026 (mediodía) — Mensaje del cupón, más honesto
 
 El fundador notó que todavía no tiene un auspiciante/marca asociada

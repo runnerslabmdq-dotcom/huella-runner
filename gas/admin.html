@@ -1,8 +1,15 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Admin.html
-  Última actualización: 20/07/2026 00:35 (hora Argentina)
-  Cambios en esta versión: Sin cambios en esta versión.
+  Última actualización: 22/07/2026 14:43 (hora Argentina)
+  Cambios en esta versión:
+    - Texto chico secundario (etiquetas, subtítulos, horarios) muy
+      difícil de leer: la variable --metal (usada en decenas de lugares
+      del panel) estaba en un gris apagado (#808080) sobre fondo negro,
+      poco contraste. Se subió a #E8E8E8 (mismo tono "plata" que usa el
+      resto de la app), un solo cambio que arregla todos los usos a la
+      vez. De paso, un gris suelto más oscuro (#444, detalle del
+      semáforo) que no pasaba por la variable, ahora también la usa.
   Cambios en versiones anteriores:
     - Paleta unificada con el resto de la app: el acento del panel era
       negro + neón lima (#CCFF00), ahora usa el mismo dorado apagado
@@ -54,7 +61,7 @@
       --neon-glow: rgba(197,179,88,0.12);
       --plata:     #F0F0F0;
       --gris:      #C8C8C8;
-      --metal:     #808080;
+      --metal:     #E8E8E8;
       --borde:     #1a1a1a;
       --borde2:    #252525;
       --verde:     #39FF14;
@@ -282,7 +289,7 @@
     .semaforo-card.naranja .semaforo-num { color: var(--naranja); }
     .semaforo-card.rojo    .semaforo-num { color: var(--rojo); }
     .semaforo-lbl { font-size: 0.62rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1.5px; color: var(--metal); }
-    .semaforo-sub { font-size: 0.6rem; color: #444; margin-top: 6px; }
+    .semaforo-sub { font-size: 0.6rem; color: var(--metal); margin-top: 6px; }
 
     /* ── Módulo C: Tendencia semanal ── */
     .tend-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
