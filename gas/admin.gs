@@ -1,7 +1,16 @@
 // ============================================================
 // HUELLA RUNNER — admin.gs
-// Última actualización: 20/07/2026 00:35 (hora Argentina)
-// Cambios en esta versión: Sin cambios en esta versión.
+// Última actualización: 22/07/2026 15:25 (hora Argentina)
+// Cambios en esta versión:
+//   - Nueva función getInsightsExtendidos(token): ranking de constancia
+//     (días distintos con actividad en 30 días), horario pico real
+//     (usa la columna Hora de Entrenamientos), tendencia semanal
+//     (últimas 8 semanas + semana actual vs. anterior) y mensual
+//     (últimos 6 meses), abandono real (activos7/30 + lista de quién no
+//     entrena hace 14+ días o nunca), y tasa de lectura de
+//     notificaciones. La usa Admin.html en varias secciones nuevas.
+//   - getActividadReciente() ahora devuelve los últimos 5 eventos, no
+//     10 (a pedido del fundador).
 // Cambios en versiones anteriores:
 //   - Nueva función getSystemHealth(token): cupones emitidos
 //     (total/disponibles/usados) y última corrida del cron nocturno de
@@ -275,7 +284,7 @@ function getRankingUsuarios(token) {
 }
 
 // ============================================================
-// ACTIVIDAD RECIENTE (últimos 10 eventos combinados)
+// ACTIVIDAD RECIENTE (últimos 5 eventos combinados)
 // Tipo: 'entrenamiento' | 'registro'
 // ============================================================
 function getActividadReciente(token) {
@@ -354,14 +363,14 @@ function getActividadReciente(token) {
       }
     }
 
-    // Ordenar por fecha descendente y devolver los 10 más recientes
+    // Ordenar por fecha descendente y devolver los 5 más recientes
     eventos.sort(function(a, b) {
       const ta = a.ts ? a.ts.getTime() : 0;
       const tb = b.ts ? b.ts.getTime() : 0;
       return tb - ta;
     });
 
-    return eventos.slice(0, 10).map(function(ev) {
+    return eventos.slice(0, 5).map(function(ev) {
       return {
         tipo:      ev.tipo,
         email:     ev.email,
@@ -482,6 +491,218 @@ function getSystemHealth(token) {
     Logger.log('getSystemHealth ERROR: ' + e.toString());
     return { success: false, error: e.toString() };
   }
+}
+
+// ============================================================
+// INSIGHTS EXTENDIDOS — constancia, horario pico real, tendencia
+// semanal/mensual con comparación, abandono real (no solo "hoy") y
+// tasa de lectura de notificaciones. Todo en una sola función para no
+// multiplicar idas y vueltas al Sheet.
+// ============================================================
+function getInsightsExtendidos(token) {
+  if (!_adminAutorizado(token)) return { success: false, error: 'No autorizado.' };
+  try {
+    const ss = SpreadsheetApp.openById(SHEET_ID);
+
+    // --- Mapa email → nombre/grupo (Usuarios) ---
+    const nameMap = {};
+    const usersSheet = ss.getSheetByName('Usuarios');
+    let totalUsuarios = 0;
+    if (usersSheet && usersSheet.getLastRow() > 1) {
+      const uData    = usersSheet.getDataRange().getValues();
+      const uHeaders = uData[0];
+      const uEmail   = uHeaders.indexOf('Email');
+      const uNombre  = uHeaders.indexOf('Nombre');
+      const uApell   = uHeaders.indexOf('Apellido');
+      const uGrupo   = uHeaders.indexOf('Grupo');
+      totalUsuarios  = uData.length - 1;
+      for (let i = 1; i < uData.length; i++) {
+        const em = uEmail !== -1 && uData[i][uEmail] ? uData[i][uEmail].toString().trim().toLowerCase() : '';
+        if (!em) continue;
+        const nom = uNombre !== -1 ? (uData[i][uNombre] || '').toString().trim() : '';
+        const ape = uApell  !== -1 ? (uData[i][uApell]  || '').toString().trim() : '';
+        const grp = uGrupo  !== -1 ? (uData[i][uGrupo]  || '').toString().trim() : '';
+        nameMap[em] = { nombre: (nom + ' ' + ape).trim() || em, grupo: grp };
+      }
+    }
+
+    // --- Un solo recorrido de Entrenamientos para todo lo demás ---
+    const trainSheet    = ss.getSheetByName('Entrenamientos');
+    const franjas       = { manana: 0, tarde: 0, noche: 0 };
+    let franjasTotal     = 0;
+    const diasPorUsuario = {}; // email -> Set "dd/mm/yyyy" (constancia, ventana 30 días)
+    const ultimaActividad = {}; // email -> Date más reciente
+    const semanaMap      = {}; // key "dd/mm/yyyy" (lunes) -> {km, runners:Set}
+    const mesMap         = {}; // key "yyyy-mm" -> {km}
+
+    const ahora  = new Date();
+    const hace30 = new Date(ahora.getTime() - 30 * 86400000);
+
+    if (trainSheet && trainSheet.getLastRow() > 1) {
+      const tData    = trainSheet.getDataRange().getValues();
+      const tHeaders = tData[0];
+      const tEmail   = tHeaders.indexOf('Email_Usuario');
+      const tKm      = tHeaders.indexOf('KM_Sumados');
+      const tFecha   = tHeaders.indexOf('Fecha');
+      const tHora    = tHeaders.indexOf('Hora');
+      const tEstado  = tHeaders.indexOf('Estado_Validacion');
+
+      for (let i = 1; i < tData.length; i++) {
+        const estado = tEstado !== -1 ? (tData[i][tEstado] || '').toString().trim().toLowerCase() : '';
+        if (estado === 'rechazada') continue; // no acreditó km, no cuenta como actividad real
+
+        const email = tEmail !== -1 && tData[i][tEmail] ? tData[i][tEmail].toString().trim().toLowerCase() : '';
+        const km    = tKm !== -1 ? (Number(tData[i][tKm]) || 0) : 0;
+        const fechaDate = tFecha !== -1 ? _celdaADate(tData[i][tFecha]) : null;
+        if (!email || !fechaDate) continue;
+
+        if (!ultimaActividad[email] || fechaDate > ultimaActividad[email]) {
+          ultimaActividad[email] = fechaDate;
+        }
+
+        if (fechaDate >= hace30) {
+          if (!diasPorUsuario[email]) diasPorUsuario[email] = new Set();
+          diasPorUsuario[email].add(_formatFecha(fechaDate));
+        }
+
+        const horaStr = tHora !== -1 ? (tData[i][tHora] || '').toString().trim() : '';
+        if (horaStr) {
+          const horaNum = parseInt(horaStr.split(':')[0], 10);
+          if (!isNaN(horaNum)) {
+            franjasTotal++;
+            if (horaNum >= 6 && horaNum < 12) franjas.manana++;
+            else if (horaNum >= 12 && horaNum < 19) franjas.tarde++;
+            else franjas.noche++;
+          }
+        }
+
+        const lunes  = _lunesDeSemana(fechaDate);
+        const semKey = _formatFecha(lunes);
+        if (!semanaMap[semKey]) semanaMap[semKey] = { km: 0, runners: new Set() };
+        semanaMap[semKey].km += km;
+        semanaMap[semKey].runners.add(email);
+
+        const mesKey = fechaDate.getFullYear() + '-' + String(fechaDate.getMonth() + 1).padStart(2, '0');
+        if (!mesMap[mesKey]) mesMap[mesKey] = { km: 0 };
+        mesMap[mesKey].km += km;
+      }
+    }
+
+    // --- Ranking de constancia: días distintos con actividad en los últimos 30 días ---
+    const rankingConstancia = Object.keys(diasPorUsuario).map(function(email) {
+      const info = nameMap[email] || { nombre: email, grupo: '' };
+      return { email: email, nombre: info.nombre, grupo: info.grupo, diasActivos: diasPorUsuario[email].size };
+    }).sort(function(a, b) { return b.diasActivos - a.diasActivos; }).slice(0, 10);
+
+    // --- Horario pico, en % sobre los entrenamientos que tienen hora guardada ---
+    const horarioPico = {
+      manana: franjasTotal > 0 ? Math.round(franjas.manana / franjasTotal * 100) : 0,
+      tarde:  franjasTotal > 0 ? Math.round(franjas.tarde  / franjasTotal * 100) : 0,
+      noche:  franjasTotal > 0 ? Math.round(franjas.noche  / franjasTotal * 100) : 0,
+      totalRegistros: franjasTotal
+    };
+
+    // --- Tendencia semanal: últimas 8 semanas (lunes a domingo) + semana actual vs anterior ---
+    const lunesActual = _lunesDeSemana(ahora);
+    const semanas = [];
+    for (let s = 7; s >= 0; s--) {
+      const inicio = new Date(lunesActual.getTime() - s * 7 * 86400000);
+      const fin    = new Date(inicio.getTime() + 6 * 86400000);
+      const info   = semanaMap[_formatFecha(inicio)];
+      semanas.push({
+        label:   _formatFecha(inicio).slice(0, 5) + '-' + _formatFecha(fin).slice(0, 5),
+        km:      info ? Math.round(info.km) : 0,
+        runners: info ? info.runners.size : 0
+      });
+    }
+    const semanaActualKm   = semanas[semanas.length - 1].km;
+    const semanaAnteriorKm = semanas.length > 1 ? semanas[semanas.length - 2].km : 0;
+
+    // --- Tendencia mensual: últimos 6 meses ---
+    const NOMBRES_MES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+    const meses = [];
+    for (let m = 5; m >= 0; m--) {
+      const d    = new Date(ahora.getFullYear(), ahora.getMonth() - m, 1);
+      const key  = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+      const info = mesMap[key];
+      meses.push({ label: NOMBRES_MES[d.getMonth()], km: info ? Math.round(info.km) : 0 });
+    }
+
+    // --- Abandono real: activos7/30 + lista de quién no entrena hace 14+ días (o nunca) ---
+    let activos7 = 0, activos30 = 0;
+    const listaInactivos = [];
+    for (const email in nameMap) {
+      const ultima = ultimaActividad[email];
+      const diasSinEntrenar = ultima ? Math.floor((ahora.getTime() - ultima.getTime()) / 86400000) : null;
+      if (ultima) {
+        if (diasSinEntrenar <= 7)  activos7++;
+        if (diasSinEntrenar <= 30) activos30++;
+      }
+      if (diasSinEntrenar === null || diasSinEntrenar >= 14) {
+        listaInactivos.push({
+          email: email,
+          nombre: nameMap[email].nombre,
+          grupo:  nameMap[email].grupo,
+          diasSinEntrenar: diasSinEntrenar // null = nunca cargó un entrenamiento
+        });
+      }
+    }
+    listaInactivos.sort(function(a, b) {
+      if (a.diasSinEntrenar === null) return -1;
+      if (b.diasSinEntrenar === null) return 1;
+      return b.diasSinEntrenar - a.diasSinEntrenar;
+    });
+
+    // --- Tasa de lectura de notificaciones (sin contar las que el usuario borró) ---
+    let notifEnviadas = 0, notifLeidas = 0;
+    const notifSheet = ss.getSheetByName('Notificaciones');
+    if (notifSheet && notifSheet.getLastRow() > 1) {
+      const nData    = notifSheet.getDataRange().getValues();
+      const nHeaders = nData[0];
+      const nLeido   = nHeaders.indexOf('Leido');
+      const nOculto  = nHeaders.indexOf('Oculto');
+      for (let i = 1; i < nData.length; i++) {
+        const oculto = nOculto !== -1 ? (nData[i][nOculto] || '').toString().trim().toUpperCase() === 'TRUE' : false;
+        if (oculto) continue;
+        notifEnviadas++;
+        const leido = nLeido !== -1 ? (nData[i][nLeido] || '').toString().trim().toUpperCase() === 'TRUE' : false;
+        if (leido) notifLeidas++;
+      }
+    }
+
+    return {
+      success: true,
+      rankingConstancia: rankingConstancia,
+      horarioPico: horarioPico,
+      tendenciaSemanas: semanas,
+      semanaActualKm: semanaActualKm,
+      semanaAnteriorKm: semanaAnteriorKm,
+      tendenciaMeses: meses,
+      abandono: {
+        activos7:  activos7,
+        activos30: activos30,
+        total:     totalUsuarios,
+        lista:     listaInactivos.slice(0, 10)
+      },
+      notifLectura: {
+        enviadas: notifEnviadas,
+        leidas:   notifLeidas,
+        pct:      notifEnviadas > 0 ? Math.round(notifLeidas / notifEnviadas * 100) : 0
+      }
+    };
+  } catch(e) {
+    Logger.log('getInsightsExtendidos ERROR: ' + e.toString());
+    return { success: false, error: e.toString() };
+  }
+}
+
+// Lunes de la semana calendario a la que pertenece 'date' (hora en 0:00)
+function _lunesDeSemana(date) {
+  const d   = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const dow = d.getDay(); // 0=domingo, 1=lunes, ...
+  const diff = dow === 0 ? -6 : 1 - dow;
+  d.setDate(d.getDate() + diff);
+  return d;
 }
 
 // ============================================================

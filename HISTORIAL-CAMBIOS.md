@@ -12,6 +12,53 @@ el GAS es la versión más nueva.
 
 ---
 
+## 22/07/2026 (tarde, más tarde) — 6 secciones nuevas en el panel admin
+
+El fundador mandó capturas del panel admin (celu) y pidió un análisis a
+fondo + ideas nuevas para recopilar/agrupar datos. Antes de construir
+nada, se descubrió que el panel ya tenía **8 pestañas** en "Insights del
+Negocio" (el celu solo mostraba 3 por scroll horizontal) — varias de
+las ideas pedidas ya existían, parcial o totalmente:
+
+- "Actividad por grupos" → ya existía (pestaña Grupos).
+- "Franja horaria" y "vida útil antes de archivar" → ya existían como
+  pestañas con texto "Próximamente", sin conectar.
+- "Distribución geográfica" → el backend ya la calculaba
+  (`rankingProvincia`) pero nunca se mostraba en ningún lado.
+
+Con eso aclarado, se construyó lo que faltaba de verdad — nueva función
+`getInsightsExtendidos()` en `admin.gs` + 6 secciones nuevas/renovadas
+en `Admin.html`:
+
+1. **Constancia** — ranking de quién entrena más seguido (días
+   distintos con actividad en 30 días), no solo quién suma más km.
+2. **Geografía** — distribución de la comunidad por provincia (dato ya
+   calculado, solo faltaba mostrarlo).
+3. **Horario Pico** — dejó de ser un stub, ahora usa la hora real de
+   cada entrenamiento (mañana/tarde/noche).
+4. **Tendencia Semanal extendida** — semana actual vs. anterior,
+   últimas 8 semanas y últimos 6 meses (antes solo últimos 7 días).
+5. **Insight Comercial — abandono real** — nueva tarjeta con lista de
+   quién no entrena hace 14+ días (o nunca), con botón de notificar por
+   persona. Reemplaza la señal débil de "no entrenó hoy" (que marca a
+   casi todo el mundo cualquier día).
+6. **Salud del Sistema — tasa de lectura de notificaciones**.
+
+De paso, dos arreglos chicos que salieron de la misma revisión:
+- "Actividad Reciente" ahora muestra 5 eventos, no 10.
+- Texto "El mensaje llegará a 3 los usuarios registrados" tenía las
+  palabras en el orden equivocado — ahora dice "a los 3 usuarios".
+
+**Bug real evitado en el camino:** al conectar Horario Pico de verdad,
+había dos funciones (la vieja stub y la nueva) escribiendo en el mismo
+lugar sin orden garantizado — se sacó la vieja para no correr el riesgo
+de que la tapara con datos falsos. Mismo cuidado con la Tendencia
+Semanal (se le dio un contenedor propio a la parte nueva para que no
+compita con la que ya existía).
+
+Sigue pendiente (no tocado, fuera del pedido de esta tanda): terminar
+"Vida Útil" (km promedio antes de archivar una zapatilla).
+
 ## 22/07/2026 (tarde) — Texto chico del panel admin, más legible
 
 El fundador no veía bien las letras chicas grises del panel (etiquetas,
