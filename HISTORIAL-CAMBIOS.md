@@ -12,6 +12,28 @@ el GAS es la versión más nueva.
 
 ---
 
+## 22/07/2026 (noche) — Respaldo automático diario del Sheet
+
+Después de que una pestaña del Sheet se borrara o se corriera de lugar
+por error (y con eso desaparecieran zapatillas de dos usuarios — se
+arregló a mano con el historial de versiones de Google Sheets), se
+agrega una red de seguridad extra: archivo nuevo `gas/backup.gs`.
+
+- `respaldarSheetDiario()`: hace una copia completa del Sheet todos los
+  días y la guarda en una carpeta de Drive ("Huella Runner — Backups"),
+  con fecha y hora en el nombre. Copias de más de 30 días se borran
+  solas para no acumular basura en Drive.
+- `instalarBackupDiario()`: hay que correrla UNA sola vez a mano desde
+  el editor de Apps Script (elegir la función → Ejecutar) para que
+  quede programado el respaldo diario a las 4 AM. Después no hace falta
+  tocar nada más.
+
+Esto es una copia extra, independiente del historial de versiones que
+ya trae Google Sheets — sirve sobre todo si el error se nota muchos
+días después y el historial normal ya no alcanza.
+
+---
+
 ## 22/07/2026 (tarde, todavía más) — Barra de km casi invisible cuando el uso es bajo
 
 El fundador notó que la barrita de progreso de km (debajo de cada
