@@ -12,6 +12,17 @@ el GAS es la versión más nueva.
 
 ---
 
+## 22/07/2026 (mediodía) — Mensaje del cupón, más honesto
+
+El fundador notó que todavía no tiene un auspiciante/marca asociada
+para que el cupón de desgaste (`HR-DESGASTE-...`) se pueda canjear de
+verdad — y el mensaje automático decía "usalo en tu próxima compra",
+prometiendo algo que hoy no se puede cumplir (están en fase demo). Se
+cambió el texto: ahora avisa que la zapatilla llegó a su límite y que
+el código sirve "para cuando sumemos marcas asociadas", sin prometer un
+canje inmediato. Mismo mecanismo de siempre (mensaje automático en la
+campanita cuando se llega al límite), solo cambió la redacción.
+
 ## 22/07/2026 — Ícono de la PWA, segunda vuelta (la buena)
 
 El arreglo del 21/07 (abajo) tocó un manifest que en realidad no se
