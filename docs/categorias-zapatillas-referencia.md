@@ -81,3 +81,17 @@ Comparación modelo a modelo entre las dos marcas, misma categoría:
 | Entrenamiento específico | Sonicblast | Zoom Fly 6 |
 | Competición élite | MetaSpeed Edge Tokyo | Alphafly Next% 3 |
 | Competición élite | MetaSpeed Sky Tokyo | Vaporfly Next% 4 |
+
+## Familias Adidas con puntaje (fuente: cartel de local Adidas, foto del fundador, 22/07/2026)
+
+Cuatro familias de la marca, cada una con puntaje propio (sobre 10) en
+Ligereza / Confort / Retorno de energía — el formato de puntaje es un
+buen candidato para mostrar como barras en un futuro "ficha técnica"
+de zapatilla, no solo para el toast:
+
+| Familia | Para qué sirve | Ligereza | Confort | Retorno de energía | Modelos |
+|---|---|---|---|---|---|
+| **Adizero** | Competencias y entrenamientos rápidos | 10/10 | 6/10 | 9/10 | Adizero SL · Boston 13 · Evo SL · Adios Pro 4 |
+| **Adistar** | Carreras de ritmos bajos y recuperación | 6/10 | 9/10 | 6/10 | Galaxy 7 · Questar 3 · Adistar 3 |
+| **Ultraboost** | Cualquier tipo de carrera (versátil) | 7/10 | 8/10 | 10/10 | Ultrarun 5 · Pureboost · Ultraboost 5X · Ultraboost 5 |
+| **Supernova** | Carreras diarias, máxima comodidad | 8/10 | 10/10 | 7/10 | Supernova Ease · Supernova Stride · Supernova Rise 3 |
