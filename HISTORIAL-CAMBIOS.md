@@ -12,6 +12,23 @@ el GAS es la versión más nueva.
 
 ---
 
+## 21/07/2026 (noche, más tarde) — Ícono de la PWA en el celu
+
+El fundador notó que al agregar la app a la pantalla de inicio del
+celu, aparecía un ícono genérico (el de respaldo de Brave) en vez del
+logo de Huella Runner. Causa real: `codigo.gs` generaba el ícono como
+un dibujo (SVG) pero lo devolvía como texto plano, no como imagen — el
+celu no podía usarlo. Se arregló apuntando el manifest directo a los
+PNG reales que ya están en Vercel (`icons/icon-192.png` y
+`icon-512.png`, el logo "HR" amarillo con la zapatilla que ya se usaba
+en la pantalla de bienvenida). Se sacó el generador de ícono roto. De
+paso se actualizaron los colores del manifest (fondo/tema), que
+seguían en el negro+neón lima viejo en vez del negro+dorado actual.
+
+**Importante:** este cambio no se ve hasta borrar el acceso directo
+viejo del celu y volver a agregarlo — el ícono se descarga una sola vez
+al instalar, no se actualiza solo.
+
 ## 21/07/2026 (noche) — Desplegable de marcas alfabético
 
 El `<select>` de "Marca" en Nueva Zapatilla estaba ordenado por

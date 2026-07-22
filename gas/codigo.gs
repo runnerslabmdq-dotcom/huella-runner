@@ -1,7 +1,18 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 21/07/2026 12:31 (hora Argentina)
+// Última actualización: 21/07/2026 21:59 (hora Argentina)
 // Cambios en esta versión:
+//   - BUG arreglado: el ícono de la PWA (page=icon) devolvía un SVG
+//     como texto plano (Content-Type text/plain), no una imagen real —
+//     por eso al agregar la app a la pantalla de inicio del celu
+//     aparecía un ícono genérico en vez del logo. El manifest ahora
+//     apunta directo a los PNG reales ya alojados en Vercel
+//     (huella-runner.vercel.app/icons/icon-192.png y icon-512.png,
+//     los mismos que ya usa la pantalla de bienvenida de la PWA). Se
+//     sacó el generador de ícono roto, que ya no lo usa nadie. De paso,
+//     el color de fondo/tema del manifest (que seguía en negro+neón
+//     lima viejo) se actualizó al negro+dorado actual de la marca.
+// Cambios en versiones anteriores:
 //   - BUG arreglado: getAdminDashboardData() (alertas de desgaste del
 //     panel admin) comparaba el km de cada zapatilla contra el umbral
 //     global fijo (TP.KM_UMBRAL_CUPON, 650) en vez del KM_Limite propio
@@ -93,33 +104,17 @@ function doGet(e) {
       scope:            appUrl,
       display:          'standalone',
       orientation:      'portrait',
-      background_color: '#000000',
-      theme_color:      '#CCFF00',
+      background_color: '#080808',
+      theme_color:      '#C5B358',
       lang:             'es',
       icons: [
-        { src: appUrl + '?page=icon&size=192', sizes: '192x192', type: 'image/png', purpose: 'any maskable' },
-        { src: appUrl + '?page=icon&size=512', sizes: '512x512', type: 'image/png', purpose: 'any maskable' }
+        { src: 'https://huella-runner.vercel.app/icons/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any maskable' },
+        { src: 'https://huella-runner.vercel.app/icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any maskable' }
       ]
     };
     return ContentService
       .createTextOutput(JSON.stringify(manifest))
       .setMimeType(ContentService.MimeType.JSON);
-  }
-
-  // ── PWA: Ícono generado (PNG 1×1 negro como placeholder seguro) ──
-  if (page === 'icon') {
-    // SVG renderizado como PNG via base64 — ícono con la "H" de Huella Runner en neon
-    const size = (e.parameter.size === '512') ? 512 : 192;
-    const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + size + '" height="' + size + '" viewBox="0 0 100 100">'
-      + '<rect width="100" height="100" fill="#000"/>'
-      + '<text x="50" y="62" font-family="Arial Black,sans-serif" font-size="56" font-weight="900" '
-      + 'fill="#CCFF00" text-anchor="middle">H</text>'
-      + '<text x="50" y="82" font-family="Arial,sans-serif" font-size="11" font-weight="700" '
-      + 'fill="#CCFF00" text-anchor="middle" letter-spacing="3">RUNNER</text>'
-      + '</svg>';
-    return ContentService
-      .createTextOutput(svg)
-      .setMimeType(ContentService.MimeType.TEXT);
   }
 
   // ── PWA: Service Worker ──
