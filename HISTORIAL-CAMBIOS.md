@@ -12,6 +12,23 @@ el GAS es la versión más nueva.
 
 ---
 
+## 22/07/2026 (tarde, aún más tarde) — Bug real: "Actividad Reciente" mostraba mal la hora
+
+El fundador cargó 21km a las 16:15 y el panel mostró "hace 16h" para
+ese mismo registro — y las entradas más viejas mostraban solo la fecha,
+sin hora. Causa encontrada: la hoja Entrenamientos guarda "Fecha" y
+"Hora" en columnas separadas, y `getActividadReciente()` solo leía
+"Fecha" — como esa columna no tiene hora, cada evento quedaba fijado a
+medianoche (00:00), y "hace cuánto" se calculaba desde ahí, no desde el
+momento real de la carga. A las 16:15, "tiempo desde medianoche" da
+justo ~16h — coincidencia que confirmó la causa.
+
+Arreglado con una función nueva (`_combinarFechaHora()`) que junta las
+dos columnas antes de calcular la hora real. Se aplicó tanto en
+`getActividadReciente()` como en `getInsightsExtendidos()` (agregada
+hoy mismo, tenía el mismo problema de fondo, aunque no se notaba porque
+ahí solo se usan días completos).
+
 ## 22/07/2026 (tarde, más tarde) — 6 secciones nuevas en el panel admin
 
 El fundador mandó capturas del panel admin (celu) y pidió un análisis a

@@ -1,7 +1,19 @@
 // ============================================================
 // HUELLA RUNNER — admin.gs
-// Última actualización: 22/07/2026 15:25 (hora Argentina)
+// Última actualización: 22/07/2026 16:23 (hora Argentina)
 // Cambios en esta versión:
+//   - BUG arreglado: "Actividad Reciente" mostraba mal el tiempo
+//     transcurrido (ej. "hace 16h" para algo cargado hace 2 minutos).
+//     Causa: en la hoja Entrenamientos, "Fecha" y "Hora" son columnas
+//     separadas — getActividadReciente() solo leía "Fecha" (sin hora),
+//     así que cada evento quedaba con la hora en medianoche, y el
+//     tiempo transcurrido se calculaba desde la medianoche, no desde
+//     el momento real. Nueva función _combinarFechaHora() arma el Date
+//     correcto juntando las dos columnas. Se usa acá y también en
+//     getInsightsExtendidos() (agregada hoy mismo, tenía el mismo
+//     problema de fondo, aunque no se notaba porque ahí solo se usan
+//     días completos, no horas).
+// Cambios en versiones anteriores:
 //   - Nueva función getInsightsExtendidos(token): ranking de constancia
 //     (días distintos con actividad en 30 días), horario pico real
 //     (usa la columna Hora de Entrenamientos), tendencia semanal
@@ -339,6 +351,7 @@ function getActividadReciente(token) {
       const tEmailCol = tHeaders.indexOf('Email_Usuario');
       const tKmCol    = tHeaders.indexOf('KM_Sumados');
       const tFechaCol = tHeaders.indexOf('Fecha');
+      const tHoraCol  = tHeaders.indexOf('Hora');
       const tZapaCol  = tHeaders.indexOf('ID_Zapa');
 
       // Tomar los últimos 20 registros (están ordenados cronológicamente)
@@ -347,7 +360,8 @@ function getActividadReciente(token) {
         const email = tData[i][tEmailCol] ? tData[i][tEmailCol].toString().trim().toLowerCase() : '';
         const km    = Number(tData[i][tKmCol]) || 0;
         const idZapa = tZapaCol !== -1 && tData[i][tZapaCol] ? tData[i][tZapaCol].toString() : '';
-        const fechaDate = _celdaADate(tData[i][tFechaCol]);
+        const horaRaw   = tHoraCol !== -1 ? tData[i][tHoraCol] : '';
+        const fechaDate = _combinarFechaHora(tData[i][tFechaCol], horaRaw);
         const fechaStr  = fechaDate ? _formatFechaHora(fechaDate) : '';
         if (email) {
           eventos.push({
@@ -553,7 +567,8 @@ function getInsightsExtendidos(token) {
 
         const email = tEmail !== -1 && tData[i][tEmail] ? tData[i][tEmail].toString().trim().toLowerCase() : '';
         const km    = tKm !== -1 ? (Number(tData[i][tKm]) || 0) : 0;
-        const fechaDate = tFecha !== -1 ? _celdaADate(tData[i][tFecha]) : null;
+        const horaRawVal = tHora !== -1 ? tData[i][tHora] : '';
+        const fechaDate  = tFecha !== -1 ? _combinarFechaHora(tData[i][tFecha], horaRawVal) : null;
         if (!email || !fechaDate) continue;
 
         if (!ultimaActividad[email] || fechaDate > ultimaActividad[email]) {
@@ -764,6 +779,26 @@ function _celdaADate(valor) {
   // Caso 3: ISO u otro formato que Date() entienda
   const d = new Date(str);
   return isNaN(d.getTime()) ? null : d;
+}
+
+// ------------------------------------------------------------
+// _combinarFechaHora: en la hoja Entrenamientos, "Fecha" y "Hora" son
+// DOS columnas separadas. Si solo se usa _celdaADate(Fecha), la hora
+// queda en 00:00 (medianoche) — eso hacía que "Actividad Reciente"
+// mostrara "hace 16h" para algo cargado a las 16:15, porque calculaba
+// el tiempo transcurrido desde la medianoche, no desde el momento real.
+// Esta función arma el Date correcto combinando las dos columnas.
+// ------------------------------------------------------------
+function _combinarFechaHora(fechaRaw, horaRaw) {
+  const base = _celdaADate(fechaRaw);
+  if (!base) return null;
+  const horaStr = (horaRaw || '').toString().trim();
+  if (!horaStr) return base; // sin columna Hora: se mantiene medianoche (mejor que nada)
+  const partes = horaStr.split(':');
+  const h = parseInt(partes[0], 10);
+  const m = parseInt(partes[1], 10);
+  if (isNaN(h) || isNaN(m)) return base;
+  return new Date(base.getFullYear(), base.getMonth(), base.getDate(), h, m);
 }
 
 // ------------------------------------------------------------
