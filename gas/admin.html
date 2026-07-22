@@ -1,8 +1,28 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Admin.html
-  Última actualización: 22/07/2026 14:43 (hora Argentina)
+  Última actualización: 22/07/2026 15:25 (hora Argentina)
   Cambios en esta versión:
+    - 6 secciones nuevas en "Insights del Negocio", pedidas por el
+      fundador tras revisar el panel a fondo:
+      · Constancia: ranking de quién entrena más SEGUIDO (no solo quién
+        acumula más km), últimos 30 días.
+      · Geografía: distribución de la comunidad por provincia (el dato
+        ya lo calculaba el backend, rankingProvincia, pero nunca se
+        mostraba en ningún lado).
+      · Horario Pico: dejó de ser un stub "Próximamente" — ahora usa la
+        hora real de cada entrenamiento.
+      · Tendencia Semanal: se sumó semana actual vs. anterior, últimas
+        8 semanas y últimos 6 meses (antes solo mostraba los últimos 7
+        días día por día).
+      · Insight Comercial: nueva tarjeta de abandono real (14+ días sin
+        entrenar, o nunca entrenaron) con lista desplegable y botón de
+        notificar por persona — reemplaza la señal débil de "no entrenó
+        hoy" que marcaba a casi todos los días.
+      · Salud del Sistema: nueva tarjeta de tasa de lectura de
+        notificaciones.
+    - Arreglado: "El mensaje llegará a 3 los usuarios registrados" tenía
+      el orden de palabras mal — ahora dice "a los 3 usuarios".
     - Texto chico secundario (etiquetas, subtítulos, horarios) muy
       difícil de leer: la variable --metal (usada en decenas de lugares
       del panel) estaba en un gris apagado (#808080) sobre fondo negro,
@@ -435,7 +455,7 @@
           placeholder="Email del usuario (o seleccioná desde la tabla arriba)...">
       </div>
       <div id="nf-destino-todos" class="nf-info">
-        El mensaje llegará a <strong id="total-users-label" style="color:var(--plata);">todos</strong> los usuarios registrados.
+        El mensaje llegará a los <strong id="total-users-label" style="color:var(--plata);">todos</strong> usuarios registrados.
       </div>
       <div class="nf-label">Mensaje</div>
       <textarea class="nf-textarea" id="nf-mensaje" placeholder="Escribí el mensaje que recibirán..."></textarea>
@@ -461,6 +481,8 @@
         <div class="ins-tab"          onclick="setInsTab('horario')">🕐 Horario Pico</div>
         <div class="ins-tab"          onclick="setInsTab('modelos')">👟 Recambio</div>
         <div class="ins-tab"          onclick="setInsTab('comercial')">💡 Insight Comercial</div>
+        <div class="ins-tab"          onclick="setInsTab('constancia')">📅 Constancia</div>
+        <div class="ins-tab"          onclick="setInsTab('geografia')">🗺️ Geografía</div>
       </div>
 
       <!-- A: PERFIL COMUNIDAD -->
@@ -486,6 +508,7 @@
         <div class="panel-title">KM registrados — últimos 7 días</div>
         <div id="ins-tend-chart"><div class="loading-row">Cargando...</div></div>
         <div id="ins-tend-resumen" style="margin-top:16px; padding-top:14px; border-top:1px solid var(--borde);"></div>
+        <div id="ins-tend-extra"></div>
       </div>
 
       <!-- F: GRUPOS EN MOVIMIENTO -->
@@ -516,6 +539,19 @@
       <div class="ins-content" id="ins-comercial">
         <div class="panel-title">Oportunidades de acción comercial</div>
         <div id="ins-comercial-cards"><div class="loading-row">Cargando...</div></div>
+        <div id="ins-abandono-lista" style="display:none;margin-top:16px;padding-top:14px;border-top:1px solid var(--borde);"></div>
+      </div>
+
+      <!-- I: CONSTANCIA -->
+      <div class="ins-content" id="ins-constancia">
+        <div class="panel-title">Ranking de constancia — días distintos con actividad (últimos 30 días)</div>
+        <div id="ins-constancia-list"><div class="loading-row">Cargando...</div></div>
+      </div>
+
+      <!-- J: GEOGRAFÍA -->
+      <div class="ins-content" id="ins-geografia">
+        <div class="panel-title">Comunidad por provincia</div>
+        <div id="ins-geografia-list"><div class="loading-row">Cargando...</div></div>
       </div>
 
     </div><!-- /insights-panel -->
@@ -532,6 +568,11 @@
         <div class="metric-lbl">Caché de comunidad</div>
         <div class="metric-val" id="health-cache-fecha" style="font-size:1.15rem;">—</div>
         <div class="metric-sub">última actualización (cron nocturno)</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-lbl">Notificaciones leídas</div>
+        <div class="metric-val" id="health-notif-lectura">—</div>
+        <div class="metric-sub" id="health-notif-detalle">—</div>
       </div>
     </div>
 
@@ -556,6 +597,7 @@
   let filtroActivo        = 'todos';
   let alertasData         = [];
   let actividadPorDiaData = [];
+  let insightsExtData     = null;
   let insTabActual        = 'comunidad';
 
   // Estado compartido entre las dos llamadas async (stats y dashboard).
@@ -581,6 +623,7 @@
     cargarGrupos();
     cargarActividadPorDia();
     cargarSaludSistema();
+    cargarInsightsExtendidos();
   }
 
   /* ════════════════════════════════════
@@ -597,6 +640,181 @@
       })
       .withFailureHandler(function() {})
       .getSystemHealth(ADMIN_TOKEN);
+  }
+
+  /* ════════════════════════════════════
+     INSIGHTS EXTENDIDOS — constancia, horario real, tendencia
+     semanal/mensual con comparación, abandono real, lectura notif.
+  ════════════════════════════════════ */
+  function cargarInsightsExtendidos() {
+    google.script.run
+      .withSuccessHandler(function(data) {
+        if (!data || !data.success) return;
+        insightsExtData = data;
+        _renderConstancia();
+        _renderHorarioReal();
+        _renderTendenciaExtendida();
+        _renderNotifLectura();
+        _renderInsightComercial(); // re-renderiza para sumar la tarjeta de abandono
+      })
+      .withFailureHandler(function() {})
+      .getInsightsExtendidos(ADMIN_TOKEN);
+  }
+
+  function _renderConstancia() {
+    const cont = document.getElementById('ins-constancia-list');
+    if (!cont) return;
+    const lista = (insightsExtData && insightsExtData.rankingConstancia) || [];
+    if (!lista.length) {
+      cont.innerHTML = '<div style="text-align:center;padding:24px;font-size:0.84rem;color:var(--metal);">Sin actividad en los últimos 30 días</div>';
+      return;
+    }
+    const maxDias = lista[0].diasActivos || 1;
+    cont.innerHTML =
+      '<div style="font-size:0.66rem;color:var(--gris);margin-bottom:16px;padding:10px 12px;' +
+      'background:var(--bg2);border-radius:8px;border:1px solid var(--borde);line-height:1.6;">' +
+      '📅 Quién entrena más <strong style="color:var(--neon)">seguido</strong> (no solo quién acumula más km) — ' +
+      'útil para premiar regularidad, no solo volumen.</div>' +
+      lista.map(function(u, i) {
+        const pct = Math.round((u.diasActivos / maxDias) * 100);
+        return `<div style="margin-bottom:16px;">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;">
+            <div class="top-modelo-pos ${i < 3 ? 't'+(i+1) : ''}">${i+1}</div>
+            <div class="top-modelo-info">
+              <div class="top-modelo-name">${sanitize(u.nombre)}</div>
+              <div class="top-modelo-marca">${sanitize(u.grupo || 'Sin grupo')}</div>
+            </div>
+            <div class="top-modelo-count">${u.diasActivos}<span>día${u.diasActivos!==1?'s':''}</span></div>
+          </div>
+          <div class="nivel-bar-track"><div class="nivel-bar-fill" style="width:${pct}%;background:var(--neon);"></div></div>
+        </div>`;
+      }).join('');
+  }
+
+  function _renderGeografia(data) {
+    const cont = document.getElementById('ins-geografia-list');
+    if (!cont) return;
+    const lista = (data && data.rankingProvincia) || [];
+    if (!lista.length) {
+      cont.innerHTML = '<div style="text-align:center;padding:24px;font-size:0.84rem;color:var(--metal);">Todavía no hay provincias cargadas</div>';
+      return;
+    }
+    const maxRunners = lista[0].runners || 1;
+    cont.innerHTML =
+      '<div style="font-size:0.66rem;color:var(--gris);margin-bottom:16px;padding:10px 12px;' +
+      'background:var(--bg2);border-radius:8px;border:1px solid var(--borde);line-height:1.6;">' +
+      '🗺️ De dónde es tu comunidad — útil para saber dónde tiene sentido buscar sponsors locales.</div>' +
+      lista.map(function(p, i) {
+        const pct = Math.round((p.runners / maxRunners) * 100);
+        return `<div style="margin-bottom:16px;">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;">
+            <div class="top-modelo-pos ${i < 3 ? 't'+(i+1) : ''}">${i+1}</div>
+            <div class="top-modelo-info">
+              <div class="top-modelo-name">${sanitize(p.provincia)}</div>
+              <div class="top-modelo-marca">${Math.round(p.kmTotal||0)} km acumulados</div>
+            </div>
+            <div class="top-modelo-count">${p.runners}<span>runner${p.runners!==1?'s':''}</span></div>
+          </div>
+          <div class="nivel-bar-track"><div class="nivel-bar-fill" style="width:${pct}%;background:var(--neon);"></div></div>
+        </div>`;
+      }).join('');
+  }
+
+  function _renderHorarioReal() {
+    const cont = document.getElementById('ins-horario-body');
+    if (!cont || !insightsExtData) return;
+    const h = insightsExtData.horarioPico || { manana: 0, tarde: 0, noche: 0, totalRegistros: 0 };
+    const franjas = [
+      { lbl: '🌅 Mañana', rango: '6 – 12 h',  pct: h.manana },
+      { lbl: '☀️ Tarde',  rango: '12 – 19 h', pct: h.tarde  },
+      { lbl: '🌙 Noche',  rango: '19 – 6 h',  pct: h.noche  }
+    ];
+    if (!h.totalRegistros) {
+      cont.innerHTML = franjas.map(function(f) {
+        return `<div style="margin-bottom:14px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <div style="font-size:0.78rem;font-weight:700;color:var(--plata);">${f.lbl}</div>
+            <div style="font-size:0.62rem;color:var(--metal);">${f.rango}</div>
+          </div>
+          <div class="nivel-bar-track"><div class="nivel-bar-fill" style="width:0%;background:#2a2a2a;"></div></div>
+        </div>`;
+      }).join('') +
+      `<div style="text-align:center;padding:16px;font-size:0.84rem;color:var(--metal);">Todavía no hay entrenamientos con hora registrada</div>`;
+      return;
+    }
+    cont.innerHTML = franjas.map(function(f) {
+      return `<div style="margin-bottom:14px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <div style="font-size:0.78rem;font-weight:700;color:var(--plata);">${f.lbl}</div>
+          <div style="font-size:0.62rem;color:var(--metal);">${f.rango} · ${f.pct}%</div>
+        </div>
+        <div class="nivel-bar-track"><div class="nivel-bar-fill" style="width:${f.pct}%;background:var(--neon);"></div></div>
+      </div>`;
+    }).join('') +
+    `<div style="font-size:0.72rem;color:var(--metal);line-height:1.6;padding:14px 16px;background:var(--bg2);border-radius:8px;border:1px solid var(--borde);margin-top:6px;">
+      Sobre ${h.totalRegistros} entrenamiento${h.totalRegistros!==1?'s':''} con hora registrada. Sirve para elegir el mejor momento para enviar notificaciones y promos con mayor apertura.
+    </div>`;
+  }
+
+  function _renderTendenciaExtendida() {
+    const cont = document.getElementById('ins-tend-extra');
+    if (!cont || !insightsExtData) return;
+
+    const semActual   = insightsExtData.semanaActualKm   || 0;
+    const semAnterior = insightsExtData.semanaAnteriorKm || 0;
+    const delta       = semActual - semAnterior;
+    const deltaColor  = delta > 0 ? '#39FF14' : (delta < 0 ? '#FF2D55' : 'var(--metal)');
+    const deltaTexto  = delta > 0 ? '+' + delta + ' km' : (delta < 0 ? delta + ' km' : 'sin cambios');
+
+    const semanas = insightsExtData.tendenciaSemanas || [];
+    const maxSem  = Math.max.apply(null, semanas.map(function(s) { return s.km || 0; })) || 1;
+    const meses   = insightsExtData.tendenciaMeses || [];
+    const maxMes  = Math.max.apply(null, meses.map(function(m) { return m.km || 0; })) || 1;
+
+    let extra = `<div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--borde);">
+      <div class="panel-title">Semana actual vs. anterior</div>
+      <div style="display:flex;align-items:baseline;gap:10px;">
+        <div style="font-size:1.6rem;font-weight:900;color:var(--neon);">${semActual} km</div>
+        <div style="font-size:0.78rem;font-weight:700;color:${deltaColor};">${deltaTexto} vs. semana anterior (${semAnterior} km)</div>
+      </div>
+    </div>`;
+
+    extra += `<div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--borde);">
+      <div class="panel-title">Últimas 8 semanas</div>` +
+      semanas.map(function(s) {
+        const pct = Math.round((s.km / maxSem) * 100);
+        return `<div class="tend-row">
+          <div class="tend-day" style="width:78px;font-size:0.6rem;white-space:nowrap;">${s.label}</div>
+          <div class="tend-track">
+            <div class="tend-fill" style="width:${pct}%;${s.km>0?'':'background:#1a1a1a;'}"></div>
+          </div>
+          <div class="tend-info">${s.km} km</div>
+        </div>`;
+      }).join('') + '</div>';
+
+    extra += `<div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--borde);">
+      <div class="panel-title">Últimos 6 meses</div>` +
+      meses.map(function(m) {
+        const pct = Math.round((m.km / maxMes) * 100);
+        return `<div class="tend-row">
+          <div class="tend-day">${m.label}</div>
+          <div class="tend-track">
+            <div class="tend-fill" style="width:${pct}%;${m.km>0?'':'background:#1a1a1a;'}"></div>
+          </div>
+          <div class="tend-info">${m.km} km</div>
+        </div>`;
+      }).join('') + '</div>';
+
+    cont.innerHTML = extra;
+  }
+
+  function _renderNotifLectura() {
+    const el = document.getElementById('health-notif-lectura');
+    if (!el || !insightsExtData) return;
+    const n = insightsExtData.notifLectura || { enviadas: 0, leidas: 0, pct: 0 };
+    el.textContent = n.pct + '%';
+    document.getElementById('health-notif-detalle').textContent =
+      n.leidas + ' leídas de ' + n.enviadas + ' enviadas';
   }
 
   // Vuelve a la app principal (login/dashboard).
@@ -975,7 +1193,7 @@
   function setInsTab(tab) {
     insTabActual = tab;
     document.querySelectorAll('.ins-tab').forEach(function(el, i) {
-      const tabs = ['comunidad','grupos','zapas','tendencia','vidautil','horario','modelos','comercial'];
+      const tabs = ['comunidad','grupos','zapas','tendencia','vidautil','horario','modelos','comercial','constancia','geografia'];
       el.classList.toggle('active', tabs[i] === tab);
     });
     document.querySelectorAll('.ins-content').forEach(function(el) {
@@ -1027,11 +1245,11 @@
       </div>`;
     }).join('');
 
-    /* ── E, F, G, H ── */
+    /* ── E, F, G ── (H: Horario Pico ahora lo pinta _renderHorarioReal(),
+       ver getInsightsExtendidos — este módulo viejo quedó obsoleto) */
     _renderInsightComercial();
     _renderGrupos();
     _renderVidaUtil();
-    _renderHorario();
   }
 
   /* ════════════════════════════════════════════════════
@@ -1041,6 +1259,9 @@
   function _renderInsightsDesdeDashboard(data) {
     if (!data || !data.alertasDesgaste) return;
     const alertas = data.alertasDesgaste || [];
+
+    /* ── J: Geografía (rankingProvincia ya viene calculado del backend) ── */
+    _renderGeografia(data);
 
     /* ── B: Semáforo ── */
     let critico    = 0;
@@ -1281,6 +1502,20 @@
       }
     ];
 
+    // Abandono real (14+ días sin entrenar, o nunca entrenaron) — usa
+    // getInsightsExtendidos, que carga por separado y puede llegar
+    // después de esta primera pintada; por eso se agrega acá si ya está.
+    if (insightsExtData && insightsExtData.abandono) {
+      const ab = insightsExtData.abandono;
+      insights.push({
+        icon: '⚠️', num: ab.lista.length,
+        title: ab.lista.length + ' runners sin actividad hace 14+ días (o nunca entrenaron)',
+        desc: 'A diferencia de "no entrenó hoy", esto marca abandono real. Es el momento de un mensaje personal antes de perderlos del todo.',
+        action: 'Ver lista y notificar',
+        onClick: "toggleListaAbandono()"
+      });
+    }
+
     cont.innerHTML = insights.map(function(ins) {
       return `<div class="insight-card">
         <div class="insight-icon">${ins.icon}</div>
@@ -1302,6 +1537,33 @@
     if (mensaje) document.getElementById('nf-mensaje').value = mensaje;
     const panel = document.getElementById('panel-notificacion');
     if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function toggleListaAbandono() {
+    const cont = document.getElementById('ins-abandono-lista');
+    if (!cont) return;
+    const visible = cont.style.display !== 'none';
+    if (visible) { cont.style.display = 'none'; return; }
+
+    const lista = (insightsExtData && insightsExtData.abandono && insightsExtData.abandono.lista) || [];
+    if (!lista.length) {
+      cont.innerHTML = '<div style="text-align:center;padding:16px;font-size:0.84rem;color:var(--metal);">Nadie en esta situación por ahora ✅</div>';
+    } else {
+      cont.innerHTML = lista.map(function(u) {
+        const diasTxt = u.diasSinEntrenar === null ? 'Nunca entrenó' : 'Hace ' + u.diasSinEntrenar + ' días';
+        const esc  = sanitize(u.nombre).replace(/'/g, "\\'");
+        const escE = sanitize(u.email).replace(/'/g, "\\'");
+        return `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--borde);">
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:0.82rem;font-weight:700;color:var(--plata);">${sanitize(u.nombre)}</div>
+            <div style="font-size:0.65rem;color:var(--metal);">${sanitize(u.grupo || 'Sin grupo')} · ${diasTxt}</div>
+          </div>
+          <button class="notif-btn" onclick="seleccionarDestinatario('${escE}', '${esc}')">✉ Notificar</button>
+        </div>`;
+      }).join('');
+    }
+    cont.style.display = 'block';
+    cont.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
   /* ════════════════════════════════════════════════════
@@ -1372,31 +1634,6 @@
       </div>
       <div style="font-size:0.72rem;color:var(--metal);line-height:1.6;padding:14px 16px;background:var(--bg2);border-radius:8px;border:1px solid var(--borde);">
         ⏳ <strong style="color:var(--gris);">Próximamente:</strong> cuando conectemos el backend, vas a ver acá cuántos km le saca en promedio un corredor a una zapatilla <strong style="color:var(--gris);">antes de archivarla</strong>. Ese dato es clave para saber cada cuánto tu cliente necesita reponer calzado.
-      </div>`;
-  }
-
-  /* ════════════════════════════════════════════════════
-     INSIGHTS — Módulo H: Horario Pico
-  ════════════════════════════════════════════════════ */
-  function _renderHorario() {
-    const cont   = document.getElementById('ins-horario-body');
-    const franjas = [
-      { lbl: '🌅 Mañana', rango: '6 – 12 h',  pct: 0 },
-      { lbl: '☀️ Tarde',  rango: '12 – 19 h', pct: 0 },
-      { lbl: '🌙 Noche',  rango: '19 – 6 h',  pct: 0 }
-    ];
-    cont.innerHTML =
-      franjas.map(function(f) {
-        return `<div style="margin-bottom:14px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-            <div style="font-size:0.78rem;font-weight:700;color:var(--plata);">${f.lbl}</div>
-            <div style="font-size:0.62rem;color:var(--metal);">${f.rango}</div>
-          </div>
-          <div class="nivel-bar-track"><div class="nivel-bar-fill" style="width:${f.pct}%;background:#2a2a2a;"></div></div>
-        </div>`;
-      }).join('') +
-      `<div style="font-size:0.72rem;color:var(--metal);line-height:1.6;padding:14px 16px;background:var(--bg2);border-radius:8px;border:1px solid var(--borde);margin-top:6px;">
-        ⏳ <strong style="color:var(--gris);">Próximamente:</strong> cuando conectemos el backend con la hora de cada entrenamiento, vas a ver en qué franja entrena más la comunidad. Sirve para elegir el mejor momento para enviar notificaciones y promos con mayor apertura.
       </div>`;
   }
 
