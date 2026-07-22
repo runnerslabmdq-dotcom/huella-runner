@@ -1,7 +1,16 @@
 // ============================================================
 // HUELLA RUNNER — trail-points.gs
-// Última actualización: 20/07/2026 00:35 (hora Argentina)
+// Última actualización: 22/07/2026 12:30 (hora Argentina)
 // Cambios en esta versión:
+//   - Mensaje del cupón de desgaste, más honesto: como todavía no hay
+//     marcas/tiendas asociadas para canjear el cupón, el mensaje ya no
+//     promete "usalo en tu próxima compra" — ahora avisa que la
+//     zapatilla llegó a su límite y que el código sirve "para cuando
+//     sumemos marcas asociadas". Sigue siendo el mismo mecanismo
+//     (mensaje automático en la campanita, código HR-DESGASTE-...), es
+//     solo el texto el que cambió para no prometer algo que hoy no
+//     se puede cumplir.
+// Cambios en versiones anteriores:
 //   - Paso 1 del límite de km por zapatilla: _calcularEstadoDesgaste(km,
 //     limite) ahora recibe el límite propio de cada zapatilla (columna
 //     nueva KM_Limite en Zapatillas) en vez de usar siempre el umbral
@@ -290,8 +299,8 @@ function _emitirCupon(email, idZapa, marca, modelo, kmAlEmitir) {
     enviarNotificacion(
       'individual',
       email,
-      `🏆 ¡Cupón Trail Points desbloqueado! Tus ${marca} ${modelo} llegaron a ${kmAlEmitir} km. Cupón de descuento: ${codigo}. ¡Usalo en tu próxima compra en Huella Runner!`,
-      'Premio'
+      `👟 Tu ${marca} ${modelo} llegó a su límite de ${kmAlEmitir} km. Por ahora no tenemos marcas asociadas para canjear beneficios, pero guardá este código para cuando las sumemos: ${codigo}.`,
+      'Mensaje'
     );
   } catch(_) {}
 
