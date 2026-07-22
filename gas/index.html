@@ -1,8 +1,15 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 22/07/2026 08:17 (hora Argentina)
+  Última actualización: 22/07/2026 16:29 (hora Argentina)
   Cambios en esta versión:
+    - La barra de progreso de km (debajo de cada zapatilla) tenía el
+      fondo negro puro, igual que el resto de la tarjeta — cuando el
+      uso era bajo (poco relleno amarillo) la barra prácticamente no se
+      veía. Se le agregó un contorno finito gris al 50% de opacidad
+      para que el "track" completo sea visible siempre, esté vacía o
+      llena.
+  Cambios en versiones anteriores:
     - BUG arreglado (de verdad esta vez): el ícono que se ve al agregar
       la app a la pantalla de inicio venía del manifest metido en la
       línea 172 (data URI), no del que se había tocado en codigo.gs —
@@ -527,7 +534,7 @@
 
     /* ── Barra de km ── */
     .cf-bar-section { padding: 4px 12px 8px; }
-    .cf-bar-wrap { width: 100%; height: 3px; background: #000; border-radius: 2px; overflow: hidden; }
+    .cf-bar-wrap { width: 100%; height: 3px; background: #000; border: 1px solid rgba(128,128,128,0.5); border-radius: 2px; overflow: hidden; }
     .cf-bar-fill { height: 100%; background: linear-gradient(90deg, #F0FF00, #BFCA00); border-radius: 2px; transition: width 0.5s ease; }
     .cf-km { font-size: 0.60rem; color: var(--gris-texto); margin-top: 4px; font-weight: 700; display: flex; justify-content: space-between; }
     .cf-km .km-val { color: var(--amarillo); }

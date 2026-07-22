@@ -12,6 +12,18 @@ el GAS es la versión más nueva.
 
 ---
 
+## 22/07/2026 (tarde, todavía más) — Barra de km casi invisible cuando el uso es bajo
+
+El fundador notó que la barrita de progreso de km (debajo de cada
+zapatilla, ej. "57 km / 800 km") casi no se veía hasta que empezaba a
+rellenarse de amarillo. Causa: el fondo de esa barra era negro puro
+(`#000`), igual que el resto de la tarjeta, así que sin relleno era
+invisible. Se le agregó un contorno finito gris al 50% de opacidad para
+que el "track" completo se vea siempre, tenga poco o mucho uso.
+Archivo: `gas/index.html` (`.cf-bar-wrap`).
+
+---
+
 ## 22/07/2026 (tarde, aún más tarde) — Bug real: "Actividad Reciente" mostraba mal la hora
 
 El fundador cargó 21km a las 16:15 y el panel mostró "hace 16h" para
