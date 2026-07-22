@@ -12,6 +12,18 @@ el GAS es la versión más nueva.
 
 ---
 
+## 22/07/2026 — Ícono de la PWA, segunda vuelta (la buena)
+
+El arreglo del 21/07 (abajo) tocó un manifest que en realidad no se
+estaba usando — el que sí manda es uno metido directo en `Index.html`
+(línea 172, como "data URI"). Se agregó un `<link rel="icon">` estándar
+ahí (apuntando al mismo ícono "HR" de Cloudinary), para el caso de que
+el navegador arme un acceso directo simple en vez de instalar la PWA
+completa — ese camino usa el favicon de la página, y no había ninguno
+declarado. De paso se actualizó el color del manifest real (seguía en
+neón lima viejo). Mismo recordatorio de siempre: borrar el acceso
+directo del celu y agregarlo de nuevo para ver el ícono nuevo.
+
 ## 21/07/2026 (noche, más tarde) — Ícono de la PWA en el celu
 
 El fundador notó que al agregar la app a la pantalla de inicio del
