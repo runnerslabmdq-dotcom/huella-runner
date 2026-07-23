@@ -12,6 +12,16 @@ el GAS es la versión más nueva.
 
 ---
 
+## 22/07/2026 (noche, más tarde) — 7 modelos de Saucony nuevos
+
+Agregados al catálogo con foto propia: Kinvara Pro, Triumph 23, Triumph
+21, Triumph 22, Kinvara 14, Ride 16, Endorphin Pro 5. Ver
+`docs/cloudinarys-zapatillas.md`. De los 8 links enviados, el 8vo era en
+realidad la foto de Nike Revolution 7 (ya cargada antes) — no se
+duplicó.
+
+---
+
 ## 22/07/2026 (noche) — Respaldo automático diario del Sheet
 
 Después de que una pestaña del Sheet se borrara o se corriera de lugar
