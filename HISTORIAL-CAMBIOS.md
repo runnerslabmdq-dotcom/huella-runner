@@ -12,6 +12,29 @@ el GAS es la versión más nueva.
 
 ---
 
+## 23/07/2026 (mañana) — RUNNER en cursiva + correos unificados
+
+Dos cambios pedidos por el fundador:
+
+1. **"RUNNER" con una leve inclinación hacia la derecha** en los 4
+   logos de login/registro/contraseña (`gas/index.html`). Se usa un
+   inclinado por CSS (`transform:skewX`) en vez de cursiva real porque
+   Bebas Neue no tiene una variante itálica. El logo de adentro de la
+   app (arriba a la izquierda) no se tocó — queda pendiente si se
+   quiere igual ahí.
+
+2. **Correos de bienvenida y recuperación de contraseña**
+   (`gas/codigo.gs`) — tenían un tercer esquema de color que había
+   quedado suelto: verde lima (#dcfd8b) + plata, ni el verde del login
+   viejo ni el dorado del resto de la app. Se unificó a plata + dorado
+   (#C5B358), con "RUNNER" en cursiva real esta vez (font-style:italic,
+   más confiable en Gmail/Outlook que un inclinado por CSS). También se
+   pasó a dorado la contraseña temporal resaltada y la mención de
+   "Huella Runner" en el correo de bienvenida, que usaban el mismo
+   verde lima viejo.
+
+---
+
 ## 23/07/2026 (madrugada, más tarde) — Logo unificado en login/registro
 
 El fundador notó (con capturas) que el logo "HUELLA RUNNER" se veía
