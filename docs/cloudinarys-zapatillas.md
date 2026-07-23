@@ -131,6 +131,23 @@ color distinto, avisar para agregarlo aparte.
 | Puma | Deviate Nitro 3 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784774137/Puma_Deviate_Nitro_3_ST_kauopp.png |
 | Puma | Deviate Nitro 4 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784774138/Puma_Deviate_Nitro_4_ST_hgbl8q.png |
 | Puma | Velocity Nitro 4 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784774128/Puma_Velocity_Nitro_4_ST_v67k6q.png |
+| Hoka | Mafate Speed 4 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784776880/Hoka_Mafate_Speed_4_vgdgzo.png |
+| Hoka | Match 6 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784776864/Hoka_Match_6_ST_xiailk.png |
+| Hoka | Solimar | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784776859/Hoka_Solimar_ST_zdbvvx.png |
+| Saucony | Endorphin Azura | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784776880/Saucony_Endorphin_Azura_ST_vtxwki.png |
+| Adidas | Terrex Agravic 4 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784776872/Adidas_Terrex_Agravic_4_TT_kcacj2.png |
+| Asics | Novablast 5 Tokyo | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784776848/Zapatillas_Asics_Novablast_5_Tokyo_cgyrgd.png |
+| New Balance | FuelCell Rebel v3 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784776859/New_Balance_FuelCell_Rebel_v3_raocwy.png |
+| New Balance | Fresh Foam X Vongo v6 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784776856/New_Balance_Fresh_Foam_X_Vongo_v6_ST_ravak2.png |
+| Nike | Pegasus 39 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784776839/Nike_Pegasus_39_ST_iueltt.png |
+| Nike | Structure 25 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784776830/Nike_Structure_25_ST_js9nxo.png |
+| Nike | Winflo 9 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784776813/Nike_Winflo_9_ST_cgnsxu.png |
+| Under Armour | Hovr Synergy | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784776814/Under_Armour_Hovr_Synergy_ST_qba0pj.png |
+
+**Sin usar (a confirmar):** `Nike_Air_Zoom_Pegasus_41_ST_mshrxa.png` — misma
+zapatilla que "Pegasus 41" (ya cargada con otra foto). No se agregó como
+modelo nuevo ni se reemplazó la foto existente; avisar si se quiere
+usar esta foto en lugar de la actual.
 
 **Sin usar (duplicado):** el 8vo link enviado junto con esta tanda de
 Saucony era en realidad `Nike_Revolution_7_a4z8wi.png`, ya cargado antes
