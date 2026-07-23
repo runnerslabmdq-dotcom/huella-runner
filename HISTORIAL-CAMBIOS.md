@@ -12,6 +12,23 @@ el GAS es la versión más nueva.
 
 ---
 
+## 23/07/2026 (madrugada) — 12 modelos nuevos, marcas varias
+
+Agregados con foto propia: Hoka Mafate Speed 4, Hoka Match 6, Hoka
+Solimar, Saucony Endorphin Azura, Adidas Terrex Agravic 4, Asics
+Novablast 5 Tokyo, New Balance FuelCell Rebel v3, New Balance Fresh
+Foam X Vongo v6 (primeros modelos de New Balance — antes la marca no
+tenía ninguno cargado), Nike Pegasus 39, Nike Structure 25, Nike
+Winflo 9, Under Armour Hovr Synergy (primer modelo de Under Armour,
+antes sin ninguno). Ver `docs/cloudinarys-zapatillas.md`.
+
+De los 13 links que llegaron, uno quedó afuera: "Nike Air Zoom Pegasus
+41" es la misma zapatilla que "Pegasus 41" (ya cargada) — Nike sacó el
+"Air Zoom" del nombre hace unas versiones, es la misma. Queda pendiente
+confirmar con el fundador si quería reemplazar esa foto por la nueva.
+
+---
+
 ## 22/07/2026 (noche, la última de hoy) — Marca nueva: Puma
 
 Se agrega Puma al desplegable de marcas (entre Osx y Salomon,
