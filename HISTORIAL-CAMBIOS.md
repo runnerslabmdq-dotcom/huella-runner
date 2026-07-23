@@ -12,6 +12,13 @@ el GAS es la versión más nueva.
 
 ---
 
+## 22/07/2026 (noche, todavía más tarde) — 1 modelo más de Saucony
+
+Agregado "Endorphin" (modelo base de esa línea, distinto de "Endorphin
+Pro 5" que se había cargado en la tanda anterior).
+
+---
+
 ## 22/07/2026 (noche, más tarde) — 7 modelos de Saucony nuevos
 
 Agregados al catálogo con foto propia: Kinvara Pro, Triumph 23, Triumph

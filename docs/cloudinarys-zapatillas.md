@@ -125,6 +125,7 @@ color distinto, avisar para agregarlo aparte.
 | Saucony | Kinvara 14 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784773230/Saucony_Kinvara_14_ST_pnfbzz.png |
 | Saucony | Ride 16 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784773226/Saucony_Ride_16_ST_vzm4pd.png |
 | Saucony | Endorphin Pro 5 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784773212/Saucony_Endorphin_Pro_5_pjrt4d.png |
+| Saucony | Endorphin | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784773230/Saucony_Endorphin_ocmpmr.png |
 
 **Sin usar (duplicado):** el 8vo link enviado junto con esta tanda de
 Saucony era en realidad `Nike_Revolution_7_a4z8wi.png`, ya cargado antes
