@@ -1,8 +1,22 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 23/07/2026 11:10 (hora Argentina)
+  Última actualización: 23/07/2026 13:07 (hora Argentina)
   Cambios en esta versión:
+    - "Powered by Huella Runner MDQ" de las 3 pantallas de login/
+      registro/onboarding (arriba del logo grande) ahora tiene el mismo
+      estilo que el del pie del carrusel: más chico (0.5rem), "Huella
+      Runner" en cursiva y "Runner" en dorado.
+    - "Tus zapatillas activas" (subtítulo del carrusel): un poco más
+      chico, y la palabra "zapatillas" en dorado (el resto queda igual).
+    - Notificaciones: se puede seleccionar varios mensajes a la vez
+      (botón "Seleccionar" arriba, tocás cada tarjeta para tildarla,
+      como en Google Fotos) y borrarlos juntos con un solo botón. El
+      borrado individual (el tacho por mensaje) sigue igual que antes.
+      No se tocó el backend — ya borraba "de mentira" (solo se oculta
+      para ese usuario, el registro queda en el Sheet para siempre), acá
+      solo se agregó la forma de elegir varios de una.
+  Cambios en versiones anteriores:
     - Dentro del "Powered by Huella Runner MDQ" del pie del carrusel:
       "Huella Runner" ahora en cursiva (font-style:italic — acá sí hay
       itálica real porque es tipografía Montserrat, no Bebas Neue) y
@@ -384,7 +398,7 @@
     .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
 
     .armario-header { margin: 10px 0 20px; display: flex; flex-direction: column; align-items: center; }
-    .armario-subtitle { font-size: 1.05rem; font-weight: 800; color: var(--plata); text-transform: uppercase; letter-spacing: 2px; margin-top: 3px; }
+    .armario-subtitle { font-size: 0.92rem; font-weight: 800; color: var(--plata); text-transform: uppercase; letter-spacing: 2px; margin-top: 3px; }
 
     /* =====================================================
        GRILLA DE ZAPATILLAS
@@ -1371,8 +1385,35 @@
       padding: 16px 18px;
       margin-bottom: 12px;
       transition: opacity 0.4s, border-color 0.3s;
+      position: relative;
     }
     .notif-card.leida { opacity: 0.45; }
+    .notif-check {
+      position: absolute;
+      left: 14px;
+      top: 16px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid var(--gris-texto);
+      background: transparent;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      color: transparent;
+      opacity: 0;
+      pointer-events: none;
+      transition: background 0.15s, border-color 0.15s, color 0.15s, opacity 0.15s;
+    }
+    #notif-list.select-mode .notif-card { cursor: pointer; padding-left: 46px; transition: padding-left 0.15s; }
+    #notif-list.select-mode .notif-check { display: flex; opacity: 1; pointer-events: auto; }
+    #notif-list.select-mode .notif-actions { display: none; }
+    .notif-card.selected { border-color: var(--amarillo); }
+    .notif-card.selected .notif-check {
+      background: var(--amarillo);
+      border-color: var(--amarillo);
+      color: #000;
+    }
     .notif-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
     .notif-tipo-badge {
       font-size: 0.52rem; font-weight: 900; text-transform: uppercase;
@@ -1433,10 +1474,9 @@
 
     <!-- Header -->
   <div style="text-align:center;position:relative;z-index:1;margin-top:8px;">
-    <div style="color:#888;font-size:0.55rem;text-transform:uppercase;letter-spacing:3px;
+    <div style="font-family:'Montserrat',sans-serif;color:#aaaaaa;font-size:0.5rem;text-transform:uppercase;letter-spacing:2px;
       margin-bottom:4px;font-weight:700;line-height:1.5;">
-      Powered by
-      <span style="color:#cccccc;font-weight:900;letter-spacing:2px;">Huella Runner MDQ</span>
+      Powered by <span style="font-style:italic;">Huella <span style="color:var(--amarillo);">Runner</span></span> MDQ
     </div>
     <h1 style="font-size:2.4rem;font-weight:900;margin:8px 0 0;
       letter-spacing:2px;line-height:1.05;font-family:'Bebas Neue',sans-serif;">
@@ -1519,9 +1559,9 @@
   <div id="view-login" style="display:block;">
     <!-- Header -->
     <div style="text-align:center;position:relative;z-index:1;margin-top:8px;margin-bottom:16px;">
-      <div style="color:#cccccc;font-size:0.55rem;text-transform:uppercase;letter-spacing:3px;
+      <div style="font-family:'Montserrat',sans-serif;color:#aaaaaa;font-size:0.5rem;text-transform:uppercase;letter-spacing:2px;
         margin-bottom:6px;font-weight:700;line-height:1;">
-        Powered by Huella Runner MDQ
+        Powered by <span style="font-style:italic;">Huella <span style="color:var(--amarillo);">Runner</span></span> MDQ
       </div>
       <h1 style="font-size:2.4rem;font-weight:900;margin:0;
         letter-spacing:2px;line-height:1.05;font-family:'Bebas Neue',sans-serif;">
@@ -1590,9 +1630,9 @@
   <div id="view-register" style="display:none;">
     <!-- Header -->
     <div style="text-align:center;position:relative;z-index:1;margin-top:8px;margin-bottom:16px;">
-      <div style="color:#cccccc;font-size:0.55rem;text-transform:uppercase;letter-spacing:3px;
+      <div style="font-family:'Montserrat',sans-serif;color:#aaaaaa;font-size:0.5rem;text-transform:uppercase;letter-spacing:2px;
         margin-bottom:6px;font-weight:700;line-height:1;">
-        Powered by Huella Runner MDQ
+        Powered by <span style="font-style:italic;">Huella <span style="color:var(--amarillo);">Runner</span></span> MDQ
       </div>
       <h1 style="font-size:2.4rem;font-weight:900;margin:0;
         letter-spacing:2px;line-height:1.05;font-family:'Bebas Neue',sans-serif;">
@@ -1754,7 +1794,7 @@
       </div>
     </div>
     <div class="armario-header">
-      <div class="armario-subtitle">Tus zapatillas activas</div>
+      <div class="armario-subtitle">Tus <span style="color:var(--amarillo);">zapatillas</span> activas</div>
     </div>
     <!-- CARRUSEL COVERFLOW -->
     <div class="coverflow-wrap" id="shoe-grid">
@@ -1841,14 +1881,20 @@
   <!-- VISTA: NOTIFICACIONES (BUZÓN DEL RUNNER) -->
   <div id="view-notificaciones" style="display: none;">
     <div class="top-bar">
-      <button onclick="switchView('view-dashboard')" style="background:none; border:none; color:var(--gris-texto); cursor:pointer; font-weight:700; font-size:0.9rem;">← Volver</button>
+      <button id="btn-notif-volver" onclick="switchView('view-dashboard')" style="background:none; border:none; color:var(--gris-texto); cursor:pointer; font-weight:700; font-size:0.9rem;">← Volver</button>
       <div style="font-size: 0.7rem; color: var(--gris-texto); text-transform: uppercase; letter-spacing: 1px;">Notificaciones</div>
+      <button id="btn-notif-seleccionar" onclick="toggleNotifSelectMode()" style="background:none; border:none; color:var(--amarillo); cursor:pointer; font-weight:700; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.5px;">Seleccionar</button>
     </div>
-    <div id="notif-list" style="padding-bottom: 40px;">
+    <div id="notif-list" style="padding-bottom: 90px;">
       <div class="notif-empty">
         <div class="notif-empty-icon"><span class="zapa-loading">👟</span></div>
         <div class="notif-empty-text">Cargando...</div>
       </div>
+    </div>
+    <!-- Barra de acciones — solo visible en modo selección -->
+    <div id="notif-select-bar" style="display:none; position:fixed; left:0; right:0; bottom:0; z-index:50; background:var(--card-bg); border-top:1px solid var(--borde); padding:12px 16px; align-items:center; justify-content:space-between;">
+      <span id="notif-select-count" style="font-size:0.8rem; color:var(--gris-texto); font-weight:700;">0 seleccionadas</span>
+      <button id="btn-notif-borrar-sel" onclick="openConfirmDeleteNotifMulti()" disabled style="background:var(--amarillo); color:#000; border:none; border-radius:50px; padding:9px 18px; font-weight:900; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.5px; cursor:pointer; opacity:0.4;">🗑 Borrar</button>
     </div>
   </div>
 
@@ -1998,12 +2044,12 @@
   </div>
 </div>
 
-<!-- MODAL CONFIRMAR BORRAR NOTIFICACIÓN -->
+<!-- MODAL CONFIRMAR BORRAR NOTIFICACIÓN (una o varias) -->
 <div class="modal-overlay" id="confirm-delete-notif-modal">
   <div class="modal-confirm-training-content">
     <div class="confirm-icon">🗑️</div>
-    <div class="confirm-title">Borrar notificación</div>
-    <div class="confirm-msg">¿Confirmás que querés borrar esta notificación? <strong>Esta acción no se puede deshacer.</strong></div>
+    <div class="confirm-title" id="confirm-delete-notif-title">Borrar notificación</div>
+    <div class="confirm-msg" id="confirm-delete-notif-msg">¿Confirmás que querés borrar esta notificación? <strong>Esta acción no se puede deshacer.</strong></div>
     <div class="confirm-btn-row">
       <button class="btn-confirm-cancel" onclick="closeConfirmDeleteNotif()">Cancelar</button>
       <button class="btn-confirm-delete" id="btn-confirm-delete-notif-ok" onclick="executeDeleteNotif()">Borrar</button>
@@ -3537,6 +3583,13 @@
   // =====================================================
   function abrirNotificaciones() {
     switchView('view-notificaciones');
+    // Siempre arranca fuera del modo selección, aunque la vista haya
+    // quedado en ese estado la última vez que se abrió.
+    notifSelectMode = false;
+    notifSelectedIds = {};
+    document.getElementById('notif-list').classList.remove('select-mode');
+    document.getElementById('notif-select-bar').style.display = 'none';
+    document.getElementById('btn-notif-seleccionar').innerText = 'Seleccionar';
     var listEl = document.getElementById('notif-list');
     listEl.innerHTML = '<div class="notif-empty"><div class="notif-empty-icon"><span class="zapa-loading">👟</span></div><div class="notif-empty-text">Cargando...</div></div>';
     google.script.run
@@ -3599,6 +3652,13 @@
       var card = document.createElement('div');
       card.className = 'notif-card' + (esLeida ? ' leida' : '');
       card.id = 'notif-card-' + idSafe;
+      card.onclick = function(ev) {
+        if (!notifSelectMode) return;
+        if (ev.target && ev.target.closest('.notif-actions')) return;
+        toggleNotifCardSelection(idSafe);
+      };
+
+      var checkHtml = '<div class="notif-check">✓</div>';
 
       var headerHtml = '<div class="notif-card-header">'
         + '<span class="notif-tipo-badge mensaje">📢 Aviso</span>'
@@ -3611,53 +3671,119 @@
         + '<button class="btn-borrar-notif" title="Borrar notificación" onclick="openConfirmDeleteNotif(\'' + idSafe + '\')">🗑</button>'
         + '</div>';
 
-      card.innerHTML = headerHtml + mensajeHtml + actionsHtml;
+      card.innerHTML = checkHtml + headerHtml + mensajeHtml + actionsHtml;
       listEl.appendChild(card);
     });
   }
 
   
   // =====================================================
-  // BORRAR NOTIFICACIÓN
+  // BORRAR NOTIFICACIÓN (una o varias)
   // =====================================================
-  var _pendingDeleteNotifId = null;
+  var _pendingDeleteNotifIds = [];
 
   function openConfirmDeleteNotif(idNotif) {
-    _pendingDeleteNotifId = idNotif;
+    _pendingDeleteNotifIds = [idNotif];
+    document.getElementById('confirm-delete-notif-title').innerText = 'Borrar notificación';
+    document.getElementById('confirm-delete-notif-msg').innerHTML = '¿Confirmás que querés borrar esta notificación? <strong>Esta acción no se puede deshacer.</strong>';
     document.getElementById('confirm-delete-notif-modal').style.display = 'flex';
   }
 
   function closeConfirmDeleteNotif() {
-    _pendingDeleteNotifId = null;
+    _pendingDeleteNotifIds = [];
     document.getElementById('confirm-delete-notif-modal').style.display = 'none';
   }
 
   function executeDeleteNotif() {
-    if (!_pendingDeleteNotifId) return;
+    if (!_pendingDeleteNotifIds.length) return;
     var btn = document.getElementById('btn-confirm-delete-notif-ok');
     btn.innerText = 'Borrando...';
     btn.disabled  = true;
-    var idABorrar = _pendingDeleteNotifId;
-    google.script.run
-      .withSuccessHandler(function(res) {
-        btn.innerText = 'Borrar';
-        btn.disabled  = false;
-        closeConfirmDeleteNotif();
-        if (res && res.success) {
-          var card = document.getElementById('notif-card-' + idABorrar);
-          if (card) card.remove();
-          cargarBadgeNotificaciones();
-        } else {
-          alert('Error al borrar: ' + (res ? res.error : 'desconocido'));
-        }
-      })
-      .withFailureHandler(function(err) {
-        btn.innerText = 'Borrar';
-        btn.disabled  = false;
-        closeConfirmDeleteNotif();
-        alert('Error de conexión: ' + (err.message || err));
-      })
-      .deleteNotificacion(currentUserEmail, idABorrar);
+    var idsABorrar  = _pendingDeleteNotifIds.slice();
+    var pendientes  = idsABorrar.length;
+    var huboError   = false;
+
+    idsABorrar.forEach(function(id) {
+      google.script.run
+        .withSuccessHandler(function(res) {
+          if (res && res.success) {
+            var card = document.getElementById('notif-card-' + id);
+            if (card) card.remove();
+          } else {
+            huboError = true;
+          }
+          pendientes--;
+          if (pendientes === 0) _terminarBorradoNotif(btn, huboError);
+        })
+        .withFailureHandler(function() {
+          huboError = true;
+          pendientes--;
+          if (pendientes === 0) _terminarBorradoNotif(btn, huboError);
+        })
+        .deleteNotificacion(currentUserEmail, id);
+    });
+  }
+
+  function _terminarBorradoNotif(btn, huboError) {
+    btn.innerText = 'Borrar';
+    btn.disabled  = false;
+    closeConfirmDeleteNotif();
+    cargarBadgeNotificaciones();
+    if (notifSelectMode) toggleNotifSelectMode();
+    if (huboError) alert('Alguna notificación no se pudo borrar. Probá de nuevo.');
+  }
+
+  // =====================================================
+  // SELECCIÓN MÚLTIPLE (estilo Google Fotos)
+  // =====================================================
+  var notifSelectMode = false;
+  var notifSelectedIds = {};
+
+  function toggleNotifSelectMode() {
+    notifSelectMode = !notifSelectMode;
+    notifSelectedIds = {};
+    var listEl = document.getElementById('notif-list');
+    var barEl  = document.getElementById('notif-select-bar');
+    var btnEl  = document.getElementById('btn-notif-seleccionar');
+    listEl.classList.toggle('select-mode', notifSelectMode);
+    Array.prototype.forEach.call(listEl.querySelectorAll('.notif-card.selected'), function(c) {
+      c.classList.remove('selected');
+    });
+    barEl.style.display = notifSelectMode ? 'flex' : 'none';
+    btnEl.innerText = notifSelectMode ? 'Cancelar' : 'Seleccionar';
+    _actualizarBarraSeleccionNotif();
+  }
+
+  function toggleNotifCardSelection(idSafe) {
+    var card = document.getElementById('notif-card-' + idSafe);
+    if (!card) return;
+    if (notifSelectedIds[idSafe]) {
+      delete notifSelectedIds[idSafe];
+      card.classList.remove('selected');
+    } else {
+      notifSelectedIds[idSafe] = true;
+      card.classList.add('selected');
+    }
+    _actualizarBarraSeleccionNotif();
+  }
+
+  function _actualizarBarraSeleccionNotif() {
+    var n = Object.keys(notifSelectedIds).length;
+    var countEl = document.getElementById('notif-select-count');
+    var btnEl   = document.getElementById('btn-notif-borrar-sel');
+    countEl.innerText = n + (n === 1 ? ' seleccionada' : ' seleccionadas');
+    btnEl.disabled = n === 0;
+    btnEl.style.opacity = n === 0 ? '0.4' : '1';
+  }
+
+  function openConfirmDeleteNotifMulti() {
+    var ids = Object.keys(notifSelectedIds);
+    if (!ids.length) return;
+    _pendingDeleteNotifIds = ids;
+    var n = ids.length;
+    document.getElementById('confirm-delete-notif-title').innerText = n === 1 ? 'Borrar notificación' : 'Borrar ' + n + ' notificaciones';
+    document.getElementById('confirm-delete-notif-msg').innerHTML = '¿Confirmás que querés borrar ' + (n === 1 ? 'esta notificación' : 'estas ' + n + ' notificaciones') + '? <strong>Esta acción no se puede deshacer.</strong>';
+    document.getElementById('confirm-delete-notif-modal').style.display = 'flex';
   }
 
   // =====================================================

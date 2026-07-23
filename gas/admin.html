@@ -1,8 +1,16 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Admin.html
-  Última actualización: 22/07/2026 15:25 (hora Argentina)
+  Última actualización: 23/07/2026 13:09 (hora Argentina)
   Cambios en esta versión:
+    - Nuevo "Ver historial completo" dentro de la tarjeta "Notificaciones
+      leídas" (Salud del Sistema): muestra cada mensaje enviado, a quién,
+      cuándo, y si se leyó o si el usuario lo ocultó de su lado. Usa la
+      función nueva getHistorialNotificaciones() de admin.gs. Pedido
+      junto con la selección múltiple para borrar notificaciones en la
+      app (ver Index.html) — el usuario puede "borrar" de su lado, pero
+      acá siempre queda el registro completo.
+  Cambios en versiones anteriores:
     - 6 secciones nuevas en "Insights del Negocio", pedidas por el
       fundador tras revisar el panel a fondo:
       · Constancia: ranking de quién entrena más SEGUIDO (no solo quién
@@ -573,8 +581,12 @@
         <div class="metric-lbl">Notificaciones leídas</div>
         <div class="metric-val" id="health-notif-lectura">—</div>
         <div class="metric-sub" id="health-notif-detalle">—</div>
+        <div style="margin-top:8px;">
+          <button onclick="toggleHistorialNotif()" style="background:none;border:none;color:var(--neon);font-size:0.72rem;font-weight:700;cursor:pointer;padding:0;">Ver historial completo</button>
+        </div>
       </div>
     </div>
+    <div id="historial-notif-cont" style="display:none;margin-top:16px;padding-top:14px;border-top:1px solid var(--borde);"></div>
 
   </div><!-- /wrap -->
 </div><!-- /dashboard -->
@@ -599,6 +611,7 @@
   let actividadPorDiaData = [];
   let insightsExtData     = null;
   let insTabActual        = 'comunidad';
+  let historialNotifData  = null;
 
   // Estado compartido entre las dos llamadas async (stats y dashboard).
   const _insState = { totalZapas: null, alertasCount: null };
@@ -815,6 +828,51 @@
     el.textContent = n.pct + '%';
     document.getElementById('health-notif-detalle').textContent =
       n.leidas + ' leídas de ' + n.enviadas + ' enviadas';
+  }
+
+  // Historial completo de mensajes enviados (qué se dijo y a quién).
+  // El registro nunca se borra en el Sheet, aunque el usuario oculte la
+  // notificación de su lado — esto muestra ese historial completo.
+  function toggleHistorialNotif() {
+    const cont = document.getElementById('historial-notif-cont');
+    if (!cont) return;
+    const visible = cont.style.display !== 'none';
+    if (visible) { cont.style.display = 'none'; return; }
+    cont.style.display = 'block';
+
+    if (historialNotifData) { _renderHistorialNotif(); return; }
+    cont.innerHTML = '<div style="text-align:center;padding:16px;font-size:0.84rem;color:var(--metal);">Cargando...</div>';
+    google.script.run
+      .withSuccessHandler(function(res) {
+        historialNotifData = (res && res.success) ? res.historial : [];
+        _renderHistorialNotif();
+      })
+      .withFailureHandler(function() {
+        cont.innerHTML = '<div style="text-align:center;padding:16px;font-size:0.84rem;color:var(--rojo);">No se pudo cargar el historial.</div>';
+      })
+      .getHistorialNotificaciones(ADMIN_TOKEN);
+  }
+
+  function _renderHistorialNotif() {
+    const cont = document.getElementById('historial-notif-cont');
+    const lista = historialNotifData || [];
+    if (!lista.length) {
+      cont.innerHTML = '<div style="text-align:center;padding:16px;font-size:0.84rem;color:var(--metal);">Todavía no se envió ningún mensaje.</div>';
+      return;
+    }
+    cont.innerHTML = '<div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:1px;color:var(--metal);margin-bottom:10px;">Últimos ' + lista.length + ' mensajes (más reciente primero)</div>'
+      + lista.map(function(h) {
+        const estado = h.oculto ? 'Ocultado por el usuario' : (h.leido ? 'Leído' : 'No leído');
+        const colorEstado = h.oculto ? 'var(--metal)' : (h.leido ? 'var(--verde)' : 'var(--neon)');
+        return '<div style="padding:10px 0;border-bottom:1px solid var(--borde);">'
+          + '<div style="display:flex;justify-content:space-between;gap:10px;margin-bottom:4px;">'
+          + '<span style="font-size:0.78rem;font-weight:700;color:var(--plata);">' + sanitize(h.email) + '</span>'
+          + '<span style="font-size:0.66rem;color:var(--metal);white-space:nowrap;">' + sanitize(h.fecha) + '</span>'
+          + '</div>'
+          + '<div style="font-size:0.8rem;color:var(--gris);line-height:1.4;margin-bottom:4px;">' + sanitize(h.mensaje) + '</div>'
+          + '<span style="font-size:0.64rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:' + colorEstado + ';">' + estado + '</span>'
+          + '</div>';
+      }).join('');
   }
 
   // Vuelve a la app principal (login/dashboard).

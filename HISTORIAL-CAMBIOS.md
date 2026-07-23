@@ -12,6 +12,40 @@ el GAS es la versión más nueva.
 
 ---
 
+## 23/07/2026 (tarde) — Selección múltiple en notificaciones + historial en el panel, y 2 ajustes visuales chicos
+
+A partir de una captura del panel de admin (con los viejos mensajes de
+"Dato de comunidad" que ya no se generan más, pero seguían visibles) el
+fundador pidió 4 cosas. Confirmado con él: el aviso de cupón por
+desgaste ("tu zapatilla llegó a su límite...") se deja como está, no es
+un mensaje genérico de comunidad, es información sobre la zapatilla
+propia del usuario.
+
+1. **Selección múltiple en notificaciones** (`gas/index.html`): botón
+   "Seleccionar" en la pantalla de notificaciones — al activarlo,
+   aparece un círculo en cada mensaje para tildarlo (estilo Google
+   Fotos) y una barra abajo con "Borrar" para las tildadas. El borrado
+   de a una (el tacho de siempre) sigue funcionando igual. No se tocó
+   el backend: `deleteNotificacion()` ya hacía un borrado "de mentira"
+   (solo oculta del lado del usuario, marcando "Oculto" en la fila,
+   sin borrar nada del Sheet) — eso ya cumplía el pedido de que quede
+   historial.
+
+2. **Historial de mensajes en el panel** (`gas/admin.gs` +
+   `gas/admin.html`): nuevo "Ver historial completo" dentro de
+   "Notificaciones leídas" (Salud del Sistema) — lista cada mensaje
+   enviado, a quién, cuándo, y si se leyó o si el usuario lo ocultó de
+   su lado. Nueva función `getHistorialNotificaciones()`.
+
+3. **"Powered by Huella Runner MDQ"** de las 3 pantallas de login/
+   registro/onboarding: mismo estilo que el del pie del carrusel (más
+   chico, "Huella Runner" en cursiva, "Runner" en dorado).
+
+4. **"Tus zapatillas activas"** (subtítulo del carrusel): un poco más
+   chico, con la palabra "zapatillas" en dorado.
+
+---
+
 ## 23/07/2026 (mediodía) — "Huella Runner" en cursiva dentro del "Powered by"
 
 El fundador vio el "POWERED BY HUELLA RUNNER MDQ" del pie del carrusel
