@@ -12,6 +12,17 @@ el GAS es la versión más nueva.
 
 ---
 
+## 23/07/2026 (noche) — Texto del login más grande y más claro
+
+A partir de una captura, el fundador pidió aclarar y agrandar un poco
+el texto de la tarjeta informativa de la pantalla de login
+("Gestioná tus zapatillas running..." y "acceso exclusivo a ofertas y
+beneficios..."). Se subió el tamaño de 0.82rem a 0.86rem y el color de
+gris #888888 a #aaaaaa. Una sola clase CSS (`.intro-body`), un solo uso
+en todo el archivo — cambio acotado, no afecta nada más.
+
+---
+
 ## 23/07/2026 (tarde, más tarde) — Ícono nuevo de la PWA: "HR"
 
 El fundador seguía viendo el ícono genérico (gris, con la letra "G")
