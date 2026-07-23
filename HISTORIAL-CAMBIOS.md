@@ -12,6 +12,21 @@ el GAS es la versión más nueva.
 
 ---
 
+## 23/07/2026 (mañana, todavía más tarde) — Logo de arriba a la izquierda + "Powered by" más legible
+
+Última pata del logo: el que aparece arriba a la izquierda dentro de la
+app (dashboard) también se actualizó — "Huella" ahora en blanco puro
+(antes plata), "Runner" queda dorado como estaba, y las dos palabras se
+inclinan igual que en los otros 4 logos. Se mantuvo la tipografía
+(Bebas Neue) sin cambios, a pedido del fundador.
+
+De paso, el "Powered by Huella Runner MDQ" que aparece al pie del
+carrusel se aclaró un poco (de un gris #888888 a #aaaaaa) para que se
+lea mejor — cambio puntual solo en esa frase, no afecta al resto de
+textos secundarios de la app que comparten el mismo gris.
+
+---
+
 ## 23/07/2026 (mañana, más tarde) — "HUELLA" también en cursiva
 
 El fundador pidió que "HUELLA" se incline igual que "RUNNER" (no solo
