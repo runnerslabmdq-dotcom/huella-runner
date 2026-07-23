@@ -126,6 +126,11 @@ color distinto, avisar para agregarlo aparte.
 | Saucony | Ride 16 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784773226/Saucony_Ride_16_ST_vzm4pd.png |
 | Saucony | Endorphin Pro 5 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784773212/Saucony_Endorphin_Pro_5_pjrt4d.png |
 | Saucony | Endorphin | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784773230/Saucony_Endorphin_ocmpmr.png |
+| Puma | Magnify Nitro 3 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784774139/Puma_Magnify_Nitro_3_ST_v75g85.png |
+| Puma | Foreverrun Nitro 2 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784774136/Puma_Foreverrun_Nitro_2_ST_b9vfit.png |
+| Puma | Deviate Nitro 3 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784774137/Puma_Deviate_Nitro_3_ST_kauopp.png |
+| Puma | Deviate Nitro 4 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784774138/Puma_Deviate_Nitro_4_ST_hgbl8q.png |
+| Puma | Velocity Nitro 4 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784774128/Puma_Velocity_Nitro_4_ST_v67k6q.png |
 
 **Sin usar (duplicado):** el 8vo link enviado junto con esta tanda de
 Saucony era en realidad `Nike_Revolution_7_a4z8wi.png`, ya cargado antes
