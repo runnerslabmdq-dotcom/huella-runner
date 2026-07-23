@@ -116,6 +116,20 @@ link con el mismo nombre de modelo ("Renew Run 3") que el de arriba. Se
 usó el primero (`j57fuj`); si el segundo era en realidad un modelo o
 color distinto, avisar para agregarlo aparte.
 
+| Marca | Modelo | Link |
+|---|---|---|
+| Saucony | Kinvara Pro | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784773240/Saucony_Kinvara_Pro_j7pxu5.png |
+| Saucony | Triumph 23 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784773237/Saucony_Triumph_23_ST_oakkcs.png |
+| Saucony | Triumph 21 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784773233/Saucony_Triumph_21_ST_zdhadq.png |
+| Saucony | Triumph 22 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784773233/Saucony_Triumph_22_ST_whwkpi.png |
+| Saucony | Kinvara 14 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784773230/Saucony_Kinvara_14_ST_pnfbzz.png |
+| Saucony | Ride 16 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784773226/Saucony_Ride_16_ST_vzm4pd.png |
+| Saucony | Endorphin Pro 5 | https://res.cloudinary.com/dlayzh9ln/image/upload/v1784773212/Saucony_Endorphin_Pro_5_pjrt4d.png |
+
+**Sin usar (duplicado):** el 8vo link enviado junto con esta tanda de
+Saucony era en realidad `Nike_Revolution_7_a4z8wi.png`, ya cargado antes
+como "Nike Revolution 7". No se agregó de nuevo.
+
 ---
 
 ## Marcas y modelos sin foto propia (usan la genérica de su marca)
