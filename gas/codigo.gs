@@ -1,7 +1,11 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 23/07/2026 10:36 (hora Argentina)
+// Última actualización: 23/07/2026 10:44 (hora Argentina)
 // Cambios en esta versión:
+//   - "HUELLA" también en cursiva ahora en el logo de los correos
+//     (antes solo "RUNNER" estaba en font-style:italic) — a pedido del
+//     fundador, para que las dos palabras se vean inclinadas.
+// Cambios en versiones anteriores:
 //   - Unificado el formato del logo en los correos (bienvenida y
 //     recuperación de contraseña): tenían un tercer esquema de color
 //     que había quedado suelto (verde lima #dcfd8b + plata), distinto
@@ -434,7 +438,7 @@ function recoverPassword(email) {
       body:    '',
       htmlBody:
         '<div style="font-family:Arial,sans-serif;background:#080808;padding:32px;border-radius:16px;max-width:480px;margin:auto;">' +
-        '<h1 style="color:#E8E8E8;font-size:1.5rem;margin-bottom:4px;">HUELLA <span style="color:#C5B358;font-style:italic;">RUNNER</span></h1>' +
+        '<h1 style="color:#E8E8E8;font-size:1.5rem;margin-bottom:4px;font-style:italic;">HUELLA <span style="color:#C5B358;">RUNNER</span></h1>' +
         '<p style="color:#888;font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;margin-top:0;">Powered by Huella Runner MDQ</p>' +
         '<hr style="border:none;border-top:1px solid #1f1f1f;margin:20px 0;">' +
         '<p style="color:#E8E8E8;font-size:1rem;">Hola, <strong>' + nombreUsuario + '</strong> 👋</p>' +
@@ -509,7 +513,7 @@ function enviarEmailBienvenida(emailUsuario, nombreUsuario) {
       body:    '',
       htmlBody:
         '<div style="font-family:Arial,sans-serif;background:#080808;padding:32px;border-radius:16px;max-width:480px;margin:auto;">' +
-        '<h1 style="color:#E8E8E8;font-size:1.5rem;margin-bottom:4px;">HUELLA <span style="color:#C5B358;font-style:italic;">RUNNER</span></h1>' +
+        '<h1 style="color:#E8E8E8;font-size:1.5rem;margin-bottom:4px;font-style:italic;">HUELLA <span style="color:#C5B358;">RUNNER</span></h1>' +
         '<p style="color:#888;font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;margin-top:0;">Powered by Huella Runner MDQ</p>' +
         '<hr style="border:none;border-top:1px solid #1f1f1f;margin:20px 0;">' +
         '<p style="color:#E8E8E8;font-size:1rem;">¡Hola, <strong>' + nombre + '</strong>! 🎉</p>' +

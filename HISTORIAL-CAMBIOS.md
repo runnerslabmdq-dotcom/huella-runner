@@ -12,6 +12,16 @@ el GAS es la versión más nueva.
 
 ---
 
+## 23/07/2026 (mañana, más tarde) — "HUELLA" también en cursiva
+
+El fundador pidió que "HUELLA" se incline igual que "RUNNER" (no solo
+una de las dos palabras). Aplicado en los mismos 6 lugares que se
+tocaron antes: los 4 logos de login/registro/contraseña
+(`gas/index.html`, mismo `skewX`) y los 2 correos (`gas/codigo.gs`,
+cursiva real). El logo de adentro de la app sigue sin tocar.
+
+---
+
 ## 23/07/2026 (mañana) — RUNNER en cursiva + correos unificados
 
 Dos cambios pedidos por el fundador:
