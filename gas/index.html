@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 23/07/2026 10:44 (hora Argentina)
+  Última actualización: 23/07/2026 11:00 (hora Argentina)
   Cambios en esta versión:
-    - "HUELLA" también se inclina ahora (antes solo "RUNNER"), mismo
-      transform:skewX(-8deg), en los 4 logos de login/registro/
-      contraseña. El logo de adentro de la app (arriba a la izquierda,
-      "Powered by" del carrusel) sigue sin tocar — si se quiere la
-      misma inclinación ahí, avisar.
+    - Logo de arriba a la izquierda (adentro de la app, .nav-logo-inline):
+      "Huella" pasa de plata a blanco puro, "Runner" queda igual
+      (dorado), y las dos palabras ahora se inclinan (mismo
+      transform:skewX(-8deg) que ya tenían los otros 4 logos). La
+      tipografía (Bebas Neue) no se tocó, a pedido del fundador.
+    - El "Powered by Huella Runner MDQ" del pie del carrusel se aclaró
+      un poco (de #888888 a #aaaaaa) para que se lea mejor — solo esa
+      frase puntual, no se tocó la variable --gris-texto que comparten
+      otros ~46 textos secundarios de la app.
   Cambios en versiones anteriores:
     - "RUNNER" tiene una leve inclinación hacia la derecha
       (transform:skewX(-8deg)) en los 4 logos de login/registro/
@@ -318,8 +322,8 @@
     }
     .nav-logo-inline .logo-powered  { font-family: 'Montserrat', sans-serif; font-size: 0.42rem; font-weight: 700; color: var(--gris-texto); text-transform: uppercase; letter-spacing: 2px; }
     .nav-logo-inline .logo-name-row { display: block; white-space: nowrap; line-height: 1; }
-    .nav-logo-inline .logo-open     { font-family: 'Bebas Neue', sans-serif; font-size: 1.60rem; color: var(--plata);      letter-spacing: 1.5px; }
-    .nav-logo-inline .logo-sports   { font-family: 'Bebas Neue', sans-serif; font-size: 1.60rem; color: var(--amarillo);   letter-spacing: 1.5px; }
+    .nav-logo-inline .logo-open     { font-family: 'Bebas Neue', sans-serif; font-size: 1.60rem; color: #ffffff;          letter-spacing: 1.5px; display: inline-block; transform: skewX(-8deg); }
+    .nav-logo-inline .logo-sports   { font-family: 'Bebas Neue', sans-serif; font-size: 1.60rem; color: var(--amarillo);   letter-spacing: 1.5px; display: inline-block; transform: skewX(-8deg); }
     .nav-logo-inline .logo-runbike  { font-family: 'Bebas Neue', sans-serif; font-size: 1.38rem; color: var(--gris-texto); letter-spacing: 1.5px; margin-top: 0; }
 
     .card { background: var(--card-bg); border: 1px solid var(--borde); border-radius: 20px; padding: 25px; margin-bottom: 20px; }
@@ -1756,7 +1760,7 @@
     </div>
     <!-- POWERED BY — al fondo del dashboard -->
     <div style="text-align:center; padding: 8px 0 16px; margin-top: -10px;">
-      <span style="font-family:'Montserrat',sans-serif; font-size:0.62rem; font-weight:700; color:var(--gris-texto); text-transform:uppercase; letter-spacing:2px;">Powered by Huella Runner MDQ</span>
+      <span style="font-family:'Montserrat',sans-serif; font-size:0.62rem; font-weight:700; color:#aaaaaa; text-transform:uppercase; letter-spacing:2px;">Powered by Huella Runner MDQ</span>
     </div>
 
   </div>
