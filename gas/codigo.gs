@@ -1,7 +1,18 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 21/07/2026 21:59 (hora Argentina)
+// Última actualización: 23/07/2026 10:36 (hora Argentina)
 // Cambios en esta versión:
+//   - Unificado el formato del logo en los correos (bienvenida y
+//     recuperación de contraseña): tenían un tercer esquema de color
+//     que había quedado suelto (verde lima #dcfd8b + plata), distinto
+//     tanto del login viejo como del resto de la app. Ahora usan
+//     plata + dorado (#C5B358, el mismo dorado de toda la app), con
+//     "RUNNER" en cursiva real (font-style:italic — en emails es más
+//     confiable que un inclinado por CSS, que Gmail/Outlook no siempre
+//     respetan). También se pasó a dorado la contraseña temporal
+//     resaltada y la mención de "Huella Runner" en el correo de
+//     bienvenida, que usaban el mismo verde lima viejo.
+// Cambios en versiones anteriores:
 //   - BUG arreglado: el ícono de la PWA (page=icon) devolvía un SVG
 //     como texto plano (Content-Type text/plain), no una imagen real —
 //     por eso al agregar la app a la pantalla de inicio del celu
@@ -423,14 +434,14 @@ function recoverPassword(email) {
       body:    '',
       htmlBody:
         '<div style="font-family:Arial,sans-serif;background:#080808;padding:32px;border-radius:16px;max-width:480px;margin:auto;">' +
-        '<h1 style="color:#dcfd8b;font-size:1.5rem;margin-bottom:4px;">HUELLA <span style="color:#E8E8E8;">RUNNER</span></h1>' +
+        '<h1 style="color:#E8E8E8;font-size:1.5rem;margin-bottom:4px;">HUELLA <span style="color:#C5B358;font-style:italic;">RUNNER</span></h1>' +
         '<p style="color:#888;font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;margin-top:0;">Powered by Huella Runner MDQ</p>' +
         '<hr style="border:none;border-top:1px solid #1f1f1f;margin:20px 0;">' +
         '<p style="color:#E8E8E8;font-size:1rem;">Hola, <strong>' + nombreUsuario + '</strong> 👋</p>' +
         '<p style="color:#888888;font-size:0.85rem;line-height:1.6;">Recibiste este correo porque solicitaste recuperar tu contraseña. Generamos una temporal para vos:</p>' +
         '<div style="background:#111111;border:1px solid #1f1f1f;border-radius:12px;padding:16px 20px;margin:20px 0;">' +
         '<p style="color:#888;font-size:0.65rem;text-transform:uppercase;letter-spacing:2px;margin:0 0 6px;">Tu contraseña temporal</p>' +
-        '<p style="color:#dcfd8b;font-size:1.3rem;font-weight:900;margin:0;letter-spacing:1px;">' + passwordTemporal + '</p>' +
+        '<p style="color:#C5B358;font-size:1.3rem;font-weight:900;margin:0;letter-spacing:1px;">' + passwordTemporal + '</p>' +
         '</div>' +
         '<p style="color:#888888;font-size:0.85rem;line-height:1.6;">Iniciá sesión con esta contraseña — al entrar, te vamos a pedir que elijas una definitiva.</p>' +
         '<p style="color:#555;font-size:0.75rem;">Si no solicitaste esto, ignorá este mensaje.</p>' +
@@ -498,11 +509,11 @@ function enviarEmailBienvenida(emailUsuario, nombreUsuario) {
       body:    '',
       htmlBody:
         '<div style="font-family:Arial,sans-serif;background:#080808;padding:32px;border-radius:16px;max-width:480px;margin:auto;">' +
-        '<h1 style="color:#dcfd8b;font-size:1.5rem;margin-bottom:4px;">HUELLA <span style="color:#E8E8E8;">RUNNER</span></h1>' +
+        '<h1 style="color:#E8E8E8;font-size:1.5rem;margin-bottom:4px;">HUELLA <span style="color:#C5B358;font-style:italic;">RUNNER</span></h1>' +
         '<p style="color:#888;font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;margin-top:0;">Powered by Huella Runner MDQ</p>' +
         '<hr style="border:none;border-top:1px solid #1f1f1f;margin:20px 0;">' +
         '<p style="color:#E8E8E8;font-size:1rem;">¡Hola, <strong>' + nombre + '</strong>! 🎉</p>' +
-        '<p style="color:#888888;font-size:0.85rem;line-height:1.6;">Ya sos parte de la familia <strong style="color:#dcfd8b;">Huella Runner</strong>. Nos alegra tenerte con nosotros.</p>' +
+        '<p style="color:#888888;font-size:0.85rem;line-height:1.6;">Ya sos parte de la familia <strong style="color:#C5B358;">Huella Runner</strong>. Nos alegra tenerte con nosotros.</p>' +
         '<div style="background:#111111;border:1px solid #1f1f1f;border-radius:12px;padding:16px 20px;margin:20px 0;">' +
         '<p style="color:#888;font-size:0.65rem;text-transform:uppercase;letter-spacing:2px;margin:0 0 12px;">Desde hoy disfrutás de</p>' +
         '<p style="color:#E8E8E8;font-size:0.85rem;margin:6px 0;">👟 &nbsp;Catálogo exclusivo de calzado running</p>' +
