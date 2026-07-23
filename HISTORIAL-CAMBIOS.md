@@ -12,6 +12,27 @@ el GAS es la versión más nueva.
 
 ---
 
+## 23/07/2026 (tarde, más tarde) — Ícono nuevo de la PWA: "HR"
+
+El fundador seguía viendo el ícono genérico (gris, con la letra "G")
+al agregar la app a la pantalla de inicio. En vez de seguir
+depurando el ícono viejo, se armó uno nuevo desde cero: "HR" con la
+misma tipografía del logo de la app (Bebas Neue), H blanca + R dorada,
+ambas inclinadas igual que el resto del logo, fondo negro. Se generó acá
+mismo (sin depender de Canva) y el fundador lo subió a su Cloudinary.
+
+Se actualizaron los 3 lugares del código que apuntaban al ícono
+anterior (`<link rel="icon">`, `<link rel="apple-touch-icon">`, y los
+dos tamaños 192/512 del manifest) para que usen las nuevas imágenes.
+
+**Importante:** aunque el código quede bien, Android suele guardar una
+copia del ícono viejo en los accesos directos ya instalados — si
+después de publicar el celu sigue mostrando el ícono gris, hay que
+borrar el acceso directo de "Huella Runner" de la pantalla de inicio y
+agregarlo de nuevo (no alcanza con esperar a que se actualice solo).
+
+---
+
 ## 23/07/2026 (tarde) — Selección múltiple en notificaciones + historial en el panel, y 2 ajustes visuales chicos
 
 A partir de una captura del panel de admin (con los viejos mensajes de
