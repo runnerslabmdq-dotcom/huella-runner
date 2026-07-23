@@ -1,7 +1,16 @@
 // ============================================================
 // HUELLA RUNNER — admin.gs
-// Última actualización: 22/07/2026 16:23 (hora Argentina)
+// Última actualización: 23/07/2026 13:09 (hora Argentina)
 // Cambios en esta versión:
+//   - Nueva función getHistorialNotificaciones(token): devuelve el
+//     historial completo de mensajes enviados (destinatario, mensaje,
+//     fecha, si se leyó, si el usuario lo ocultó de su lado) — hasta
+//     300, más reciente primero. La usa Admin.html en un "Ver historial
+//     completo" dentro de Salud del Sistema. El registro en la hoja
+//     Notificaciones nunca se borra (deleteNotificacion() solo marca
+//     "Oculto"), así que esto siempre puede reconstruir qué se dijo y
+//     a quién, aunque el usuario haya borrado el mensaje de su lado.
+// Cambios en versiones anteriores:
 //   - BUG arreglado: "Actividad Reciente" mostraba mal el tiempo
 //     transcurrido (ej. "hace 16h" para algo cargado hace 2 minutos).
 //     Causa: en la hoja Entrenamientos, "Fecha" y "Hora" son columnas
@@ -707,6 +716,47 @@ function getInsightsExtendidos(token) {
     };
   } catch(e) {
     Logger.log('getInsightsExtendidos ERROR: ' + e.toString());
+    return { success: false, error: e.toString() };
+  }
+}
+
+// ============================================================
+// HISTORIAL COMPLETO DE MENSAJES ENVIADOS
+// El registro en la hoja Notificaciones nunca se borra, aunque el
+// usuario oculte la notificación de su lado (deleteNotificacion() solo
+// marca "Oculto" = TRUE) — esto le da al panel una vista de qué se
+// dijo, a quién, y si lo llegó a leer u ocultar.
+// ============================================================
+function getHistorialNotificaciones(token) {
+  if (!_adminAutorizado(token)) return { success: false, error: 'No autorizado.' };
+  try {
+    const ss = SpreadsheetApp.openById(SHEET_ID);
+    const sheet = ss.getSheetByName('Notificaciones');
+    if (!sheet || sheet.getLastRow() <= 1) return { success: true, historial: [] };
+
+    const data    = sheet.getDataRange().getValues();
+    const headers = data[0];
+    const emailCol  = headers.indexOf('Email_Usuario');
+    const msgCol    = headers.indexOf('Mensaje');
+    const fechaCol  = headers.indexOf('Fecha');
+    const leidoCol  = headers.indexOf('Leido');
+    const ocultoCol = headers.indexOf('Oculto');
+
+    let historial = [];
+    for (let i = 1; i < data.length; i++) {
+      historial.push({
+        email:   emailCol  !== -1 ? data[i][emailCol].toString()  : '',
+        mensaje: msgCol    !== -1 ? data[i][msgCol].toString()    : '',
+        fecha:   fechaCol  !== -1 ? data[i][fechaCol].toString()  : '',
+        leido:   leidoCol  !== -1 ? (data[i][leidoCol]  || '').toString().toUpperCase() === 'TRUE' : false,
+        oculto:  ocultoCol !== -1 ? (data[i][ocultoCol] || '').toString().toUpperCase() === 'TRUE' : false
+      });
+    }
+
+    historial.reverse(); // más reciente primero
+    return { success: true, historial: historial.slice(0, 300) };
+  } catch(e) {
+    Logger.log('getHistorialNotificaciones ERROR: ' + e.toString());
     return { success: false, error: e.toString() };
   }
 }
