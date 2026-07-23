@@ -1,8 +1,18 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 23/07/2026 13:07 (hora Argentina)
+  Última actualización: 23/07/2026 13:40 (hora Argentina)
   Cambios en esta versión:
+    - Nuevo ícono de la PWA: "HR" en Bebas Neue (H blanca + R dorada,
+      inclinadas, fondo negro), reemplaza al ícono viejo que no se
+      veía bien en la pantalla de inicio del celu. Se actualizaron los
+      3 lugares que apuntaban al ícono anterior: <link rel="icon">,
+      <link rel="apple-touch-icon"> y los dos tamaños (192/512) del
+      manifest. Ojo: aunque esto quede bien publicado, Android puede
+      seguir mostrando el ícono viejo si ya estaba instalado — hay que
+      sacar el acceso directo de la pantalla de inicio y agregarlo de
+      nuevo para que tome el cambio.
+  Cambios en versiones anteriores:
     - "Powered by Huella Runner MDQ" de las 3 pantallas de login/
       registro/onboarding (arriba del logo grande) ahora tiene el mismo
       estilo que el del pie del carrusel: más chico (0.5rem), "Huella
@@ -249,10 +259,10 @@
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
   <!-- PWA INSTALL SUPPORT -->
-  <link rel="icon" href="https://res.cloudinary.com/dlayzh9ln/image/upload/v1778672392/icono_HR_fomqlf.png" type="image/png">
-  <link rel="apple-touch-icon" href="https://res.cloudinary.com/dlayzh9ln/image/upload/v1778672392/icono_HR_fomqlf.png">
+  <link rel="icon" href="https://res.cloudinary.com/dlayzh9ln/image/upload/v1784824681/icon192_unoplg.png" type="image/png">
+  <link rel="apple-touch-icon" href="https://res.cloudinary.com/dlayzh9ln/image/upload/v1784824681/icon512_lmy8mu.png">
   <meta name="apple-mobile-web-app-title" content="Huella Runner">
-  <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Huella%20Runner%22,%22short_name%22:%22HR%22,%22display%22:%22standalone%22,%22background_color%22:%22%23080808%22,%22theme_color%22:%22%23C5B358%22,%22icons%22:[{%22src%22:%22https://res.cloudinary.com/dlayzh9ln/image/upload/v1778672392/icono_HR_fomqlf.png%22,%22sizes%22:%22192x192%22,%22type%22:%22image/png%22},{%22src%22:%22https://res.cloudinary.com/dlayzh9ln/image/upload/v1778672989/icono_HR_512_hvbsyb.png%22,%22sizes%22:%22512x512%22,%22type%22:%22image/png%22}]}">
+  <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Huella%20Runner%22,%22short_name%22:%22HR%22,%22display%22:%22standalone%22,%22background_color%22:%22%23080808%22,%22theme_color%22:%22%23C5B358%22,%22icons%22:[{%22src%22:%22https://res.cloudinary.com/dlayzh9ln/image/upload/v1784824681/icon192_unoplg.png%22,%22sizes%22:%22192x192%22,%22type%22:%22image/png%22},{%22src%22:%22https://res.cloudinary.com/dlayzh9ln/image/upload/v1784824681/icon512_lmy8mu.png%22,%22sizes%22:%22512x512%22,%22type%22:%22image/png%22}]}">
   <!-- FIN PWA INSTALL SUPPORT -->
 
   <style>
