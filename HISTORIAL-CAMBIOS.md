@@ -12,6 +12,15 @@ el GAS es la versión más nueva.
 
 ---
 
+## 22/07/2026 (noche, la última de hoy) — Marca nueva: Puma
+
+Se agrega Puma al desplegable de marcas (entre Osx y Salomon,
+alfabético) con 5 modelos y foto propia cada uno: Magnify Nitro 3,
+Foreverrun Nitro 2, Deviate Nitro 3, Deviate Nitro 4, Velocity Nitro 4.
+Ver `docs/cloudinarys-zapatillas.md`.
+
+---
+
 ## 22/07/2026 (noche, todavía más tarde) — 1 modelo más de Saucony
 
 Agregado "Endorphin" (modelo base de esa línea, distinto de "Endorphin
