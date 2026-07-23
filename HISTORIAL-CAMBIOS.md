@@ -12,6 +12,17 @@ el GAS es la versión más nueva.
 
 ---
 
+## 23/07/2026 (mediodía) — "Huella Runner" en cursiva dentro del "Powered by"
+
+El fundador vio el "POWERED BY HUELLA RUNNER MDQ" del pie del carrusel
+(mandó una captura de la app real) y pidió que "Huella Runner" ahí
+también esté en cursiva, y que "Runner" tenga el mismo dorado que el
+resto de la app. "Powered by" y "MDQ" quedan como estaban. Como esta
+frase usa Montserrat (no Bebas Neue), acá sí se pudo usar cursiva real
+en vez del inclinado por CSS.
+
+---
+
 ## 23/07/2026 (mañana, todavía más tarde) — Logo de arriba a la izquierda + "Powered by" más legible
 
 Última pata del logo: el que aparece arriba a la izquierda dentro de la
