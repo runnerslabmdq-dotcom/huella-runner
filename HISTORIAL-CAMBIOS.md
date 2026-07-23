@@ -12,6 +12,19 @@ el GAS es la versión más nueva.
 
 ---
 
+## 23/07/2026 (noche, más tarde) — Sucursales de Open Sports (dato guardado, sin usar todavía)
+
+A raíz de la charla sobre enrutar el botón "Próximamente" de cada
+zapatilla según provincia/ciudad del usuario, el fundador pasó la lista
+completa de sucursales de Open Sports (Run & Bike). Se guardó en
+`docs/sucursales-open-sports.md` (57 sucursales: 46 Buenos Aires, 5 Río
+Negro, 4 La Pampa, 1 Chubut, 1 Neuquén) para tenerla lista el día que
+se decida armar esa función — todavía no se construyó nada, es solo
+acopio de datos. Open Sports no es (todavía) un partner confirmado.
+No toca ningún archivo `.gs`/`.html`, no requiere publicar nada.
+
+---
+
 ## 23/07/2026 (noche) — Texto del login más grande y más claro
 
 A partir de una captura, el fundador pidió aclarar y agrandar un poco
