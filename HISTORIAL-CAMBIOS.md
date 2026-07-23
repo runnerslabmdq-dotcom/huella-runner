@@ -12,6 +12,23 @@ el GAS es la versión más nueva.
 
 ---
 
+## 23/07/2026 (madrugada, más tarde) — Logo unificado en login/registro
+
+El fundador notó (con capturas) que el logo "HUELLA RUNNER" se veía
+distinto en el login (verde + blanco/plata, tipografía Montserrat) que
+adentro de la app (plata + dorado, tipografía Bebas Neue). Eran dos
+diseños que quedaron desincronizados — el de adentro de la app es el
+que coincide con el resto de la paleta (dorado en botones, acentos,
+etc.), así que se unificaron las 4 pantallas de login/registro/
+contraseña a ese mismo estilo. También se sacaron 3 clases CSS que
+habían quedado de un diseño viejo sin usar en ningún lado.
+
+Como la gorra que se está por imprimir es DTF (no bordada), no hace
+falta una versión "plana" sin degradé — la que ya usa la app funciona
+igual para eso.
+
+---
+
 ## 23/07/2026 (madrugada) — 12 modelos nuevos, marcas varias
 
 Agregados con foto propia: Hoka Mafate Speed 4, Hoka Match 6, Hoka
