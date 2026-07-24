@@ -12,6 +12,18 @@ el GAS es la versión más nueva.
 
 ---
 
+## 24/07/2026 (mediodía, más tarde) — 3 modelos más de Puma
+
+Deviate Nitro Elite 3, Foreverrun Nitro, Electrify Nitro 3 — sin foto
+propia todavía. Se resolvió una duda vieja: "Foreverrun Nitro" (sin el
+"2") resultó ser un modelo real, no el nombre cortado de un link
+anterior — se agrega como modelo aparte de "Foreverrun Nitro 2".
+
+Total: 141 modelos en 16 marcas. Sigue pendiente, sin tocar: "Deviate
+Nitro 4 Hombre/Mujer" vs el "Deviate Nitro 4" genérico ya cargado.
+
+---
+
 ## 24/07/2026 (mediodía) — Marca nueva Brooks + 10 modelos más (solo nombres)
 
 Continuación del relevamiento de Run&Bike Online:
