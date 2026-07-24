@@ -12,6 +12,39 @@ el GAS es la versión más nueva.
 
 ---
 
+## 23/07/2026 (noche, la última) — 30 modelos nuevos (solo nombres, sacados de Run&Bike Online)
+
+El fundador empezó a pasar un relevamiento de Run&Bike Online (copiado
+y pegado del sitio, no scraping automático — no pude entrar yo mismo,
+el dominio está bloqueado por la política de red de mi entorno). Se
+sacaron los nombres únicos, se compararon contra el catálogo actual
+(90 modelos) para no duplicar, y se cargaron 30 nuevos **solo con
+nombre**, sin foto propia todavía — usan la genérica de su marca hasta
+que el fundador baje las fotos reales, las retoque con IA y las suba a
+Cloudinary (mismo flujo de siempre).
+
+Nuevos por marca:
+- **Saucony**: Endorphin Pro 4, Axon 3, Endorphin Speed 4
+- **Adidas**: Adizero Evo SL, Adizero Boston 13, Adizero Evo SL ATR,
+  Adizero Evo SL Exo, Supernova Ease 2, Runfalcon 6 Kids, Boost Run
+- **Puma**: Deviate Nitro 3 Wtr+, Velocity Nitro 4 Digitokyo, Deviate
+  Nitro 3 Digitokyo, Deviate Nitro 2
+- **Salomon**: Aero Blaze 3 GRVL, Aero Glide 3, Aero Glide 3 GRVL, DRX
+  Defy GRVL
+- **Skechers** (primeros modelos, antes solo genérica): Glide Step
+  Altus, Max Cushioning Propulsion, Aero Burst, Aero Spark
+- **Fila** (primeros modelos, antes solo genérica): Racer Carbon 3,
+  Racer Carbon 2, Float Maxxi 2 Pro
+- **New Balance**: Fresh Foam X 1080 v14, Fresh Foam X 1080 v13, Fresh
+  Foam X Evoz v3, FuelCell Rebel v5, FuelCell Supercomp Trainer v4
+
+Total: 120 modelos en 15 marcas (antes 90). Quedaron afuera, a pedido
+del fundador: "Deviate Nitro 4 Mujer/Hombre" (ambiguo — ya existía un
+"Deviate Nitro 4" genérico sin distinguir género) y un link de "Puma
+Foreverrun Nitro" con el nombre cortado en el texto pegado.
+
+---
+
 ## 23/07/2026 (noche, más tarde) — Sucursales de Open Sports (dato guardado, sin usar todavía)
 
 A raíz de la charla sobre enrutar el botón "Próximamente" de cada
