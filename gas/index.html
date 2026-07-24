@@ -1,8 +1,22 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 24/07/2026 09:35 (hora Argentina)
+  Última actualización: 24/07/2026 11:55 (hora Argentina)
   Cambios en esta versión:
+    - Agregada la marca Brooks (nueva, entre Asics y Dynafit en el
+      desplegable) con su primer modelo: Levitate 5. El badge de color
+      para Brooks ya existía en el código (badge-brooks) sin usarse
+      hasta ahora. Sin foto genérica de marca todavía — hasta que se
+      suba una, muestra "imagen no disponible" en vez de la genérica.
+    - 10 modelos más de la misma tanda de Run&Bike Online: Adidas
+      (Pureboost 5, Switch FWD, Ultraboost 5, Adizero SL2, Supernova
+      Prima), Under Armour (Infinite Elite), Nike (Invincible 3,
+      Infinity RN 4 Blueprint, Alphafly 3 Blueprint, Pegasus 40). Sin
+      foto propia todavía. Total: 138 modelos en 16 marcas.
+      Quedan 2 dudas sin resolver (a pedido del fundador, no se tocó
+      nada): "Asics Sonicblast" vs "Soniblast", y "Nike Air Zoom
+      Pegasus" (sin número) como posible variante de "Pegasus 41".
+  Cambios en versiones anteriores:
     - BUG arreglado (modo claro): dos cambios de ayer dejaron colores
       fijos que se veían bien en oscuro pero eran ilegibles en modo
       claro (fondo claro). El logo "HUELLA" de arriba a la izquierda
@@ -1887,6 +1901,7 @@
           <option value="">Seleccionar...</option>
           <option value="Adidas">Adidas</option>
           <option value="Asics">Asics</option>
+          <option value="Brooks">Brooks</option>
           <option value="Dynafit">Dynafit</option>
           <option value="Fila">Fila</option>
           <option value="Hoka">Hoka</option>
@@ -2467,7 +2482,12 @@
       "Runfalcon 6 Kids",
       "Boost Run",
       "Adizero Pro 4",
-      "Hyperboost Edge"
+      "Hyperboost Edge",
+      "Pureboost 5",
+      "Switch FWD",
+      "Ultraboost 5",
+      "Adizero SL2",
+      "Supernova Prima"
     ],
     "Asics": [
       "Gel Nimbus 26",
@@ -2483,12 +2503,13 @@
       "Novablast 5 Tokyo",
       "Superblast 2"
     ],
+    "Brooks":       ["Levitate 5"],
     "Fila":         ["Racer Carbon 3", "Racer Carbon 2", "Float Maxxi 2 Pro"],
     "New Balance":  ["FuelCell Rebel v3", "Fresh Foam X Vongo v6", "Fresh Foam X 1080 v14", "Fresh Foam X 1080 v13", "Fresh Foam X Evoz v3", "FuelCell Rebel v5", "FuelCell Supercomp Trainer v4"],
-    "Nike":         ["Vomero 17", "Run Defy", "Winflo 11", "Revolution 7", "Revolution 8", "Renew Run 3", "Pegasus Plus", "LunarSpider", "Pegasus 41", "Downshifter 13", "Quest 5", "Pegasus 39", "Structure 25", "Winflo 9", "Vaporfly 4", "Pegasus Premium", "Pegasus Premium QS", "Vomero Plus"],
+    "Nike":         ["Vomero 17", "Run Defy", "Winflo 11", "Revolution 7", "Revolution 8", "Renew Run 3", "Pegasus Plus", "LunarSpider", "Pegasus 41", "Downshifter 13", "Quest 5", "Pegasus 39", "Structure 25", "Winflo 9", "Vaporfly 4", "Pegasus Premium", "Pegasus Premium QS", "Vomero Plus", "Invincible 3", "Infinity RN 4 Blueprint", "Alphafly 3 Blueprint", "Pegasus 40"],
     "Puma":         ["Magnify Nitro 3", "Foreverrun Nitro 2", "Deviate Nitro 3", "Deviate Nitro 4", "Velocity Nitro 4", "Deviate Nitro 3 Wtr+", "Velocity Nitro 4 Digitokyo", "Deviate Nitro 3 Digitokyo", "Deviate Nitro 2"],
     "Skechers":     ["Glide Step Altus", "Max Cushioning Propulsion", "Aero Burst", "Aero Spark"],
-    "Under Armour": ["Hovr Synergy"],
+    "Under Armour": ["Hovr Synergy", "Infinite Elite"],
   };
 
   function getBrandBadgeClass(marca) {
