@@ -1,8 +1,20 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 23/07/2026 21:10 (hora Argentina)
+  Última actualización: 24/07/2026 09:35 (hora Argentina)
   Cambios en esta versión:
+    - BUG arreglado (modo claro): dos cambios de ayer dejaron colores
+      fijos que se veían bien en oscuro pero eran ilegibles en modo
+      claro (fondo claro). El logo "HUELLA" de arriba a la izquierda
+      quedó en #ffffff fijo (blanco sobre fondo claro = invisible); el
+      "Powered by Huella Runner MDQ" (4 lugares) y "Gestioná tus
+      zapatillas..." quedaron en #aaaaaa fijo (gris pálido sobre fondo
+      claro = casi ilegible). Se cambiaron a var(--plata) y a una
+      variable nueva var(--gris-powered) (#aaaaaa en oscuro, #555555 en
+      claro) que sí se adaptan al tema — el modo oscuro queda
+      pixel-idéntico a como estaba, solo se corrigió el claro. Detectado
+      por el fundador con capturas reales en modo claro.
+  Cambios en versiones anteriores:
     - Agregados 7 modelos nuevos más (mismo relevamiento de Run&Bike
       Online, sin foto propia todavía): Nike Vaporfly 4, Nike Pegasus
       Premium, Nike Pegasus Premium QS, Nike Vomero Plus, Adidas
@@ -309,6 +321,7 @@
       --amarillo-dark: #A89440;
       --plata: #E8E8E8;
       --gris-texto: #888888;
+      --gris-powered: #aaaaaa;
       --borde: #1f1f1f;
       --neon-cyan: #00f3ff;
     }
@@ -317,6 +330,7 @@
       --card-bg: #ffffff;
       --plata: #1a1a1a;
       --gris-texto: #555555;
+      --gris-powered: #555555;
       --borde: #ddd;
     }
 
@@ -387,7 +401,7 @@
     }
     .nav-logo-inline .logo-powered  { font-family: 'Montserrat', sans-serif; font-size: 0.42rem; font-weight: 700; color: var(--gris-texto); text-transform: uppercase; letter-spacing: 2px; }
     .nav-logo-inline .logo-name-row { display: block; white-space: nowrap; line-height: 1; }
-    .nav-logo-inline .logo-open     { font-family: 'Bebas Neue', sans-serif; font-size: 1.60rem; color: #ffffff;          letter-spacing: 1.5px; display: inline-block; transform: skewX(-8deg); }
+    .nav-logo-inline .logo-open     { font-family: 'Bebas Neue', sans-serif; font-size: 1.60rem; color: var(--plata);      letter-spacing: 1.5px; display: inline-block; transform: skewX(-8deg); }
     .nav-logo-inline .logo-sports   { font-family: 'Bebas Neue', sans-serif; font-size: 1.60rem; color: var(--amarillo);   letter-spacing: 1.5px; display: inline-block; transform: skewX(-8deg); }
     .nav-logo-inline .logo-runbike  { font-family: 'Bebas Neue', sans-serif; font-size: 1.38rem; color: var(--gris-texto); letter-spacing: 1.5px; margin-top: 0; }
 
@@ -1367,7 +1381,7 @@
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .intro-divider { height: 1px; background: linear-gradient(90deg, #2a2a2a 0%, #1e1e00 50%, #2a2a2a 100%); margin-bottom: 9px; }
-    .intro-body { font-family: 'Montserrat', sans-serif; font-size: 0.86rem; color: #aaaaaa; line-height: 1.65; }
+    .intro-body { font-family: 'Montserrat', sans-serif; font-size: 0.86rem; color: var(--gris-powered); line-height: 1.65; }
     .intro-body strong { color: var(--plata); font-weight: 700; }
     .intro-body .intro-highlight { color: #F0FF00; font-weight: 700; }
     .intro-footer-row { display: flex; align-items: center; gap: 6px; margin-top: 10px; }
@@ -1519,7 +1533,7 @@
 
     <!-- Header -->
   <div style="text-align:center;position:relative;z-index:1;margin-top:8px;">
-    <div style="font-family:'Montserrat',sans-serif;color:#aaaaaa;font-size:0.5rem;text-transform:uppercase;letter-spacing:2px;
+    <div style="font-family:'Montserrat',sans-serif;color:var(--gris-powered);font-size:0.5rem;text-transform:uppercase;letter-spacing:2px;
       margin-bottom:4px;font-weight:700;line-height:1.5;">
       Powered by <span style="font-style:italic;">Huella <span style="color:var(--amarillo);">Runner</span></span> MDQ
     </div>
@@ -1604,7 +1618,7 @@
   <div id="view-login" style="display:block;">
     <!-- Header -->
     <div style="text-align:center;position:relative;z-index:1;margin-top:8px;margin-bottom:16px;">
-      <div style="font-family:'Montserrat',sans-serif;color:#aaaaaa;font-size:0.5rem;text-transform:uppercase;letter-spacing:2px;
+      <div style="font-family:'Montserrat',sans-serif;color:var(--gris-powered);font-size:0.5rem;text-transform:uppercase;letter-spacing:2px;
         margin-bottom:6px;font-weight:700;line-height:1;">
         Powered by <span style="font-style:italic;">Huella <span style="color:var(--amarillo);">Runner</span></span> MDQ
       </div>
@@ -1675,7 +1689,7 @@
   <div id="view-register" style="display:none;">
     <!-- Header -->
     <div style="text-align:center;position:relative;z-index:1;margin-top:8px;margin-bottom:16px;">
-      <div style="font-family:'Montserrat',sans-serif;color:#aaaaaa;font-size:0.5rem;text-transform:uppercase;letter-spacing:2px;
+      <div style="font-family:'Montserrat',sans-serif;color:var(--gris-powered);font-size:0.5rem;text-transform:uppercase;letter-spacing:2px;
         margin-bottom:6px;font-weight:700;line-height:1;">
         Powered by <span style="font-style:italic;">Huella <span style="color:var(--amarillo);">Runner</span></span> MDQ
       </div>
@@ -1851,7 +1865,7 @@
     </div>
     <!-- POWERED BY — al fondo del dashboard -->
     <div style="text-align:center; padding: 8px 0 16px; margin-top: -10px;">
-      <span style="font-family:'Montserrat',sans-serif; font-size:0.62rem; font-weight:700; color:#aaaaaa; text-transform:uppercase; letter-spacing:2px;">Powered by <span style="font-style:italic;">Huella <span style="color:var(--amarillo);">Runner</span></span> MDQ</span>
+      <span style="font-family:'Montserrat',sans-serif; font-size:0.62rem; font-weight:700; color:var(--gris-powered); text-transform:uppercase; letter-spacing:2px;">Powered by <span style="font-style:italic;">Huella <span style="color:var(--amarillo);">Runner</span></span> MDQ</span>
     </div>
 
   </div>

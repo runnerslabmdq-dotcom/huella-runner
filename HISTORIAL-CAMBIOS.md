@@ -12,6 +12,27 @@ el GAS es la versión más nueva.
 
 ---
 
+## 24/07/2026 (mañana) — Bug real: textos invisibles en modo claro
+
+El fundador mandó capturas en modo claro y oscuro pidiendo opinión
+sobre legibilidad. En modo oscuro todo bien, pero en modo claro
+aparecieron 2 problemas reales — causados por cambios de ayer que
+dejaron colores fijos en vez de adaptables al tema:
+
+- El logo "HUELLA" de arriba a la izquierda: blanco fijo (#ffffff),
+  invisible sobre el fondo claro.
+- "Powered by Huella Runner MDQ" (4 lugares: pie del carrusel y las 3
+  pantallas de login/registro) y "Gestioná tus zapatillas...": gris
+  fijo (#aaaaaa), casi ilegible sobre fondo claro.
+
+Arreglado con `var(--plata)` (ya existía, se adapta sola) y una
+variable nueva `var(--gris-powered)` (#aaaaaa en oscuro — igual que
+antes — y #555555 en claro). El modo oscuro queda exactamente igual a
+como estaba; el pedido explícito del fundador fue "no tocar el modo
+oscuro".
+
+---
+
 ## 23/07/2026 (noche, cierre) — Lista de pendientes de foto
 
 Nuevo `docs/pendientes-fotos-modelos.md`: checklist de los 37 modelos
