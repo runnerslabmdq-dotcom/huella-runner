@@ -12,6 +12,16 @@ el GAS es la versión más nueva.
 
 ---
 
+## 23/07/2026 (noche, cierre) — Lista de pendientes de foto
+
+Nuevo `docs/pendientes-fotos-modelos.md`: checklist de los 37 modelos
+cargados hoy (relevamiento de Run&Bike Online) que todavía muestran la
+genérica de su marca. Para ir tildando a medida que el fundador suba
+cada foto real a Cloudinary. No toca ningún archivo `.gs`/`.html`, no
+requiere publicar nada.
+
+---
+
 ## 23/07/2026 (noche, todavía la última) — 7 modelos más de la misma tanda
 
 Siguiendo con el relevamiento de Run&Bike Online: Nike Vaporfly 4,
