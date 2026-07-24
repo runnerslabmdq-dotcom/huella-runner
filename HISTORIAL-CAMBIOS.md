@@ -12,6 +12,34 @@ el GAS es la versión más nueva.
 
 ---
 
+## 24/07/2026 (mediodía) — Marca nueva Brooks + 10 modelos más (solo nombres)
+
+Continuación del relevamiento de Run&Bike Online:
+
+- **Brooks** (marca nueva, primer modelo): Levitate 5. El badge de
+  color para Brooks ya estaba en el código sin usarse — se activó
+  solo. Todavía sin foto genérica de marca: hasta que se suba una,
+  muestra "imagen no disponible" en vez de la genérica (a diferencia
+  de Fila/Skechers, que sí tenían genérica lista cuando se agregaron).
+- **Adidas**: Pureboost 5, Switch FWD, Ultraboost 5, Adizero SL2,
+  Supernova Prima
+- **Under Armour**: Infinite Elite
+- **Nike**: Invincible 3, Infinity RN 4 Blueprint, Alphafly 3
+  Blueprint, Pegasus 40
+
+Total: 138 modelos en 16 marcas.
+
+Sin resolver, a pedido del fundador ("las dos dudas no hagas nada"):
+"Asics Sonicblast" vs "Soniblast", y "Nike Air Zoom Pegasus" (sin
+número) como posible variante de "Pegasus 41".
+
+De paso, se avisó de un detalle raro en uno de los links pegados
+(`product_list_order=evilcorp_discount_amount`) — no era una
+instrucción ni afectó nada, solo un parámetro de URL con un nombre
+inusual.
+
+---
+
 ## 24/07/2026 (mañana) — Bug real: textos invisibles en modo claro
 
 El fundador mandó capturas en modo claro y oscuro pidiendo opinión
