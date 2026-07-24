@@ -12,6 +12,25 @@ el GAS es la versión más nueva.
 
 ---
 
+## 23/07/2026 (noche, todavía la última) — 7 modelos más de la misma tanda
+
+Siguiendo con el relevamiento de Run&Bike Online: Nike Vaporfly 4,
+Nike Pegasus Premium, Nike Pegasus Premium QS, Nike Vomero Plus,
+Adidas Adizero Pro 4, Adidas Hyperboost Edge, Asics Superblast 2 — sin
+foto propia todavía, misma lógica que la tanda anterior.
+
+Ya estaban cargados (no se duplicaron): Asics Megablast, Hoka Cielo
+X1 2.0.
+
+Queda una duda pendiente: la tienda lista "Asics Sonicblast" (con C),
+muy parecido a "Soniblast" (sin C) que ya está en el catálogo — no se
+tocó hasta saber si es un typo de alguno de los dos lados o son
+modelos distintos de verdad.
+
+Total: 127 modelos en 15 marcas.
+
+---
+
 ## 23/07/2026 (noche, la última) — 30 modelos nuevos (solo nombres, sacados de Run&Bike Online)
 
 El fundador empezó a pasar un relevamiento de Run&Bike Online (copiado
