@@ -1,8 +1,20 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Admin.html
-  Última actualización: 23/07/2026 13:09 (hora Argentina)
+  Última actualización: 24/07/2026 14:01 (hora Argentina)
   Cambios en esta versión:
+    - Letra base del panel: 14px → 16,2px, a pedido del fundador (se
+      le hacía chico, sobre todo en el celu). Como casi todo el tamaño
+      de texto del panel está en rem (115 usos) y no en px fijo, este
+      solo cambio agranda en cascada títulos, tablas, botones y
+      tarjetas sin tener que tocar cada elemento suelto.
+      Queda pendiente investigar por qué la lista de usuarios pareció
+      "no terminar" con 50 usuarios simulados — no se encontró ningún
+      límite en el código (ni en getAdminUsuarios ni en el render de la
+      tabla), puede ser que se haya visto a mitad de carga o haga falta
+      scrollear. Sigue esperando una captura del fundador para
+      confirmar antes de tocar nada ahí.
+  Cambios en versiones anteriores:
     - Nuevo "Ver historial completo" dentro de la tarjeta "Notificaciones
       leídas" (Salud del Sistema): muestra cada mensaje enviado, a quién,
       cuándo, y si se leyó o si el usuario lo ocultó de su lado. Usa la
@@ -98,7 +110,7 @@
       --amarillo:  #FFD60A;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--plata); min-height: 100vh; font-size: 14px; }
+    body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--plata); min-height: 100vh; font-size: 16.2px; }
     ::-webkit-scrollbar { width: 4px; height: 4px; }
     ::-webkit-scrollbar-track { background: #0a0a0a; }
     ::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 2px; }

@@ -12,6 +12,23 @@ el GAS es la versión más nueva.
 
 ---
 
+## 24/07/2026 (tarde) — Letra más grande en el panel de admin
+
+El fundador pidió agrandar la letra del panel (14px → 16,2px) — se le
+hacía chico, sobre todo cuando lo abre en el celu en vez de
+notebook/PC. Como el panel usa `rem` en casi todos los tamaños de
+texto (115 de 116 usos), este único cambio en la base agranda todo en
+cascada: títulos, tablas, botones, tarjetas.
+
+Quedó pendiente, sin resolver: la lista de usuarios pareció "no
+terminar" cuando el fundador simuló 50 usuarios. Se revisó el código
+(backend `getAdminUsuarios` y el render de la tabla) y no hay ningún
+límite que corte la lista — puede haber sido que se vio a mitad de
+carga, o que hacía falta scrollear. Se le pidió una captura para
+confirmar antes de tocar nada ahí.
+
+---
+
 ## 24/07/2026 (mediodía, más tarde) — 3 modelos más de Puma
 
 Deviate Nitro Elite 3, Foreverrun Nitro, Electrify Nitro 3 — sin foto
