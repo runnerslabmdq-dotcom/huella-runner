@@ -1,7 +1,15 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 23/07/2026 10:44 (hora Argentina)
+// Última actualización: 24/07/2026 23:35 (hora Argentina)
 // Cambios en esta versión:
+//   - PERFORMANCE: enviarNotificacion() escribía una fila por vez en la
+//     hoja Notificaciones, con un SpreadsheetApp.flush() por cada
+//     destinatario — con envíos masivos ("todos"/"grupo") eso se
+//     notaba (el fundador lo detectó mandando a 53 usuarios simulados:
+//     tardaba mucho más que mandar a 1-3). Ahora arma todas las filas
+//     en memoria y las escribe de una sola vez con un solo flush, sin
+//     importar si son 3 o 300 destinatarios.
+// Cambios en versiones anteriores:
 //   - "HUELLA" también en cursiva ahora en el logo de los correos
 //     (antes solo "RUNNER" estaba en font-style:italic) — a pedido del
 //     fundador, para que las dos palabras se vean inclinadas.
@@ -1135,19 +1143,34 @@ function enviarNotificacion(destinatarioTipo, destinatarioValor, mensaje, tipo, 
 
     const fecha = Utilities.formatDate(new Date(), TZ_AR, 'dd/MM/yyyy HH:mm');
 
-    let insertados = 0;
-    for (let d = 0; d < destinatarios.length; d++) {
-      appendDataByHeader('Notificaciones', NOTIF_HEADERS, {
-        'ID_Notif':       Utilities.getUuid(),
-        'Email_Usuario':  destinatarios[d],
-        'Mensaje':        mensaje.toString().trim(),
-        'Fecha':          fecha,
-        'Leido':          'FALSE',
-        'Tipo':           'Mensaje'
-      });
-      insertados++;
-    }
+    // Un solo guardado para todos los destinatarios, en vez de uno por
+    // uno: appendDataByHeader() hacía un flush() por cada persona, y
+    // con envíos grandes (ej. "todos" con decenas/cientos de usuarios)
+    // eso se sentía — cada flush es una escritura completa al Sheet.
+    // Acá se arman todas las filas en memoria y se escriben de una sola vez.
+    const { sheet, headers } = getSheetAndHeaders('Notificaciones', NOTIF_HEADERS);
+    const nIdCol     = headers.indexOf('ID_Notif');
+    const nEmailCol  = headers.indexOf('Email_Usuario');
+    const nMsgCol    = headers.indexOf('Mensaje');
+    const nFechaCol  = headers.indexOf('Fecha');
+    const nLeidoCol  = headers.indexOf('Leido');
+    const nTipoCol   = headers.indexOf('Tipo');
 
+    const filas = destinatarios.map(function(email) {
+      const fila = new Array(headers.length).fill('');
+      if (nIdCol    !== -1) fila[nIdCol]    = Utilities.getUuid();
+      if (nEmailCol !== -1) fila[nEmailCol] = email;
+      if (nMsgCol   !== -1) fila[nMsgCol]   = mensaje.toString().trim();
+      if (nFechaCol !== -1) fila[nFechaCol] = fecha;
+      if (nLeidoCol !== -1) fila[nLeidoCol] = 'FALSE';
+      if (nTipoCol  !== -1) fila[nTipoCol]  = 'Mensaje';
+      return fila;
+    });
+
+    sheet.getRange(sheet.getLastRow() + 1, 1, filas.length, headers.length).setValues(filas);
+    SpreadsheetApp.flush();
+
+    const insertados = filas.length;
     Logger.log('enviarNotificacion OK: ' + insertados + ' notif insertadas.');
     return { success: true, enviados: insertados };
 
