@@ -12,6 +12,25 @@ el GAS es la versión más nueva.
 
 ---
 
+## 24/07/2026 (noche, más tarde) — Envío de notificaciones más rápido + letra otro 10% más grande
+
+El fundador notó (mandando una prueba a los 53 usuarios simulados) que
+enviar a "todos" tardaba mucho más que mandar a 1-3 usuarios, y
+preguntó de qué depende la velocidad de la app. Causa real encontrada
+en `enviarNotificacion()` (`gas/codigo.gs`): escribía la hoja
+Notificaciones fila por fila, con un guardado completo
+(`SpreadsheetApp.flush()`) por cada destinatario — no es el teléfono
+del usuario ni el tamaño del Sheet en general, es esta función
+puntual. Se cambió para armar todas las filas en memoria y escribirlas
+de una sola vez, sin importar si son 3 o 300 destinatarios. No hace
+falta dividir envíos en tandas por grupo/ciudad como alternativa — con
+este arreglo no debería hacer falta.
+
+De paso, el texto de los mensajes de notificaciones subió otro 10%
+(1.15rem → 1.27rem, sobre el +40% de antes).
+
+---
+
 ## 24/07/2026 (noche) — Letra de los mensajes de notificaciones, 40% más grande
 
 El texto del mensaje dentro de cada notificación (`.notif-mensaje`, en
