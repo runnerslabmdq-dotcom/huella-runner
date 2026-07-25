@@ -1,7 +1,14 @@
 // ============================================================
 // HUELLA RUNNER — admin.gs
-// Última actualización: 23/07/2026 13:09 (hora Argentina)
+// Última actualización: 25/07/2026 13:40 (hora Argentina)
 // Cambios en esta versión:
+//   - getAdminUsuarios(token) ahora también devuelve provincia,
+//     fechaRegistro (texto legible) y fechaRegistroTs (epoch ms, para
+//     ordenar). Se usa en Admin.html para el filtro por provincia y
+//     para mostrar los usuarios más nuevos primero por defecto. El
+//     fundador notó que la lista de "Usuarios registrados" se hacía
+//     interminable al simular 50+ usuarios.
+// Cambios en versiones anteriores:
 //   - Nueva función getHistorialNotificaciones(token): devuelve el
 //     historial completo de mensajes enviados (destinatario, mensaje,
 //     fecha, si se leyó, si el usuario lo ocultó de su lado) — hasta
@@ -220,12 +227,14 @@ function getAdminUsuarios(token) {
 
     const usersData    = usersSheet.getDataRange().getValues();
     const usersHeaders = usersData[0];
-    const nomCol    = usersHeaders.indexOf('Nombre');
-    const apeCol    = usersHeaders.indexOf('Apellido');
-    const emailCol  = usersHeaders.indexOf('Email');
-    const nivelCol  = usersHeaders.indexOf('Nivel');
-    const grupoCol  = usersHeaders.indexOf('Grupo');
-    const pisadaCol = usersHeaders.indexOf('Pisada');
+    const nomCol       = usersHeaders.indexOf('Nombre');
+    const apeCol       = usersHeaders.indexOf('Apellido');
+    const emailCol     = usersHeaders.indexOf('Email');
+    const nivelCol     = usersHeaders.indexOf('Nivel');
+    const grupoCol     = usersHeaders.indexOf('Grupo');
+    const pisadaCol    = usersHeaders.indexOf('Pisada');
+    const provinciaCol = usersHeaders.indexOf('Provincia');
+    const fechaRegCol  = usersHeaders.indexOf('Fecha_Registro');
 
     // Calcular KM totales por email desde Zapatillas
     const zapSheet = ss.getSheetByName('Zapatillas');
@@ -269,13 +278,17 @@ function getAdminUsuarios(token) {
     for (let i = 1; i < usersData.length; i++) {
       const email = emailCol !== -1 ? usersData[i][emailCol].toString().trim().toLowerCase() : '';
       if (!email) continue;
+      const fechaRegDate = fechaRegCol !== -1 ? _celdaADate(usersData[i][fechaRegCol]) : null;
       usuarios.push({
-        nombre:    nomCol    !== -1 ? usersData[i][nomCol].toString()    : '',
-        apellido:  apeCol    !== -1 ? usersData[i][apeCol].toString()    : '',
-        email:     email,
-        nivel:     nivelCol  !== -1 ? usersData[i][nivelCol].toString()  : '',
-        grupo:     grupoCol  !== -1 ? usersData[i][grupoCol].toString()  : '',
-        pisada:    pisadaCol !== -1 ? usersData[i][pisadaCol].toString() : '',
+        nombre:         nomCol       !== -1 ? usersData[i][nomCol].toString()       : '',
+        apellido:       apeCol       !== -1 ? usersData[i][apeCol].toString()       : '',
+        email:          email,
+        nivel:          nivelCol     !== -1 ? usersData[i][nivelCol].toString()     : '',
+        grupo:          grupoCol     !== -1 ? usersData[i][grupoCol].toString()     : '',
+        pisada:         pisadaCol    !== -1 ? usersData[i][pisadaCol].toString()    : '',
+        provincia:      provinciaCol !== -1 ? usersData[i][provinciaCol].toString() : '',
+        fechaRegistro:  fechaRegDate ? Utilities.formatDate(fechaRegDate, TZ_AR, 'dd/MM/yyyy HH:mm') : '',
+        fechaRegistroTs: fechaRegDate ? fechaRegDate.getTime() : 0,
         kmTotales: Math.round(kmPorEmail[email]   || 0),
         zapatillas: zapsPorEmail[email] || 0,
         activoHoy: activosHoy.has(email)
