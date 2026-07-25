@@ -12,6 +12,29 @@ el GAS es la versión más nueva.
 
 ---
 
+## 25/07/2026 — Plantillas de mensaje en el panel + letra del panel otro 10% más grande
+
+De la charla sobre mensajes de "invitame un cafecito runner" (agua/
+banana/gel con link de Mercado Pago) surgió la idea de tener textos
+pre-armados para no escribirlos cada vez. Se agregó a "Enviar
+notificación" (panel de admin) 10 botones de plantilla:
+
+- 4 de "invitame": agua, banana, combo, sumate — con `[link]` de
+  Mercado Pago para completar antes de mandar (no hay forma de que la
+  app sepa el link real, hay que pegarlo a mano cada vez).
+- 6 de uso general: recordatorio de inactividad, rotar zapatillas
+  (para el que tiene varias activas), catálogo nuevo, motivación,
+  pedir sugerencias, prevención de lesiones para principiantes.
+
+Tocar un botón completa el cuadro de mensaje — se puede editar antes
+de enviar, no manda solo. Fácil de sumar más plantillas más adelante
+(quedan en un objeto `PLANTILLAS_MSG` en `admin.html`).
+
+De paso, la letra base del panel subió otro 10% (16,2px → 17,82px),
+sobre el +10% de la vez pasada.
+
+---
+
 ## 24/07/2026 (noche, más tarde) — Envío de notificaciones más rápido + letra otro 10% más grande
 
 El fundador notó (mandando una prueba a los 53 usuarios simulados) que

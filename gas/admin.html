@@ -1,8 +1,18 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Admin.html
-  Última actualización: 24/07/2026 14:01 (hora Argentina)
+  Última actualización: 25/07/2026 11:52 (hora Argentina)
   Cambios en esta versión:
+    - Plantillas rápidas de mensaje en "Enviar notificación": 10 botones
+      (4 de "invitame un agua/banana/gel" con link de Mercado Pago a
+      completar, y 6 de uso general: recordatorio de inactividad, rotar
+      zapatillas, catálogo nuevo, motivación, pedir sugerencias,
+      prevención de lesiones). Al tocar uno, completa el cuadro de
+      mensaje — se puede editar antes de enviar. Textos en
+      PLANTILLAS_MSG, fácil de sumar más adelante.
+    - Letra base del panel: otro +10% (16,2px → 17,82px), a pedido del
+      fundador.
+  Cambios en versiones anteriores:
     - Letra base del panel: 14px → 16,2px, a pedido del fundador (se
       le hacía chico, sobre todo en el celu). Como casi todo el tamaño
       de texto del panel está en rem (115 usos) y no en px fijo, este
@@ -110,7 +120,7 @@
       --amarillo:  #FFD60A;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--plata); min-height: 100vh; font-size: 16.2px; }
+    body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--plata); min-height: 100vh; font-size: 17.82px; }
     ::-webkit-scrollbar { width: 4px; height: 4px; }
     ::-webkit-scrollbar-track { background: #0a0a0a; }
     ::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 2px; }
@@ -256,6 +266,15 @@
     .nf-chip { display: inline-flex; align-items: center; gap: 8px; background: rgba(197,179,88,0.06); border: 1px solid rgba(197,179,88,0.25); border-radius: 7px; padding: 8px 12px; font-size: 0.8rem; font-weight: 700; color: var(--neon); margin-bottom: 14px; }
     .nf-chip button { background: none; border: none; color: var(--metal); cursor: pointer; font-size: 1rem; padding: 0; line-height: 1; }
     .nf-chip button:hover { color: var(--rojo); }
+    .plantillas-wrap { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+    .plantilla-chip {
+      font-family: 'Montserrat', sans-serif; font-size: 0.7rem; font-weight: 700;
+      background: var(--card2); color: var(--metal);
+      border: 1px solid var(--borde2); border-radius: 20px;
+      padding: 7px 13px; cursor: pointer; transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .plantilla-chip:hover { border-color: var(--neon); color: var(--neon); }
     .nf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .nf-btn { width: 100%; background: var(--neon); color: #000; border: none; border-radius: 8px; font-family: 'Montserrat', sans-serif; font-size: 0.8rem; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; padding: 14px; cursor: pointer; margin-top: 4px; transition: all 0.2s; }
     .nf-btn:hover    { background: var(--neon-dim); box-shadow: 0 0 16px var(--neon-glow); }
@@ -476,6 +495,19 @@
       </div>
       <div id="nf-destino-todos" class="nf-info">
         El mensaje llegará a los <strong id="total-users-label" style="color:var(--plata);">todos</strong> usuarios registrados.
+      </div>
+      <div class="nf-label">Plantillas rápidas <span style="text-transform:none;font-weight:500;color:var(--metal);">— tocá una para completar el mensaje, después lo podés editar</span></div>
+      <div class="plantillas-wrap">
+        <button type="button" class="plantilla-chip" onclick="usarPlantilla('agua')">💧 Invitame un agua</button>
+        <button type="button" class="plantilla-chip" onclick="usarPlantilla('banana')">🍌 Invitame una banana</button>
+        <button type="button" class="plantilla-chip" onclick="usarPlantilla('combo')">🥤 Invitame lo que sea</button>
+        <button type="button" class="plantilla-chip" onclick="usarPlantilla('sumate')">🙌 Sumate al proyecto</button>
+        <button type="button" class="plantilla-chip" onclick="usarPlantilla('inactividad')">😴 Recordatorio de inactividad</button>
+        <button type="button" class="plantilla-chip" onclick="usarPlantilla('rotacion')">🔄 Rotar zapatillas</button>
+        <button type="button" class="plantilla-chip" onclick="usarPlantilla('catalogo')">👟 Catálogo nuevo</button>
+        <button type="button" class="plantilla-chip" onclick="usarPlantilla('motivacion')">🔥 Motivación</button>
+        <button type="button" class="plantilla-chip" onclick="usarPlantilla('encuesta')">💬 Pedir sugerencias</button>
+        <button type="button" class="plantilla-chip" onclick="usarPlantilla('lesiones')">🩹 Prevención de lesiones</button>
       </div>
       <div class="nf-label">Mensaje</div>
       <textarea class="nf-textarea" id="nf-mensaje" placeholder="Escribí el mensaje que recibirán..."></textarea>
@@ -1184,6 +1216,29 @@
     document.getElementById('nf-chip-wrap').style.display = 'none';
     document.getElementById('nf-email-individual').value = '';
     document.getElementById('nf-email-individual').style.display = 'block';
+  }
+
+  // Plantillas rápidas para el cuadro de mensaje — ver HISTORIAL-CAMBIOS.md.
+  // Las que dicen [link] hay que reemplazarlo por el link de Mercado Pago
+  // real antes de enviar.
+  const PLANTILLAS_MSG = {
+    agua:        '¿Te sirvió Huella Runner? Regalame un agua 💧 [link]',
+    banana:      'Si la app te ayuda, convidame una banana 🍌 [link]',
+    combo:       'Bancá el proyecto con lo que quieras — un agua, una banana o un gel: [link]',
+    sumate:      'Sumate a mantener esto gratis con una banana, un agua o un gel, lo que prefieras: [link]',
+    inactividad: 'Hace un tiempo que no cargás un entrenamiento — ¿todo bien? Te esperamos para seguir sumando kilómetros.',
+    rotacion:    'Si tenés varias zapatillas activas, alternarlas ayuda a que duren más y reduce el riesgo de lesión. ¿Ya rotaste esta semana?',
+    catalogo:    'Sumamos nuevos modelos al catálogo 👟 — fijate si ya está el tuyo.',
+    motivacion:  '¡Seguís sumando kilómetros! Cada carga te acerca más a conocer el estado real de tus zapatillas. Seguí así 🔥',
+    encuesta:    '¿Qué te gustaría ver en Huella Runner? Contanos tu idea — no prometemos nada, pero la tenemos en cuenta 💬',
+    lesiones:    'Un consejo si estás arrancando: subí el volumen de a poco. La mayoría de las lesiones vienen de ir muy rápido, muy pronto.'
+  };
+  function usarPlantilla(key) {
+    const txt = PLANTILLAS_MSG[key];
+    if (!txt) return;
+    const el = document.getElementById('nf-mensaje');
+    el.value = txt;
+    el.focus();
   }
   function cargarGrupos() {
     google.script.run
