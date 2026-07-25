@@ -12,6 +12,28 @@ el GAS es la versión más nueva.
 
 ---
 
+## 25/07/2026 (mediodía) — Paginado, orden y filtros nuevos en "Usuarios registrados"
+
+Después de simular 50 y probar con más, el fundador notó que la tabla
+de usuarios del panel se hacía interminable de scrollear (no era un
+bug — la tabla mostraba todo de una, sin paginar). Se armaron 3
+mejoras juntas:
+
+1. **Paginado de a 25** — botones "Anterior/Siguiente" abajo de la
+   tabla en vez de mostrar todo junto.
+2. **Orden por defecto: más nuevos primero** — antes no tenía ningún
+   orden definido. Usa una fecha de registro que ya se guardaba
+   (`Fecha_Registro`) pero el panel no usaba.
+3. **Filtros por Provincia y por Grupo** — se suman a los que ya había
+   (Todos / Alerta Zapas / Inactivos / Top Performers). Se arman
+   solos con las provincias/grupos que hay cargados, no son una lista
+   fija a mantener a mano.
+
+`getAdminUsuarios()` (admin.gs) ahora devuelve también `provincia`,
+`fechaRegistro` y `fechaRegistroTs` por usuario.
+
+---
+
 ## 25/07/2026 — Plantillas de mensaje en el panel + letra del panel otro 10% más grande
 
 De la charla sobre mensajes de "invitame un cafecito runner" (agua/

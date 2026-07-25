@@ -1,8 +1,19 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Admin.html
-  Última actualización: 25/07/2026 11:52 (hora Argentina)
+  Última actualización: 25/07/2026 13:40 (hora Argentina)
   Cambios en esta versión:
+    - "Usuarios registrados" ya no muestra la lista completa de una:
+      · Paginado de a 25 (botones Anterior/Siguiente abajo de la tabla),
+        para que no sea interminable con muchos usuarios simulados/reales.
+      · Orden por defecto: más nuevos primero (antes no tenía orden
+        definido). Usa getAdminUsuarios() → fechaRegistroTs.
+      · 2 filtros nuevos (Provincia y Grupo), al lado de los que ya
+        había (Todos/Alerta Zapas/Inactivos/Top Performers) — se arman
+        solos con lo que hay cargado, no son una lista fija.
+      Pedido del fundador después de simular 50+ usuarios y ver que la
+      lista no paraba de scrollear.
+  Cambios en versiones anteriores:
     - Plantillas rápidas de mensaje en "Enviar notificación": 10 botones
       (4 de "invitame un agua/banana/gel" con link de Mercado Pago a
       completar, y 6 de uso general: recordatorio de inactividad, rotar
@@ -196,6 +207,21 @@
     .fchip:hover { border-color: var(--neon); color: var(--neon); }
     .fchip.active { background: var(--neon); color: #000; border-color: var(--neon); box-shadow: 0 0 12px var(--neon-glow); }
     .filter-count { font-size: 0.6rem; font-weight: 900; color: var(--metal); margin-left: auto; white-space: nowrap; }
+    .filter-select {
+      background: var(--card2); border: 1px solid var(--borde2); border-radius: 6px;
+      color: var(--metal); font-family: 'Montserrat', sans-serif; font-size: 0.65rem;
+      font-weight: 700; padding: 8px 10px; cursor: pointer; outline: none;
+    }
+    .filter-select:focus { border-color: var(--neon); }
+    .pager { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 18px; }
+    .pager button {
+      background: var(--card2); border: 1px solid var(--borde2); border-radius: 6px;
+      color: var(--plata); font-family: 'Montserrat', sans-serif; font-size: 0.72rem; font-weight: 700;
+      padding: 8px 14px; cursor: pointer; transition: all 0.15s;
+    }
+    .pager button:hover:not(:disabled) { border-color: var(--neon); color: var(--neon); }
+    .pager button:disabled { opacity: 0.35; cursor: not-allowed; }
+    .pager .pager-info { font-size: 0.7rem; color: var(--metal); font-weight: 700; white-space: nowrap; }
 
     /* ══ STATUS DOT ══ */
     .status-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
@@ -455,9 +481,15 @@
         <div class="fchip"        data-filter="alerta-zapas"   onclick="activarFiltro('alerta-zapas')">🔥 Alerta Zapas</div>
         <div class="fchip"        data-filter="inactivos"      onclick="activarFiltro('inactivos')">💤 Inactivos</div>
         <div class="fchip"        data-filter="top-performers" onclick="activarFiltro('top-performers')">⭐ Top Performers</div>
+        <select class="filter-select" id="filtro-provincia" onchange="filtrarYRenderizar()">
+          <option value="">Toda provincia</option>
+        </select>
+        <select class="filter-select" id="filtro-grupo-usuarios" onchange="filtrarYRenderizar()">
+          <option value="">Todo grupo</option>
+        </select>
         <span class="filter-count" id="filter-count"></span>
       </div>
-      <div class="table-hint">💡 Tocá un runner para enviarle una notificación individual</div>
+      <div class="table-hint">💡 Tocá un runner para enviarle una notificación individual · se muestran los más nuevos primero</div>
       <div class="table-wrap">
         <table class="users-table">
           <thead>
@@ -471,6 +503,7 @@
         </table>
       </div>
       <div class="users-cards" id="users-cards"></div>
+      <div class="pager" id="users-pager"></div>
     </div>
 
     <!-- 5. ENVIAR NOTIFICACIÓN -->
@@ -651,6 +684,9 @@
   let usuariosData        = [];
   let gruposData          = [];
   let filtroActivo        = 'todos';
+  let usuariosFiltrados   = [];
+  let paginaActual        = 0;
+  const USERS_PAGE_SIZE   = 25;
   let alertasData         = [];
   let actividadPorDiaData = [];
   let insightsExtData     = null;
@@ -1106,11 +1142,35 @@
     google.script.run
       .withSuccessHandler(function(data) {
         usuariosData = data || [];
+        poblarFiltrosUsuarios();
         filtrarYRenderizar();
         _renderInsightsDesdeUsuarios();
       })
       .withFailureHandler(function() {})
       .getAdminUsuarios(ADMIN_TOKEN);
+  }
+
+  // Provincia y grupo se arman con lo que realmente hay cargado, no una
+  // lista fija — así nunca queda desactualizada.
+  function poblarFiltrosUsuarios() {
+    const provincias = Array.from(new Set(
+      usuariosData.map(function(u) { return (u.provincia || '').trim(); }).filter(Boolean)
+    )).sort();
+    const grupos = Array.from(new Set(
+      usuariosData.map(function(u) { return (u.grupo || '').trim(); }).filter(Boolean)
+    )).sort();
+
+    const selP = document.getElementById('filtro-provincia');
+    const valP = selP.value;
+    selP.innerHTML = '<option value="">Toda provincia</option>' +
+      provincias.map(function(p) { return '<option value="' + sanitize(p) + '">' + sanitize(p) + '</option>'; }).join('');
+    selP.value = valP;
+
+    const selG = document.getElementById('filtro-grupo-usuarios');
+    const valG = selG.value;
+    selG.innerHTML = '<option value="">Todo grupo</option>' +
+      grupos.map(function(g) { return '<option value="' + sanitize(g) + '">' + sanitize(g) + '</option>'; }).join('');
+    selG.value = valG;
   }
 
   function activarFiltro(filtro) {
@@ -1123,6 +1183,8 @@
 
   function filtrarYRenderizar() {
     const q = (document.getElementById('buscar-usuario').value || '').toLowerCase().trim();
+    const provinciaSel = document.getElementById('filtro-provincia').value;
+    const grupoSel     = document.getElementById('filtro-grupo-usuarios').value;
     let lista = usuariosData.slice();
     if (filtroActivo === 'alerta-zapas') {
       lista = lista.filter(function(u) { return alertasData.indexOf(u.email.toLowerCase()) !== -1; });
@@ -1131,18 +1193,60 @@
     } else if (filtroActivo === 'top-performers') {
       lista = lista.filter(function(u) { return ['avanzado','pro','Avanzado','Pro'].indexOf(u.nivel) !== -1; });
     }
+    if (provinciaSel) lista = lista.filter(function(u) { return (u.provincia || '') === provinciaSel; });
+    if (grupoSel)     lista = lista.filter(function(u) { return (u.grupo || '') === grupoSel; });
     if (q) {
       lista = lista.filter(function(u) {
         return (u.nombre + ' ' + u.apellido + ' ' + u.email).toLowerCase().includes(q);
       });
     }
-    const countEl = document.getElementById('filter-count');
-    if (countEl) countEl.textContent = lista.length + ' runner' + (lista.length !== 1 ? 's' : '');
-    renderTabla(lista);
-    renderCards(lista);
+    // Más nuevos primero — así se ve quién se sumó último sin buscar nada.
+    lista.sort(function(a, b) { return (b.fechaRegistroTs || 0) - (a.fechaRegistroTs || 0); });
+
+    usuariosFiltrados = lista;
+    paginaActual = 0;
+    renderPaginaUsuarios();
   }
 
   function filtrarTabla() { filtrarYRenderizar(); }
+
+  // Corta la lista ya filtrada/ordenada en páginas de USERS_PAGE_SIZE,
+  // para no renderizar cientos de filas de una — con pocos usuarios ni
+  // se nota (una sola página), con muchos evita la lista interminable.
+  function renderPaginaUsuarios() {
+    const total = usuariosFiltrados.length;
+    const totalPaginas = Math.max(1, Math.ceil(total / USERS_PAGE_SIZE));
+    if (paginaActual >= totalPaginas) paginaActual = totalPaginas - 1;
+    if (paginaActual < 0) paginaActual = 0;
+    const desde  = paginaActual * USERS_PAGE_SIZE;
+    const pagina = usuariosFiltrados.slice(desde, desde + USERS_PAGE_SIZE);
+
+    const countEl = document.getElementById('filter-count');
+    if (countEl) {
+      const hasta = Math.min(desde + USERS_PAGE_SIZE, total);
+      countEl.textContent = total === 0
+        ? '0 runners'
+        : (desde + 1) + '–' + hasta + ' de ' + total + ' runner' + (total !== 1 ? 's' : '');
+    }
+    renderTabla(pagina);
+    renderCards(pagina);
+    renderPagerUsuarios(totalPaginas);
+  }
+
+  function renderPagerUsuarios(totalPaginas) {
+    const cont = document.getElementById('users-pager');
+    if (!cont) return;
+    if (totalPaginas <= 1) { cont.innerHTML = ''; return; }
+    cont.innerHTML =
+      '<button onclick="irAPaginaUsuarios(-1)"' + (paginaActual === 0 ? ' disabled' : '') + '>← Anterior</button>' +
+      '<span class="pager-info">Página ' + (paginaActual + 1) + ' de ' + totalPaginas + '</span>' +
+      '<button onclick="irAPaginaUsuarios(1)"' + (paginaActual >= totalPaginas - 1 ? ' disabled' : '') + '>Siguiente →</button>';
+  }
+
+  function irAPaginaUsuarios(delta) {
+    paginaActual += delta;
+    renderPaginaUsuarios();
+  }
 
   function renderTabla(lista) {
     const tbody = document.getElementById('users-tbody');
