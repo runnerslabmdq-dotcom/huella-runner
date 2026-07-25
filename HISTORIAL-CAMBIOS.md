@@ -12,6 +12,25 @@ el GAS es la versión más nueva.
 
 ---
 
+## 25/07/2026 (tarde, más tarde) — Foto real por zapatilla (columna Foto_URL)
+
+El fundador quiere poder subir la foto real de la zapatilla de un
+usuario cuando se la manda (él la retoca y la sube a Cloudinary). Se
+agregó soporte para eso sin pantalla nueva:
+
+- **`index.html`**: el carrusel y el Locker ahora muestran la foto de
+  la columna `Foto_URL` de esa fila (si está cargada), antes que la
+  foto genérica del modelo.
+
+**Paso manual pendiente del fundador** (esto no se puede hacer desde
+el código, es directamente en el Google Sheet): agregar una columna
+nueva llamada exactamente `Foto_URL` en la pestaña "Zapatillas" — una
+sola vez. Después, para cada foto real: pegar el link de Cloudinary en
+esa columna, en la fila de la zapatilla puntual de ese usuario (se
+identifica por email + cuál zapatilla es).
+
+---
+
 ## 25/07/2026 (tarde) — 3 bugs reales encontrados y arreglados en revisión general
 
 El fundador pidió una revisión completa de bugs en todo el código (no

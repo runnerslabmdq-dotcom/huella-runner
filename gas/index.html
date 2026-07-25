@@ -1,8 +1,19 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 25/07/2026 15:17 (hora Argentina)
-  Cambios en esta versión (revisión de bugs pedida por el fundador):
+  Última actualización: 25/07/2026 16:02 (hora Argentina)
+  Cambios en esta versión:
+    - Foto real por zapatilla: si la fila de esa zapatilla en el Sheet
+      (pestaña "Zapatillas") tiene la columna Foto_URL cargada, se
+      muestra esa foto en el carrusel y en el Locker en vez de la
+      genérica del modelo. Sin esa columna/valor, sigue mostrando lo
+      de siempre (foto de modelo → genérica de marca → "no disponible").
+      Pensado para cuando un usuario manda la foto de su propia zapa:
+      el fundador la retoca, la sube a Cloudinary y pega el link a mano
+      en esa columna, en la fila de ese usuario/zapatilla — no hace
+      falta ninguna pantalla nueva. Requiere que la columna Foto_URL
+      exista en el Sheet (paso manual del fundador, una sola vez).
+  Cambios en versiones anteriores (revisión de bugs pedida por el fundador):
     - Fix: doble-toque en "Guardar" podía duplicar datos. Los botones de
       login, crear cuenta, definir contraseña nueva, agregar zapatilla
       y cargar kilómetros solo cambiaban el texto mientras esperaban la
@@ -3077,7 +3088,10 @@
         ? '<div class="cf-warn">' + (perc >= 85 ? '⚠️' : '🔶') + '</div>'
         : '';
       var badgeCls  = getBrandBadgeClass(s.Marca);
-      var shoeImg   = _cloudinaryChica(getShoeImage(s.Marca, s.Modelo), 480);
+      // Foto real de ESTA zapatilla (columna Foto_URL en el Sheet, cargada a
+      // mano por el admin) tiene prioridad sobre la genérica del modelo.
+      var fotoReal  = (s.Foto_URL || '').toString().trim();
+      var shoeImg   = _cloudinaryChica(fotoReal || getShoeImage(s.Marca, s.Modelo), 480);
       var aliasHtml = sAlias
         ? '<div class="cf-alias">' + sAlias + '</div>'
         : '';
@@ -3623,8 +3637,9 @@
     }
     grid.innerHTML = '';
     archived.forEach(function(s) {
-      var km      = Number(s.KM_Actuales) || 0;
-      var shoeImg = _cloudinaryChica(getShoeImage(s.Marca, s.Modelo), 400);
+      var km       = Number(s.KM_Actuales) || 0;
+      var fotoReal = (s.Foto_URL || '').toString().trim();
+      var shoeImg  = _cloudinaryChica(fotoReal || getShoeImage(s.Marca, s.Modelo), 400);
       var sMarca  = sanitize(s.Marca);
       var sModelo = sanitize(s.Modelo);
       var sTalle  = sanitize(s.Talle);
