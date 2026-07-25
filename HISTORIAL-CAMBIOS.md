@@ -12,6 +12,48 @@ el GAS es la versión más nueva.
 
 ---
 
+## 25/07/2026 (tarde) — 3 bugs reales encontrados y arreglados en revisión general
+
+El fundador pidió una revisión completa de bugs en todo el código (no
+podía navegar la PWA en vivo por una restricción de red de este
+entorno). Se leyeron los 7 archivos `.gs`/`.html` completos (~9500
+líneas). Se encontraron 8 cosas en total; se arreglaron las 3 que el
+fundador priorizó, quedan 5 menores anotadas para más adelante (no
+rompen nada hoy):
+
+1. **`admin.html`** — El gráfico "Perfil Comunidad" (pestaña Insights)
+   contaba mal a los usuarios principiantes: esperaba 5 niveles
+   separados pero el registro solo guarda 4 (el nivel inicial es un
+   único valor combinado, `"Principiante/Recreativo"`). Esos usuarios
+   entraban al total pero no aparecían en ninguna barra, y los
+   porcentajes no cerraban en 100%. `NIVELES_ORDER`/`NIVELES_COLORS`
+   ahora usan las 4 categorías reales.
+2. **`index.html`** — Doble-toque en "Guardar" podía duplicar datos:
+   los botones de login, crear cuenta, definir contraseña nueva,
+   agregar zapatilla y cargar kilómetros no se deshabilitaban mientras
+   esperaban al servidor (a diferencia de "archivar"/"eliminar"/
+   "recuperar contraseña", que sí lo hacían). Con mala señal, un
+   segundo toque podía disparar la acción dos veces. Ahora todos se
+   deshabilitan hasta tener respuesta. De paso, "Guardar Entrenamiento"
+   no tenía manejo de error de conexión — ahora sí.
+3. **`index.html`** — Una comilla doble (`"`) en un modelo de
+   zapatilla cargado a mano ("Otra marca/Otro modelo") podía romper el
+   botón "Eliminar" de esa tarjeta y el "Reactivar" del Locker (el
+   escapado solo cubría la comilla simple). Nueva función
+   `escInlineJs()` que escapa ambas.
+
+Quedan pendientes (menores, sin apuro): un cálculo sin terminar de
+"usuarios nuevos esta semana" en `admin.gs` que no se usa en ningún
+lado; el orden de "usuarios inactivos" en insights puede salir
+desprolijo entre los que nunca entrenaron; "actividad reciente" asume
+que las filas del Sheet están en orden cronológico (podría fallar si
+se cargan entrenamientos simulados fuera de orden); un detalle interno
+sin impacto visible en `_labelDia()`; y en el panel admin, tocar el
+filtro "Alerta Zapas" muy rápido apenas entrás puede decir "sin
+resultados" por error hasta que lo tocás de nuevo.
+
+---
+
 ## 25/07/2026 (mediodía) — Paginado, orden y filtros nuevos en "Usuarios registrados"
 
 Después de simular 50 y probar con más, el fundador notó que la tabla

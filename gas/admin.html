@@ -1,8 +1,19 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Admin.html
-  Última actualización: 25/07/2026 13:40 (hora Argentina)
+  Última actualización: 25/07/2026 15:17 (hora Argentina)
   Cambios en esta versión:
+    - Fix: el gráfico "Perfil Comunidad" (Insights) contaba mal a los
+      principiantes. Esperaba 5 niveles separados (Principiante,
+      Recreativo, Intermedio, Avanzado, Pro), pero el registro solo
+      guarda 4 (el nivel inicial es un solo valor combinado
+      "Principiante/Recreativo") — esos usuarios entraban al total pero
+      no aparecían en ninguna barra, y los porcentajes no cerraban en
+      100%. NIVELES_ORDER/NIVELES_COLORS ahora usan las 4 categorías
+      reales; se agregó NIVELES_LABELS solo para mostrar el nombre
+      largo en la barra. Encontrado en la revisión de bugs pedida por
+      el fundador.
+  Cambios en versiones anteriores:
     - "Usuarios registrados" ya no muestra la lista completa de una:
       · Paginado de a 25 (botones Anterior/Siguiente abajo de la tabla),
         para que no sea interminable con muchos usuarios simulados/reales.
@@ -1435,10 +1446,12 @@
   /* ════════════════════════════════════════════════════
      INSIGHTS — Módulo A: Perfil Comunidad
   ════════════════════════════════════════════════════ */
-  const NIVELES_ORDER  = ['Principiante','Recreativo','Intermedio','Avanzado','Pro'];
+  const NIVELES_ORDER  = ['Principiante/Recreativo','Intermedio','Avanzado','Pro'];
+  const NIVELES_LABELS = {
+    'Principiante/Recreativo': 'Principiante / Recreativo'
+  };
   const NIVELES_COLORS = {
-    'Principiante': '#39FF14',
-    'Recreativo':   '#CCFF00',
+    'Principiante/Recreativo': '#39FF14',
     'Intermedio':   '#FFD60A',
     'Avanzado':     '#FF6B00',
     'Pro':          '#FF2D55'
@@ -1462,9 +1475,10 @@
       const c   = conteo[n] || 0;
       const pct = total > 0 ? Math.round((c / total) * 100) : 0;
       const col = NIVELES_COLORS[n] || 'var(--neon)';
+      const label = NIVELES_LABELS[n] || n;
       return `<div class="nivel-bar-wrap">
         <div class="nivel-bar-header">
-          <div class="nivel-bar-name">${n}</div>
+          <div class="nivel-bar-name">${label}</div>
           <div class="nivel-bar-count">${c}</div>
         </div>
         <div class="nivel-bar-track">

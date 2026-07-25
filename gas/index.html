@@ -1,8 +1,26 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 24/07/2026 23:35 (hora Argentina)
-  Cambios en esta versión:
+  Última actualización: 25/07/2026 15:17 (hora Argentina)
+  Cambios en esta versión (revisión de bugs pedida por el fundador):
+    - Fix: doble-toque en "Guardar" podía duplicar datos. Los botones de
+      login, crear cuenta, definir contraseña nueva, agregar zapatilla
+      y cargar kilómetros solo cambiaban el texto mientras esperaban la
+      respuesta del servidor, pero seguían habilitados — un segundo
+      toque (típico con mala señal) podía disparar la acción dos veces
+      (ej. sumar los km cargados por duplicado). Ahora se deshabilitan
+      hasta tener respuesta, igual que ya hacían "archivar", "eliminar"
+      y "recuperar contraseña". De paso, "Guardar Entrenamiento" no
+      tenía manejo de error de conexión (se quedaba en "Guardando..."
+      para siempre si fallaba la red) — ahora sí lo tiene.
+    - Fix: una comilla doble (") en un modelo de zapatilla cargado a
+      mano (opción "Otra marca/Otro modelo") podía romper el botón
+      "Eliminar" de esa tarjeta y el "Reactivar" en el Locker — el
+      escapado solo cubría la comilla simple, no la doble, y esa
+      comilla doble cortaba el atributo onclick a la mitad. Nueva
+      función escInlineJs() (al lado de sanitize()) que escapa ambas;
+      reemplaza el escapado suelto que había en 2 lugares.
+  Cambios en versiones anteriores:
     - Texto de los mensajes de notificaciones (.notif-mensaje) otro 10%
       más grande: 1.15rem → 1.27rem, a pedido del fundador.
   Cambios en versiones anteriores:
@@ -2432,6 +2450,15 @@
       .replace(/'/g,  '&#39;');
   }
 
+  // Para armar valores tipo 'texto' dentro de un onclick="..." inline:
+  // escapa la comilla simple (delimita el string JS) y la doble
+  // (delimita el atributo HTML), así un modelo con " o ' no rompe el botón.
+  function escInlineJs(str) {
+    return (str || '').toString()
+      .replace(/'/g, "\\'")
+      .replace(/"/g, '&quot;');
+  }
+
   let currentDetailShoe = null;
   let allUserShoes = [];
   const ALL_VIEWS = ['view-login','view-register','view-dashboard','view-add-shoe','view-notificaciones','view-set-password'];
@@ -2673,9 +2700,11 @@
       if (!n || !e || !p || !pc) { err.innerText = 'Completá todos los campos obligatorios.'; err.style.display = 'block'; return; }
       if (p !== pc) { err.innerText = 'Las contraseñas no coinciden.'; err.style.display = 'block'; return; }
       document.getElementById('btn-reg').innerText = 'CREANDO...';
+      document.getElementById('btn-reg').disabled  = true;
       google.script.run
         .withSuccessHandler(res => {
           document.getElementById('btn-reg').innerText = 'Crear Cuenta';
+          document.getElementById('btn-reg').disabled  = false;
           if (!res || !res.success) {
             err.innerText = (res && res.error) ? res.error : 'Error desconocido al crear la cuenta.';
             err.style.display = 'block';
@@ -2691,6 +2720,7 @@
         })
         .withFailureHandler(function(e2) {
           document.getElementById('btn-reg').innerText = 'Crear Cuenta';
+          document.getElementById('btn-reg').disabled  = false;
           err.innerText = 'Error de conexión: ' + (e2 && e2.message ? e2.message : e2);
           err.style.display = 'block';
         })
@@ -2699,7 +2729,7 @@
       console.error('doRegister ERROR:', exGlobal);
       var errEl = document.getElementById('reg-error');
       var btnEl = document.getElementById('btn-reg');
-      if (btnEl) btnEl.innerText = 'Crear Cuenta';
+      if (btnEl) { btnEl.innerText = 'Crear Cuenta'; btnEl.disabled = false; }
       if (errEl) {
         errEl.innerText = 'No se pudo procesar el formulario: ' + (exGlobal && exGlobal.message ? exGlobal.message : exGlobal);
         errEl.style.display = 'block';
@@ -2788,9 +2818,11 @@
     }
     err.style.display = 'none';
     document.getElementById('btn-login').innerText = 'INICIANDO...';
+    document.getElementById('btn-login').disabled  = true;
     google.script.run
       .withSuccessHandler(res => {
         document.getElementById('btn-login').innerText = 'Iniciar Sesión';
+        document.getElementById('btn-login').disabled  = false;
         if (!res || !res.success) {
           err.innerText = (res && res.error) ? res.error : 'Error desconocido al iniciar sesión.';
           err.style.display = 'block';
@@ -2833,6 +2865,7 @@
       })
       .withFailureHandler(function(e2) {
         document.getElementById('btn-login').innerText = 'Iniciar Sesión';
+        document.getElementById('btn-login').disabled  = false;
         err.innerText = 'Error de conexión: ' + (e2 && e2.message ? e2.message : e2);
         err.style.display = 'block';
       })
@@ -2848,9 +2881,11 @@
     if (p1.length < 6) { err.innerText = 'La contraseña debe tener al menos 6 caracteres.'; err.style.display = 'block'; return; }
     if (p1 !== p2) { err.innerText = 'Las contraseñas no coinciden.'; err.style.display = 'block'; return; }
     document.getElementById('btn-set-password').innerText = 'GUARDANDO...';
+    document.getElementById('btn-set-password').disabled  = true;
     google.script.run
       .withSuccessHandler(function(res) {
         document.getElementById('btn-set-password').innerText = 'Guardar y continuar';
+        document.getElementById('btn-set-password').disabled  = false;
         if (!res || !res.success) {
           err.innerText = (res && res.error) ? res.error : 'Error al guardar la contraseña.';
           err.style.display = 'block';
@@ -2866,6 +2901,7 @@
       })
       .withFailureHandler(function(e2) {
         document.getElementById('btn-set-password').innerText = 'Guardar y continuar';
+        document.getElementById('btn-set-password').disabled  = false;
         err.innerText = 'Error de conexión: ' + (e2 && e2.message ? e2.message : e2);
         err.style.display = 'block';
       })
@@ -3030,8 +3066,8 @@
       var sIdZapa   = sanitize(s.ID_Zapa);
       var sAlias    = sanitize(s.Alias || '');
       // ID real sin sanitize para usar en funciones JS (ya está sanitizado para HTML)
-      var rawId     = (s.ID_Zapa || '').toString().replace(/'/g, "\\'");
-      var rawModelo = (s.Modelo  || '').toString().replace(/'/g, "\\'");
+      var rawId     = escInlineJs(s.ID_Zapa);
+      var rawModelo = escInlineJs(s.Modelo);
 
       var barColor = 'linear-gradient(90deg, #F0FF00, #BFCA00)';
       if (perc >= 85) barColor = 'linear-gradient(90deg, #ef4444, #ff6b6b)';
@@ -3235,9 +3271,11 @@
     };
     if (!d.marca || !d.modelo) return alert('Completá la información');
     document.getElementById('btn-save-shoe').innerText = 'GUARDANDO...';
+    document.getElementById('btn-save-shoe').disabled  = true;
     google.script.run
       .withSuccessHandler((res) => {
         document.getElementById('btn-save-shoe').innerText = 'Añadir a Mis Zapas';
+        document.getElementById('btn-save-shoe').disabled  = false;
         switchView('view-dashboard');
         setTimeout(loadDashboard, 800);
         // Solo se muestra si ya hay datos reales de otros usuarios con esa
@@ -3248,6 +3286,7 @@
       })
       .withFailureHandler(err => {
         document.getElementById('btn-save-shoe').innerText = 'Añadir a Mis Zapas';
+        document.getElementById('btn-save-shoe').disabled  = false;
         alert('Error al guardar: ' + (err.message || err));
       })
       .addShoe(currentUserEmail, d);
@@ -3300,22 +3339,31 @@
     const kmN = parseFloat(km);
     if (!km || isNaN(kmN) || kmN < 0.1) return alert("Ingresá un kilometraje válido (mínimo 0.1 km)");
     document.getElementById('btn-save-train').innerText = 'Guardando...';
-    google.script.run.withSuccessHandler(res => {
-      document.getElementById('btn-save-train').innerText = 'Guardar Entrenamiento';
-      if(res.success) {
-        closeModal();
-        showKmToast(kmN % 1 === 0 ? kmN : kmN.toFixed(1));
-        google.script.run
-          .withSuccessHandler(function(shoes) {
-            if (!shoes || !Array.isArray(shoes)) { loadDashboard(); return; }
-            allUserShoes = shoes;
-            _pendingActiveShoeIndex = _getCurrentSlideIndex();
-            renderArmario(shoes);
-          })
-          .withFailureHandler(function() { loadDashboard(); })
-          .getUserShoes(currentUserEmail);
-      } else { alert(res.error); }
-    }).logTraining(currentUserEmail, id, kmN);
+    document.getElementById('btn-save-train').disabled  = true;
+    google.script.run
+      .withSuccessHandler(res => {
+        document.getElementById('btn-save-train').innerText = 'Guardar Entrenamiento';
+        document.getElementById('btn-save-train').disabled  = false;
+        if(res.success) {
+          closeModal();
+          showKmToast(kmN % 1 === 0 ? kmN : kmN.toFixed(1));
+          google.script.run
+            .withSuccessHandler(function(shoes) {
+              if (!shoes || !Array.isArray(shoes)) { loadDashboard(); return; }
+              allUserShoes = shoes;
+              _pendingActiveShoeIndex = _getCurrentSlideIndex();
+              renderArmario(shoes);
+            })
+            .withFailureHandler(function() { loadDashboard(); })
+            .getUserShoes(currentUserEmail);
+        } else { alert(res.error); }
+      })
+      .withFailureHandler(err => {
+        document.getElementById('btn-save-train').innerText = 'Guardar Entrenamiento';
+        document.getElementById('btn-save-train').disabled  = false;
+        alert('Error de conexión: ' + (err && err.message ? err.message : err));
+      })
+      .logTraining(currentUserEmail, id, kmN);
   }
 
   // =====================================================
@@ -3581,8 +3629,8 @@
       var sModelo = sanitize(s.Modelo);
       var sTalle  = sanitize(s.Talle);
       var sFecha  = sanitize(s.Fecha_Archivado || '');
-      var rawId   = (s.ID_Zapa || '').toString().replace(/'/g, "\\'");
-      var rawMod  = (s.Modelo  || '').toString().replace(/'/g, "\\'");
+      var rawId   = escInlineJs(s.ID_Zapa);
+      var rawMod  = escInlineJs(s.Modelo);
 
       var card = document.createElement('div');
       card.className = 'locker-card';
