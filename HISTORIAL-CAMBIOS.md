@@ -12,6 +12,21 @@ el GAS es la versión más nueva.
 
 ---
 
+## 24/07/2026 (noche) — Letra de los mensajes de notificaciones, 40% más grande
+
+El texto del mensaje dentro de cada notificación (`.notif-mensaje`, en
+`gas/index.html`) pasó de 0.82rem a 1.15rem, a pedido del fundador.
+
+Nota aparte: se había preparado una renovación de `landing.html`
+(colores actualizados al dorado/plata actual, logo con el mismo
+tratamiento inclinado, y un bug real corregido — el botón de esa
+página apuntaba a una URL de Apps Script vieja/distinta a la actual).
+El fundador pidió dejarlo para después — queda preparado en una
+carpeta `landing/` nueva (separada de `pwa/`, mismo criterio de
+carpetas), sin commitear todavía.
+
+---
+
 ## 24/07/2026 (tarde) — Letra más grande en el panel de admin
 
 El fundador pidió agrandar la letra del panel (14px → 16,2px) — se le
