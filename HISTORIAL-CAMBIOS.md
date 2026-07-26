@@ -12,6 +12,33 @@ el GAS es la versión más nueva.
 
 ---
 
+## 26/07/2026 (tarde) — 18 grupos de running nuevos en el registro
+
+El fundador mandó una recopilación de equipos/grupos de running por
+zona (Mar del Plata y alrededores, Pinamar/Gesell, Tandil, Necochea, La
+Plata/GBA, Rosario) para sumar al desplegable "Grupo de running" del
+registro de usuarios, más "Team Pura Vida" (pedido aparte). Solo se
+tomó el nombre de cada grupo (no Instagram/Facebook/entrenador, que
+también venían en la lista).
+
+Los grupos que no son de Mar del Plata llevan la ciudad o provincia
+entre paréntesis (ej. "Halcones La Plata" ya lo dice en el nombre, no
+lleva paréntesis extra; "GO Team Pilar (Pilar, Buenos Aires)" sí). De
+los grupos de MDQ que ya estaban en la lista de antes, se les agregó
+"(MDQ)" a los que no lo decían en el nombre: Forest Run Group, Grupo
+Troten, JM Corredores, Malgor Track & Field.
+
+**Quedaron 2 cosas sin confirmar** (el fundador dijo que si algo no
+cuadraba, se corrige después):
+- "Kuden Group Tandil" (ya existía en la lista) — la recopilación nueva
+  dice que "Kuden Group" es de Villa Gesell/Pinamar, no de Tandil. No
+  se tocó el nombre por la duda.
+- "FC Running Team (La Plata)" — el dato original decía "FC Running
+  Team / Runner Callejero", no quedaba claro si es un nombre con
+  alternativa o dos grupos distintos. Se eligió "FC Running Team".
+
+---
+
 ## 26/07/2026 (mediodía) — Bug real: "Actividad reciente" mostraba mal la hora
 
 El fundador lo notó al probar el simulador nuevo: un entrenamiento
