@@ -12,6 +12,45 @@ el GAS es la versión más nueva.
 
 ---
 
+## 25/07/2026 (noche) — Segmentos de notificación: compradores inminentes, cumpleaños e inactivos
+
+El fundador pidió poder avisar a 3 grupos puntuales de usuarios,
+calculados directamente de lo que ya hay en el Sheet:
+
+1. **🔥 Compradores inminentes** (zapas en zona crítica) — para
+   reforzar avisos publicitarios/comerciales a quien está por necesitar
+   zapatillas nuevas ya.
+2. **🎂 Cumpleaños de la semana** — para dar un descuento o premio en
+   su semana. Nuevo: `getCumpleanosProximos()` en `admin.gs`, compara
+   solo mes/día de `FechaNacimiento` contra hoy.
+3. **😴 Inactivos / nunca entrenaron** — para mensajearlos con un tono
+   suave (reutiliza la plantilla que ya existía, "Recordatorio de
+   inactividad").
+
+Se armó como un 4to tab "Segmento" dentro de "Enviar notificación" (panel
+admin): elegís la opción, te muestra cuántos usuarios entran y quiénes
+son, y mandás con el botón de siempre. Nuevo tipo de destinatario
+`'lista'` en `enviarNotificacion()` (`codigo.gs`) para esto — valida que
+cada email sea de un usuario real antes de mandar nada, y sigue
+pidiendo el token de admin como "todos"/"grupo".
+
+**De paso se encontró y arregló un bug real**: el filtro "Alerta Zapas"
+de "Usuarios registrados" nunca mostraba resultados — el panel buscaba
+el email de cada alerta (`a.email`) pero `getAdminDashboardData()`
+(`codigo.gs`) nunca lo incluía en los datos que mandaba. Se agregó ese
+campo. Esto también era necesario para que funcione el segmento de
+"compradores inminentes".
+
+**Quedó anotado para más adelante** (no se construyó, fue decisión del
+fundador): un aviso de "aniversario de registro" por usuario tiene poco
+sentido individual todavía, porque al ser una app recién lanzada va a
+haber muchos usuarios cumpliendo el año juntos. Mejor pensarlo como un
+sorteo por el aniversario de la app en sí (con inscripciones a carreras
+como premio, al estilo de lo que se suele regalar), para cuando se
+decida fecha y premio.
+
+---
+
 ## 25/07/2026 (tarde, más tarde) — Foto real por zapatilla (columna Foto_URL)
 
 El fundador quiere poder subir la foto real de la zapatilla de un

@@ -1,7 +1,19 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 24/07/2026 23:35 (hora Argentina)
+// Última actualización: 25/07/2026 23:22 (hora Argentina)
 // Cambios en esta versión:
+//   - Nuevo tipo de destinatario 'lista' en enviarNotificacion(): permite
+//     mandar un mensaje a un array de emails ya armado del lado del panel
+//     admin (ej. "zapas en alerta", "inactivos", "cumpleaños de la
+//     semana"), en vez de solo todos/grupo/individual. Valida que cada
+//     email corresponda a un usuario real antes de mandar nada. Requiere
+//     token de admin, igual que "todos"/"grupo".
+//   - Fix: getAdminDashboardData() arma alertasDesgaste (zapas en zona
+//     crítica) sin el campo email — el panel admin lo necesitaba para el
+//     filtro "Alerta Zapas" de "Usuarios registrados" (buscaba a.email,
+//     que nunca existía) y ahora también para el segmento nuevo de
+//     notificaciones. Sin este fix, ese filtro nunca mostraba resultados.
+// Cambios en versiones anteriores:
 //   - PERFORMANCE: enviarNotificacion() escribía una fila por vez en la
 //     hoja Notificaciones, con un SpreadsheetApp.flush() por cada
 //     destinatario — con envíos masivos ("todos"/"grupo") eso se
@@ -1084,10 +1096,11 @@ function getGruposRunning() {
 
 function enviarNotificacion(destinatarioTipo, destinatarioValor, mensaje, tipo, codigoVoucherManual, token) {
   try {
-    // Los envíos masivos (a todos o a un grupo entero) son la parte
-    // riesgosa — requieren el token de admin. Los individuales quedan
-    // libres porque el propio sistema los usa (cupones, social proof).
-    if ((destinatarioTipo === 'todos' || destinatarioTipo === 'grupo') && !_adminAutorizado(token)) {
+    // Los envíos masivos (a todos, a un grupo entero, o a una lista/segmento
+    // ya armado desde el panel) son la parte riesgosa — requieren el token
+    // de admin. Los individuales quedan libres porque el propio sistema los
+    // usa (cupones, social proof).
+    if ((destinatarioTipo === 'todos' || destinatarioTipo === 'grupo' || destinatarioTipo === 'lista') && !_adminAutorizado(token)) {
       return { success: false, error: 'No autorizado.' };
     }
     if (!mensaje || mensaje.toString().trim() === '') {
@@ -1137,6 +1150,29 @@ function enviarNotificacion(destinatarioTipo, destinatarioValor, mensaje, tipo, 
       }
       if (!existe) return { success: false, error: 'No existe un usuario con ese email.' };
       destinatarios.push(emailInd);
+    } else if (destinatarioTipo === 'lista') {
+      // Segmento ya calculado del lado del panel (ej. zapas en alerta,
+      // inactivos, cumpleaños de la semana) — acá solo se valida que cada
+      // email exista de verdad como usuario antes de mandarle nada.
+      if (!destinatarioValor || !Array.isArray(destinatarioValor) || destinatarioValor.length === 0) {
+        return { success: false, error: 'La lista de destinatarios está vacía.' };
+      }
+      const emailsValidos = new Set();
+      for (let i = 1; i < usersData.length; i++) {
+        const e = usersData[i][emailCol] ? usersData[i][emailCol].toString().trim().toLowerCase() : '';
+        if (e) emailsValidos.add(e);
+      }
+      const vistos = new Set();
+      destinatarioValor.forEach(function(em) {
+        const emClean = (em || '').toString().trim().toLowerCase();
+        if (emClean && emailsValidos.has(emClean) && !vistos.has(emClean)) {
+          vistos.add(emClean);
+          destinatarios.push(emClean);
+        }
+      });
+      if (destinatarios.length === 0) {
+        return { success: false, error: 'Ninguno de los emails de la lista corresponde a un usuario registrado.' };
+      }
     } else {
       return { success: false, error: 'Tipo de destinatario inválido.' };
     }
@@ -1422,6 +1458,7 @@ function getAdminDashboardData(token) {
           var email = zEmailCol !== -1 ? zapData[i][zEmailCol].toString().trim().toLowerCase() : '';
           var uInfo = grupoMap[email] || { nombre: email, grupo: '' };
           alertasDesgaste.push({
+            email:       email,
             runner:      uInfo.nombre,
             grupo:       uInfo.grupo,
             zapatilla:   marca + ' ' + modelo,
