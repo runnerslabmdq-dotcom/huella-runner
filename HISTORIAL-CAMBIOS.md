@@ -12,6 +12,25 @@ el GAS es la versión más nueva.
 
 ---
 
+## 26/07/2026 (mediodía) — Bug real: "Actividad reciente" mostraba mal la hora
+
+El fundador lo notó al probar el simulador nuevo: un entrenamiento
+recién cargado al mediodía aparecía como "hace 12h" en "Actividad
+reciente" del panel admin.
+
+Causa: la columna "Hora" de Entrenamientos a veces Google Sheets la
+detecta sola como un valor de hora (no como el texto "12:08" que
+escribe la app), y `_combinarFechaHora()` (`admin.gs`) no contemplaba
+ese caso — hacía `horaRaw.toString().split(':')`, que con un objeto
+Date da un texto largo y el `split` falla en silencio. Resultado: se
+perdía la hora real y quedaba en medianoche, así que "hace cuánto fue"
+se calculaba mal. El mismo caso ya estaba resuelto en otra parte del
+código (`getShoeHistory()`, `codigo.gs`), pero nunca se había aplicado
+acá — se corrigió con el mismo criterio (chequear si es un objeto Date
+antes de tratarlo como texto).
+
+---
+
 ## 26/07/2026 — Trigger que simula entrenamientos (para antes de la beta abierta)
 
 El fundador recordaba un trigger de otra sesión que simulaba usuarios

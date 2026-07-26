@@ -1,7 +1,17 @@
 // ============================================================
 // HUELLA RUNNER — admin.gs
-// Última actualización: 25/07/2026 23:22 (hora Argentina)
+// Última actualización: 26/07/2026 12:13 (hora Argentina)
 // Cambios en esta versión:
+//   - Fix: "Actividad reciente" mostraba mal la hora (ej. "hace 12h" en
+//     un entrenamiento recién cargado al mediodía) — encontrado al
+//     probar el simulador nuevo. _combinarFechaHora() no contemplaba
+//     que la celda Hora puede venir como objeto Date (cuando Sheets la
+//     detecta sola como valor de hora, no como texto "HH:mm"); en ese
+//     caso el código viejo hacía horaRaw.toString().split(':'), que
+//     fallaba en silencio y dejaba la hora en medianoche. Mismo caso ya
+//     contemplado en getShoeHistory() (codigo.gs), pero nunca se había
+//     aplicado acá.
+// Cambios en versiones anteriores:
 //   - Nueva función getCumpleanosProximos(token): usuarios con cumpleaños
 //     en los próximos 7 días (compara solo mes/día de FechaNacimiento, no
 //     el año). La usa el nuevo segmento "Cumpleaños" del panel de
@@ -945,11 +955,26 @@ function _celdaADate(valor) {
 function _combinarFechaHora(fechaRaw, horaRaw) {
   const base = _celdaADate(fechaRaw);
   if (!base) return null;
-  const horaStr = (horaRaw || '').toString().trim();
-  if (!horaStr) return base; // sin columna Hora: se mantiene medianoche (mejor que nada)
-  const partes = horaStr.split(':');
-  const h = parseInt(partes[0], 10);
-  const m = parseInt(partes[1], 10);
+
+  // La celda Hora puede venir como texto "HH:mm" o, si Sheets la detectó
+  // sola como un valor de hora, como un objeto Date (fecha en 1899, hora
+  // real en getHours()/getMinutes()) — mismo caso ya contemplado en
+  // getShoeHistory() (codigo.gs). Sin este chequeo, horaRaw.toString()
+  // devuelve un texto largo tipo fecha completa y el split(':') falla en
+  // silencio, dejando la hora en medianoche (síntoma: "hace 12h" en algo
+  // recién cargado al mediodía).
+  let h, m;
+  if (Object.prototype.toString.call(horaRaw) === '[object Date]') {
+    if (isNaN(horaRaw.getTime())) return base;
+    h = horaRaw.getHours();
+    m = horaRaw.getMinutes();
+  } else {
+    const horaStr = (horaRaw || '').toString().trim();
+    if (!horaStr) return base; // sin columna Hora: se mantiene medianoche (mejor que nada)
+    const partes = horaStr.split(':');
+    h = parseInt(partes[0], 10);
+    m = parseInt(partes[1], 10);
+  }
   if (isNaN(h) || isNaN(m)) return base;
   return new Date(base.getFullYear(), base.getMonth(), base.getDate(), h, m);
 }
