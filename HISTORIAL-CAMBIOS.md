@@ -12,6 +12,35 @@ el GAS es la versión más nueva.
 
 ---
 
+## 26/07/2026 — Trigger que simula entrenamientos (para antes de la beta abierta)
+
+El fundador recordaba un trigger de otra sesión que simulaba usuarios
+cargando entrenamientos — no estaba guardado en el repo, así que se
+armó de cero.
+
+**Archivo nuevo `simulacion.gs`**: `simularEntrenamientosFalsos()` —
+cada corrida, un puñado al azar (15%) de zapatillas activas (nunca las
+del admin, `huellarunner@gmail.com`) suma un entrenamiento entre 3 y 15
+km. Usa el mismo camino que un entrenamiento real
+(`registrarActividadTrailPoints`, `trail-points.gs`), así que de paso
+sirve como prueba de carga real del sistema de km/cupones/anti-fraude,
+no solo maquillaje visual para la demo.
+
+Se instala UNA vez a mano desde el editor de Apps Script — elegir
+`instalarSimulacionEntrenamientos` en el desplegable de arriba y
+apretar "Ejecutar". Deja el trigger corriendo cada 4 horas. Para
+frenarlo (correr `desinstalarSimulacionEntrenamientos` una vez).
+
+**Importante, ya charlado con el fundador**: como él va a borrar todos
+los datos simulados del Sheet (menos el admin) antes de abrir la beta
+al público el 1 de agosto, no hizo falta armar ninguna forma de
+distinguir cuentas simuladas de reales — total, hoy todo lo que hay es
+simulado. Pero por eso mismo, el trigger de simulación se tiene que
+**desinstalar antes de esa fecha**, o le va a inventar entrenamientos
+falsos a usuarios reales también.
+
+---
+
 ## 25/07/2026 (noche) — Segmentos de notificación: compradores inminentes, cumpleaños e inactivos
 
 El fundador pidió poder avisar a 3 grupos puntuales de usuarios,
