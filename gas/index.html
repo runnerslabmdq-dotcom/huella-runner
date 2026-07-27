@@ -1,8 +1,14 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 27/07/2026 08:59 (hora Argentina)
+  Última actualización: 27/07/2026 09:08 (hora Argentina)
   Cambios en esta versión:
+    - Letra del cartel "¿Qué es Open Beta?" un poco más grande y más
+      clara (0.72rem gris → 0.8rem plata) — el fundador la vio bien pero
+      pidió aclararla. Cambio acotado solo a ese cartel (#openbeta-desc),
+      no toca el texto del cartel de "Recuperar Contraseña" que comparte
+      la misma clase base.
+  Cambios en versiones anteriores:
     - "Versión Demo" → "Open Beta" (pantalla de bienvenida y login), con
       un ícono (ⓘ) al lado que abre un cartel corto explicando qué es
       una beta abierta — a pedido del fundador, para cuando lance el 1
@@ -1299,6 +1305,10 @@
     .recover-icon  { font-size: 2rem; text-align: center; margin-bottom: 10px; }
     .recover-title { font-weight: 900; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--plata); text-align: center; margin-bottom: 6px; }
     .recover-desc  { font-size: 0.72rem; color: var(--gris-texto); text-align: center; line-height: 1.5; margin-bottom: 18px; }
+    /* Solo el texto del cartel de "¿Qué es Open Beta?" — un poco más
+       grande y más claro que el resto de los .recover-desc (ese texto
+       gris estándar quedaba débil para un párrafo de explicación). */
+    #openbeta-desc { font-size: 0.8rem; color: var(--plata); }
     .recover-success   { font-size: 0.82rem; color: var(--amarillo); text-align: center; margin-top: 14px; display: none; font-weight: 900; letter-spacing: 0.5px; }
     .recover-error-msg { font-size: 0.75rem; color: #ef4444; text-align: center; margin-top: 10px; display: none; font-weight: 700; line-height: 1.4; }
 
@@ -2228,7 +2238,7 @@
     <button class="close-modal" onclick="closeBetaInfoModal()">✕</button>
     <div class="recover-icon">🧪</div>
     <div class="recover-title">¿Qué es Open Beta?</div>
-    <div class="recover-desc">Acceso libre a cualquier usuario antes del lanzamiento oficial. Puede haber errores menores — nos sirve para medir la carga en los servidores, la escalabilidad, y recibir feedback masivo antes de la versión final.</div>
+    <div class="recover-desc" id="openbeta-desc">Acceso libre a cualquier usuario antes del lanzamiento oficial. Puede haber errores menores — nos sirve para medir la carga en los servidores, la escalabilidad, y recibir feedback masivo antes de la versión final.</div>
   </div>
 </div>
 
