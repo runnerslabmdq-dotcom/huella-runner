@@ -1,7 +1,25 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — landing/index.html (guía de uso)
-  Última actualización: 27/07/2026 16:53 (hora Argentina)
+  Última actualización: 27/07/2026 17:26 (hora Argentina)
+
+  Cambios en esta versión (el fundador vio la primera versión publicada
+  y no le gustó — fotos gigantes, letra plana, sin dinamismo):
+    - Fotos ahora tipo "mockup de celular": achicadas (max 210px de
+      ancho), centradas, con marco negro y sombra — antes ocupaban el
+      100% del ancho de la tarjeta y se veían enormes y pegadas al
+      borde.
+    - Se les fijó relación de aspecto 9:19.5 (proporción típica de
+      captura de celular) en vez de depender del tamaño real de la
+      imagen: sin esto, mientras cargaban (son 13 fotos en la página)
+      el espacio se desarmaba y quedaba un punto roto en su lugar.
+      Probado localmente con fotos de prueba antes de aplicar.
+    - Número de cada paso: círculo con degradé dorado (antes plano,
+      un solo tono) + sombra suave.
+    - Franja neón sutil en el borde izquierdo de cada tarjeta y en el
+      borde de los "tips" — el mismo guiño de color que ya usa la app
+      real (barra de km, badges), para que la guía no se sienta tan
+      distinta/plana comparada con la app de verdad.
 
   Sitio estático para Vercel (Root Directory = landing/). Reemplaza a la
   landing de marketing anterior: a pedido del fundador, la landing ahora
@@ -139,36 +157,56 @@
 
   /* ── Paso ── */
   .paso{
+    position:relative;overflow:hidden;
     background:var(--card);border:1px solid var(--border);
-    border-radius:16px;padding:22px 20px;margin-bottom:16px;
+    border-radius:18px;padding:24px 22px;margin-bottom:18px;
   }
-  .paso-top{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+  /* Franja neón apenas visible en el borde izquierdo — el mismo guiño de
+     color que usa la app real (el track de la barra de km, los badges),
+     para que la guía no se sienta "plana" comparada con la app. */
+  .paso::before{
+    content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+    background:linear-gradient(180deg,var(--neon),transparent 70%);
+    opacity:0.55;
+  }
+  .paso-top{display:flex;align-items:center;gap:13px;margin-bottom:11px;}
   .paso-num{
-    flex:none;width:30px;height:30px;border-radius:50%;
+    flex:none;width:34px;height:34px;border-radius:50%;
     display:flex;align-items:center;justify-content:center;
-    background:rgba(197,179,88,0.12);border:1px solid rgba(197,179,88,0.4);
-    color:var(--dorado);font-family:'Bebas Neue',sans-serif;
-    font-size:1rem;letter-spacing:1px;
+    background:linear-gradient(160deg,var(--dorado-top),var(--dorado));
+    color:#000;font-family:'Bebas Neue',sans-serif;
+    font-size:1.1rem;letter-spacing:1px;
+    box-shadow:0 3px 10px rgba(197,179,88,0.25);
   }
   .paso-title{
-    font-weight:900;font-size:0.8rem;letter-spacing:1.5px;
+    font-weight:900;font-size:0.82rem;letter-spacing:1.5px;
     text-transform:uppercase;color:var(--text);line-height:1.3;
   }
-  .paso p{font-size:0.86rem;color:var(--text);}
+  .paso p{font-size:0.88rem;color:var(--text);}
   .paso p + p{margin-top:9px;}
   .paso .tip{
-    margin-top:12px;padding:11px 14px;border-radius:10px;
-    background:var(--bg2);border-left:2px solid var(--dorado);
+    margin-top:13px;padding:12px 14px;border-radius:10px;
+    background:var(--bg2);border-left:2px solid var(--neon);
     font-size:0.78rem;color:var(--muted);
   }
-  .paso figure{margin-top:16px;}
-  .paso img{
-    display:block;width:100%;height:auto;border-radius:12px;
-    border:1px solid var(--border);background:var(--bg2);
+  /* Fotos tipo "mockup de celular": achicadas, centradas y con marco —
+     antes ocupaban todo el ancho de la tarjeta y se veían gigantes y
+     sin aire. */
+  .paso figure{
+    margin-top:20px;display:flex;flex-direction:column;
+    align-items:center;gap:14px;
   }
-  .paso img + img{margin-top:10px;}
+  .paso img{
+    /* width fijo + aspect-ratio (no width:auto/height:auto): reserva el
+       lugar del "teléfono" de entrada, para que mientras la foto carga
+       (son 13 en la página) no se vea un puntito roto en su lugar. */
+    display:block;width:210px;max-width:60vw;aspect-ratio:9/19.5;
+    object-fit:cover;border-radius:22px;
+    border:5px solid #030303;
+    box-shadow:0 14px 34px rgba(0,0,0,0.5), 0 0 0 1px rgba(197,179,88,0.15);
+  }
   figcaption{
-    margin-top:8px;font-size:0.7rem;color:var(--muted2);
+    font-size:0.7rem;color:var(--muted2);
     text-align:center;font-style:italic;
   }
 
