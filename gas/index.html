@@ -1,8 +1,16 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 27/07/2026 09:08 (hora Argentina)
+  Última actualización: 27/07/2026 10:54 (hora Argentina)
   Cambios en esta versión:
+    - DEBUG TEMPORAL en abrirLockerModal(): agrega un alert() que
+      muestra el email usado y la cantidad de zapatillas que devuelve
+      getArchivedShoes(), para diagnosticar el bug reportado por el
+      fundador (el Locker siempre se ve vacío aunque el Sheet tenga
+      zapatillas correctamente archivadas — confirmado con datos
+      100% frescos: cuenta nueva, 2 zapatillas, 1 archivada, tampoco
+      aparece). Sacar este alert() una vez resuelto.
+  Cambios en versiones anteriores:
     - Letra del cartel "¿Qué es Open Beta?" un poco más grande y más
       clara (0.72rem gris → 0.8rem plata) — el fundador la vio bien pero
       pidió aclararla. Cambio acotado solo a ese cartel (#openbeta-desc),
@@ -3688,10 +3696,15 @@
     google.script.run
       .withSuccessHandler(function(archived) {
         var n = (archived && Array.isArray(archived)) ? archived.length : 0;
+        // DEBUG TEMPORAL — sacar una vez resuelto el bug del Locker.
+        alert('DEBUG Locker → email usado: "' + currentUserEmail + '" | zapatillas recibidas: ' + n
+          + (archived ? ' | primer resultado: ' + JSON.stringify(archived[0] || null) : ' | archived=' + archived));
         sub.innerText = n + ' zapatilla' + (n !== 1 ? 's' : '') + ' guardada' + (n !== 1 ? 's' : '');
         renderLockerModal(archived);
       })
-      .withFailureHandler(function() {
+      .withFailureHandler(function(err) {
+        // DEBUG TEMPORAL — sacar una vez resuelto el bug del Locker.
+        alert('DEBUG Locker → FALLÓ: ' + (err && err.message ? err.message : err) + ' | email usado: "' + currentUserEmail + '"');
         grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:24px;color:#ef4444;font-size:0.75rem;">Error al cargar el Locker.</div>';
       })
       .getArchivedShoes(currentUserEmail);
