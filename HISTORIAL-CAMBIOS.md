@@ -12,6 +12,60 @@ el GAS es la versión más nueva.
 
 ---
 
+## 27/07/2026 (tarde) — Landing nueva: la guía de uso + fix del botón "atrás"
+
+### `landing/index.html` — ahora es la guía de uso
+
+A pedido del fundador, la landing dejó de ser una página de marketing y
+pasó a ser **la explicación de cómo se usa la app**, para acompañar el
+lanzamiento de la Open Beta del 1 de agosto. Está armada sobre el guión
+de 11 pasos que él escribió, con la estética exacta de la app (mismos
+colores, Bebas Neue + Montserrat, el logo inclinado).
+
+Además de los pasos, incluye las 3 cosas que pidió explícitamente:
+- **El cartel azul de Google** y cómo cerrarlo (con la ✕ azul), aclarando
+  que es normal y no un error.
+- **Que esto es una Open Beta** y puede haber errores menores, con un
+  pedido de feedback.
+- **Cómo instalar la app en la pantalla de inicio**, con los pasos
+  separados para Android (Chrome) y iPhone (Safari).
+
+Se sube a Vercel como sitio estático, con **Root Directory = `landing/`**.
+Se eliminó el `landing.html` que estaba suelto en la raíz del repo.
+
+De paso resuelve dos cosas que habían quedado marcadas de la landing
+vieja (ver más abajo, entrada del 24/07): las **estadísticas sin fuente**
+("70% de los runners…") ya no están, y las **capturas viejas** que
+apuntaban a `../assets/screenshots/` — ruta que se rompía con Root
+Directory = `landing/` — se reemplazaron por las capturas nuevas del
+fundador, servidas desde Cloudinary con `f_auto,q_auto,w_700` para que
+pesen poco en el celular.
+
+**Pendiente de revisar por el fundador**: las 13 capturas se asignaron
+*en el orden en que él las pasó*, siguiendo su propia tabla (Paso 0 lleva
+2, Paso 2 lleva 2, el resto 1 cada uno = 13). No se pudieron verificar
+una por una porque este entorno no tiene acceso a Cloudinary (da 403).
+Si alguna quedó en el paso equivocado, se cambia el link del `<img>` de
+esa sección — cada una está marcada con un comentario `<!-- PASO N -->`.
+
+### `pwa/index.html` — un escalón menos donde caer en blanco
+
+El fundador apretó "atrás" del navegador dentro de la app y cayó en una
+pantalla en blanco (`userCodeAppPanel`). No es un bug nuestro: Google
+sirve las apps de Apps Script dentro de un marco interno suyo, y volver
+atrás te deja parado en la dirección de ese marco suelto.
+
+No se puede eliminar del todo, pero la pantalla de bienvenida de Vercel
+usaba `window.location.href` para saltar a la app, lo que **agrega** un
+paso al historial. Se cambió por `window.location.replace()`, que lo
+**reemplaza** — un lugar menos donde caer mal parado.
+
+Mitigación real para los usuarios: que instalen la app en la pantalla de
+inicio (se explica en la landing nueva), así se abre a pantalla completa
+sin las flechas del navegador.
+
+---
+
 ## 27/07/2026 (tarde) — ⓘ que explica el límite de km + cabo suelto del 650
 
 - **Nuevo ⓘ al lado de "Límite de km (opcional)"** en el formulario de

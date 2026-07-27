@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<!--
+  HUELLA RUNNER — landing/index.html (guía de uso)
+  Última actualización: 27/07/2026 16:53 (hora Argentina)
+
+  Sitio estático para Vercel (Root Directory = landing/). Reemplaza a la
+  landing de marketing anterior: a pedido del fundador, la landing ahora
+  ES la explicación de cómo se usa la app, para acompañar el lanzamiento
+  de la Open Beta del 1 de agosto.
+
+  De paso resuelve dos cosas que habían quedado marcadas en la landing
+  vieja: las estadísticas sin fuente ("70% de los runners...") ya no
+  están, y las capturas que apuntaban a ../assets/screenshots/ (ruta que
+  se rompía con Root Directory = landing/) se reemplazaron por las
+  capturas nuevas del fundador, servidas desde Cloudinary.
+
+  Basada en el guión que pasó el fundador (11 pasos), más 3 cosas que
+  pidió agregar sí o sí: el cartel azul de Google y cómo cerrarlo, que
+  esto es una Open Beta y puede haber errores, y cómo instalar la app en
+  la pantalla de inicio del celular.
+
+  IMÁGENES: las 13 capturas están asignadas EN EL ORDEN en que las pasó
+  el fundador, siguiendo su propia tabla (Paso 0 lleva 2, Paso 2 lleva 2,
+  el resto 1 cada uno = 13). No se pudieron verificar una por una porque
+  este entorno no tiene acceso a Cloudinary — si alguna quedó en el paso
+  equivocado, se cambia el link del <img> de esa sección y listo. Cada
+  una está marcada con un comentario para encontrarla rápido.
+  Se les agregó f_auto,q_auto,w_700 (transformación de Cloudinary, igual
+  que hace _cloudinaryChica() en la app) para que pesen poco en el celu.
+-->
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Huella Runner — Cómo usar la app</title>
+<meta name="description" content="Guía paso a paso de Huella Runner: registrate, cargá tus zapatillas, sumá kilómetros y sabé cuándo cambiarlas. Versión Open Beta.">
+<meta name="theme-color" content="#080808">
+<link rel="icon" href="https://res.cloudinary.com/dlayzh9ln/image/upload/v1784824681/icon192_unoplg.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#080808;
+    --bg2:#0f0f0f;
+    --card:#111111;
+    --dorado:#C5B358;
+    --dorado-top:#D4C570;
+    --neon:#CCFF00;
+    --text:#E8E8E8;
+    --muted:#888888;
+    --muted2:#555555;
+    --border:#1f1f1f;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Montserrat',sans-serif;
+    line-height:1.6;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{width:100%;max-width:620px;margin:0 auto;padding:0 20px;}
+
+  /* ── Marca ── */
+  .powered{
+    font-size:0.5rem;font-weight:700;letter-spacing:2px;
+    text-transform:uppercase;color:var(--muted);margin-bottom:6px;
+  }
+  .powered em{font-style:italic;}
+  .powered .r{color:var(--dorado);}
+  .wordmark{
+    font-family:'Bebas Neue',sans-serif;font-size:2.6rem;
+    letter-spacing:2px;line-height:1.05;
+  }
+  .wordmark span{display:inline-block;transform:skewX(-8deg);}
+  .wordmark .w1{color:var(--text);}
+  .wordmark .w2{color:var(--dorado);}
+
+  /* ── Hero ── */
+  .hero{text-align:center;padding:56px 0 40px;}
+  .badge-beta{
+    display:inline-flex;align-items:center;gap:6px;
+    margin-top:14px;padding:5px 14px;border-radius:20px;
+    border:1px solid rgba(204,255,0,0.35);background:rgba(204,255,0,0.06);
+    color:var(--neon);font-size:0.62rem;font-weight:900;
+    letter-spacing:3px;text-transform:uppercase;
+  }
+  .hero h1{
+    font-family:'Bebas Neue',sans-serif;font-size:2.2rem;
+    letter-spacing:1px;line-height:1.1;margin:26px 0 12px;
+  }
+  .hero h1 .hl{color:var(--dorado);}
+  .hero p{color:var(--muted);font-size:0.9rem;max-width:440px;margin:0 auto;}
+
+  /* ── Botones ── */
+  .btn{
+    display:inline-block;padding:15px 30px;border-radius:12px;
+    font-weight:900;font-size:0.8rem;letter-spacing:1.5px;
+    text-transform:uppercase;text-decoration:none;
+    transition:transform .15s ease;
+  }
+  .btn--gold{
+    background:linear-gradient(180deg,var(--dorado-top),var(--dorado));
+    color:#000;box-shadow:0 6px 20px rgba(197,179,88,0.22);
+  }
+  .btn--gold:active{transform:translateY(1px);}
+  .btn-row{text-align:center;margin-top:26px;}
+
+  /* ── Avisos ── */
+  .aviso{
+    border-radius:14px;padding:18px 20px;margin:0 0 14px;
+    border:1px solid var(--border);background:var(--bg2);
+  }
+  .aviso--beta{border-color:rgba(204,255,0,0.28);background:rgba(204,255,0,0.04);}
+  .aviso h3{
+    font-size:0.68rem;font-weight:900;letter-spacing:2px;
+    text-transform:uppercase;color:var(--dorado);margin-bottom:8px;
+  }
+  .aviso--beta h3{color:var(--neon);}
+  .aviso p{font-size:0.84rem;color:var(--text);}
+  .aviso p + p{margin-top:9px;}
+  .aviso .chico{color:var(--muted);font-size:0.78rem;}
+
+  /* ── Secciones ── */
+  section{padding:34px 0;}
+  .sec-tag{
+    font-size:0.6rem;font-weight:900;letter-spacing:3px;
+    text-transform:uppercase;color:var(--dorado);margin-bottom:8px;
+  }
+  h2{
+    font-family:'Bebas Neue',sans-serif;font-size:1.7rem;
+    letter-spacing:1px;line-height:1.15;margin-bottom:8px;
+  }
+  .sub{color:var(--muted);font-size:0.85rem;margin-bottom:22px;}
+  hr.sep{border:none;border-top:1px solid var(--border);margin:8px 0 0;}
+
+  /* ── Paso ── */
+  .paso{
+    background:var(--card);border:1px solid var(--border);
+    border-radius:16px;padding:22px 20px;margin-bottom:16px;
+  }
+  .paso-top{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+  .paso-num{
+    flex:none;width:30px;height:30px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    background:rgba(197,179,88,0.12);border:1px solid rgba(197,179,88,0.4);
+    color:var(--dorado);font-family:'Bebas Neue',sans-serif;
+    font-size:1rem;letter-spacing:1px;
+  }
+  .paso-title{
+    font-weight:900;font-size:0.8rem;letter-spacing:1.5px;
+    text-transform:uppercase;color:var(--text);line-height:1.3;
+  }
+  .paso p{font-size:0.86rem;color:var(--text);}
+  .paso p + p{margin-top:9px;}
+  .paso .tip{
+    margin-top:12px;padding:11px 14px;border-radius:10px;
+    background:var(--bg2);border-left:2px solid var(--dorado);
+    font-size:0.78rem;color:var(--muted);
+  }
+  .paso figure{margin-top:16px;}
+  .paso img{
+    display:block;width:100%;height:auto;border-radius:12px;
+    border:1px solid var(--border);background:var(--bg2);
+  }
+  .paso img + img{margin-top:10px;}
+  figcaption{
+    margin-top:8px;font-size:0.7rem;color:var(--muted2);
+    text-align:center;font-style:italic;
+  }
+
+  /* ── Instalación ── */
+  .instalar{
+    background:linear-gradient(135deg,#0d0d0d,#141414);
+    border:1px solid rgba(197,179,88,0.25);border-radius:16px;padding:24px 20px;
+  }
+  .os{margin-top:18px;}
+  .os:first-child{margin-top:0;}
+  .os-name{
+    font-size:0.68rem;font-weight:900;letter-spacing:2px;
+    text-transform:uppercase;color:var(--dorado);margin-bottom:8px;
+  }
+  .os ol{margin:0;padding-left:20px;}
+  .os li{font-size:0.84rem;margin-bottom:5px;}
+
+  /* ── Cierre ── */
+  .cierre{text-align:center;padding:44px 0 24px;}
+  .cierre h2{margin-bottom:10px;}
+  .cierre p{color:var(--muted);font-size:0.86rem;max-width:420px;margin:0 auto;}
+  footer{
+    text-align:center;padding:26px 0 40px;
+    border-top:1px solid var(--border);margin-top:30px;
+  }
+  footer .powered{margin-bottom:0;}
+
+  @media (min-width:560px){
+    .wordmark{font-size:3.2rem;}
+    .hero h1{font-size:2.7rem;}
+    h2{font-size:2rem;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════ HERO ════════════ -->
+<header class="hero">
+  <div class="wrap">
+    <div class="powered">Powered by <em>Huella <span class="r">Runner</span></em> MDQ</div>
+    <div class="wordmark"><span class="w1">HUELLA</span> <span class="w2">RUNNER</span></div>
+    <div class="badge-beta">● Open Beta</div>
+
+    <h1>Cómo usar la app,<br><span class="hl">paso a paso.</span></h1>
+    <p>Registrá tus zapatillas, sumá los kilómetros de cada salida y enterate a tiempo de cuándo conviene cambiarlas.</p>
+
+    <div class="btn-row">
+      <a class="btn btn--gold"
+         href="https://script.google.com/macros/s/AKfycbwxh1GRAiybZJYM4w82ny7RXwjpraOBKmh8s4jZcIaNFkqMRgZHYe0x8-kNMIIQEintRw/exec"
+         target="_blank" rel="noopener">Abrir Huella Runner</a>
+    </div>
+  </div>
+</header>
+
+<!-- ════════════ AVISOS IMPORTANTES ════════════ -->
+<section style="padding-top:6px;">
+  <div class="wrap">
+
+    <div class="aviso aviso--beta">
+      <h3>Esto es una Open Beta</h3>
+      <p>Acceso libre para cualquier runner, antes del lanzamiento oficial. <strong>Puede haber errores menores</strong> — nos sirve justamente para eso: ver cómo se comporta con mucha gente usándola al mismo tiempo y escuchar qué le falta.</p>
+      <p class="chico">Si algo no funciona o se ve raro, avisanos. Cada comentario nos ayuda a llegar mejor a la versión final.</p>
+    </div>
+
+    <div class="aviso">
+      <h3>Tus datos</h3>
+      <p class="chico">Huella Runner es gratis y no pide datos de tarjeta, clave bancaria ni nada por el estilo. Dentro de la app, al pie de la pantalla, tenés <strong>VER LEGALES</strong> con la política de privacidad completa.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════ INSTALAR EN EL CELULAR ════════════ -->
+<section>
+  <div class="wrap">
+    <div class="sec-tag">Antes que nada</div>
+    <h2>Instalala en tu pantalla de inicio</h2>
+    <p class="sub">No hace falta bajarla de ninguna tienda. En dos toques te queda con su ícono, como cualquier otra app — y se abre a pantalla completa, sin las flechas del navegador.</p>
+
+    <div class="instalar">
+      <div class="os">
+        <div class="os-name">📱 Android (Chrome)</div>
+        <ol>
+          <li>Abrí Huella Runner con el botón de arriba.</li>
+          <li>Tocá los <strong>tres puntitos</strong> ⋮ arriba a la derecha.</li>
+          <li>Elegí <strong>“Agregar a pantalla principal”</strong> (o “Instalar app”).</li>
+          <li>Confirmá. Listo: ya tenés el ícono en tu celu.</li>
+        </ol>
+      </div>
+
+      <div class="os">
+        <div class="os-name">🍎 iPhone (Safari)</div>
+        <ol>
+          <li>Abrí Huella Runner con el botón de arriba, <strong>usando Safari</strong>.</li>
+          <li>Tocá el botón <strong>Compartir</strong> (el cuadradito con la flecha hacia arriba).</li>
+          <li>Bajá y elegí <strong>“Agregar a pantalla de inicio”</strong>.</li>
+          <li>Confirmá con “Agregar”.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- ════════════ PASOS ════════════ -->
+<section>
+  <div class="wrap">
+    <div class="sec-tag">Guía completa</div>
+    <h2>De cero a tu primera carga de kilómetros</h2>
+    <p class="sub">Son once pasos cortos. Con los tres primeros ya estás adentro.</p>
+
+    <!-- ─────────── PASO 0 ─────────── -->
+    <div class="paso">
+      <div class="paso-top">
+        <div class="paso-num">0</div>
+        <div class="paso-title">El cartel azul de Google</div>
+      </div>
+      <p>Al entrar por primera vez vas a ver un aviso azul arriba de todo, que dice que la aplicación fue creada por un usuario de Google. <strong>Es normal y no es un error</strong>: es el mensaje estándar de Google para las apps hechas con su plataforma.</p>
+      <p>Cerralo tocando la <strong>✕ azul</strong> de la derecha y ya te queda la pantalla limpia.</p>
+      <div class="tip">💡 Si instalás la app en tu pantalla de inicio (acá arriba te explicamos cómo), ese cartel deja de aparecer.</div>
+      <figure>
+        <!-- PASO 0 — imagen 1 de 2 -->
+        <img loading="lazy" alt="Aviso azul de Google al abrir la app"
+             src="https://res.cloudinary.com/dlayzh9ln/image/upload/f_auto,q_auto,w_700/v1785181203/WhatsApp_Image_2026-07-27_at_09.46.25_gmaec2.jpg">
+        <!-- PASO 0 — imagen 2 de 2 -->
+        <img loading="lazy" alt="Pantalla ya limpia después de cerrar el aviso"
+             src="https://res.cloudinary.com/dlayzh9ln/image/upload/f_auto,q_auto,w_700/v1785181203/WhatsApp_Image_2026-07-27_at_09.46.26_t0reyd.jpg">
+        <figcaption>Tocá la ✕ azul y listo.</figcaption>
+      </figure>
+    </div>
+
+    <!-- ─────────── PASO 1 ─────────── -->
+    <div class="paso">
+      <div class="paso-top">
+        <div class="paso-num">1</div>
+        <div class="paso-title">Legales y privacidad</div>
+      </div>
+      <p>Al pie de la pantalla tenés <strong>VER LEGALES</strong>. Ahí está la política de privacidad y el tratamiento de datos: qué guardamos y para qué. Tus datos se usan solamente para llevar el control de tu equipamiento.</p>
+      <figure>
+        <!-- PASO 1 -->
+        <img loading="lazy" alt="Sección de legales y privacidad"
+             src="https://res.cloudinary.com/dlayzh9ln/image/upload/f_auto,q_auto,w_700/v1785181203/WhatsApp_Image_2026-07-27_at_09.46.25_1_h4kjks.jpg">
+      </figure>
+    </div>
+
+    <!-- ─────────── PASO 2 ─────────── -->
+    <div class="paso">
+      <div class="paso-top">
+        <div class="paso-num">2</div>
+        <div class="paso-title">Creá tu cuenta</div>
+      </div>
+      <p>¿Todavía no tenés cuenta? Tocá <strong>Regístrate</strong>. Te pide lo básico: nombre, apellido, email y una contraseña.</p>
+      <p>Después, si querés, podés sumar tu fecha de nacimiento, provincia, ciudad, celular, nivel de corredor y tu grupo de running. Terminás con <strong>CREAR CUENTA</strong>.</p>
+      <div class="tip">💡 Si tu grupo no está en la lista, elegí “Otro…” y escribilo. Así lo sumamos.</div>
+      <figure>
+        <!-- PASO 2 — imagen 1 de 2 -->
+        <img loading="lazy" alt="Formulario de registro, primera parte"
+             src="https://res.cloudinary.com/dlayzh9ln/image/upload/f_auto,q_auto,w_700/v1785181203/WhatsApp_Image_2026-07-27_at_09.46.27_dnkwww.jpg">
+        <!-- PASO 2 — imagen 2 de 2 -->
+        <img loading="lazy" alt="Formulario de registro, segunda parte"
+             src="https://res.cloudinary.com/dlayzh9ln/image/upload/f_auto,q_auto,w_700/v1785181203/WhatsApp_Image_2026-07-27_at_09.46.27_1_ib1zj3.jpg">
+      </figure>
+    </div>
+
+    <!-- ─────────── PASO 3 ─────────── -->
+    <div class="paso">
+      <div class="paso-top">
+        <div class="paso-num">3</div>
+        <div class="paso-title">Iniciá sesión</div>
+      </div>
+      <p>Con la cuenta creada, ponés tu email y tu contraseña, y tocás <strong>INICIAR SESIÓN</strong>.</p>
+      <div class="tip">💡 ¿Te olvidaste la contraseña? Tocá “¿Olvidaste tu contraseña?” y te llega una temporal por mail para volver a entrar.</div>
+      <figure>
+        <!-- PASO 3 -->
+        <img loading="lazy" alt="Pantalla de inicio de sesión"
+             src="https://res.cloudinary.com/dlayzh9ln/image/upload/f_auto,q_auto,w_700/v1785181203/WhatsApp_Image_2026-07-27_at_09.46.27_2_fojtov.jpg">
+      </figure>
+    </div>
+
+    <!-- ─────────── PASO 4 ─────────── -->
+    <div class="paso">
+      <div class="paso-top">
+        <div class="paso-num">4</div>
+        <div class="paso-title">Tus zapatillas y cómo sumar kilómetros</div>
+      </div>
+      <p>Esta es la pantalla principal: tus zapatillas activas. En cada una vas a ver los kilómetros que lleva, el límite que le pusiste y el porcentaje de desgaste.</p>
+      <p>Cuando volvés de entrenar, tocás <strong>SUMAR KM</strong>, ponés la distancia de esa salida y el progreso se actualiza al instante.</p>
+      <figure>
+        <!-- PASO 4 -->
+        <img loading="lazy" alt="Tarjeta de zapatilla con kilómetros y porcentaje de uso"
+             src="https://res.cloudinary.com/dlayzh9ln/image/upload/f_auto,q_auto,w_700/v1785181203/WhatsApp_Image_2026-07-27_at_09.46.28_1_nyltj4.jpg">
+      </figure>
+    </div>
+
+    <!-- ─────────── PASO 5 ─────────── -->
+    <div class="paso">
+      <div class="paso-top">
+        <div class="paso-num">5</div>
+        <div class="paso-title">Historial de entrenamientos</div>
+      </div>
+      <p>Tocando <strong>HISTORIAL</strong> ves todas tus salidas con esa zapatilla, con fecha y hora.</p>
+      <p>¿Te equivocaste al cargar? Corregís los kilómetros con el lápiz ✏️, o borrás el registro con el tacho 🗑️ — y los kilómetros de la zapatilla se ajustan solos.</p>
+      <figure>
+        <!-- PASO 5 -->
+        <img loading="lazy" alt="Historial de entrenamientos de una zapatilla"
+             src="https://res.cloudinary.com/dlayzh9ln/image/upload/f_auto,q_auto,w_700/v1785181202/WhatsApp_Image_2026-07-27_at_09.46.27_3_jwtgpv.jpg">
+      </figure>
+    </div>
+
+    <!-- ─────────── PASO 6 ─────────── -->
+    <div class="paso">
+      <div class="paso-top">
+        <div class="paso-num">6</div>
+        <div class="paso-title">Guardar en el Locker o eliminar</div>
+      </div>
+      <p>Si querés retirar un par de la vista, tocá la <strong>✕</strong> de la tarjeta. Te da dos opciones:</p>
+      <p><strong>Archivar en el Locker</strong> — la guarda con todo su historial, por si la volvés a usar o querés recordar cuántos km le hiciste.</p>
+      <p><strong>Eliminar para siempre</strong> — la borra junto con sus kilómetros. Esto no se puede deshacer.</p>
+      <figure>
+        <!-- PASO 6 -->
+        <img loading="lazy" alt="Opciones para archivar o eliminar una zapatilla"
+             src="https://res.cloudinary.com/dlayzh9ln/image/upload/f_auto,q_auto,w_700/v1785181202/WhatsApp_Image_2026-07-27_at_09.46.28_txi3wu.jpg">
+      </figure>
+    </div>
+
+    <!-- ─────────── PASO 7 ─────────── -->
+    <div class="paso">
+      <div class="paso-top">
+        <div class="paso-num">7</div>
+        <div class="paso-title">Notificaciones</div>
+      </div>
+      <p>La campanita 🔔 es tu buzón. Ahí te llegan los avisos: cuando una zapatilla se acerca a su límite, novedades del catálogo, y mensajes de la comunidad Huella Runner.</p>
+      <figure>
+        <!-- PASO 7 -->
+        <img loading="lazy" alt="Pantalla de notificaciones"
+             src="https://res.cloudinary.com/dlayzh9ln/image/upload/f_auto,q_auto,w_700/v1785181202/WhatsApp_Image_2026-07-27_at_09.46.29_1_lr97ho.jpg">
+      </figure>
+    </div>
+
+    <!-- ─────────── PASO 8 ─────────── -->
+    <div class="paso">
+      <div class="paso-top">
+        <div class="paso-num">8</div>
+        <div class="paso-title">Modo claro y modo oscuro</div>
+      </div>
+      <p>Con la lunita 🌙 de arriba cambiás entre fondo oscuro y fondo claro, según lo que te resulte más cómodo para leer. Queda guardado para la próxima vez que entres.</p>
+      <figure>
+        <!-- PASO 8 -->
+        <img loading="lazy" alt="La app en modo claro"
+             src="https://res.cloudinary.com/dlayzh9ln/image/upload/f_auto,q_auto,w_700/v1785181202/WhatsApp_Image_2026-07-27_at_09.46.29_ixdevx.jpg">
+      </figure>
+    </div>
+
+    <!-- ─────────── PASO 9 ─────────── -->
+    <div class="paso">
+      <div class="paso-top">
+        <div class="paso-num">9</div>
+        <div class="paso-title">Agregar otra zapatilla y entrar al Locker</div>
+      </div>
+      <p>Deslizando el carrusel hasta el final encontrás la tarjeta con dos accesos: <strong>Nueva zapatilla</strong> arriba, y <strong>Locker</strong> abajo (con el número de las que tengas guardadas).</p>
+      <p>Dentro del Locker podés ver cada par archivado y, si querés, <strong>reactivarlo</strong> para que vuelva al carrusel.</p>
+      <figure>
+        <!-- PASO 9 -->
+        <img loading="lazy" alt="Tarjeta de nueva zapatilla y acceso al Locker"
+             src="https://res.cloudinary.com/dlayzh9ln/image/upload/f_auto,q_auto,w_700/v1785181202/WhatsApp_Image_2026-07-27_at_09.46.28_2_fxn4w1.jpg">
+      </figure>
+    </div>
+
+    <!-- ─────────── PASO 10 ─────────── -->
+    <div class="paso">
+      <div class="paso-top">
+        <div class="paso-num">10</div>
+        <div class="paso-title">Cargar una zapatilla nueva</div>
+      </div>
+      <p>Elegís marca y modelo de la lista (si no está, ponés “Otra…” y lo escribís), el talle y el género. En <strong>KM iniciales</strong> ponés los kilómetros que ya tenga, si venías usándola.</p>
+      <p>El <strong>límite de km</strong> es opcional: es a partir de cuántos kilómetros querés que te avise que está gastada. Si no ponés nada, usamos 850 km.</p>
+      <div class="tip">💡 Al lado de “Límite de km” tenés una ⓘ que te explica cuándo conviene un número más bajo o más alto, según cómo y dónde corras.</div>
+      <figure>
+        <!-- PASO 10 -->
+        <img loading="lazy" alt="Formulario para cargar una zapatilla nueva"
+             src="https://res.cloudinary.com/dlayzh9ln/image/upload/f_auto,q_auto,w_700/v1785181202/WhatsApp_Image_2026-07-27_at_09.46.28_3_vfjoax.jpg">
+      </figure>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════ CIERRE ════════════ -->
+<section class="cierre">
+  <div class="wrap">
+    <h2>Listo. A sumar kilómetros.</h2>
+    <p>Cada carga te acerca a saber el estado real de tus zapatillas — y a cambiarlas a tiempo, antes de que te avise el cuerpo.</p>
+    <div class="btn-row">
+      <a class="btn btn--gold"
+         href="https://script.google.com/macros/s/AKfycbwxh1GRAiybZJYM4w82ny7RXwjpraOBKmh8s4jZcIaNFkqMRgZHYe0x8-kNMIIQEintRw/exec"
+         target="_blank" rel="noopener">Abrir Huella Runner</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="powered">Powered by <em>Huella <span class="r">Runner</span></em> MDQ · Mar del Plata, Argentina</div>
+  </div>
+</footer>
+
+</body>
+</html>
