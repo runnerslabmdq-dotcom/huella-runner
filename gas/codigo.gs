@@ -1,7 +1,24 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 27/07/2026 09:58 (hora Argentina)
+// Última actualización: 27/07/2026 11:45 (hora Argentina)
 // Cambios en esta versión:
+//   - BUG DEL LOCKER RESUELTO. Síntoma: el Locker mostraba siempre "El
+//     Locker está vacío" aunque las zapatillas estuvieran bien
+//     archivadas en el Sheet. Causa: google.script.run no puede
+//     empaquetar un objeto que contenga un Date nativo de Sheets —
+//     cuando pasa, al frontend le llega null (no una lista vacía: null)
+//     sin error ni aviso, y el código lo interpretaba como "no hay
+//     nada". La única columna con fecha es Fecha_Archivado, y solo la
+//     tienen las archivadas — por eso fallaba el Locker y no el
+//     carrusel de activas. Se diagnosticó con _diagLocker() (el
+//     servidor devolvía las 2 zapatillas bien) más un alert temporal en
+//     el frontend (que recibía archived=null).
+//     Fix: nueva _filaZapaAObjeto(headers, fila), que convierte
+//     cualquier celda Date a texto "dd/MM/yyyy" antes de devolverla.
+//     Se aplica en getArchivedShoes() y también en getUserShoes() — una
+//     zapatilla reactivada conserva su Fecha_Archivado vieja, así que el
+//     mismo problema podía aparecer en el carrusel de activas.
+// Cambios en versiones anteriores:
 //   - Nueva función _diagLocker() — TEMPORAL, para diagnosticar el bug
 //     reportado por el fundador: el Locker no muestra zapatillas
 //     archivadas aunque el Sheet las tenga bien guardadas (confirmado
@@ -570,6 +587,40 @@ function enviarEmailBienvenida(emailUsuario, nombreUsuario) {
 // --- ZAPATILLAS ---
 const SHOES_HEADERS = ['ID_Zapa', 'Email_Usuario', 'Marca', 'Modelo', 'Talle', 'Genero', 'KM_Actuales', 'Alias', 'Estado'];
 
+// ------------------------------------------------------------
+// _filaZapaAObjeto: arma el objeto de una zapatilla a partir de su fila,
+// convirtiendo cualquier celda de fecha (Date nativo de Sheets) a texto
+// "dd/MM/yyyy".
+//
+// POR QUÉ: google.script.run tiene que "empaquetar" lo que devuelve el
+// servidor para mandarlo a la pantalla. Cuando en el objeto viaja un
+// Date nativo, ese empaquetado falla y al frontend le llega null (no
+// una lista vacía, null) — sin error, sin aviso. Eso era el bug del
+// Locker: getArchivedShoes() funcionaba perfecto del lado del servidor
+// (el diagnóstico devolvía las 2 zapatillas), pero la pantalla recibía
+// null y mostraba siempre "El Locker está vacío".
+//
+// Solo pasaba en el Locker porque Fecha_Archivado es la única columna
+// con fecha, y solo la tienen las zapatillas archivadas. Igual se usa
+// también en getUserShoes(): una zapatilla reactivada se queda con su
+// Fecha_Archivado vieja, así que el mismo problema podía aparecer en el
+// carrusel de activas.
+// ------------------------------------------------------------
+function _filaZapaAObjeto(headers, fila) {
+  const obj = {};
+  headers.forEach(function(header, index) {
+    const valor = fila[index];
+    if (Object.prototype.toString.call(valor) === '[object Date]') {
+      obj[header] = isNaN(valor.getTime())
+        ? ''
+        : Utilities.formatDate(valor, TZ_AR, 'dd/MM/yyyy');
+    } else {
+      obj[header] = valor;
+    }
+  });
+  return obj;
+}
+
 function addShoe(email, formData) {
   if (!email || !formData) return { success: false, error: 'Datos incompletos.' };
   const emailClean = email.toString().trim().toLowerCase();
@@ -623,9 +674,7 @@ function getUserShoes(email) {
       const cellEmail  = data[i][emailCol] ? data[i][emailCol].toString().trim().toLowerCase() : '';
       const cellEstado = estadoCol !== -1 ? data[i][estadoCol].toString().trim().toLowerCase() : '';
       if (cellEmail === emailClean && cellEstado !== 'archivada') {
-        let obj = {};
-        headers.forEach((header, index) => { obj[header] = data[i][index]; });
-        userShoes.push(obj);
+        userShoes.push(_filaZapaAObjeto(headers, data[i]));
       }
     }
     Logger.log('getUserShoes OK: ' + userShoes.length + ' zapas activas para ' + emailClean);
@@ -793,9 +842,7 @@ function getArchivedShoes(email) {
       const rowEmail  = data[i][emailCol]  ? data[i][emailCol].toString().trim().toLowerCase() : '';
       const rowEstado = estadoCol !== -1   ? data[i][estadoCol].toString().trim().toLowerCase() : '';
       if (rowEmail === emailClean && rowEstado === 'archivada') {
-        let obj = {};
-        headers.forEach((header, index) => { obj[header] = data[i][index]; });
-        archived.push(obj);
+        archived.push(_filaZapaAObjeto(headers, data[i]));
       }
     }
     Logger.log('getArchivedShoes OK: ' + archived.length + ' zapas archivadas para ' + emailClean);

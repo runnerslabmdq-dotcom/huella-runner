@@ -12,6 +12,55 @@ el GAS es la versión más nueva.
 
 ---
 
+## 27/07/2026 (mediodía) — BUG DEL LOCKER RESUELTO
+
+**El síntoma**: el Locker mostraba siempre "El Locker está vacío",
+aunque las zapatillas estuvieran perfectamente archivadas en el Sheet.
+Pasaba con todos los usuarios, con datos viejos y con datos nuevos
+(se probó con una cuenta recién creada, 2 zapatillas, 1 archivada).
+
+**La causa**: cuando el servidor le manda datos a la pantalla,
+`google.script.run` tiene que "empaquetar" el resultado para el viaje.
+Si dentro de ese paquete viaja una fecha nativa de Google Sheets (un
+objeto `Date`), el empaquetado falla y al frontend le llega **`null`**
+— no una lista vacía, `null` — sin error, sin aviso, sin nada en la
+consola. El código recibía ese `null` y mostraba "vacío".
+
+La única columna con fecha es `Fecha_Archivado`, y solo la tienen las
+zapatillas archivadas: **por eso fallaba el Locker y no el carrusel de
+activas**. Google Sheets convierte solo el texto "27/07/2026" que
+escribe `archiveShoe()` en una fecha real, así que el problema aparecía
+sin que nadie tocara nada.
+
+**Cómo se encontró** (después de descartar varias pistas falsas):
+1. `_diagLocker()` (función de diagnóstico agregada a `codigo.gs`)
+   probó que del lado del servidor todo estaba bien — devolvía las 2
+   zapatillas correctamente, tanto con la función real como con un
+   recuento manual fila por fila.
+2. Un `alert()` temporal en el frontend mostró que a la pantalla le
+   llegaba `archived=null`. Esa diferencia entre "lista vacía" y
+   "null" fue la pista definitiva: el código nunca devuelve `null`, así
+   que el dato se estaba perdiendo en el viaje, no en el origen.
+
+**El arreglo** (`codigo.gs`): nueva función `_filaZapaAObjeto()`, que
+convierte cualquier celda de fecha a texto `"dd/MM/yyyy"` antes de
+devolverla. Se aplica en `getArchivedShoes()` y también en
+`getUserShoes()` — una zapatilla reactivada conserva su
+`Fecha_Archivado` vieja, así que el mismo problema podía aparecer en el
+carrusel de activas. De paso, el Locker ahora muestra "Archivada el
+27/07/2026" prolijo en vez de la fecha cruda.
+
+Se sacó el `alert()` de diagnóstico del frontend. `_diagLocker()` quedó
+en `codigo.gs` por si sirve más adelante — no la usa ninguna pantalla,
+se puede borrar cuando se quiera.
+
+**Descartado en el camino** (queda anotado para no volver a investigar
+lo mismo): no era caché del navegador, ni el service worker, ni datos
+corruptos por el ordenamiento del Sheet, ni una función duplicada, ni
+volumen de datos, ni el simulador de entrenamientos.
+
+---
+
 ## 27/07/2026 (mañana) — "Open Beta" + tope de km 650→850
 
 Dos cambios chicos confirmados por el fundador:

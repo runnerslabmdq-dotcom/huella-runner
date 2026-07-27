@@ -1,15 +1,12 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 27/07/2026 10:54 (hora Argentina)
+  Última actualización: 27/07/2026 11:45 (hora Argentina)
   Cambios en esta versión:
-    - DEBUG TEMPORAL en abrirLockerModal(): agrega un alert() que
-      muestra el email usado y la cantidad de zapatillas que devuelve
-      getArchivedShoes(), para diagnosticar el bug reportado por el
-      fundador (el Locker siempre se ve vacío aunque el Sheet tenga
-      zapatillas correctamente archivadas — confirmado con datos
-      100% frescos: cuenta nueva, 2 zapatillas, 1 archivada, tampoco
-      aparece). Sacar este alert() una vez resuelto.
+    - Sacado el alert() de diagnóstico temporal de abrirLockerModal():
+      ya cumplió su función (mostró que al frontend le llegaba
+      archived=null, la pista que destrabó el bug del Locker). El
+      arreglo en sí está en codigo.gs — ver ahí la explicación completa.
   Cambios en versiones anteriores:
     - Letra del cartel "¿Qué es Open Beta?" un poco más grande y más
       clara (0.72rem gris → 0.8rem plata) — el fundador la vio bien pero
@@ -3696,15 +3693,10 @@
     google.script.run
       .withSuccessHandler(function(archived) {
         var n = (archived && Array.isArray(archived)) ? archived.length : 0;
-        // DEBUG TEMPORAL — sacar una vez resuelto el bug del Locker.
-        alert('DEBUG Locker → email usado: "' + currentUserEmail + '" | zapatillas recibidas: ' + n
-          + (archived ? ' | primer resultado: ' + JSON.stringify(archived[0] || null) : ' | archived=' + archived));
         sub.innerText = n + ' zapatilla' + (n !== 1 ? 's' : '') + ' guardada' + (n !== 1 ? 's' : '');
         renderLockerModal(archived);
       })
-      .withFailureHandler(function(err) {
-        // DEBUG TEMPORAL — sacar una vez resuelto el bug del Locker.
-        alert('DEBUG Locker → FALLÓ: ' + (err && err.message ? err.message : err) + ' | email usado: "' + currentUserEmail + '"');
+      .withFailureHandler(function() {
         grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:24px;color:#ef4444;font-size:0.75rem;">Error al cargar el Locker.</div>';
       })
       .getArchivedShoes(currentUserEmail);
