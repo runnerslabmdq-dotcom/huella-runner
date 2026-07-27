@@ -12,6 +12,30 @@ el GAS es la versión más nueva.
 
 ---
 
+## 27/07/2026 (tarde) — ⓘ que explica el límite de km + cabo suelto del 650
+
+- **Nuevo ⓘ al lado de "Límite de km (opcional)"** en el formulario de
+  nueva zapatilla. Abre un cartel corto: cuándo conviene un número más
+  bajo (≈650 — un solo par sin rotar, asfalto, ritmos fuertes,
+  zapatillas livianas de competencia) y cuándo más alto (≈850–1000 —
+  rotación entre pares, tierra o pasto, rodajes tranquilos,
+  entrenamiento diario amortiguado). Cierra aclarando que la señal que
+  más importa no es el número sino cómo se sienten: pisada más dura,
+  molestias nuevas o suela lisa.
+  El texto quedó corto a propósito — el fundador preguntó si no era
+  mucho, y tenía razón: el cartel no scrolleaba y en un celu chico se
+  hubiera cortado.
+- **Los carteles ahora scrollean** (`max-height: 85vh` + scroll en
+  `.modal-recover-content`), como red de seguridad para cualquier texto
+  largo en pantallas chicas. Aplica también a "¿Qué es Open Beta?" y a
+  "Recuperar contraseña".
+- **Cabo suelto corregido**: el cambio de 650 → 850 de esta mañana
+  actualizó las dos constantes del código, pero el formulario seguía
+  mostrando 650 en dos lugares visibles (el texto gris del casillero y
+  el renglón de ayuda "Si no ponés nada, usamos 650 km"). Ya dicen 850.
+
+---
+
 ## 27/07/2026 (mediodía) — BUG DEL LOCKER RESUELTO
 
 **El síntoma**: el Locker mostraba siempre "El Locker está vacío",

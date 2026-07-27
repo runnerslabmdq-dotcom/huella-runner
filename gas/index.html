@@ -1,8 +1,25 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 27/07/2026 11:45 (hora Argentina)
+  Última actualización: 27/07/2026 15:59 (hora Argentina)
   Cambios en esta versión:
+    - Nuevo ⓘ al lado de "Límite de km (opcional)" (formulario de nueva
+      zapatilla): abre un cartel corto que explica cuándo conviene un
+      número más bajo (≈650: un solo par sin rotar, asfalto, ritmos
+      fuertes, zapatillas livianas de competencia) y cuándo más alto
+      (≈850–1000: rotación, tierra/pasto, rodajes tranquilos,
+      entrenamiento diario amortiguado), y aclara que la señal que más
+      importa no es el número sino cómo se sienten. Texto pensado corto
+      a propósito: el fundador preguntó si no era mucho, y el cartel no
+      scrolleaba.
+    - Los modales tipo .modal-recover-content ahora tienen
+      max-height 85vh + scroll: si un texto se hace largo, en un celu
+      chico se cortaba abajo sin poder leerlo.
+    - Fix de un cabo suelto del cambio de esta mañana (650 → 850): las
+      constantes ya estaban en 850, pero el formulario seguía mostrando
+      650 en dos lugares (el placeholder del casillero y el texto de
+      ayuda "Si no ponés nada, usamos 650 km").
+  Cambios en versiones anteriores:
     - Sacado el alert() de diagnóstico temporal de abrirLockerModal():
       ya cumplió su función (mostró que al frontend le llegaba
       archived=null, la pista que destrabó el bug del Locker). El
@@ -1306,7 +1323,21 @@
     .modal-recover-content {
       background: var(--card-bg); width: 90%; max-width: 350px;
       padding: 28px 24px; border-radius: 20px; border: 1px solid var(--borde); position: relative;
+      /* Red de seguridad: si el texto de un cartel es largo, en un celu
+         chico se cortaba abajo (este modal no scrolleaba). */
+      max-height: 85vh; overflow-y: auto;
     }
+    /* Bolita ⓘ para explicaciones al lado de una etiqueta de formulario. */
+    .info-dot {
+      background: none; border: 1px solid var(--gris-texto); color: var(--gris-texto);
+      border-radius: 50%; width: 15px; height: 15px; line-height: 1;
+      font-size: 0.6rem; font-weight: 900; text-transform: none;
+      cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+      vertical-align: middle; margin-left: 5px; padding: 0;
+    }
+    .info-dot:hover { border-color: var(--amarillo); color: var(--amarillo); }
+    #kmlimite-desc { font-size: 0.8rem; color: var(--plata); text-align: left; }
+    #kmlimite-desc strong { color: var(--amarillo); }
     .recover-icon  { font-size: 2rem; text-align: center; margin-bottom: 10px; }
     .recover-title { font-weight: 900; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--plata); text-align: center; margin-bottom: 6px; }
     .recover-desc  { font-size: 0.72rem; color: var(--gris-texto); text-align: center; line-height: 1.5; margin-bottom: 18px; }
@@ -2050,9 +2081,9 @@
         <div class="field-hint">¿Ya las usaste? Ingresá los km que ya tienen</div>
       </div>
       <div class="form-group">
-        <label>Límite de km (opcional)</label>
-        <input type="number" id="shoe-km-limite" placeholder="650" min="0" inputmode="decimal">
-        <div class="field-hint">A partir de cuántos km la considerás "gastada". Si no ponés nada, usamos 650 km.</div>
+        <label>Límite de km (opcional)<button type="button" class="info-dot" onclick="openKmLimiteModal()" aria-label="¿Cuántos km le pongo?">i</button></label>
+        <input type="number" id="shoe-km-limite" placeholder="850" min="0" inputmode="decimal">
+        <div class="field-hint">A partir de cuántos km la considerás "gastada". Si no ponés nada, usamos 850 km.</div>
       </div>
       <button class="btn-primary" id="btn-save-shoe" onclick="saveShoe()">Añadir a Mis Zapas</button>
     </div>
@@ -2244,6 +2275,21 @@
     <div class="recover-icon">🧪</div>
     <div class="recover-title">¿Qué es Open Beta?</div>
     <div class="recover-desc" id="openbeta-desc">Acceso libre a cualquier usuario antes del lanzamiento oficial. Puede haber errores menores — nos sirve para medir la carga en los servidores, la escalabilidad, y recibir feedback masivo antes de la versión final.</div>
+  </div>
+</div>
+
+<!-- MODAL INFO LÍMITE DE KM -->
+<div class="modal-overlay" id="kmlimite-modal">
+  <div class="modal-recover-content">
+    <button class="close-modal" onclick="closeKmLimiteModal()">✕</button>
+    <div class="recover-icon">📏</div>
+    <div class="recover-title">¿Cuántos km le pongo?</div>
+    <div class="recover-desc" id="kmlimite-desc">
+      Es una guía, no una regla exacta.<br><br>
+      <strong>Menos km (≈650)</strong> si usás siempre el mismo par, corrés en asfalto, hacés ritmos fuertes, o son livianas de competencia.<br><br>
+      <strong>Más km (≈850–1000)</strong> si rotás entre varios pares, corrés en tierra o pasto, hacés rodajes tranquilos, o son de entrenamiento diario con buena amortiguación.<br><br>
+      Más que el número, mirá cómo las sentís: pisada más dura, molestias nuevas o suela lisa = hora de cambiarlas.
+    </div>
   </div>
 </div>
 
@@ -3010,6 +3056,13 @@
   }
   function closeBetaInfoModal() {
     document.getElementById('openbeta-modal').style.display = 'none';
+  }
+
+  function openKmLimiteModal() {
+    document.getElementById('kmlimite-modal').style.display = 'flex';
+  }
+  function closeKmLimiteModal() {
+    document.getElementById('kmlimite-modal').style.display = 'none';
   }
 
   function openRecoverModal() {
