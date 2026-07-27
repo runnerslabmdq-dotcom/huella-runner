@@ -1,8 +1,88 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 24/07/2026 23:35 (hora Argentina)
+  Última actualización: 27/07/2026 15:59 (hora Argentina)
   Cambios en esta versión:
+    - Nuevo ⓘ al lado de "Límite de km (opcional)" (formulario de nueva
+      zapatilla): abre un cartel corto que explica cuándo conviene un
+      número más bajo (≈650: un solo par sin rotar, asfalto, ritmos
+      fuertes, zapatillas livianas de competencia) y cuándo más alto
+      (≈850–1000: rotación, tierra/pasto, rodajes tranquilos,
+      entrenamiento diario amortiguado), y aclara que la señal que más
+      importa no es el número sino cómo se sienten. Texto pensado corto
+      a propósito: el fundador preguntó si no era mucho, y el cartel no
+      scrolleaba.
+    - Los modales tipo .modal-recover-content ahora tienen
+      max-height 85vh + scroll: si un texto se hace largo, en un celu
+      chico se cortaba abajo sin poder leerlo.
+    - Fix de un cabo suelto del cambio de esta mañana (650 → 850): las
+      constantes ya estaban en 850, pero el formulario seguía mostrando
+      650 en dos lugares (el placeholder del casillero y el texto de
+      ayuda "Si no ponés nada, usamos 650 km").
+  Cambios en versiones anteriores:
+    - Sacado el alert() de diagnóstico temporal de abrirLockerModal():
+      ya cumplió su función (mostró que al frontend le llegaba
+      archived=null, la pista que destrabó el bug del Locker). El
+      arreglo en sí está en codigo.gs — ver ahí la explicación completa.
+  Cambios en versiones anteriores:
+    - Letra del cartel "¿Qué es Open Beta?" un poco más grande y más
+      clara (0.72rem gris → 0.8rem plata) — el fundador la vio bien pero
+      pidió aclararla. Cambio acotado solo a ese cartel (#openbeta-desc),
+      no toca el texto del cartel de "Recuperar Contraseña" que comparte
+      la misma clase base.
+  Cambios en versiones anteriores:
+    - "Versión Demo" → "Open Beta" (pantalla de bienvenida y login), con
+      un ícono (ⓘ) al lado que abre un cartel corto explicando qué es
+      una beta abierta — a pedido del fundador, para cuando lance el 1
+      de agosto.
+    - KM_LIMITE_DEFAULT (tope por defecto si el usuario no elige uno
+      propio): 650 → 850. Ver también trail-points.gs (TP.KM_UMBRAL_CUPON,
+      misma actualización) — quien ya haya puesto su propio límite en
+      una zapatilla no se ve afectado, solo cambia el default.
+  Cambios en versiones anteriores:
+    - Desplegable "Grupo de running" (registro): agregados 18 grupos
+      nuevos que el fundador recopiló (Mar del Plata/Pinamar, Tandil,
+      Necochea, La Plata/GBA, Rosario, y "Team Pura Vida"), más 4 grupos
+      de MDQ que ya estaban en la lista y no tenían aclarado dónde
+      quedan. Los que no son de MDQ llevan la ciudad/provincia entre
+      paréntesis, salvo que ya la digan en el nombre (ej. "Kumelen
+      Running Tandil"). 2 cosas sin confirmar, quedaron así por ahora:
+      · "Kuden Group Tandil" (ya existía) — el fundador mandó "Kuden
+        Group" como grupo de Villa Gesell/Pinamar, no de Tandil. No se
+        tocó el nombre existente por la duda; falta confirmar cuál es.
+      · "FC Running Team (La Plata)" — el dato original decía
+        "FC Running Team / Runner Callejero", ambiguo si es un solo
+        nombre o dos alternativas; se eligió el primero.
+  Cambios en versiones anteriores:
+    - Foto real por zapatilla: si la fila de esa zapatilla en el Sheet
+      (pestaña "Zapatillas") tiene la columna Foto_URL cargada, se
+      muestra esa foto en el carrusel y en el Locker en vez de la
+      genérica del modelo. Sin esa columna/valor, sigue mostrando lo
+      de siempre (foto de modelo → genérica de marca → "no disponible").
+      Pensado para cuando un usuario manda la foto de su propia zapa:
+      el fundador la retoca, la sube a Cloudinary y pega el link a mano
+      en esa columna, en la fila de ese usuario/zapatilla — no hace
+      falta ninguna pantalla nueva. Requiere que la columna Foto_URL
+      exista en el Sheet (paso manual del fundador, una sola vez).
+  Cambios en versiones anteriores (revisión de bugs pedida por el fundador):
+    - Fix: doble-toque en "Guardar" podía duplicar datos. Los botones de
+      login, crear cuenta, definir contraseña nueva, agregar zapatilla
+      y cargar kilómetros solo cambiaban el texto mientras esperaban la
+      respuesta del servidor, pero seguían habilitados — un segundo
+      toque (típico con mala señal) podía disparar la acción dos veces
+      (ej. sumar los km cargados por duplicado). Ahora se deshabilitan
+      hasta tener respuesta, igual que ya hacían "archivar", "eliminar"
+      y "recuperar contraseña". De paso, "Guardar Entrenamiento" no
+      tenía manejo de error de conexión (se quedaba en "Guardando..."
+      para siempre si fallaba la red) — ahora sí lo tiene.
+    - Fix: una comilla doble (") en un modelo de zapatilla cargado a
+      mano (opción "Otra marca/Otro modelo") podía romper el botón
+      "Eliminar" de esa tarjeta y el "Reactivar" en el Locker — el
+      escapado solo cubría la comilla simple, no la doble, y esa
+      comilla doble cortaba el atributo onclick a la mitad. Nueva
+      función escInlineJs() (al lado de sanitize()) que escapa ambas;
+      reemplaza el escapado suelto que había en 2 lugares.
+  Cambios en versiones anteriores:
     - Texto de los mensajes de notificaciones (.notif-mensaje) otro 10%
       más grande: 1.15rem → 1.27rem, a pedido del fundador.
   Cambios en versiones anteriores:
@@ -1243,10 +1323,28 @@
     .modal-recover-content {
       background: var(--card-bg); width: 90%; max-width: 350px;
       padding: 28px 24px; border-radius: 20px; border: 1px solid var(--borde); position: relative;
+      /* Red de seguridad: si el texto de un cartel es largo, en un celu
+         chico se cortaba abajo (este modal no scrolleaba). */
+      max-height: 85vh; overflow-y: auto;
     }
+    /* Bolita ⓘ para explicaciones al lado de una etiqueta de formulario. */
+    .info-dot {
+      background: none; border: 1px solid var(--gris-texto); color: var(--gris-texto);
+      border-radius: 50%; width: 15px; height: 15px; line-height: 1;
+      font-size: 0.6rem; font-weight: 900; text-transform: none;
+      cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+      vertical-align: middle; margin-left: 5px; padding: 0;
+    }
+    .info-dot:hover { border-color: var(--amarillo); color: var(--amarillo); }
+    #kmlimite-desc { font-size: 0.8rem; color: var(--plata); text-align: left; }
+    #kmlimite-desc strong { color: var(--amarillo); }
     .recover-icon  { font-size: 2rem; text-align: center; margin-bottom: 10px; }
     .recover-title { font-weight: 900; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--plata); text-align: center; margin-bottom: 6px; }
     .recover-desc  { font-size: 0.72rem; color: var(--gris-texto); text-align: center; line-height: 1.5; margin-bottom: 18px; }
+    /* Solo el texto del cartel de "¿Qué es Open Beta?" — un poco más
+       grande y más claro que el resto de los .recover-desc (ese texto
+       gris estándar quedaba débil para un párrafo de explicación). */
+    #openbeta-desc { font-size: 0.8rem; color: var(--plata); }
     .recover-success   { font-size: 0.82rem; color: var(--amarillo); text-align: center; margin-top: 14px; display: none; font-weight: 900; letter-spacing: 0.5px; }
     .recover-error-msg { font-size: 0.75rem; color: #ef4444; text-align: center; margin-top: 10px; display: none; font-weight: 700; line-height: 1.4; }
 
@@ -1572,7 +1670,12 @@
     </h1>
     <div style="font-size:0.85rem;font-weight:900;letter-spacing:4px;text-transform:uppercase;
       color:#CCFF00;margin-top:8px;text-shadow:0 0 8px rgba(204,255,0,0.6);">
-      Versión Demo
+      Open Beta
+      <button onclick="openBetaInfoModal()" aria-label="¿Qué es Open Beta?"
+        style="background:none;border:1px solid #CCFF00;color:#CCFF00;border-radius:50%;
+        width:16px;height:16px;line-height:1;font-size:0.6rem;font-weight:900;letter-spacing:0;
+        text-transform:none;text-shadow:none;cursor:pointer;display:inline-flex;align-items:center;
+        justify-content:center;vertical-align:middle;margin-left:4px;padding:0;">i</button>
     </div>
   </div>
 
@@ -1657,7 +1760,12 @@
       </h1>
       <div style="font-size:0.85rem;font-weight:900;letter-spacing:4px;text-transform:uppercase;
         color:#CCFF00;margin-top:8px;text-shadow:0 0 8px rgba(204,255,0,0.6);">
-        Versión Demo
+        Open Beta
+        <button onclick="openBetaInfoModal()" aria-label="¿Qué es Open Beta?"
+          style="background:none;border:1px solid #CCFF00;color:#CCFF00;border-radius:50%;
+          width:16px;height:16px;line-height:1;font-size:0.6rem;font-weight:900;letter-spacing:0;
+          text-transform:none;text-shadow:none;cursor:pointer;display:inline-flex;align-items:center;
+          justify-content:center;vertical-align:middle;margin-left:4px;padding:0;">i</button>
       </div>
     </div>
 
@@ -1823,34 +1931,49 @@
         <select id="reg-grupo" onchange="onGrupoChange()">
           <option value="">Seleccionar...</option>
           <option value="Aventura Avanza">Aventura Avanza</option>
+          <option value="Circuitos Running Rosario">Circuitos Running Rosario</option>
           <option value="Club K10">Club K10</option>
+          <option value="Corredores Nocturnos (Tandil)">Corredores Nocturnos (Tandil)</option>
           <option value="CROSS Running Club MDQ">CROSS Running Club MDQ</option>
           <option value="Deportes Mar del Plata">Deportes Mar del Plata</option>
-          <option value="Forest Run Group">Forest Run Group</option>
           <option value="EmpoweRun">EmpoweRun</option>
+          <option value="FC Running Team (La Plata)">FC Running Team (La Plata)</option>
+          <option value="Forest Run Group (MDQ)">Forest Run Group (MDQ)</option>
+          <option value="FP Team (Tandil)">FP Team (Tandil)</option>
+          <option value="GO Team Pilar (Pilar, Buenos Aires)">GO Team Pilar (Pilar, Buenos Aires)</option>
           <option value="Grupo A">Grupo A</option>
           <option value="Grupo A Running &amp; Triatlón">Grupo A Running &amp; Triatlón</option>
-          <option value="Grupo Troten">Grupo Troten</option>
-          <option value="JM Corredores">JM Corredores</option>
+          <option value="Grupo de Entrenamiento Ignacio Cascia (La Plata)">Grupo de Entrenamiento Ignacio Cascia (La Plata)</option>
+          <option value="Grupo Troten (MDQ)">Grupo Troten (MDQ)</option>
+          <option value="Halcones La Plata">Halcones La Plata</option>
+          <option value="JM Corredores (MDQ)">JM Corredores (MDQ)</option>
           <option value="KM Trail Running">KM Trail Running</option>
           <option value="Kuden Group Tandil">Kuden Group Tandil</option>
-          <option value="Malgor Track &amp; Field">Malgor Track &amp; Field</option>
+          <option value="Kumelen Running Tandil">Kumelen Running Tandil</option>
+          <option value="La Era Running Club (Rosario)">La Era Running Club (Rosario)</option>
+          <option value="Malgor Track &amp; Field (MDQ)">Malgor Track &amp; Field (MDQ)</option>
           <option value="MDQ Entrena">MDQ Entrena</option>
           <option value="Miller Team Running">Miller Team Running</option>
+          <option value="Necochea Running">Necochea Running</option>
           <option value="NQN Running">NQN Running</option>
           <option value="OK Eventos MDQ">OK Eventos MDQ</option>
+          <option value="Pampa Team Club de Running (CABA)">Pampa Team Club de Running (CABA)</option>
           <option value="Plotteam">Plotteam</option>
           <option value="ProGroup Running">ProGroup Running</option>
           <option value="Punto Fit Gym &amp; Run">Punto Fit Gym &amp; Run</option>
           <option value="RA Caminantes">RA Caminantes</option>
           <option value="Ranerzzz">Ranerzzz</option>
           <option value="Run Club MDP">Run Club MDP</option>
+          <option value="Runners Fox Pinamar">Runners Fox Pinamar</option>
           <option value="Running Tandil">Running Tandil</option>
           <option value="Runtrek Club">Runtrek Club</option>
           <option value="SC Training La Plata">SC Training La Plata</option>
           <option value="Stímulo MdP">Stímulo MdP</option>
           <option value="Sumando KM">Sumando KM</option>
+          <option value="Team Pura Vida">Team Pura Vida</option>
+          <option value="Trail Run Rosario">Trail Run Rosario</option>
           <option value="Treino ARG">Treino ARG</option>
+          <option value="VO2 Max Tandil">VO2 Max Tandil</option>
           <option value="__otro__">Otro...</option>
         </select>
         <div id="wrap-grupo-manual">
@@ -1958,9 +2081,9 @@
         <div class="field-hint">¿Ya las usaste? Ingresá los km que ya tienen</div>
       </div>
       <div class="form-group">
-        <label>Límite de km (opcional)</label>
-        <input type="number" id="shoe-km-limite" placeholder="650" min="0" inputmode="decimal">
-        <div class="field-hint">A partir de cuántos km la considerás "gastada". Si no ponés nada, usamos 650 km.</div>
+        <label>Límite de km (opcional)<button type="button" class="info-dot" onclick="openKmLimiteModal()" aria-label="¿Cuántos km le pongo?">i</button></label>
+        <input type="number" id="shoe-km-limite" placeholder="850" min="0" inputmode="decimal">
+        <div class="field-hint">A partir de cuántos km la considerás "gastada". Si no ponés nada, usamos 850 km.</div>
       </div>
       <button class="btn-primary" id="btn-save-shoe" onclick="saveShoe()">Añadir a Mis Zapas</button>
     </div>
@@ -2145,6 +2268,31 @@
   </div>
 </div>
 
+<!-- MODAL INFO OPEN BETA -->
+<div class="modal-overlay" id="openbeta-modal">
+  <div class="modal-recover-content">
+    <button class="close-modal" onclick="closeBetaInfoModal()">✕</button>
+    <div class="recover-icon">🧪</div>
+    <div class="recover-title">¿Qué es Open Beta?</div>
+    <div class="recover-desc" id="openbeta-desc">Acceso libre a cualquier usuario antes del lanzamiento oficial. Puede haber errores menores — nos sirve para medir la carga en los servidores, la escalabilidad, y recibir feedback masivo antes de la versión final.</div>
+  </div>
+</div>
+
+<!-- MODAL INFO LÍMITE DE KM -->
+<div class="modal-overlay" id="kmlimite-modal">
+  <div class="modal-recover-content">
+    <button class="close-modal" onclick="closeKmLimiteModal()">✕</button>
+    <div class="recover-icon">📏</div>
+    <div class="recover-title">¿Cuántos km le pongo?</div>
+    <div class="recover-desc" id="kmlimite-desc">
+      Es una guía, no una regla exacta.<br><br>
+      <strong>Menos km (≈650)</strong> si usás siempre el mismo par, corrés en asfalto, hacés ritmos fuertes, o son livianas de competencia.<br><br>
+      <strong>Más km (≈850–1000)</strong> si rotás entre varios pares, corrés en tierra o pasto, hacés rodajes tranquilos, o son de entrenamiento diario con buena amortiguación.<br><br>
+      Más que el número, mirá cómo las sentís: pisada más dura, molestias nuevas o suela lisa = hora de cambiarlas.
+    </div>
+  </div>
+</div>
+
 <!-- MODAL RECUPERAR CONTRASEÑA -->
 <div class="modal-overlay" id="recover-modal">
   <div class="modal-recover-content">
@@ -2224,7 +2372,7 @@
 
 <script>
   let currentUserEmail = '';
-  const KM_LIMITE_DEFAULT = 650; // igual al umbral global de trail-points.gs (TP.KM_UMBRAL_CUPON)
+  const KM_LIMITE_DEFAULT = 850; // igual al umbral global de trail-points.gs (TP.KM_UMBRAL_CUPON)
 
   // =====================================================
   // ONBOARDING INICIAL
@@ -2430,6 +2578,15 @@
       .replace(/>/g,  '&gt;')
       .replace(/"/g,  '&quot;')
       .replace(/'/g,  '&#39;');
+  }
+
+  // Para armar valores tipo 'texto' dentro de un onclick="..." inline:
+  // escapa la comilla simple (delimita el string JS) y la doble
+  // (delimita el atributo HTML), así un modelo con " o ' no rompe el botón.
+  function escInlineJs(str) {
+    return (str || '').toString()
+      .replace(/'/g, "\\'")
+      .replace(/"/g, '&quot;');
   }
 
   let currentDetailShoe = null;
@@ -2673,9 +2830,11 @@
       if (!n || !e || !p || !pc) { err.innerText = 'Completá todos los campos obligatorios.'; err.style.display = 'block'; return; }
       if (p !== pc) { err.innerText = 'Las contraseñas no coinciden.'; err.style.display = 'block'; return; }
       document.getElementById('btn-reg').innerText = 'CREANDO...';
+      document.getElementById('btn-reg').disabled  = true;
       google.script.run
         .withSuccessHandler(res => {
           document.getElementById('btn-reg').innerText = 'Crear Cuenta';
+          document.getElementById('btn-reg').disabled  = false;
           if (!res || !res.success) {
             err.innerText = (res && res.error) ? res.error : 'Error desconocido al crear la cuenta.';
             err.style.display = 'block';
@@ -2691,6 +2850,7 @@
         })
         .withFailureHandler(function(e2) {
           document.getElementById('btn-reg').innerText = 'Crear Cuenta';
+          document.getElementById('btn-reg').disabled  = false;
           err.innerText = 'Error de conexión: ' + (e2 && e2.message ? e2.message : e2);
           err.style.display = 'block';
         })
@@ -2699,7 +2859,7 @@
       console.error('doRegister ERROR:', exGlobal);
       var errEl = document.getElementById('reg-error');
       var btnEl = document.getElementById('btn-reg');
-      if (btnEl) btnEl.innerText = 'Crear Cuenta';
+      if (btnEl) { btnEl.innerText = 'Crear Cuenta'; btnEl.disabled = false; }
       if (errEl) {
         errEl.innerText = 'No se pudo procesar el formulario: ' + (exGlobal && exGlobal.message ? exGlobal.message : exGlobal);
         errEl.style.display = 'block';
@@ -2788,9 +2948,11 @@
     }
     err.style.display = 'none';
     document.getElementById('btn-login').innerText = 'INICIANDO...';
+    document.getElementById('btn-login').disabled  = true;
     google.script.run
       .withSuccessHandler(res => {
         document.getElementById('btn-login').innerText = 'Iniciar Sesión';
+        document.getElementById('btn-login').disabled  = false;
         if (!res || !res.success) {
           err.innerText = (res && res.error) ? res.error : 'Error desconocido al iniciar sesión.';
           err.style.display = 'block';
@@ -2833,6 +2995,7 @@
       })
       .withFailureHandler(function(e2) {
         document.getElementById('btn-login').innerText = 'Iniciar Sesión';
+        document.getElementById('btn-login').disabled  = false;
         err.innerText = 'Error de conexión: ' + (e2 && e2.message ? e2.message : e2);
         err.style.display = 'block';
       })
@@ -2848,9 +3011,11 @@
     if (p1.length < 6) { err.innerText = 'La contraseña debe tener al menos 6 caracteres.'; err.style.display = 'block'; return; }
     if (p1 !== p2) { err.innerText = 'Las contraseñas no coinciden.'; err.style.display = 'block'; return; }
     document.getElementById('btn-set-password').innerText = 'GUARDANDO...';
+    document.getElementById('btn-set-password').disabled  = true;
     google.script.run
       .withSuccessHandler(function(res) {
         document.getElementById('btn-set-password').innerText = 'Guardar y continuar';
+        document.getElementById('btn-set-password').disabled  = false;
         if (!res || !res.success) {
           err.innerText = (res && res.error) ? res.error : 'Error al guardar la contraseña.';
           err.style.display = 'block';
@@ -2866,6 +3031,7 @@
       })
       .withFailureHandler(function(e2) {
         document.getElementById('btn-set-password').innerText = 'Guardar y continuar';
+        document.getElementById('btn-set-password').disabled  = false;
         err.innerText = 'Error de conexión: ' + (e2 && e2.message ? e2.message : e2);
         err.style.display = 'block';
       })
@@ -2883,6 +3049,20 @@
     if (badge) { badge.innerText = ''; badge.classList.remove('visible'); }
     if (_badgeInterval) { clearInterval(_badgeInterval); _badgeInterval = null; }
     switchView('view-login');
+  }
+
+  function openBetaInfoModal() {
+    document.getElementById('openbeta-modal').style.display = 'flex';
+  }
+  function closeBetaInfoModal() {
+    document.getElementById('openbeta-modal').style.display = 'none';
+  }
+
+  function openKmLimiteModal() {
+    document.getElementById('kmlimite-modal').style.display = 'flex';
+  }
+  function closeKmLimiteModal() {
+    document.getElementById('kmlimite-modal').style.display = 'none';
   }
 
   function openRecoverModal() {
@@ -3030,8 +3210,8 @@
       var sIdZapa   = sanitize(s.ID_Zapa);
       var sAlias    = sanitize(s.Alias || '');
       // ID real sin sanitize para usar en funciones JS (ya está sanitizado para HTML)
-      var rawId     = (s.ID_Zapa || '').toString().replace(/'/g, "\\'");
-      var rawModelo = (s.Modelo  || '').toString().replace(/'/g, "\\'");
+      var rawId     = escInlineJs(s.ID_Zapa);
+      var rawModelo = escInlineJs(s.Modelo);
 
       var barColor = 'linear-gradient(90deg, #F0FF00, #BFCA00)';
       if (perc >= 85) barColor = 'linear-gradient(90deg, #ef4444, #ff6b6b)';
@@ -3041,7 +3221,10 @@
         ? '<div class="cf-warn">' + (perc >= 85 ? '⚠️' : '🔶') + '</div>'
         : '';
       var badgeCls  = getBrandBadgeClass(s.Marca);
-      var shoeImg   = _cloudinaryChica(getShoeImage(s.Marca, s.Modelo), 480);
+      // Foto real de ESTA zapatilla (columna Foto_URL en el Sheet, cargada a
+      // mano por el admin) tiene prioridad sobre la genérica del modelo.
+      var fotoReal  = (s.Foto_URL || '').toString().trim();
+      var shoeImg   = _cloudinaryChica(fotoReal || getShoeImage(s.Marca, s.Modelo), 480);
       var aliasHtml = sAlias
         ? '<div class="cf-alias">' + sAlias + '</div>'
         : '';
@@ -3235,9 +3418,11 @@
     };
     if (!d.marca || !d.modelo) return alert('Completá la información');
     document.getElementById('btn-save-shoe').innerText = 'GUARDANDO...';
+    document.getElementById('btn-save-shoe').disabled  = true;
     google.script.run
       .withSuccessHandler((res) => {
         document.getElementById('btn-save-shoe').innerText = 'Añadir a Mis Zapas';
+        document.getElementById('btn-save-shoe').disabled  = false;
         switchView('view-dashboard');
         setTimeout(loadDashboard, 800);
         // Solo se muestra si ya hay datos reales de otros usuarios con esa
@@ -3248,6 +3433,7 @@
       })
       .withFailureHandler(err => {
         document.getElementById('btn-save-shoe').innerText = 'Añadir a Mis Zapas';
+        document.getElementById('btn-save-shoe').disabled  = false;
         alert('Error al guardar: ' + (err.message || err));
       })
       .addShoe(currentUserEmail, d);
@@ -3300,22 +3486,31 @@
     const kmN = parseFloat(km);
     if (!km || isNaN(kmN) || kmN < 0.1) return alert("Ingresá un kilometraje válido (mínimo 0.1 km)");
     document.getElementById('btn-save-train').innerText = 'Guardando...';
-    google.script.run.withSuccessHandler(res => {
-      document.getElementById('btn-save-train').innerText = 'Guardar Entrenamiento';
-      if(res.success) {
-        closeModal();
-        showKmToast(kmN % 1 === 0 ? kmN : kmN.toFixed(1));
-        google.script.run
-          .withSuccessHandler(function(shoes) {
-            if (!shoes || !Array.isArray(shoes)) { loadDashboard(); return; }
-            allUserShoes = shoes;
-            _pendingActiveShoeIndex = _getCurrentSlideIndex();
-            renderArmario(shoes);
-          })
-          .withFailureHandler(function() { loadDashboard(); })
-          .getUserShoes(currentUserEmail);
-      } else { alert(res.error); }
-    }).logTraining(currentUserEmail, id, kmN);
+    document.getElementById('btn-save-train').disabled  = true;
+    google.script.run
+      .withSuccessHandler(res => {
+        document.getElementById('btn-save-train').innerText = 'Guardar Entrenamiento';
+        document.getElementById('btn-save-train').disabled  = false;
+        if(res.success) {
+          closeModal();
+          showKmToast(kmN % 1 === 0 ? kmN : kmN.toFixed(1));
+          google.script.run
+            .withSuccessHandler(function(shoes) {
+              if (!shoes || !Array.isArray(shoes)) { loadDashboard(); return; }
+              allUserShoes = shoes;
+              _pendingActiveShoeIndex = _getCurrentSlideIndex();
+              renderArmario(shoes);
+            })
+            .withFailureHandler(function() { loadDashboard(); })
+            .getUserShoes(currentUserEmail);
+        } else { alert(res.error); }
+      })
+      .withFailureHandler(err => {
+        document.getElementById('btn-save-train').innerText = 'Guardar Entrenamiento';
+        document.getElementById('btn-save-train').disabled  = false;
+        alert('Error de conexión: ' + (err && err.message ? err.message : err));
+      })
+      .logTraining(currentUserEmail, id, kmN);
   }
 
   // =====================================================
@@ -3575,14 +3770,15 @@
     }
     grid.innerHTML = '';
     archived.forEach(function(s) {
-      var km      = Number(s.KM_Actuales) || 0;
-      var shoeImg = _cloudinaryChica(getShoeImage(s.Marca, s.Modelo), 400);
+      var km       = Number(s.KM_Actuales) || 0;
+      var fotoReal = (s.Foto_URL || '').toString().trim();
+      var shoeImg  = _cloudinaryChica(fotoReal || getShoeImage(s.Marca, s.Modelo), 400);
       var sMarca  = sanitize(s.Marca);
       var sModelo = sanitize(s.Modelo);
       var sTalle  = sanitize(s.Talle);
       var sFecha  = sanitize(s.Fecha_Archivado || '');
-      var rawId   = (s.ID_Zapa || '').toString().replace(/'/g, "\\'");
-      var rawMod  = (s.Modelo  || '').toString().replace(/'/g, "\\'");
+      var rawId   = escInlineJs(s.ID_Zapa);
+      var rawMod  = escInlineJs(s.Modelo);
 
       var card = document.createElement('div');
       card.className = 'locker-card';

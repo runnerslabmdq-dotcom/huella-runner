@@ -1,7 +1,46 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 24/07/2026 23:35 (hora Argentina)
+// Última actualización: 27/07/2026 11:45 (hora Argentina)
 // Cambios en esta versión:
+//   - BUG DEL LOCKER RESUELTO. Síntoma: el Locker mostraba siempre "El
+//     Locker está vacío" aunque las zapatillas estuvieran bien
+//     archivadas en el Sheet. Causa: google.script.run no puede
+//     empaquetar un objeto que contenga un Date nativo de Sheets —
+//     cuando pasa, al frontend le llega null (no una lista vacía: null)
+//     sin error ni aviso, y el código lo interpretaba como "no hay
+//     nada". La única columna con fecha es Fecha_Archivado, y solo la
+//     tienen las archivadas — por eso fallaba el Locker y no el
+//     carrusel de activas. Se diagnosticó con _diagLocker() (el
+//     servidor devolvía las 2 zapatillas bien) más un alert temporal en
+//     el frontend (que recibía archived=null).
+//     Fix: nueva _filaZapaAObjeto(headers, fila), que convierte
+//     cualquier celda Date a texto "dd/MM/yyyy" antes de devolverla.
+//     Se aplica en getArchivedShoes() y también en getUserShoes() — una
+//     zapatilla reactivada conserva su Fecha_Archivado vieja, así que el
+//     mismo problema podía aparecer en el carrusel de activas.
+// Cambios en versiones anteriores:
+//   - Nueva función _diagLocker() — TEMPORAL, para diagnosticar el bug
+//     reportado por el fundador: el Locker no muestra zapatillas
+//     archivadas aunque el Sheet las tenga bien guardadas (confirmado
+//     en 2 usuarios distintos, edragotto@hotmail.com y
+//     estebandragotto@gmail.com). Compara lo que devuelve
+//     getArchivedShoes() contra un recuento manual fila por fila, para
+//     encontrar dónde se pierde el dato. Correr a mano desde el editor
+//     y mirar el Registro de ejecución. Se puede borrar una vez
+//     resuelto — no la usa ninguna pantalla.
+// Cambios en versiones anteriores:
+//   - Nuevo tipo de destinatario 'lista' en enviarNotificacion(): permite
+//     mandar un mensaje a un array de emails ya armado del lado del panel
+//     admin (ej. "zapas en alerta", "inactivos", "cumpleaños de la
+//     semana"), en vez de solo todos/grupo/individual. Valida que cada
+//     email corresponda a un usuario real antes de mandar nada. Requiere
+//     token de admin, igual que "todos"/"grupo".
+//   - Fix: getAdminDashboardData() arma alertasDesgaste (zapas en zona
+//     crítica) sin el campo email — el panel admin lo necesitaba para el
+//     filtro "Alerta Zapas" de "Usuarios registrados" (buscaba a.email,
+//     que nunca existía) y ahora también para el segmento nuevo de
+//     notificaciones. Sin este fix, ese filtro nunca mostraba resultados.
+// Cambios en versiones anteriores:
 //   - PERFORMANCE: enviarNotificacion() escribía una fila por vez en la
 //     hoja Notificaciones, con un SpreadsheetApp.flush() por cada
 //     destinatario — con envíos masivos ("todos"/"grupo") eso se
@@ -548,6 +587,40 @@ function enviarEmailBienvenida(emailUsuario, nombreUsuario) {
 // --- ZAPATILLAS ---
 const SHOES_HEADERS = ['ID_Zapa', 'Email_Usuario', 'Marca', 'Modelo', 'Talle', 'Genero', 'KM_Actuales', 'Alias', 'Estado'];
 
+// ------------------------------------------------------------
+// _filaZapaAObjeto: arma el objeto de una zapatilla a partir de su fila,
+// convirtiendo cualquier celda de fecha (Date nativo de Sheets) a texto
+// "dd/MM/yyyy".
+//
+// POR QUÉ: google.script.run tiene que "empaquetar" lo que devuelve el
+// servidor para mandarlo a la pantalla. Cuando en el objeto viaja un
+// Date nativo, ese empaquetado falla y al frontend le llega null (no
+// una lista vacía, null) — sin error, sin aviso. Eso era el bug del
+// Locker: getArchivedShoes() funcionaba perfecto del lado del servidor
+// (el diagnóstico devolvía las 2 zapatillas), pero la pantalla recibía
+// null y mostraba siempre "El Locker está vacío".
+//
+// Solo pasaba en el Locker porque Fecha_Archivado es la única columna
+// con fecha, y solo la tienen las zapatillas archivadas. Igual se usa
+// también en getUserShoes(): una zapatilla reactivada se queda con su
+// Fecha_Archivado vieja, así que el mismo problema podía aparecer en el
+// carrusel de activas.
+// ------------------------------------------------------------
+function _filaZapaAObjeto(headers, fila) {
+  const obj = {};
+  headers.forEach(function(header, index) {
+    const valor = fila[index];
+    if (Object.prototype.toString.call(valor) === '[object Date]') {
+      obj[header] = isNaN(valor.getTime())
+        ? ''
+        : Utilities.formatDate(valor, TZ_AR, 'dd/MM/yyyy');
+    } else {
+      obj[header] = valor;
+    }
+  });
+  return obj;
+}
+
 function addShoe(email, formData) {
   if (!email || !formData) return { success: false, error: 'Datos incompletos.' };
   const emailClean = email.toString().trim().toLowerCase();
@@ -601,9 +674,7 @@ function getUserShoes(email) {
       const cellEmail  = data[i][emailCol] ? data[i][emailCol].toString().trim().toLowerCase() : '';
       const cellEstado = estadoCol !== -1 ? data[i][estadoCol].toString().trim().toLowerCase() : '';
       if (cellEmail === emailClean && cellEstado !== 'archivada') {
-        let obj = {};
-        headers.forEach((header, index) => { obj[header] = data[i][index]; });
-        userShoes.push(obj);
+        userShoes.push(_filaZapaAObjeto(headers, data[i]));
       }
     }
     Logger.log('getUserShoes OK: ' + userShoes.length + ' zapas activas para ' + emailClean);
@@ -710,6 +781,46 @@ function archiveShoe(email, idZapatilla) {
 }
 
 // ============================================================
+// DIAGNÓSTICO TEMPORAL — bug del Locker (no muestra zapas archivadas)
+// Correr a mano desde el editor (elegir "_diagLocker" arriba y
+// Ejecutar), después mirar "Registro de ejecución". Se puede borrar
+// esta función una vez resuelto el bug — no la usa ninguna pantalla.
+// ============================================================
+function _diagLocker() {
+  var email = 'edragotto@hotmail.com'; // cambiar acá si querés probar otro usuario
+  Logger.log('=== DIAGNÓSTICO LOCKER: ' + email + ' ===');
+
+  var resultado = getArchivedShoes(email);
+  Logger.log('getArchivedShoes() devolvió ' + resultado.length + ' resultado(s).');
+  resultado.forEach(function(s, i) {
+    Logger.log((i + 1) + ') ' + s.Marca + ' ' + s.Modelo + ' — Estado="' + s.Estado + '" Email_Usuario="' + s.Email_Usuario + '"');
+  });
+
+  Logger.log('--- Recuento manual, fila por fila, para comparar ---');
+  var ss     = SpreadsheetApp.openById(SHEET_ID);
+  var sheet  = ss.getSheetByName('Zapatillas');
+  var data   = sheet.getDataRange().getValues();
+  var headers = data[0];
+  var emailCol  = headers.indexOf('Email_Usuario');
+  var estadoCol = headers.indexOf('Estado');
+  Logger.log('Columna Email_Usuario en índice ' + emailCol + ' | Columna Estado en índice ' + estadoCol);
+
+  var emailClean = email.toString().trim().toLowerCase();
+  var contador = 0;
+  for (var i = 1; i < data.length; i++) {
+    var rawEmail  = data[i][emailCol];
+    var rawEstado = data[i][estadoCol];
+    var rowEmail  = rawEmail  ? rawEmail.toString().trim().toLowerCase()  : '';
+    var rowEstado = rawEstado ? rawEstado.toString().trim().toLowerCase() : '';
+    if (rowEmail === emailClean && rowEstado === 'archivada') {
+      contador++;
+      Logger.log('Fila ' + (i + 1) + ' matchea → email="' + rowEmail + '" estado="' + rowEstado + '" (tipo email: ' + typeof rawEmail + ', tipo estado: ' + typeof rawEstado + ')');
+    }
+  }
+  Logger.log('Total contado a mano: ' + contador);
+}
+
+// ============================================================
 // OBTENER ZAPAS ARCHIVADAS (Locker)
 // ============================================================
 function getArchivedShoes(email) {
@@ -731,9 +842,7 @@ function getArchivedShoes(email) {
       const rowEmail  = data[i][emailCol]  ? data[i][emailCol].toString().trim().toLowerCase() : '';
       const rowEstado = estadoCol !== -1   ? data[i][estadoCol].toString().trim().toLowerCase() : '';
       if (rowEmail === emailClean && rowEstado === 'archivada') {
-        let obj = {};
-        headers.forEach((header, index) => { obj[header] = data[i][index]; });
-        archived.push(obj);
+        archived.push(_filaZapaAObjeto(headers, data[i]));
       }
     }
     Logger.log('getArchivedShoes OK: ' + archived.length + ' zapas archivadas para ' + emailClean);
@@ -1084,10 +1193,11 @@ function getGruposRunning() {
 
 function enviarNotificacion(destinatarioTipo, destinatarioValor, mensaje, tipo, codigoVoucherManual, token) {
   try {
-    // Los envíos masivos (a todos o a un grupo entero) son la parte
-    // riesgosa — requieren el token de admin. Los individuales quedan
-    // libres porque el propio sistema los usa (cupones, social proof).
-    if ((destinatarioTipo === 'todos' || destinatarioTipo === 'grupo') && !_adminAutorizado(token)) {
+    // Los envíos masivos (a todos, a un grupo entero, o a una lista/segmento
+    // ya armado desde el panel) son la parte riesgosa — requieren el token
+    // de admin. Los individuales quedan libres porque el propio sistema los
+    // usa (cupones, social proof).
+    if ((destinatarioTipo === 'todos' || destinatarioTipo === 'grupo' || destinatarioTipo === 'lista') && !_adminAutorizado(token)) {
       return { success: false, error: 'No autorizado.' };
     }
     if (!mensaje || mensaje.toString().trim() === '') {
@@ -1137,6 +1247,29 @@ function enviarNotificacion(destinatarioTipo, destinatarioValor, mensaje, tipo, 
       }
       if (!existe) return { success: false, error: 'No existe un usuario con ese email.' };
       destinatarios.push(emailInd);
+    } else if (destinatarioTipo === 'lista') {
+      // Segmento ya calculado del lado del panel (ej. zapas en alerta,
+      // inactivos, cumpleaños de la semana) — acá solo se valida que cada
+      // email exista de verdad como usuario antes de mandarle nada.
+      if (!destinatarioValor || !Array.isArray(destinatarioValor) || destinatarioValor.length === 0) {
+        return { success: false, error: 'La lista de destinatarios está vacía.' };
+      }
+      const emailsValidos = new Set();
+      for (let i = 1; i < usersData.length; i++) {
+        const e = usersData[i][emailCol] ? usersData[i][emailCol].toString().trim().toLowerCase() : '';
+        if (e) emailsValidos.add(e);
+      }
+      const vistos = new Set();
+      destinatarioValor.forEach(function(em) {
+        const emClean = (em || '').toString().trim().toLowerCase();
+        if (emClean && emailsValidos.has(emClean) && !vistos.has(emClean)) {
+          vistos.add(emClean);
+          destinatarios.push(emClean);
+        }
+      });
+      if (destinatarios.length === 0) {
+        return { success: false, error: 'Ninguno de los emails de la lista corresponde a un usuario registrado.' };
+      }
     } else {
       return { success: false, error: 'Tipo de destinatario inválido.' };
     }
@@ -1422,6 +1555,7 @@ function getAdminDashboardData(token) {
           var email = zEmailCol !== -1 ? zapData[i][zEmailCol].toString().trim().toLowerCase() : '';
           var uInfo = grupoMap[email] || { nombre: email, grupo: '' };
           alertasDesgaste.push({
+            email:       email,
             runner:      uInfo.nombre,
             grupo:       uInfo.grupo,
             zapatilla:   marca + ' ' + modelo,

@@ -12,6 +12,335 @@ el GAS es la versión más nueva.
 
 ---
 
+## 27/07/2026 (tarde) — Landing nueva: la guía de uso + fix del botón "atrás"
+
+### `landing/index.html` — ahora es la guía de uso
+
+A pedido del fundador, la landing dejó de ser una página de marketing y
+pasó a ser **la explicación de cómo se usa la app**, para acompañar el
+lanzamiento de la Open Beta del 1 de agosto. Está armada sobre el guión
+de 11 pasos que él escribió, con la estética exacta de la app (mismos
+colores, Bebas Neue + Montserrat, el logo inclinado).
+
+Además de los pasos, incluye las 3 cosas que pidió explícitamente:
+- **El cartel azul de Google** y cómo cerrarlo (con la ✕ azul), aclarando
+  que es normal y no un error.
+- **Que esto es una Open Beta** y puede haber errores menores, con un
+  pedido de feedback.
+- **Cómo instalar la app en la pantalla de inicio**, con los pasos
+  separados para Android (Chrome) y iPhone (Safari).
+
+Se sube a Vercel como sitio estático, con **Root Directory = `landing/`**.
+Se eliminó el `landing.html` que estaba suelto en la raíz del repo.
+
+De paso resuelve dos cosas que habían quedado marcadas de la landing
+vieja (ver más abajo, entrada del 24/07): las **estadísticas sin fuente**
+("70% de los runners…") ya no están, y las **capturas viejas** que
+apuntaban a `../assets/screenshots/` — ruta que se rompía con Root
+Directory = `landing/` — se reemplazaron por las capturas nuevas del
+fundador, servidas desde Cloudinary con `f_auto,q_auto,w_700` para que
+pesen poco en el celular.
+
+**Pendiente de revisar por el fundador**: las 13 capturas se asignaron
+*en el orden en que él las pasó*, siguiendo su propia tabla (Paso 0 lleva
+2, Paso 2 lleva 2, el resto 1 cada uno = 13). No se pudieron verificar
+una por una porque este entorno no tiene acceso a Cloudinary (da 403).
+Si alguna quedó en el paso equivocado, se cambia el link del `<img>` de
+esa sección — cada una está marcada con un comentario `<!-- PASO N -->`.
+
+### `pwa/index.html` — un escalón menos donde caer en blanco
+
+El fundador apretó "atrás" del navegador dentro de la app y cayó en una
+pantalla en blanco (`userCodeAppPanel`). No es un bug nuestro: Google
+sirve las apps de Apps Script dentro de un marco interno suyo, y volver
+atrás te deja parado en la dirección de ese marco suelto.
+
+No se puede eliminar del todo, pero la pantalla de bienvenida de Vercel
+usaba `window.location.href` para saltar a la app, lo que **agrega** un
+paso al historial. Se cambió por `window.location.replace()`, que lo
+**reemplaza** — un lugar menos donde caer mal parado.
+
+Mitigación real para los usuarios: que instalen la app en la pantalla de
+inicio (se explica en la landing nueva), así se abre a pantalla completa
+sin las flechas del navegador.
+
+---
+
+## 27/07/2026 (tarde) — ⓘ que explica el límite de km + cabo suelto del 650
+
+- **Nuevo ⓘ al lado de "Límite de km (opcional)"** en el formulario de
+  nueva zapatilla. Abre un cartel corto: cuándo conviene un número más
+  bajo (≈650 — un solo par sin rotar, asfalto, ritmos fuertes,
+  zapatillas livianas de competencia) y cuándo más alto (≈850–1000 —
+  rotación entre pares, tierra o pasto, rodajes tranquilos,
+  entrenamiento diario amortiguado). Cierra aclarando que la señal que
+  más importa no es el número sino cómo se sienten: pisada más dura,
+  molestias nuevas o suela lisa.
+  El texto quedó corto a propósito — el fundador preguntó si no era
+  mucho, y tenía razón: el cartel no scrolleaba y en un celu chico se
+  hubiera cortado.
+- **Los carteles ahora scrollean** (`max-height: 85vh` + scroll en
+  `.modal-recover-content`), como red de seguridad para cualquier texto
+  largo en pantallas chicas. Aplica también a "¿Qué es Open Beta?" y a
+  "Recuperar contraseña".
+- **Cabo suelto corregido**: el cambio de 650 → 850 de esta mañana
+  actualizó las dos constantes del código, pero el formulario seguía
+  mostrando 650 en dos lugares visibles (el texto gris del casillero y
+  el renglón de ayuda "Si no ponés nada, usamos 650 km"). Ya dicen 850.
+
+---
+
+## 27/07/2026 (mediodía) — BUG DEL LOCKER RESUELTO
+
+**El síntoma**: el Locker mostraba siempre "El Locker está vacío",
+aunque las zapatillas estuvieran perfectamente archivadas en el Sheet.
+Pasaba con todos los usuarios, con datos viejos y con datos nuevos
+(se probó con una cuenta recién creada, 2 zapatillas, 1 archivada).
+
+**La causa**: cuando el servidor le manda datos a la pantalla,
+`google.script.run` tiene que "empaquetar" el resultado para el viaje.
+Si dentro de ese paquete viaja una fecha nativa de Google Sheets (un
+objeto `Date`), el empaquetado falla y al frontend le llega **`null`**
+— no una lista vacía, `null` — sin error, sin aviso, sin nada en la
+consola. El código recibía ese `null` y mostraba "vacío".
+
+La única columna con fecha es `Fecha_Archivado`, y solo la tienen las
+zapatillas archivadas: **por eso fallaba el Locker y no el carrusel de
+activas**. Google Sheets convierte solo el texto "27/07/2026" que
+escribe `archiveShoe()` en una fecha real, así que el problema aparecía
+sin que nadie tocara nada.
+
+**Cómo se encontró** (después de descartar varias pistas falsas):
+1. `_diagLocker()` (función de diagnóstico agregada a `codigo.gs`)
+   probó que del lado del servidor todo estaba bien — devolvía las 2
+   zapatillas correctamente, tanto con la función real como con un
+   recuento manual fila por fila.
+2. Un `alert()` temporal en el frontend mostró que a la pantalla le
+   llegaba `archived=null`. Esa diferencia entre "lista vacía" y
+   "null" fue la pista definitiva: el código nunca devuelve `null`, así
+   que el dato se estaba perdiendo en el viaje, no en el origen.
+
+**El arreglo** (`codigo.gs`): nueva función `_filaZapaAObjeto()`, que
+convierte cualquier celda de fecha a texto `"dd/MM/yyyy"` antes de
+devolverla. Se aplica en `getArchivedShoes()` y también en
+`getUserShoes()` — una zapatilla reactivada conserva su
+`Fecha_Archivado` vieja, así que el mismo problema podía aparecer en el
+carrusel de activas. De paso, el Locker ahora muestra "Archivada el
+27/07/2026" prolijo en vez de la fecha cruda.
+
+Se sacó el `alert()` de diagnóstico del frontend. `_diagLocker()` quedó
+en `codigo.gs` por si sirve más adelante — no la usa ninguna pantalla,
+se puede borrar cuando se quiera.
+
+**Descartado en el camino** (queda anotado para no volver a investigar
+lo mismo): no era caché del navegador, ni el service worker, ni datos
+corruptos por el ordenamiento del Sheet, ni una función duplicada, ni
+volumen de datos, ni el simulador de entrenamientos.
+
+---
+
+## 27/07/2026 (mañana) — "Open Beta" + tope de km 650→850
+
+Dos cambios chicos confirmados por el fundador:
+
+1. **"Versión Demo" → "Open Beta"** en la pantalla de bienvenida y de
+   login, con un ícono ⓘ al lado que abre un cartel corto explicando
+   qué es una beta abierta (texto que mandó el fundador: acceso libre
+   antes del lanzamiento oficial, puede haber errores menores, sirve
+   para medir carga y recibir feedback masivo). Pensado para el
+   lanzamiento del 1 de agosto.
+2. **Tope de km por defecto: 650 → 850** (`TP.KM_UMBRAL_CUPON` en
+   `trail-points.gs`, y su copia en el frontend `KM_LIMITE_DEFAULT` en
+   `index.html`). Sigue siendo solo el valor por defecto — cualquiera
+   que ya haya puesto su propio límite en una zapatilla no se ve
+   afectado.
+
+**Nota aparte, sin relación de código**: el fundador ordenó sin
+querer una selección parcial de columnas en la pestaña "Zapatillas"
+del Sheet (en vez de la hoja completa), lo que puede descuadrar filas
+si se hace así — lo notó porque un usuario de prueba pareció quedarse
+sin zapatillas. Restauró el orden desde el historial de versiones del
+Sheet antes de que esto se mergeara. Recordatorio para la próxima:
+ordenar siempre con "Datos → Ordenar hoja" (toda la hoja junta) o con
+un filtro, nunca seleccionando un rango parcial de columnas a mano.
+
+---
+
+## 26/07/2026 (tarde) — 18 grupos de running nuevos en el registro
+
+El fundador mandó una recopilación de equipos/grupos de running por
+zona (Mar del Plata y alrededores, Pinamar/Gesell, Tandil, Necochea, La
+Plata/GBA, Rosario) para sumar al desplegable "Grupo de running" del
+registro de usuarios, más "Team Pura Vida" (pedido aparte). Solo se
+tomó el nombre de cada grupo (no Instagram/Facebook/entrenador, que
+también venían en la lista).
+
+Los grupos que no son de Mar del Plata llevan la ciudad o provincia
+entre paréntesis (ej. "Halcones La Plata" ya lo dice en el nombre, no
+lleva paréntesis extra; "GO Team Pilar (Pilar, Buenos Aires)" sí). De
+los grupos de MDQ que ya estaban en la lista de antes, se les agregó
+"(MDQ)" a los que no lo decían en el nombre: Forest Run Group, Grupo
+Troten, JM Corredores, Malgor Track & Field.
+
+**Quedaron 2 cosas sin confirmar** (el fundador dijo que si algo no
+cuadraba, se corrige después):
+- "Kuden Group Tandil" (ya existía en la lista) — la recopilación nueva
+  dice que "Kuden Group" es de Villa Gesell/Pinamar, no de Tandil. No
+  se tocó el nombre por la duda.
+- "FC Running Team (La Plata)" — el dato original decía "FC Running
+  Team / Runner Callejero", no quedaba claro si es un nombre con
+  alternativa o dos grupos distintos. Se eligió "FC Running Team".
+
+---
+
+## 26/07/2026 (mediodía) — Bug real: "Actividad reciente" mostraba mal la hora
+
+El fundador lo notó al probar el simulador nuevo: un entrenamiento
+recién cargado al mediodía aparecía como "hace 12h" en "Actividad
+reciente" del panel admin.
+
+Causa: la columna "Hora" de Entrenamientos a veces Google Sheets la
+detecta sola como un valor de hora (no como el texto "12:08" que
+escribe la app), y `_combinarFechaHora()` (`admin.gs`) no contemplaba
+ese caso — hacía `horaRaw.toString().split(':')`, que con un objeto
+Date da un texto largo y el `split` falla en silencio. Resultado: se
+perdía la hora real y quedaba en medianoche, así que "hace cuánto fue"
+se calculaba mal. El mismo caso ya estaba resuelto en otra parte del
+código (`getShoeHistory()`, `codigo.gs`), pero nunca se había aplicado
+acá — se corrigió con el mismo criterio (chequear si es un objeto Date
+antes de tratarlo como texto).
+
+---
+
+## 26/07/2026 — Trigger que simula entrenamientos (para antes de la beta abierta)
+
+El fundador recordaba un trigger de otra sesión que simulaba usuarios
+cargando entrenamientos — no estaba guardado en el repo, así que se
+armó de cero.
+
+**Archivo nuevo `simulacion.gs`**: `simularEntrenamientosFalsos()` —
+cada corrida, un puñado al azar (15%) de zapatillas activas (nunca las
+del admin, `huellarunner@gmail.com`) suma un entrenamiento entre 3 y 15
+km. Usa el mismo camino que un entrenamiento real
+(`registrarActividadTrailPoints`, `trail-points.gs`), así que de paso
+sirve como prueba de carga real del sistema de km/cupones/anti-fraude,
+no solo maquillaje visual para la demo.
+
+Se instala UNA vez a mano desde el editor de Apps Script — elegir
+`instalarSimulacionEntrenamientos` en el desplegable de arriba y
+apretar "Ejecutar". Deja el trigger corriendo cada 4 horas. Para
+frenarlo (correr `desinstalarSimulacionEntrenamientos` una vez).
+
+**Importante, ya charlado con el fundador**: como él va a borrar todos
+los datos simulados del Sheet (menos el admin) antes de abrir la beta
+al público el 1 de agosto, no hizo falta armar ninguna forma de
+distinguir cuentas simuladas de reales — total, hoy todo lo que hay es
+simulado. Pero por eso mismo, el trigger de simulación se tiene que
+**desinstalar antes de esa fecha**, o le va a inventar entrenamientos
+falsos a usuarios reales también.
+
+---
+
+## 25/07/2026 (noche) — Segmentos de notificación: compradores inminentes, cumpleaños e inactivos
+
+El fundador pidió poder avisar a 3 grupos puntuales de usuarios,
+calculados directamente de lo que ya hay en el Sheet:
+
+1. **🔥 Compradores inminentes** (zapas en zona crítica) — para
+   reforzar avisos publicitarios/comerciales a quien está por necesitar
+   zapatillas nuevas ya.
+2. **🎂 Cumpleaños de la semana** — para dar un descuento o premio en
+   su semana. Nuevo: `getCumpleanosProximos()` en `admin.gs`, compara
+   solo mes/día de `FechaNacimiento` contra hoy.
+3. **😴 Inactivos / nunca entrenaron** — para mensajearlos con un tono
+   suave (reutiliza la plantilla que ya existía, "Recordatorio de
+   inactividad").
+
+Se armó como un 4to tab "Segmento" dentro de "Enviar notificación" (panel
+admin): elegís la opción, te muestra cuántos usuarios entran y quiénes
+son, y mandás con el botón de siempre. Nuevo tipo de destinatario
+`'lista'` en `enviarNotificacion()` (`codigo.gs`) para esto — valida que
+cada email sea de un usuario real antes de mandar nada, y sigue
+pidiendo el token de admin como "todos"/"grupo".
+
+**De paso se encontró y arregló un bug real**: el filtro "Alerta Zapas"
+de "Usuarios registrados" nunca mostraba resultados — el panel buscaba
+el email de cada alerta (`a.email`) pero `getAdminDashboardData()`
+(`codigo.gs`) nunca lo incluía en los datos que mandaba. Se agregó ese
+campo. Esto también era necesario para que funcione el segmento de
+"compradores inminentes".
+
+**Quedó anotado para más adelante** (no se construyó, fue decisión del
+fundador): un aviso de "aniversario de registro" por usuario tiene poco
+sentido individual todavía, porque al ser una app recién lanzada va a
+haber muchos usuarios cumpliendo el año juntos. Mejor pensarlo como un
+sorteo por el aniversario de la app en sí (con inscripciones a carreras
+como premio, al estilo de lo que se suele regalar), para cuando se
+decida fecha y premio.
+
+---
+
+## 25/07/2026 (tarde, más tarde) — Foto real por zapatilla (columna Foto_URL)
+
+El fundador quiere poder subir la foto real de la zapatilla de un
+usuario cuando se la manda (él la retoca y la sube a Cloudinary). Se
+agregó soporte para eso sin pantalla nueva:
+
+- **`index.html`**: el carrusel y el Locker ahora muestran la foto de
+  la columna `Foto_URL` de esa fila (si está cargada), antes que la
+  foto genérica del modelo.
+
+**Paso manual pendiente del fundador** (esto no se puede hacer desde
+el código, es directamente en el Google Sheet): agregar una columna
+nueva llamada exactamente `Foto_URL` en la pestaña "Zapatillas" — una
+sola vez. Después, para cada foto real: pegar el link de Cloudinary en
+esa columna, en la fila de la zapatilla puntual de ese usuario (se
+identifica por email + cuál zapatilla es).
+
+---
+
+## 25/07/2026 (tarde) — 3 bugs reales encontrados y arreglados en revisión general
+
+El fundador pidió una revisión completa de bugs en todo el código (no
+podía navegar la PWA en vivo por una restricción de red de este
+entorno). Se leyeron los 7 archivos `.gs`/`.html` completos (~9500
+líneas). Se encontraron 8 cosas en total; se arreglaron las 3 que el
+fundador priorizó, quedan 5 menores anotadas para más adelante (no
+rompen nada hoy):
+
+1. **`admin.html`** — El gráfico "Perfil Comunidad" (pestaña Insights)
+   contaba mal a los usuarios principiantes: esperaba 5 niveles
+   separados pero el registro solo guarda 4 (el nivel inicial es un
+   único valor combinado, `"Principiante/Recreativo"`). Esos usuarios
+   entraban al total pero no aparecían en ninguna barra, y los
+   porcentajes no cerraban en 100%. `NIVELES_ORDER`/`NIVELES_COLORS`
+   ahora usan las 4 categorías reales.
+2. **`index.html`** — Doble-toque en "Guardar" podía duplicar datos:
+   los botones de login, crear cuenta, definir contraseña nueva,
+   agregar zapatilla y cargar kilómetros no se deshabilitaban mientras
+   esperaban al servidor (a diferencia de "archivar"/"eliminar"/
+   "recuperar contraseña", que sí lo hacían). Con mala señal, un
+   segundo toque podía disparar la acción dos veces. Ahora todos se
+   deshabilitan hasta tener respuesta. De paso, "Guardar Entrenamiento"
+   no tenía manejo de error de conexión — ahora sí.
+3. **`index.html`** — Una comilla doble (`"`) en un modelo de
+   zapatilla cargado a mano ("Otra marca/Otro modelo") podía romper el
+   botón "Eliminar" de esa tarjeta y el "Reactivar" del Locker (el
+   escapado solo cubría la comilla simple). Nueva función
+   `escInlineJs()` que escapa ambas.
+
+Quedan pendientes (menores, sin apuro): un cálculo sin terminar de
+"usuarios nuevos esta semana" en `admin.gs` que no se usa en ningún
+lado; el orden de "usuarios inactivos" en insights puede salir
+desprolijo entre los que nunca entrenaron; "actividad reciente" asume
+que las filas del Sheet están en orden cronológico (podría fallar si
+se cargan entrenamientos simulados fuera de orden); un detalle interno
+sin impacto visible en `_labelDia()`; y en el panel admin, tocar el
+filtro "Alerta Zapas" muy rápido apenas entrás puede decir "sin
+resultados" por error hasta que lo tocás de nuevo.
+
+---
+
 ## 25/07/2026 (mediodía) — Paginado, orden y filtros nuevos en "Usuarios registrados"
 
 Después de simular 50 y probar con más, el fundador notó que la tabla

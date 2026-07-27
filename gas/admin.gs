@@ -1,7 +1,31 @@
 // ============================================================
 // HUELLA RUNNER — admin.gs
-// Última actualización: 25/07/2026 13:40 (hora Argentina)
+// Última actualización: 26/07/2026 12:13 (hora Argentina)
 // Cambios en esta versión:
+//   - Fix: "Actividad reciente" mostraba mal la hora (ej. "hace 12h" en
+//     un entrenamiento recién cargado al mediodía) — encontrado al
+//     probar el simulador nuevo. _combinarFechaHora() no contemplaba
+//     que la celda Hora puede venir como objeto Date (cuando Sheets la
+//     detecta sola como valor de hora, no como texto "HH:mm"); en ese
+//     caso el código viejo hacía horaRaw.toString().split(':'), que
+//     fallaba en silencio y dejaba la hora en medianoche. Mismo caso ya
+//     contemplado en getShoeHistory() (codigo.gs), pero nunca se había
+//     aplicado acá.
+// Cambios en versiones anteriores:
+//   - Nueva función getCumpleanosProximos(token): usuarios con cumpleaños
+//     en los próximos 7 días (compara solo mes/día de FechaNacimiento, no
+//     el año). La usa el nuevo segmento "Cumpleaños" del panel de
+//     notificaciones, pensado para mandar un descuento/premio en su semana.
+//     Nueva _parseFechaNacimiento(): FechaNacimiento se guarda como texto
+//     "yyyy-mm-dd" y _celdaADate() la interpretaría en UTC, corriendo la
+//     fecha un día para atrás con el huso de Argentina — esta función
+//     arma la fecha local a mano para evitar ese corrimiento.
+//   - getInsightsExtendidos() ahora también devuelve abandono.todosEmails
+//     (la lista completa de inactivos/nunca-entrenaron, no solo el top 10
+//     que se muestra en pantalla) — la necesita el segmento "Inactivos"
+//     del panel de notificaciones para poder mandarle a todos, no solo
+//     a los primeros 10.
+// Cambios en versiones anteriores:
 //   - getAdminUsuarios(token) ahora también devuelve provincia,
 //     fechaRegistro (texto legible) y fechaRegistroTs (epoch ms, para
 //     ordenar). Se usa en Admin.html para el filtro por provincia y
@@ -217,6 +241,81 @@ function getAdminStats(token) {
 // TABLA COMPLETA DE USUARIOS
 // Retorna array con datos de cada usuario + sus km totales
 // ============================================================
+// FechaNacimiento se guarda como texto "yyyy-mm-dd" (viene de un
+// <input type="date">). _celdaADate() la interpretaría con new Date(str),
+// que trata las fechas sin hora como UTC — con el huso de Argentina
+// (UTC-3) eso corre la fecha un día para atrás. Acá se arma la fecha
+// local a mano, componente por componente, para evitar ese corrimiento.
+function _parseFechaNacimiento(valor) {
+  if (!valor) return null;
+  if (Object.prototype.toString.call(valor) === '[object Date]') {
+    return isNaN(valor.getTime()) ? null : valor;
+  }
+  const str = valor.toString().trim();
+  const iso = str.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (iso) {
+    const d = new Date(Number(iso[1]), Number(iso[2]) - 1, Number(iso[3]));
+    return isNaN(d.getTime()) ? null : d;
+  }
+  return _celdaADate(str);
+}
+
+// ============================================================
+// CUMPLEAÑOS PRÓXIMOS (próximos 7 días, incluye hoy)
+// Compara solo mes/día de FechaNacimiento contra hoy — el año de
+// nacimiento no importa para esto. Pensado para el segmento
+// "Cumpleaños" del panel de notificaciones (descuentos/premios).
+// ============================================================
+function getCumpleanosProximos(token) {
+  if (!_adminAutorizado(token)) return { success: false, error: 'No autorizado.' };
+  try {
+    const ss    = SpreadsheetApp.openById(SHEET_ID);
+    const sheet = ss.getSheetByName('Usuarios');
+    if (!sheet || sheet.getLastRow() <= 1) return { success: true, lista: [] };
+
+    const data    = sheet.getDataRange().getValues();
+    const headers = data[0];
+    const emailCol  = headers.indexOf('Email');
+    const nomCol    = headers.indexOf('Nombre');
+    const apeCol    = headers.indexOf('Apellido');
+    const fechaCol  = headers.indexOf('FechaNacimiento');
+    if (emailCol === -1 || fechaCol === -1) return { success: true, lista: [] };
+
+    const DIAS_VENTANA = 7;
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+
+    const lista = [];
+    for (let i = 1; i < data.length; i++) {
+      const email = data[i][emailCol] ? data[i][emailCol].toString().trim().toLowerCase() : '';
+      if (!email) continue;
+      const fNac = _parseFechaNacimiento(data[i][fechaCol]);
+      if (!fNac) continue;
+
+      // Próximo cumpleaños desde hoy: mismo mes/día, este año o el que viene.
+      let proximo = new Date(hoy.getFullYear(), fNac.getMonth(), fNac.getDate());
+      if (proximo < hoy) proximo = new Date(hoy.getFullYear() + 1, fNac.getMonth(), fNac.getDate());
+      const diasFaltan = Math.round((proximo.getTime() - hoy.getTime()) / 86400000);
+      if (diasFaltan > DIAS_VENTANA) continue;
+
+      const nom = nomCol !== -1 ? (data[i][nomCol] || '').toString().trim() : '';
+      const ape = apeCol !== -1 ? (data[i][apeCol] || '').toString().trim() : '';
+      lista.push({
+        email:      email,
+        nombre:     (nom + ' ' + ape).trim() || email,
+        fecha:      Utilities.formatDate(proximo, TZ_AR, 'dd/MM'),
+        diasFaltan: diasFaltan,
+        esHoy:      diasFaltan === 0
+      });
+    }
+    lista.sort(function(a, b) { return a.diasFaltan - b.diasFaltan; });
+    return { success: true, lista: lista };
+  } catch(e) {
+    Logger.log('getCumpleanosProximos ERROR: ' + e.toString());
+    return { success: false, error: e.toString() };
+  }
+}
+
 function getAdminUsuarios(token) {
   if (!_adminAutorizado(token)) return [];
   try {
@@ -719,7 +818,8 @@ function getInsightsExtendidos(token) {
         activos7:  activos7,
         activos30: activos30,
         total:     totalUsuarios,
-        lista:     listaInactivos.slice(0, 10)
+        lista:       listaInactivos.slice(0, 10), // para mostrar en pantalla
+        todosEmails: listaInactivos.map(function(u) { return u.email; }) // para notificar al segmento completo
       },
       notifLectura: {
         enviadas: notifEnviadas,
@@ -855,11 +955,26 @@ function _celdaADate(valor) {
 function _combinarFechaHora(fechaRaw, horaRaw) {
   const base = _celdaADate(fechaRaw);
   if (!base) return null;
-  const horaStr = (horaRaw || '').toString().trim();
-  if (!horaStr) return base; // sin columna Hora: se mantiene medianoche (mejor que nada)
-  const partes = horaStr.split(':');
-  const h = parseInt(partes[0], 10);
-  const m = parseInt(partes[1], 10);
+
+  // La celda Hora puede venir como texto "HH:mm" o, si Sheets la detectó
+  // sola como un valor de hora, como un objeto Date (fecha en 1899, hora
+  // real en getHours()/getMinutes()) — mismo caso ya contemplado en
+  // getShoeHistory() (codigo.gs). Sin este chequeo, horaRaw.toString()
+  // devuelve un texto largo tipo fecha completa y el split(':') falla en
+  // silencio, dejando la hora en medianoche (síntoma: "hace 12h" en algo
+  // recién cargado al mediodía).
+  let h, m;
+  if (Object.prototype.toString.call(horaRaw) === '[object Date]') {
+    if (isNaN(horaRaw.getTime())) return base;
+    h = horaRaw.getHours();
+    m = horaRaw.getMinutes();
+  } else {
+    const horaStr = (horaRaw || '').toString().trim();
+    if (!horaStr) return base; // sin columna Hora: se mantiene medianoche (mejor que nada)
+    const partes = horaStr.split(':');
+    h = parseInt(partes[0], 10);
+    m = parseInt(partes[1], 10);
+  }
   if (isNaN(h) || isNaN(m)) return base;
   return new Date(base.getFullYear(), base.getMonth(), base.getDate(), h, m);
 }
