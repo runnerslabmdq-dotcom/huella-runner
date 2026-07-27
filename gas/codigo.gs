@@ -1,7 +1,17 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 25/07/2026 23:22 (hora Argentina)
+// Última actualización: 27/07/2026 09:58 (hora Argentina)
 // Cambios en esta versión:
+//   - Nueva función _diagLocker() — TEMPORAL, para diagnosticar el bug
+//     reportado por el fundador: el Locker no muestra zapatillas
+//     archivadas aunque el Sheet las tenga bien guardadas (confirmado
+//     en 2 usuarios distintos, edragotto@hotmail.com y
+//     estebandragotto@gmail.com). Compara lo que devuelve
+//     getArchivedShoes() contra un recuento manual fila por fila, para
+//     encontrar dónde se pierde el dato. Correr a mano desde el editor
+//     y mirar el Registro de ejecución. Se puede borrar una vez
+//     resuelto — no la usa ninguna pantalla.
+// Cambios en versiones anteriores:
 //   - Nuevo tipo de destinatario 'lista' en enviarNotificacion(): permite
 //     mandar un mensaje a un array de emails ya armado del lado del panel
 //     admin (ej. "zapas en alerta", "inactivos", "cumpleaños de la
@@ -719,6 +729,46 @@ function archiveShoe(email, idZapatilla) {
     Logger.log('archiveShoe ERROR: ' + e.toString());
     return { success: false, error: e.toString() };
   }
+}
+
+// ============================================================
+// DIAGNÓSTICO TEMPORAL — bug del Locker (no muestra zapas archivadas)
+// Correr a mano desde el editor (elegir "_diagLocker" arriba y
+// Ejecutar), después mirar "Registro de ejecución". Se puede borrar
+// esta función una vez resuelto el bug — no la usa ninguna pantalla.
+// ============================================================
+function _diagLocker() {
+  var email = 'edragotto@hotmail.com'; // cambiar acá si querés probar otro usuario
+  Logger.log('=== DIAGNÓSTICO LOCKER: ' + email + ' ===');
+
+  var resultado = getArchivedShoes(email);
+  Logger.log('getArchivedShoes() devolvió ' + resultado.length + ' resultado(s).');
+  resultado.forEach(function(s, i) {
+    Logger.log((i + 1) + ') ' + s.Marca + ' ' + s.Modelo + ' — Estado="' + s.Estado + '" Email_Usuario="' + s.Email_Usuario + '"');
+  });
+
+  Logger.log('--- Recuento manual, fila por fila, para comparar ---');
+  var ss     = SpreadsheetApp.openById(SHEET_ID);
+  var sheet  = ss.getSheetByName('Zapatillas');
+  var data   = sheet.getDataRange().getValues();
+  var headers = data[0];
+  var emailCol  = headers.indexOf('Email_Usuario');
+  var estadoCol = headers.indexOf('Estado');
+  Logger.log('Columna Email_Usuario en índice ' + emailCol + ' | Columna Estado en índice ' + estadoCol);
+
+  var emailClean = email.toString().trim().toLowerCase();
+  var contador = 0;
+  for (var i = 1; i < data.length; i++) {
+    var rawEmail  = data[i][emailCol];
+    var rawEstado = data[i][estadoCol];
+    var rowEmail  = rawEmail  ? rawEmail.toString().trim().toLowerCase()  : '';
+    var rowEstado = rawEstado ? rawEstado.toString().trim().toLowerCase() : '';
+    if (rowEmail === emailClean && rowEstado === 'archivada') {
+      contador++;
+      Logger.log('Fila ' + (i + 1) + ' matchea → email="' + rowEmail + '" estado="' + rowEstado + '" (tipo email: ' + typeof rawEmail + ', tipo estado: ' + typeof rawEstado + ')');
+    }
+  }
+  Logger.log('Total contado a mano: ' + contador);
 }
 
 // ============================================================
