@@ -1,7 +1,13 @@
 // ============================================================
 // HUELLA RUNNER — trail-points.gs
-// Última actualización: 22/07/2026 12:30 (hora Argentina)
+// Última actualización: 27/07/2026 08:59 (hora Argentina)
 // Cambios en esta versión:
+//   - TP.KM_UMBRAL_CUPON (tope por defecto si el usuario no elige uno
+//     propio en su zapatilla): 650 → 850 km, a pedido del fundador.
+//     Quien ya haya puesto su propio límite no se ve afectado, solo
+//     cambia el valor por defecto. Ver también index.html
+//     (KM_LIMITE_DEFAULT, misma actualización).
+// Cambios en versiones anteriores:
 //   - Mensaje del cupón de desgaste, más honesto: como todavía no hay
 //     marcas/tiendas asociadas para canjear el cupón, el mensaje ya no
 //     promete "usalo en tu próxima compra" — ahora avisa que la
@@ -49,7 +55,7 @@
 
 // ---- CONFIG CENTRAL (ajustar según negocio) ----------------
 const TP = {
-  KM_UMBRAL_CUPON:      650,    // km para disparar cupón
+  KM_UMBRAL_CUPON:      850,    // km para disparar cupón
   KM_MAX_DIA:           120,    // filtro diario anti-fraude
   KM_MAX_SEMANA:        180,    // filtro semanal anti-fraude
   PREFIJO_CUPON:        'HR-DESGASTE-',

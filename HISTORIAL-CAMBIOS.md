@@ -12,6 +12,33 @@ el GAS es la versión más nueva.
 
 ---
 
+## 27/07/2026 (mañana) — "Open Beta" + tope de km 650→850
+
+Dos cambios chicos confirmados por el fundador:
+
+1. **"Versión Demo" → "Open Beta"** en la pantalla de bienvenida y de
+   login, con un ícono ⓘ al lado que abre un cartel corto explicando
+   qué es una beta abierta (texto que mandó el fundador: acceso libre
+   antes del lanzamiento oficial, puede haber errores menores, sirve
+   para medir carga y recibir feedback masivo). Pensado para el
+   lanzamiento del 1 de agosto.
+2. **Tope de km por defecto: 650 → 850** (`TP.KM_UMBRAL_CUPON` en
+   `trail-points.gs`, y su copia en el frontend `KM_LIMITE_DEFAULT` en
+   `index.html`). Sigue siendo solo el valor por defecto — cualquiera
+   que ya haya puesto su propio límite en una zapatilla no se ve
+   afectado.
+
+**Nota aparte, sin relación de código**: el fundador ordenó sin
+querer una selección parcial de columnas en la pestaña "Zapatillas"
+del Sheet (en vez de la hoja completa), lo que puede descuadrar filas
+si se hace así — lo notó porque un usuario de prueba pareció quedarse
+sin zapatillas. Restauró el orden desde el historial de versiones del
+Sheet antes de que esto se mergeara. Recordatorio para la próxima:
+ordenar siempre con "Datos → Ordenar hoja" (toda la hoja junta) o con
+un filtro, nunca seleccionando un rango parcial de columnas a mano.
+
+---
+
 ## 26/07/2026 (tarde) — 18 grupos de running nuevos en el registro
 
 El fundador mandó una recopilación de equipos/grupos de running por

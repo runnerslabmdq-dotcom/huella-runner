@@ -1,8 +1,17 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 26/07/2026 17:40 (hora Argentina)
+  Última actualización: 27/07/2026 08:59 (hora Argentina)
   Cambios en esta versión:
+    - "Versión Demo" → "Open Beta" (pantalla de bienvenida y login), con
+      un ícono (ⓘ) al lado que abre un cartel corto explicando qué es
+      una beta abierta — a pedido del fundador, para cuando lance el 1
+      de agosto.
+    - KM_LIMITE_DEFAULT (tope por defecto si el usuario no elige uno
+      propio): 650 → 850. Ver también trail-points.gs (TP.KM_UMBRAL_CUPON,
+      misma actualización) — quien ya haya puesto su propio límite en
+      una zapatilla no se ve afectado, solo cambia el default.
+  Cambios en versiones anteriores:
     - Desplegable "Grupo de running" (registro): agregados 18 grupos
       nuevos que el fundador recopiló (Mar del Plata/Pinamar, Tandil,
       Necochea, La Plata/GBA, Rosario, y "Team Pura Vida"), más 4 grupos
@@ -1615,7 +1624,12 @@
     </h1>
     <div style="font-size:0.85rem;font-weight:900;letter-spacing:4px;text-transform:uppercase;
       color:#CCFF00;margin-top:8px;text-shadow:0 0 8px rgba(204,255,0,0.6);">
-      Versión Demo
+      Open Beta
+      <button onclick="openBetaInfoModal()" aria-label="¿Qué es Open Beta?"
+        style="background:none;border:1px solid #CCFF00;color:#CCFF00;border-radius:50%;
+        width:16px;height:16px;line-height:1;font-size:0.6rem;font-weight:900;letter-spacing:0;
+        text-transform:none;text-shadow:none;cursor:pointer;display:inline-flex;align-items:center;
+        justify-content:center;vertical-align:middle;margin-left:4px;padding:0;">i</button>
     </div>
   </div>
 
@@ -1700,7 +1714,12 @@
       </h1>
       <div style="font-size:0.85rem;font-weight:900;letter-spacing:4px;text-transform:uppercase;
         color:#CCFF00;margin-top:8px;text-shadow:0 0 8px rgba(204,255,0,0.6);">
-        Versión Demo
+        Open Beta
+        <button onclick="openBetaInfoModal()" aria-label="¿Qué es Open Beta?"
+          style="background:none;border:1px solid #CCFF00;color:#CCFF00;border-radius:50%;
+          width:16px;height:16px;line-height:1;font-size:0.6rem;font-weight:900;letter-spacing:0;
+          text-transform:none;text-shadow:none;cursor:pointer;display:inline-flex;align-items:center;
+          justify-content:center;vertical-align:middle;margin-left:4px;padding:0;">i</button>
       </div>
     </div>
 
@@ -2203,6 +2222,16 @@
   </div>
 </div>
 
+<!-- MODAL INFO OPEN BETA -->
+<div class="modal-overlay" id="openbeta-modal">
+  <div class="modal-recover-content">
+    <button class="close-modal" onclick="closeBetaInfoModal()">✕</button>
+    <div class="recover-icon">🧪</div>
+    <div class="recover-title">¿Qué es Open Beta?</div>
+    <div class="recover-desc">Acceso libre a cualquier usuario antes del lanzamiento oficial. Puede haber errores menores — nos sirve para medir la carga en los servidores, la escalabilidad, y recibir feedback masivo antes de la versión final.</div>
+  </div>
+</div>
+
 <!-- MODAL RECUPERAR CONTRASEÑA -->
 <div class="modal-overlay" id="recover-modal">
   <div class="modal-recover-content">
@@ -2282,7 +2311,7 @@
 
 <script>
   let currentUserEmail = '';
-  const KM_LIMITE_DEFAULT = 650; // igual al umbral global de trail-points.gs (TP.KM_UMBRAL_CUPON)
+  const KM_LIMITE_DEFAULT = 850; // igual al umbral global de trail-points.gs (TP.KM_UMBRAL_CUPON)
 
   // =====================================================
   // ONBOARDING INICIAL
@@ -2959,6 +2988,13 @@
     if (badge) { badge.innerText = ''; badge.classList.remove('visible'); }
     if (_badgeInterval) { clearInterval(_badgeInterval); _badgeInterval = null; }
     switchView('view-login');
+  }
+
+  function openBetaInfoModal() {
+    document.getElementById('openbeta-modal').style.display = 'flex';
+  }
+  function closeBetaInfoModal() {
+    document.getElementById('openbeta-modal').style.display = 'none';
   }
 
   function openRecoverModal() {
