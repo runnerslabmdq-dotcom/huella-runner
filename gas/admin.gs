@@ -1,7 +1,18 @@
 // ============================================================
 // HUELLA RUNNER — admin.gs
-// Última actualización: 26/07/2026 12:13 (hora Argentina)
+// Última actualización: 28/07/2026 09:23 (hora Argentina)
 // Cambios en esta versión:
+//   - BUG arreglado (revisión de bugs pedida por el fundador antes de la
+//     Open Beta): getAdminStats(), getAdminUsuarios(), getActividadReciente()
+//     y getActividadPorDia() contaban los entrenamientos RECHAZADOS por el
+//     anti-fraude (ej. alguien tipeó 300 km en vez de 30 km) como si fueran
+//     actividad real. No inflaba los km totales (esos ya quedaban en 0 para
+//     un rechazo), pero sí los conteos: "Activos hoy" y "Registros hoy" del
+//     resumen general, el gráfico de 7 días, y "Actividad reciente" podía
+//     mostrar "Fulano sumó 0 km" para un intento bloqueado. getInsightsExtendidos()
+//     ya filtraba Estado_Validacion==='Rechazada' desde antes; ahora las 4
+//     funciones más viejas hacen lo mismo.
+// Cambios en versiones anteriores:
 //   - Fix: "Actividad reciente" mostraba mal la hora (ej. "hace 12h" en
 //     un entrenamiento recién cargado al mediodía) — encontrado al
 //     probar el simulador nuevo. _combinarFechaHora() no contemplaba
@@ -192,8 +203,12 @@ function getAdminStats(token) {
       const fechaCol  = trainHeaders.indexOf('Fecha');
       const kmCol     = trainHeaders.indexOf('KM_Sumados');
       const emailCol  = trainHeaders.indexOf('Email_Usuario');
+      const estadoCol = trainHeaders.indexOf('Estado_Validacion');
 
       for (let i = 1; i < trainData.length; i++) {
+        const estadoVal = estadoCol !== -1 ? (trainData[i][estadoCol] || '').toString().trim().toLowerCase() : '';
+        if (estadoVal === 'rechazada') continue; // intento bloqueado por el anti-fraude, no es actividad real
+
         const km        = Number(trainData[i][kmCol]) || 0;
         const email     = trainData[i][emailCol] ? trainData[i][emailCol].toString().trim().toLowerCase() : '';
         const fechaDate = _celdaADate(trainData[i][fechaCol]);
@@ -364,9 +379,12 @@ function getAdminUsuarios(token) {
     if (trainSheet && trainSheet.getLastRow() > 1) {
       const tData    = trainSheet.getDataRange().getValues();
       const tHeaders = tData[0];
-      const tEmailCol = tHeaders.indexOf('Email_Usuario');
-      const tFechaCol = tHeaders.indexOf('Fecha');
+      const tEmailCol  = tHeaders.indexOf('Email_Usuario');
+      const tFechaCol  = tHeaders.indexOf('Fecha');
+      const tEstadoCol = tHeaders.indexOf('Estado_Validacion');
       for (let i = 1; i < tData.length; i++) {
+        const estadoVal = tEstadoCol !== -1 ? (tData[i][tEstadoCol] || '').toString().trim().toLowerCase() : '';
+        if (estadoVal === 'rechazada') continue; // intento bloqueado por el anti-fraude, no es actividad real
         const em        = tData[i][tEmailCol] ? tData[i][tEmailCol].toString().trim().toLowerCase() : '';
         const fechaDate = _celdaADate(tData[i][tFechaCol]);
         if (em && fechaDate && _mismaFecha(fechaDate, ahora)) activosHoy.add(em);
@@ -469,15 +487,19 @@ function getActividadReciente(token) {
     if (trainSheet && trainSheet.getLastRow() > 1) {
       const tData    = trainSheet.getDataRange().getValues();
       const tHeaders = tData[0];
-      const tEmailCol = tHeaders.indexOf('Email_Usuario');
-      const tKmCol    = tHeaders.indexOf('KM_Sumados');
-      const tFechaCol = tHeaders.indexOf('Fecha');
-      const tHoraCol  = tHeaders.indexOf('Hora');
-      const tZapaCol  = tHeaders.indexOf('ID_Zapa');
+      const tEmailCol  = tHeaders.indexOf('Email_Usuario');
+      const tKmCol     = tHeaders.indexOf('KM_Sumados');
+      const tFechaCol  = tHeaders.indexOf('Fecha');
+      const tHoraCol   = tHeaders.indexOf('Hora');
+      const tZapaCol   = tHeaders.indexOf('ID_Zapa');
+      const tEstadoCol = tHeaders.indexOf('Estado_Validacion');
 
       // Tomar los últimos 20 registros (están ordenados cronológicamente)
       const desde = Math.max(1, tData.length - 20);
       for (let i = tData.length - 1; i >= desde; i--) {
+        const estadoVal = tEstadoCol !== -1 ? (tData[i][tEstadoCol] || '').toString().trim().toLowerCase() : '';
+        if (estadoVal === 'rechazada') continue; // intento bloqueado por el anti-fraude, no es actividad real
+
         const email = tData[i][tEmailCol] ? tData[i][tEmailCol].toString().trim().toLowerCase() : '';
         const km    = Number(tData[i][tKmCol]) || 0;
         const idZapa = tZapaCol !== -1 && tData[i][tZapaCol] ? tData[i][tZapaCol].toString() : '';
@@ -548,11 +570,15 @@ function getActividadPorDia(token) {
     if (trainSheet && trainSheet.getLastRow() > 1) {
       const tData    = trainSheet.getDataRange().getValues();
       const tHeaders = tData[0];
-      const tEmailCol = tHeaders.indexOf('Email_Usuario');
-      const tKmCol    = tHeaders.indexOf('KM_Sumados');
-      const tFechaCol = tHeaders.indexOf('Fecha');
+      const tEmailCol  = tHeaders.indexOf('Email_Usuario');
+      const tKmCol     = tHeaders.indexOf('KM_Sumados');
+      const tFechaCol  = tHeaders.indexOf('Fecha');
+      const tEstadoCol = tHeaders.indexOf('Estado_Validacion');
 
       for (let i = 1; i < tData.length; i++) {
+        const estadoVal = tEstadoCol !== -1 ? (tData[i][tEstadoCol] || '').toString().trim().toLowerCase() : '';
+        if (estadoVal === 'rechazada') continue; // intento bloqueado por el anti-fraude, no es actividad real
+
         const email     = tData[i][tEmailCol] ? tData[i][tEmailCol].toString().trim().toLowerCase() : '';
         const km        = Number(tData[i][tKmCol]) || 0;
         const fechaDate = _celdaADate(tData[i][tFechaCol]);
