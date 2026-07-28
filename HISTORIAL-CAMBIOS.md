@@ -12,6 +12,38 @@ el GAS es la versión más nueva.
 
 ---
 
+## 28/07/2026 (mañana, más tarde) — Semáforo de desgaste, arreglado para usar % del límite propio
+
+Seguimiento de la revisión de bugs de esta mañana: el fundador pidió
+arreglar el semáforo/alertas de desgaste del panel admin para que use
+porcentaje en vez de km crudo.
+
+Antes, los colores (verde/naranja/rojo) y las bandas del semáforo
+("600-800 km", "> 800 km") usaban un tope fijo de km — un resabio de
+cuando todas las zapatillas compartían un solo límite global. Pero
+desde que existe el límite de km por zapatilla (`KM_Limite`, cada una
+puede tener el suyo), esas bandas fijas ya no significaban nada real:
+una zapatilla con límite de 400 km y 420 km encima está bastante más
+urgente que una con límite de 1000 km y 750 km encima, aunque el km
+crudo de la segunda sea más alto.
+
+- `codigo.gs`: `getAdminDashboardData()` ahora manda `limite` y
+  `porcentaje` (km ÷ límite propio) en cada zapatilla de
+  `alertasDesgaste`.
+- `admin.html`: `_kmBarColor()` colorea por porcentaje (100-119%
+  amarillo, 120-149% naranja, ≥150% rojo) en vez de por km. Las
+  tarjetas de "Alertas de desgaste" muestran el % como número principal
+  (con "km / límite" como detalle chico), y la barra ahora representa
+  cuánto se pasó del límite, no una escala fija de 0 a 1000 km. El
+  semáforo de Insights ("Estado Zapas") y su detalle por tramo usan el
+  mismo criterio.
+
+"Saludables" (verde) no cambió: sigue siendo el total de zapatillas
+activas menos las que ya llegaron a su propio límite — eso ya no
+dependía de un número de km fijo.
+
+---
+
 ## 28/07/2026 (mañana) — Bug real: el panel admin contaba entrenamientos rechazados como actividad
 
 Revisión completa de bugs pedida por el fundador antes de la Open Beta

@@ -1,7 +1,15 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 27/07/2026 11:45 (hora Argentina)
+// Última actualización: 28/07/2026 10:09 (hora Argentina)
 // Cambios en esta versión:
+//   - Semáforo de desgaste (panel admin): getAdminDashboardData() ahora
+//     agrega 'limite' y 'porcentaje' (km / KM_Limite propio de la
+//     zapatilla) a cada zapatilla de alertasDesgaste. Antes el panel
+//     coloreaba/agrupaba por km crudo (bandas fijas 300/600/800) — con
+//     el límite por zapatilla ya en uso, dos zapatillas con el mismo km
+//     pueden tener urgencias bien distintas si sus límites son
+//     distintos. Ver admin.html para el consumo de estos campos nuevos.
+// Cambios en versiones anteriores:
 //   - BUG DEL LOCKER RESUELTO. Síntoma: el Locker mostraba siempre "El
 //     Locker está vacío" aunque las zapatillas estuvieran bien
 //     archivadas en el Sheet. Causa: google.script.run no puede
@@ -1559,7 +1567,14 @@ function getAdminDashboardData(token) {
             runner:      uInfo.nombre,
             grupo:       uInfo.grupo,
             zapatilla:   marca + ' ' + modelo,
-            kilometraje: km
+            kilometraje: km,
+            limite:      limite,
+            // % sobre el límite PROPIO de esta zapatilla, no un tope fijo —
+            // cada una puede tener un límite distinto (KM_Limite), así que
+            // comparar km crudo entre zapatillas no dice nada de la urgencia
+            // real. Ver admin.html (semáforo/alertas), que ahora colorea
+            // según este porcentaje en vez de bandas de km fijas.
+            porcentaje:  limite > 0 ? Math.round((km / limite) * 100) : 100
           });
         }
 
