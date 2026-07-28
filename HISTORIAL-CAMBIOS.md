@@ -12,6 +12,35 @@ el GAS es la versión más nueva.
 
 ---
 
+## 28/07/2026 (noche) — pwa/index.html: aviso al entrar desde Instagram/Facebook
+
+El fundador ya subió el link de Vercel (`huella-runner.vercel.app`) a la
+bio de Instagram y notó que "se veía todo un poco más grande" — la causa
+real: Instagram (y Facebook, TikTok) abren los links de la bio en su
+propio navegador "de adentro" (in-app browser), no en Chrome/Safari de
+verdad. Eso explica varias cosas encadenadas:
+- El texto puede renderizarse distinto (zoom/tamaño distinto al de un
+  navegador normal).
+- "Agregar a pantalla de inicio" casi nunca instala bien ahí — puede
+  explicar el ícono genérico que había visto antes.
+- Nunca se logra pantalla completa real desde ese navegador, por más que
+  el código esté bien — es una limitación del navegador in-app, no de la
+  app.
+
+No se puede forzar que Instagram abra el link en el navegador real (lo
+bloquean a propósito para no perder al usuario). Se agregó en su lugar:
+`pwa/index.html` ahora detecta el user-agent de Instagram/Facebook/TikTok
+y, si lo encuentra, frena el redirect automático y muestra un cartel
+explicando el paso manual ("tocá ⋯ arriba a la derecha → Abrir en el
+navegador"), con un botón "Continuar acá igual" para quien prefiera
+seguir sin salir. En cualquier otro navegador, el comportamiento no
+cambió: sigue entrando derecho después de 1.2s, como siempre.
+
+Probado localmente con Playwright simulando el user-agent de Instagram y
+uno normal — el cartel aparece solo en el primer caso.
+
+---
+
 ## 28/07/2026 (mañana, más tarde) — Semáforo de desgaste, arreglado para usar % del límite propio
 
 Seguimiento de la revisión de bugs de esta mañana: el fundador pidió
