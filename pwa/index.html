@@ -65,9 +65,50 @@
       0%   { transform: translateX(-100%); }
       100% { transform: translateX(350%); }
     }
+    /* ── Aviso "navegador de adentro" (Instagram/Facebook/TikTok) ──
+       Esos navegadores in-app no soportan bien "Agregar a pantalla de
+       inicio" (ícono genérico, sin pantalla completa real) porque no son
+       Chrome/Safari de verdad — son una ventanita que la app te muestra
+       sin que salgas de ella. No se puede forzar la salida (las apps lo
+       bloquean a propósito), así que se le explica al usuario el paso
+       manual. No bloquea el uso: quien no quiera salir puede seguir. */
+    .iab-banner {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background: #111111;
+      border-bottom: 1px solid #C5B358;
+      padding: 16px 20px;
+      text-align: center;
+      z-index: 10;
+    }
+    .iab-banner.show { display: block; }
+    .iab-banner p {
+      color: #E8E8E8;
+      font-size: 0.8rem;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+    .iab-banner strong { color: #C5B358; }
+    .iab-banner button {
+      background: none;
+      border: 1px solid #333;
+      color: #888;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
+  <div class="iab-banner" id="iab-banner">
+    <p>Estás entrando desde Instagram/Facebook. Para que la app se vea e instale bien,
+      tocá <strong>⋯</strong> (arriba a la derecha) y elegí <strong>"Abrir en el navegador"</strong>.</p>
+    <button onclick="continuarIgual()">Continuar acá igual →</button>
+  </div>
   <div class="splash">
     <img src="./icons/icon-512.png" alt="Huella Runner">
     <div>
@@ -83,14 +124,35 @@
         .catch(err => console.warn('SW:', err));
     }
 
-    setTimeout(() => {
+    function irALaApp() {
       // replace() en vez de href: reemplaza este paso en el historial en
       // vez de agregar uno. Así, si el usuario aprieta "atrás" desde la
       // app, no queda un escalón intermedio de más donde caer en una
       // pantalla en blanco. (No lo resuelve del todo: el marco interno
       // de Google sigue estando, es una limitación de Apps Script.)
       window.location.replace(GAS_URL + '?v=' + Date.now());
-    }, 1200);
+    }
+
+    // Instagram y Facebook agregan su propia marca al user-agent del
+    // navegador in-app ("Instagram", "FBAN"/"FBAV"). TikTok también, por
+    // si el link circula ahí. Si detectamos alguno, frenamos el redirect
+    // automático y mostramos el aviso — el botón "Continuar acá igual"
+    // sigue el camino normal para quien no quiera salir de la app.
+    var ua = navigator.userAgent || '';
+    var esNavegadorInApp = /Instagram|FBAN|FBAV|TikTok/i.test(ua);
+
+    function continuarIgual() {
+      document.getElementById('iab-banner').classList.remove('show');
+      irALaApp();
+    }
+
+    if (esNavegadorInApp) {
+      document.getElementById('iab-banner').classList.add('show');
+      // Sin redirect automático acá: se espera a que el usuario elija
+      // (salir a Chrome/Safari, o tocar "Continuar acá igual").
+    } else {
+      setTimeout(irALaApp, 1200);
+    }
   </script>
 </body>
 </html>
