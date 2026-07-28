@@ -12,6 +12,47 @@ el GAS es la versión más nueva.
 
 ---
 
+## 28/07/2026 (mañana) — Bug real: el panel admin contaba entrenamientos rechazados como actividad
+
+Revisión completa de bugs pedida por el fundador antes de la Open Beta
+(repaso línea por línea de todos los `.gs` y los 2 `.html` grandes).
+
+Encontrado en `admin.gs`: cuando el anti-fraude rechaza un entrenamiento
+(ej. alguien tipea "300 km" en vez de "30 km" y supera el máximo diario
+permitido), ese intento queda guardado en el Sheet con 0 km acreditados —
+eso ya estaba bien. El problema era que 4 funciones del panel admin no
+distinguían un rechazo de una actividad real, y lo contaban igual:
+
+- `getAdminStats()` — "Activos hoy" y "Registros hoy" del resumen general.
+- `getAdminUsuarios()` — el punto verde de "entrenó hoy" en la tabla de usuarios.
+- `getActividadReciente()` — podía mostrar "Fulano sumó 0 km" en la lista
+  de actividad reciente, como si fuera un evento real.
+- `getActividadPorDia()` — el gráfico de barras de los últimos 7 días.
+
+No inflaba los kilómetros totales (esos siempre fueron 0 para un
+rechazo), solo los conteos de "cuánta gente entrenó". `getInsightsExtendidos()`
+(la función más nueva, la de Constancia/Horario Pico/Abandono) ya
+filtraba esto bien desde que se creó — las 4 funciones viejas nunca se
+habían actualizado con el mismo criterio. Ahora las 4 excluyen los
+entrenamientos con `Estado_Validacion = "Rechazada"`, igual que ya hacía
+la más nueva.
+
+Con usuarios reales usando la app (algo que va a pasar seguido con
+typos), esto habría inflado los números que el fundador mira en vivo
+durante el lanzamiento — no afectaba a los usuarios, solo al panel.
+
+En la misma revisión se miraron también 2 cosas menores, que quedan
+anotadas pero sin tocar por ahora (no son urgentes):
+- Los colores del semáforo/alertas de desgaste en Insights usan un
+  umbral fijo (300/600/800/1000 km) en vez del límite propio de cada
+  zapatilla (que ahora puede ser distinto por zapatilla) — el color
+  podría no reflejar bien la urgencia real en un caso extremo.
+- `gas/social-proof-ui.html` quedó sin uso: el modal "dato de comunidad"
+  vive directo en `index.html` desde hace un tiempo. Se puede borrar del
+  proyecto de Apps Script sin miedo, no lo llama nadie.
+
+---
+
 ## 27/07/2026 (noche) — Fix: "Hola, [Nombre]" se pisaba con el logo en pantallas chicas
 
 El fundador mandó una foto real de un celu más angosto que el suyo: el
