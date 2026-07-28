@@ -1,8 +1,15 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 27/07/2026 15:59 (hora Argentina)
+  Última actualización: 27/07/2026 22:24 (hora Argentina)
   Cambios en esta versión:
+    - Fix: en pantallas angostas, "Hola, [Nombre]" (arriba a la derecha
+      del dashboard) no entraba junto al logo y los íconos — se partía
+      en 2 líneas y quedaba pisando el logo "HUELLA RUNNER". Reportado
+      por el fundador con foto real de un celu más chico (en el de él,
+      más ancho, se veía bien). Se oculta el saludo debajo de 400px de
+      ancho de pantalla — no se saca en general, solo donde no entra.
+  Cambios en versiones anteriores:
     - Nuevo ⓘ al lado de "Límite de km (opcional)" (formulario de nueva
       zapatilla): abre un cartel corto que explica cuándo conviene un
       número más bajo (≈650: un solo par sin rotar, asfalto, ritmos
@@ -563,6 +570,13 @@
     .btn-recover:hover { color: var(--amarillo); }
 
     .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    /* En pantallas angostas, "Hola, [Nombre]" no entraba junto al logo y
+       los íconos — se partía en 2 líneas y quedaba pisando el logo (caso
+       real reportado por el fundador con un celu más chico). Se oculta
+       el saludo ahí; en pantallas normales/anchas se sigue viendo bien. */
+    @media (max-width: 400px) {
+      .saludo-topbar { display: none; }
+    }
 
     .armario-header { margin: 10px 0 20px; display: flex; flex-direction: column; align-items: center; }
     .armario-subtitle { font-size: 0.92rem; font-weight: 800; color: var(--plata); text-transform: uppercase; letter-spacing: 2px; margin-top: 3px; }
@@ -1993,7 +2007,7 @@
         <span class="logo-name-row" style="margin-top:3px;"><span class="logo-open">Huella</span> <span class="logo-sports">Runner</span></span>
       </a>
       <div style="display:flex; align-items:center; gap:12px;">
-        <div style="font-size: 0.75rem; color: var(--gris-texto);">Hola, <span id="user-name" style="color: var(--amarillo); font-weight: 900;">Corredor</span></div>
+        <div class="saludo-topbar" style="font-size: 0.75rem; color: var(--gris-texto); white-space:nowrap;">Hola, <span id="user-name" style="color: var(--amarillo); font-weight: 900;">Corredor</span></div>
         <!-- CAMPANITA NOTIFICACIONES -->
         <button class="btn-notif" id="btn-notif" onclick="abrirNotificaciones()" title="Mis notificaciones">
           🔔

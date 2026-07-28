@@ -12,6 +12,20 @@ el GAS es la versión más nueva.
 
 ---
 
+## 27/07/2026 (noche) — Fix: "Hola, [Nombre]" se pisaba con el logo en pantallas chicas
+
+El fundador mandó una foto real de un celu más angosto que el suyo: el
+saludo "Hola, Esteban" (arriba a la derecha del dashboard, al lado del
+logo y los íconos) no entraba, se partía en 2 líneas y quedaba pisando
+"HUELLA RUNNER". En su propio celu (más ancho) se veía bien.
+
+Se ocultó el saludo solo por debajo de 400px de ancho de pantalla
+(`.saludo-topbar`, nuevo `@media (max-width: 400px)`) — en pantallas
+normales sigue ahí como siempre, solo desaparece donde genuinamente no
+entra. Los íconos (🔔 🌙 Salir) quedan igual en todos los tamaños.
+
+---
+
 ## 27/07/2026 (tarde) — Landing nueva: la guía de uso + fix del botón "atrás"
 
 ### `landing/index.html` — ahora es la guía de uso
