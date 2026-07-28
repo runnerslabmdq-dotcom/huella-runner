@@ -1,8 +1,28 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Admin.html
-  Última actualización: 25/07/2026 23:22 (hora Argentina)
+  Última actualización: 28/07/2026 10:09 (hora Argentina)
   Cambios en esta versión:
+    - Semáforo de desgaste arreglado para usar % sobre el límite propio de
+      cada zapatilla, no km crudo: a pedido del fundador, después de que la
+      revisión de bugs notara que las bandas de color (naranja 600-800 km,
+      rojo >800 km) ya no tenían sentido desde que existe el límite de km
+      por zapatilla (KM_Limite) — dos zapatillas con el mismo km crudo
+      pueden tener urgencias bien distintas si sus límites son distintos
+      (ej. 420 km sobre un límite de 400 es más urgente que 750 km sobre un
+      límite de 1000, aunque el km crudo diga lo contrario). Ahora:
+      · _kmBarColor() colorea según a.porcentaje (nuevo campo del backend,
+        codigo.gs) en vez de a.kilometraje: amarillo 100-119%, naranja
+        120-149%, rojo ≥150%.
+      · Las tarjetas de "Alertas de desgaste" muestran el % como número
+        principal (con el km/límite como detalle chico), y la barra ahora
+        representa cuánto se pasó del límite (0% = recién llegó, 100%+ =
+        el doble o más), no una escala fija de 0 a 1000 km.
+      · El semáforo (Insights → Estado Zapas) y su "Detalle por tramo"
+        usan el mismo criterio: Precaución = 100-119% de su límite,
+        Cambio urgente = ≥120%. "Saludables" sigue siendo el total de
+        zapas menos las que ya llegaron a su límite (sin cambios ahí).
+  Cambios en versiones anteriores:
     - Nuevo 4to tab "Segmento" en "Enviar notificación", con 3 opciones
       ya calculadas del lado del panel (a pedido del fundador):
       · 🔥 Zapas en alerta (compradores inminentes) — mismo dato que la
@@ -1148,11 +1168,16 @@
       })
       .getAdminDashboardData(ADMIN_TOKEN);
   }
-  function _kmBarColor(km) {
-    if (km > 800) return '#FF2D55';
-    if (km > 600) return '#FF6B00';
-    if (km > 300) return '#FFD60A';
-    return '#39FF14';
+  // Color según % sobre el límite PROPIO de cada zapatilla (a.porcentaje),
+  // no un tope de km fijo — desde que existe el límite por zapatilla
+  // (KM_Limite), dos zapatillas con el mismo km crudo pueden tener
+  // urgencias bien distintas si sus límites son distintos. Todo lo que
+  // llega acá ya está en 100%+ (getAdminDashboardData solo manda las que
+  // llegaron a su límite), así que las 3 bandas son "qué tan pasada" está.
+  function _kmBarColor(pct) {
+    if (pct >= 150) return '#FF2D55'; // muy pasada
+    if (pct >= 120) return '#FF6B00'; // bastante pasada
+    return '#FFD60A';                 // recién cruzó el límite
   }
   function renderAlertas(data) {
     const cont = document.getElementById('alertas-list');
@@ -1171,29 +1196,32 @@
     cont.innerHTML = '<div class="alertas-grid">' +
       alertas.map(function(a) {
         const km    = a.kilometraje || 0;
-        const pct   = Math.min(100, Math.round((km / 1000) * 100));
-        const color = _kmBarColor(km);
-        const t1 = km > 0   ? 'active' : '';
-        const t2 = km > 300 ? 'active' : '';
-        const t3 = km > 600 ? 'active' : '';
-        const t4 = km > 800 ? 'active' : '';
+        const lim   = a.limite || km || 1;
+        const pct   = a.porcentaje || Math.round((km / lim) * 100);
+        const color = _kmBarColor(pct);
+        // La barra muestra cuánto se pasó del límite (0% = recién llegó,
+        // 100%+ = el doble o más de su propio límite), no el km crudo.
+        const overPct = Math.min(100, Math.max(0, pct - 100));
+        const t1 = pct >= 100 ? 'active' : '';
+        const t2 = pct >= 120 ? 'active' : '';
+        const t3 = pct >= 150 ? 'active' : '';
+        const t4 = pct >= 200 ? 'active' : '';
         return `<div class="alert-card">
           <div class="alert-card-top">
             <div>
               <div class="alert-runner">${sanitize(a.runner || 'Runner')}</div>
               <div class="alert-zapa">${sanitize(a.zapatilla || '—')}${a.grupo ? ' · '+sanitize(a.grupo) : ''}</div>
             </div>
-            <div class="alert-km-badge" style="color:${color};">${km}<span>km</span></div>
+            <div class="alert-km-badge" style="color:${color};">${pct}%<span>${km} / ${lim} km</span></div>
           </div>
           <div class="km-bar-track">
-            <div class="km-bar-fill" style="width:${pct}%;background:${color};box-shadow:0 0 6px ${color}40;"></div>
+            <div class="km-bar-fill" style="width:${overPct}%;background:${color};box-shadow:0 0 6px ${color}40;"></div>
           </div>
           <div class="km-bar-labels">
-            <span class="km-bar-label ${t1}">0</span>
-            <span class="km-bar-label ${t2}">300</span>
-            <span class="km-bar-label ${t3}">600</span>
-            <span class="km-bar-label ${t4}">800</span>
-            <span class="km-bar-label ${t4}">1000</span>
+            <span class="km-bar-label ${t1}">100%</span>
+            <span class="km-bar-label ${t2}">120%</span>
+            <span class="km-bar-label ${t3}">150%</span>
+            <span class="km-bar-label ${t4}">200%+</span>
           </div>
         </div>`;
       }).join('') + '</div>';
@@ -1605,16 +1633,19 @@
     /* ── J: Geografía (rankingProvincia ya viene calculado del backend) ── */
     _renderGeografia(data);
 
-    /* ── B: Semáforo ── */
+    /* ── B: Semáforo ──
+       Bandas por % sobre el límite PROPIO de cada zapatilla (a.porcentaje),
+       no por km crudo — dos zapatillas con el mismo km pueden tener
+       urgencias distintas si sus límites (KM_Limite) son distintos. Todo lo
+       que llega en `alertas` ya está en 100%+ (getAdminDashboardData solo
+       manda las que llegaron a su límite). */
     let critico    = 0;
     let precaucion = 0;
-    let atencion   = 0;
 
     alertas.forEach(function(a) {
-      const km = a.kilometraje || 0;
-      if (km > 800)       critico++;
-      else if (km > 600)  precaucion++;
-      else                atencion++;
+      const pct = a.porcentaje || Math.round(((a.kilometraje||0) / (a.limite||a.kilometraje||1)) * 100);
+      if (pct >= 120) critico++;
+      else            precaucion++;
     });
 
     const semCont = document.getElementById('ins-semaforo');
@@ -1623,19 +1654,19 @@
         <div class="semaforo-dot"></div>
         <div class="semaforo-num" id="sem-verde">—</div>
         <div class="semaforo-lbl">Saludables</div>
-        <div class="semaforo-sub">0 – 600 km</div>
+        <div class="semaforo-sub">Debajo de su límite</div>
       </div>
       <div class="semaforo-card naranja">
         <div class="semaforo-dot"></div>
         <div class="semaforo-num">${precaucion}</div>
         <div class="semaforo-lbl">Precaución</div>
-        <div class="semaforo-sub">600 – 800 km</div>
+        <div class="semaforo-sub">100% – 119% de su límite</div>
       </div>
       <div class="semaforo-card rojo">
         <div class="semaforo-dot"></div>
         <div class="semaforo-num">${critico}</div>
         <div class="semaforo-lbl">Cambio urgente</div>
-        <div class="semaforo-sub">> 800 km</div>
+        <div class="semaforo-sub">≥ 120% de su límite</div>
       </div>`;
 
     _insState.alertasCount = alertas.length;
@@ -1648,8 +1679,10 @@
     } else {
       detCont.innerHTML = alertas.slice(0, 6).map(function(a) {
         const km    = a.kilometraje || 0;
-        const color = _kmBarColor(km);
-        const pct   = Math.min(100, Math.round((km / 1000) * 100));
+        const lim   = a.limite || km || 1;
+        const pct   = a.porcentaje || Math.round((km / lim) * 100);
+        const color = _kmBarColor(pct);
+        const barPct = Math.min(100, Math.max(0, pct - 100));
         return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--borde);">
           <div style="flex:1;min-width:0;">
             <div style="font-size:0.8rem;font-weight:700;color:var(--plata);">${sanitize(a.runner)}</div>
@@ -1657,10 +1690,10 @@
           </div>
           <div style="width:80px;">
             <div style="height:5px;background:#111;border-radius:2px;overflow:hidden;">
-              <div style="height:100%;width:${pct}%;background:${color};border-radius:2px;"></div>
+              <div style="height:100%;width:${barPct}%;background:${color};border-radius:2px;"></div>
             </div>
           </div>
-          <div style="font-size:0.82rem;font-weight:900;color:${color};white-space:nowrap;">${km} km</div>
+          <div style="font-size:0.82rem;font-weight:900;color:${color};white-space:nowrap;">${pct}%</div>
         </div>`;
       }).join('');
     }
