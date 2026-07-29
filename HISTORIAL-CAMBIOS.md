@@ -12,6 +12,43 @@ el GAS es la versión más nueva.
 
 ---
 
+## 29/07/2026 (noche) — Registro más corto: de 10 campos visibles a 6
+
+Con 500 seguidores en Instagram y solo 4 registros reales, el fundador
+sospechó que el formulario de registro (10 campos: nombre, apellido,
+email, 2 contraseñas, fecha de nacimiento, provincia, ciudad, celular,
+nivel, grupo) era parte del problema — mucha fricción para alguien que
+recién llega desde la bio de Instagram.
+
+Se separaron los campos en dos grupos:
+- **Visibles siempre**: Nombre, Apellido, Email, Contraseña (x2), Nivel
+  de Corredor.
+- **Colapsados atrás de "👤 Completar perfil (opcional)"**: Fecha de
+  Nacimiento, Provincia, Ciudad, Celular, Grupo de Running — cerrado por
+  defecto, mismo mecanismo de acordeón que ya usa "VER LEGALES +".
+
+Ninguno de estos 5 campos era obligatorio del lado del servidor
+(`registerUser()` en `codigo.gs` no los valida, ya se guardaban vacíos
+si faltaban) — el problema era solo visual: se mostraban todos juntos y
+obligaban a scrollear de más antes de llegar al botón "Crear Cuenta".
+Cambio solo en `gas/index.html` (reordenar + colapsar), sin tocar
+backend ni validaciones.
+
+El ícono del botón (👤, silueta neutra) se eligió a propósito en vez de
+un emoji de persona con género marcado, a pedido del fundador.
+
+Probado localmente con Playwright: capturas antes/después muestran el
+formulario corto entrando sin scroll en una pantalla de celu, y el
+acordeón abriendo/cerrando bien.
+
+Quedó pendiente para más adelante (no se tocó todavía, a la espera de
+decidir con el fundador): suavizar el cartel de "abrí esto en el
+navegador" que se agregó ayer para quien entra desde Instagram — podría
+estar sumando fricción justo en el peor momento del embudo (primer
+contacto), compitiendo con el objetivo de bajar el abandono.
+
+---
+
 ## 29/07/2026 (mañana) — Login: "¿No tienes cuenta?" y "¿Olvidaste tu contraseña?" más arriba
 
 El fundador probó el login desde el navegador in-app de Instagram (con el
