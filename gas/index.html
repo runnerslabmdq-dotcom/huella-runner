@@ -1,8 +1,21 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 29/07/2026 07:56 (hora Argentina)
+  Última actualización: 29/07/2026 20:57 (hora Argentina)
   Cambios en esta versión:
+    - Registro más corto: solo 500 seguidores en Instagram y 4 registros
+      reales — el formulario de 10 campos era sospechoso de estar
+      espantando gente. Ahora quedan visibles solo Nombre, Apellido,
+      Email, Contraseña (x2) y Nivel de Corredor; Fecha de Nacimiento,
+      Provincia, Ciudad, Celular y Grupo de Running pasaron a un bloque
+      colapsado "👤 Completar perfil (opcional)" (mismo patrón de
+      acordeón que ya usa "VER LEGALES +"), cerrado por defecto. Nada de
+      esto cambia validación ni backend — esos campos ya eran opcionales
+      del lado del servidor, solo se veían todos juntos y obligaban a
+      scrollear de más antes de poder registrarse. El ícono 👤 (silueta
+      neutra) se eligió a propósito en vez de un emoji de persona con
+      género marcado, a pedido del fundador.
+  Cambios en versiones anteriores:
     - Pantalla de Login: "¿No tienes cuenta? Regístrate" y "¿Olvidaste tu
       contraseña?" ahora están justo debajo del botón "Iniciar Sesión"
       (antes quedaban más abajo, después de la tarjeta con el texto
@@ -1887,56 +1900,6 @@
         </div>
       </div>
       <div class="form-group">
-        <label>Fecha de Nacimiento <span style="color:#444;font-weight:400;text-transform:none;font-size:0.65rem;">(opcional)</span></label>
-        <input type="date" id="reg-fecha-nac" style="color-scheme:dark;">
-      </div>
-      <!-- PROVINCIA Y CIUDAD — v2906 -->
-      <div class="form-group">
-        <label>Provincia <span style="color:#444;font-weight:400;text-transform:none;font-size:0.65rem;">(opcional)</span></label>
-        <select id="reg-provincia" onchange="onProvinciaChange()">
-          <option value="">Seleccionar provincia...</option>
-          <option value="Buenos Aires">Buenos Aires</option>
-          <option value="Ciudad Autónoma de Buenos Aires">Ciudad Autónoma de Buenos Aires</option>
-          <option value="Catamarca">Catamarca</option>
-          <option value="Chaco">Chaco</option>
-          <option value="Chubut">Chubut</option>
-          <option value="Córdoba">Córdoba</option>
-          <option value="Corrientes">Corrientes</option>
-          <option value="Entre Ríos">Entre Ríos</option>
-          <option value="Formosa">Formosa</option>
-          <option value="Jujuy">Jujuy</option>
-          <option value="La Pampa">La Pampa</option>
-          <option value="La Rioja">La Rioja</option>
-          <option value="Mendoza">Mendoza</option>
-          <option value="Misiones">Misiones</option>
-          <option value="Neuquén">Neuquén</option>
-          <option value="Río Negro">Río Negro</option>
-          <option value="Salta">Salta</option>
-          <option value="San Juan">San Juan</option>
-          <option value="San Luis">San Luis</option>
-          <option value="Santa Cruz">Santa Cruz</option>
-          <option value="Santa Fe">Santa Fe</option>
-          <option value="Santiago del Estero">Santiago del Estero</option>
-          <option value="Tierra del Fuego">Tierra del Fuego</option>
-          <option value="Tucumán">Tucumán</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Ciudad <span style="color:#444;font-weight:400;text-transform:none;font-size:0.65rem;">(opcional)</span></label>
-        <select id="reg-ciudad" disabled>
-          <option value="">Primero elegí una provincia...</option>
-        </select>
-        <div id="reg-ciudad-loading" style="display:none;font-size:0.68rem;color:var(--gris-texto);margin-top:5px;padding-left:2px;">
-          <span class="zapa-loading">📍</span> Cargando ciudades...
-        </div>
-      </div>
-      <!-- FIN PROVINCIA Y CIUDAD -->
-
-      <div class="form-group">
-        <label>Celular <span style="color:#444;font-weight:400;text-transform:none;font-size:0.65rem;">(WhatsApp · opcional)</span></label>
-        <input type="tel" id="reg-celular" placeholder="Ej. 223 555 1234">
-      </div>
-      <div class="form-group">
         <label>Nivel de Corredor</label>
         <select id="reg-nivel">
           <option value="">Seleccionar...</option>
@@ -1947,58 +1910,121 @@
         </select>
       </div>
 
-      <div class="form-group">
-        <label>Grupo de Running <span style="color:#444;font-weight:400;text-transform:none;font-size:0.65rem;">(opcional)</span></label>
-        <select id="reg-grupo" onchange="onGrupoChange()">
-          <option value="">Seleccionar...</option>
-          <option value="Aventura Avanza">Aventura Avanza</option>
-          <option value="Circuitos Running Rosario">Circuitos Running Rosario</option>
-          <option value="Club K10">Club K10</option>
-          <option value="Corredores Nocturnos (Tandil)">Corredores Nocturnos (Tandil)</option>
-          <option value="CROSS Running Club MDQ">CROSS Running Club MDQ</option>
-          <option value="Deportes Mar del Plata">Deportes Mar del Plata</option>
-          <option value="EmpoweRun">EmpoweRun</option>
-          <option value="FC Running Team (La Plata)">FC Running Team (La Plata)</option>
-          <option value="Forest Run Group (MDQ)">Forest Run Group (MDQ)</option>
-          <option value="FP Team (Tandil)">FP Team (Tandil)</option>
-          <option value="GO Team Pilar (Pilar, Buenos Aires)">GO Team Pilar (Pilar, Buenos Aires)</option>
-          <option value="Grupo A">Grupo A</option>
-          <option value="Grupo A Running &amp; Triatlón">Grupo A Running &amp; Triatlón</option>
-          <option value="Grupo de Entrenamiento Ignacio Cascia (La Plata)">Grupo de Entrenamiento Ignacio Cascia (La Plata)</option>
-          <option value="Grupo Troten (MDQ)">Grupo Troten (MDQ)</option>
-          <option value="Halcones La Plata">Halcones La Plata</option>
-          <option value="JM Corredores (MDQ)">JM Corredores (MDQ)</option>
-          <option value="KM Trail Running">KM Trail Running</option>
-          <option value="Kuden Group Tandil">Kuden Group Tandil</option>
-          <option value="Kumelen Running Tandil">Kumelen Running Tandil</option>
-          <option value="La Era Running Club (Rosario)">La Era Running Club (Rosario)</option>
-          <option value="Malgor Track &amp; Field (MDQ)">Malgor Track &amp; Field (MDQ)</option>
-          <option value="MDQ Entrena">MDQ Entrena</option>
-          <option value="Miller Team Running">Miller Team Running</option>
-          <option value="Necochea Running">Necochea Running</option>
-          <option value="NQN Running">NQN Running</option>
-          <option value="OK Eventos MDQ">OK Eventos MDQ</option>
-          <option value="Pampa Team Club de Running (CABA)">Pampa Team Club de Running (CABA)</option>
-          <option value="Plotteam">Plotteam</option>
-          <option value="ProGroup Running">ProGroup Running</option>
-          <option value="Punto Fit Gym &amp; Run">Punto Fit Gym &amp; Run</option>
-          <option value="RA Caminantes">RA Caminantes</option>
-          <option value="Ranerzzz">Ranerzzz</option>
-          <option value="Run Club MDP">Run Club MDP</option>
-          <option value="Runners Fox Pinamar">Runners Fox Pinamar</option>
-          <option value="Running Tandil">Running Tandil</option>
-          <option value="Runtrek Club">Runtrek Club</option>
-          <option value="SC Training La Plata">SC Training La Plata</option>
-          <option value="Stímulo MdP">Stímulo MdP</option>
-          <option value="Sumando KM">Sumando KM</option>
-          <option value="Team Pura Vida">Team Pura Vida</option>
-          <option value="Trail Run Rosario">Trail Run Rosario</option>
-          <option value="Treino ARG">Treino ARG</option>
-          <option value="VO2 Max Tandil">VO2 Max Tandil</option>
-          <option value="__otro__">Otro...</option>
-        </select>
-        <div id="wrap-grupo-manual">
-          <input type="text" id="reg-grupo-manual" placeholder="Escribí el nombre de tu grupo...">
+      <!-- Datos opcionales de perfil: colapsados por defecto para que el
+           registro se sienta corto (5 campos visibles en vez de 10). Nada
+           de esto es obligatorio del lado del servidor — quien quiera
+           completarlo ahora puede, si no, sigue de largo. -->
+      <div style="text-align:center;margin:4px 0 14px;">
+        <button type="button" onclick="var el=document.getElementById('reg-perfil-opcional');var abrir=el.style.display==='none';el.style.display=abrir?'block':'none';this.innerText=abrir?'👤 Completar perfil (opcional) −':'👤 Completar perfil (opcional) +';" style="
+          background:none;border:none;color:#A89440;font-size:0.68rem;font-weight:700;
+          cursor:pointer;letter-spacing:1px;text-transform:uppercase;
+          font-family:'Montserrat',sans-serif;padding:4px 0;">👤 Completar perfil (opcional) +</button>
+      </div>
+      <div id="reg-perfil-opcional" style="display:none;">
+        <div class="form-group">
+          <label>Fecha de Nacimiento <span style="color:#444;font-weight:400;text-transform:none;font-size:0.65rem;">(opcional)</span></label>
+          <input type="date" id="reg-fecha-nac" style="color-scheme:dark;">
+        </div>
+        <!-- PROVINCIA Y CIUDAD — v2906 -->
+        <div class="form-group">
+          <label>Provincia <span style="color:#444;font-weight:400;text-transform:none;font-size:0.65rem;">(opcional)</span></label>
+          <select id="reg-provincia" onchange="onProvinciaChange()">
+            <option value="">Seleccionar provincia...</option>
+            <option value="Buenos Aires">Buenos Aires</option>
+            <option value="Ciudad Autónoma de Buenos Aires">Ciudad Autónoma de Buenos Aires</option>
+            <option value="Catamarca">Catamarca</option>
+            <option value="Chaco">Chaco</option>
+            <option value="Chubut">Chubut</option>
+            <option value="Córdoba">Córdoba</option>
+            <option value="Corrientes">Corrientes</option>
+            <option value="Entre Ríos">Entre Ríos</option>
+            <option value="Formosa">Formosa</option>
+            <option value="Jujuy">Jujuy</option>
+            <option value="La Pampa">La Pampa</option>
+            <option value="La Rioja">La Rioja</option>
+            <option value="Mendoza">Mendoza</option>
+            <option value="Misiones">Misiones</option>
+            <option value="Neuquén">Neuquén</option>
+            <option value="Río Negro">Río Negro</option>
+            <option value="Salta">Salta</option>
+            <option value="San Juan">San Juan</option>
+            <option value="San Luis">San Luis</option>
+            <option value="Santa Cruz">Santa Cruz</option>
+            <option value="Santa Fe">Santa Fe</option>
+            <option value="Santiago del Estero">Santiago del Estero</option>
+            <option value="Tierra del Fuego">Tierra del Fuego</option>
+            <option value="Tucumán">Tucumán</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Ciudad <span style="color:#444;font-weight:400;text-transform:none;font-size:0.65rem;">(opcional)</span></label>
+          <select id="reg-ciudad" disabled>
+            <option value="">Primero elegí una provincia...</option>
+          </select>
+          <div id="reg-ciudad-loading" style="display:none;font-size:0.68rem;color:var(--gris-texto);margin-top:5px;padding-left:2px;">
+            <span class="zapa-loading">📍</span> Cargando ciudades...
+          </div>
+        </div>
+        <!-- FIN PROVINCIA Y CIUDAD -->
+
+        <div class="form-group">
+          <label>Celular <span style="color:#444;font-weight:400;text-transform:none;font-size:0.65rem;">(WhatsApp · opcional)</span></label>
+          <input type="tel" id="reg-celular" placeholder="Ej. 223 555 1234">
+        </div>
+
+        <div class="form-group">
+          <label>Grupo de Running <span style="color:#444;font-weight:400;text-transform:none;font-size:0.65rem;">(opcional)</span></label>
+          <select id="reg-grupo" onchange="onGrupoChange()">
+            <option value="">Seleccionar...</option>
+            <option value="Aventura Avanza">Aventura Avanza</option>
+            <option value="Circuitos Running Rosario">Circuitos Running Rosario</option>
+            <option value="Club K10">Club K10</option>
+            <option value="Corredores Nocturnos (Tandil)">Corredores Nocturnos (Tandil)</option>
+            <option value="CROSS Running Club MDQ">CROSS Running Club MDQ</option>
+            <option value="Deportes Mar del Plata">Deportes Mar del Plata</option>
+            <option value="EmpoweRun">EmpoweRun</option>
+            <option value="FC Running Team (La Plata)">FC Running Team (La Plata)</option>
+            <option value="Forest Run Group (MDQ)">Forest Run Group (MDQ)</option>
+            <option value="FP Team (Tandil)">FP Team (Tandil)</option>
+            <option value="GO Team Pilar (Pilar, Buenos Aires)">GO Team Pilar (Pilar, Buenos Aires)</option>
+            <option value="Grupo A">Grupo A</option>
+            <option value="Grupo A Running &amp; Triatlón">Grupo A Running &amp; Triatlón</option>
+            <option value="Grupo de Entrenamiento Ignacio Cascia (La Plata)">Grupo de Entrenamiento Ignacio Cascia (La Plata)</option>
+            <option value="Grupo Troten (MDQ)">Grupo Troten (MDQ)</option>
+            <option value="Halcones La Plata">Halcones La Plata</option>
+            <option value="JM Corredores (MDQ)">JM Corredores (MDQ)</option>
+            <option value="KM Trail Running">KM Trail Running</option>
+            <option value="Kuden Group Tandil">Kuden Group Tandil</option>
+            <option value="Kumelen Running Tandil">Kumelen Running Tandil</option>
+            <option value="La Era Running Club (Rosario)">La Era Running Club (Rosario)</option>
+            <option value="Malgor Track &amp; Field (MDQ)">Malgor Track &amp; Field (MDQ)</option>
+            <option value="MDQ Entrena">MDQ Entrena</option>
+            <option value="Miller Team Running">Miller Team Running</option>
+            <option value="Necochea Running">Necochea Running</option>
+            <option value="NQN Running">NQN Running</option>
+            <option value="OK Eventos MDQ">OK Eventos MDQ</option>
+            <option value="Pampa Team Club de Running (CABA)">Pampa Team Club de Running (CABA)</option>
+            <option value="Plotteam">Plotteam</option>
+            <option value="ProGroup Running">ProGroup Running</option>
+            <option value="Punto Fit Gym &amp; Run">Punto Fit Gym &amp; Run</option>
+            <option value="RA Caminantes">RA Caminantes</option>
+            <option value="Ranerzzz">Ranerzzz</option>
+            <option value="Run Club MDP">Run Club MDP</option>
+            <option value="Runners Fox Pinamar">Runners Fox Pinamar</option>
+            <option value="Running Tandil">Running Tandil</option>
+            <option value="Runtrek Club">Runtrek Club</option>
+            <option value="SC Training La Plata">SC Training La Plata</option>
+            <option value="Stímulo MdP">Stímulo MdP</option>
+            <option value="Sumando KM">Sumando KM</option>
+            <option value="Team Pura Vida">Team Pura Vida</option>
+            <option value="Trail Run Rosario">Trail Run Rosario</option>
+            <option value="Treino ARG">Treino ARG</option>
+            <option value="VO2 Max Tandil">VO2 Max Tandil</option>
+            <option value="__otro__">Otro...</option>
+          </select>
+          <div id="wrap-grupo-manual">
+            <input type="text" id="reg-grupo-manual" placeholder="Escribí el nombre de tu grupo...">
+          </div>
         </div>
       </div>
       <button class="btn-primary" id="btn-reg" onclick="doRegister()">Crear Cuenta</button>
