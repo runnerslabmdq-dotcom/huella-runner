@@ -12,6 +12,21 @@ el GAS es la versión más nueva.
 
 ---
 
+## 29/07/2026 (mañana) — Login: "¿No tienes cuenta?" y "¿Olvidaste tu contraseña?" más arriba
+
+El fundador probó el login desde el navegador in-app de Instagram (con el
+aviso nuevo de ayer ya andando) y notó que los links de "¿No tienes
+cuenta? Regístrate" y "¿Olvidaste tu contraseña?" quedaban muy abajo —
+había que scrollear pasando toda la tarjeta de texto ("Huella Runner ·
+MDQ · ARG... Gestioná tus zapatillas...") para encontrarlos.
+
+Se movieron los dos justo debajo del botón "Iniciar Sesión" (en ese
+orden: primero "¿No tienes cuenta?", después "¿Olvidaste tu
+contraseña?"), antes de la tarjeta de texto. Cambio solo de orden en
+`gas/index.html`, sin tocar textos, estilos ni funciones.
+
+---
+
 ## 28/07/2026 (noche) — pwa/index.html: aviso al entrar desde Instagram/Facebook
 
 El fundador ya subió el link de Vercel (`huella-runner.vercel.app`) a la

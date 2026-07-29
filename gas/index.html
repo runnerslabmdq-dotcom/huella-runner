@@ -1,8 +1,15 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 27/07/2026 22:24 (hora Argentina)
+  Última actualización: 29/07/2026 07:56 (hora Argentina)
   Cambios en esta versión:
+    - Pantalla de Login: "¿No tienes cuenta? Regístrate" y "¿Olvidaste tu
+      contraseña?" ahora están justo debajo del botón "Iniciar Sesión"
+      (antes quedaban más abajo, después de la tarjeta con el texto
+      "Huella Runner · MDQ · ARG..."). A pedido del fundador, para que
+      alguien sin cuenta no tenga que bajar tanto para encontrar el link
+      de registro. Cambio solo de orden, sin tocar textos ni funciones.
+  Cambios en versiones anteriores:
     - Fix: en pantallas angostas, "Hola, [Nombre]" (arriba a la derecha
       del dashboard) no entraba junto al logo y los íconos — se partía
       en 2 líneas y quedaba pisando el logo "HUELLA RUNNER". Reportado
@@ -1797,6 +1804,10 @@
       </div>
       <button class="btn-primary" id="btn-login" onclick="doLogin()">Iniciar Sesión</button>
 
+      <button class="btn-ghost" onclick="switchView('view-register')">¿No tienes cuenta? Regístrate</button>
+      <button class="btn-recover" onclick="openRecoverModal()">¿Olvidaste tu contraseña?</button>
+      <p id="log-error" style="color:#ef4444; font-size:0.8rem; text-align:center; margin-top:10px; display:none;"></p>
+
       <div class="intro-section" style="margin-top:18px; margin-bottom:4px; text-align:center;">
         <div class="intro-footer-row" style="justify-content:center; margin-bottom:8px;">
           <div class="intro-dot"></div>
@@ -1811,10 +1822,6 @@
           y beneficios con marcas líderes en running.
         </div>
       </div>
-
-      <button class="btn-recover" onclick="openRecoverModal()">¿Olvidaste tu contraseña?</button>
-      <button class="btn-ghost" onclick="switchView('view-register')">¿No tienes cuenta? Regístrate</button>
-      <p id="log-error" style="color:#ef4444; font-size:0.8rem; text-align:center; margin-top:10px; display:none;"></p>
 
       <div style="text-align:center;margin-top:16px;">
         <button onclick="var el=document.getElementById('legales-acordeon-login');el.style.display=el.style.display==='none'?'block':'none';this.innerText=el.style.display==='none'?'VER LEGALES +':'CERRAR LEGALES −';" style="
