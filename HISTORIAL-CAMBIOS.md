@@ -12,6 +12,15 @@ el GAS es la versión más nueva.
 
 ---
 
+## 30/07/2026 (mañana, un rato después) — Cartel de Instagram: texto secundario más blanco
+
+Seguimiento del cambio de recién: el texto de los 2 pasos de instalación
+se leía poco por el color (`#666`, gris oscuro sobre fondo negro). Se
+subió a `#E8E8E8` (el mismo "plata" que usa el resto de la app) — mismo
+tamaño de letra, solo más contraste.
+
+---
+
 ## 30/07/2026 (mañana, más tarde) — Cartel de Instagram: texto de instalación más claro
 
 El fundador notó que el texto chico ("para instalarla en tu celu... abrí
