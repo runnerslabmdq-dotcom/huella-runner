@@ -12,6 +12,29 @@ el GAS es la versión más nueva.
 
 ---
 
+## 30/07/2026 (mañana, más tarde) — Cartel de Instagram: texto de instalación más claro
+
+El fundador notó que el texto chico ("para instalarla en tu celu... abrí
+esto en Chrome") se sentía incompleto — decía "abrí en Chrome" pero no
+aclaraba que después, ya en Chrome, todavía hay que tocar "Agregar a
+pantalla de inicio" para que quede realmente instalada con ícono y
+pantalla completa (abrir en Chrome solo no alcanza).
+
+`pwa/index.html`: texto reescrito en 2 pasos numerados y explícitos:
+1) abrir en el navegador real, 2) agregar a pantalla de inicio ya
+estando ahí. Solo cambio de texto, sin tocar la lógica del cartel (sigue
+sin cronómetro, con el botón "Continuar").
+
+De paso: el fundador reportó que un link lo mandó a una casa de apuestas
+(`wfdfffme.life`) — se investigó, pero al volver a probar el link real
+de la bio (`huella-runner.vercel.app`) entró perfecto, con el ícono y el
+cartel correctos. No parece relacionado con el código ni con los
+proyectos de Vercel — probablemente un anuncio o comentario aparte de
+Instagram. Sin cambios de código por esto, solo quedó como alerta para
+seguir atentos si se repite.
+
+---
+
 ## 30/07/2026 (mañana) — Agregado Nike Pegasus 42 (desplegable + foto)
 
 Un usuario ya había cargado "Pegasus 42" (Nike) a mano vía "Otros..."
