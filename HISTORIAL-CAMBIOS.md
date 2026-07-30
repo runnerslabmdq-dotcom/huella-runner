@@ -12,6 +12,20 @@ el GAS es la versión más nueva.
 
 ---
 
+## 30/07/2026 (mañana) — Agregado Nike Pegasus 42 (desplegable + foto)
+
+Un usuario ya había cargado "Pegasus 42" (Nike) a mano vía "Otros..."
+del desplegable, con exactamente ese nombre. Se agregó al catálogo
+(`gas/index.html`): opción nueva en el desplegable de Nike, y su foto
+propia en `modelImages` (clave `nike_pegasus_42`).
+
+Como la foto se resuelve por Marca+Modelo (no por usuario ni por fila
+del Sheet), a la persona que ya lo había cargado le va a aparecer la
+foto sola apenas se publique esta versión — no hizo falta tocar el
+Sheet para nada.
+
+---
+
 ## 29/07/2026 (noche, último cambio) — Nueva pantalla "Mi Perfil" + saludo sacado del dashboard
 
 Le faltaba una pata al registro más corto de hoy: los 5 campos que
