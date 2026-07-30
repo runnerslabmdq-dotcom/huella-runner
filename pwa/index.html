@@ -70,14 +70,20 @@
        inicio" (ícono genérico, sin pantalla completa real) porque no son
        Chrome/Safari de verdad — son una ventanita que la app te muestra
        sin que salgas de ella. No se puede forzar la salida (las apps lo
-       bloquean a propósito), así que se le explica al usuario el paso
-       manual. No bloquea el uso: quien no quiera salir puede seguir. */
+       bloquean a propósito).
+       IMPORTANTE: este aviso NO frena a nadie — la primera versión
+       pausaba el redirect hasta que el usuario eligiera algo, y eso
+       agregaba una decisión extra justo en el peor momento (recién
+       llegando desde la bio de Instagram, con la conversión de registro
+       ya floja: 4 de 500 seguidores). Ahora es solo informativo: se ve
+       un toque más de tiempo (3.5s en vez de 1.2s) y entra solo, como
+       todos los demás. */
     .iab-banner {
       display: none;
       position: fixed;
       top: 0; left: 0; right: 0;
       background: #111111;
-      border-bottom: 1px solid #C5B358;
+      border-bottom: 2px solid #C5B358;
       padding: 16px 20px;
       text-align: center;
       z-index: 10;
@@ -85,29 +91,19 @@
     .iab-banner.show { display: block; }
     .iab-banner p {
       color: #E8E8E8;
-      font-size: 0.8rem;
-      line-height: 1.5;
-      margin-bottom: 12px;
+      font-size: 0.82rem;
+      line-height: 1.6;
+      margin: 0;
     }
     .iab-banner strong { color: #C5B358; }
-    .iab-banner button {
-      background: none;
-      border: 1px solid #333;
-      color: #888;
-      font-size: 0.68rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      padding: 8px 16px;
-      border-radius: 20px;
-      cursor: pointer;
-    }
   </style>
 </head>
 <body>
   <div class="iab-banner" id="iab-banner">
-    <p>Estás entrando desde Instagram/Facebook. Para que la app se vea e instale bien,
-      tocá <strong>⋯</strong> (arriba a la derecha) y elegí <strong>"Abrir en el navegador"</strong>.</p>
-    <button onclick="continuarIgual()">Continuar acá igual →</button>
+    <p>👀 <strong>Estás en Instagram</strong> — la app va a andar igual, seguí tranquilo.<br>
+      Si más adelante querés instalarla en tu celu con ícono y pantalla completa,
+      abrí este link en Chrome o Safari (tocá <strong>⋯</strong> arriba a la derecha
+      → <strong>"Abrir en el navegador"</strong>).</p>
   </div>
   <div class="splash">
     <img src="./icons/icon-512.png" alt="Huella Runner">
@@ -135,24 +131,17 @@
 
     // Instagram y Facebook agregan su propia marca al user-agent del
     // navegador in-app ("Instagram", "FBAN"/"FBAV"). TikTok también, por
-    // si el link circula ahí. Si detectamos alguno, frenamos el redirect
-    // automático y mostramos el aviso — el botón "Continuar acá igual"
-    // sigue el camino normal para quien no quiera salir de la app.
+    // si el link circula ahí. Si detectamos alguno, mostramos el aviso —
+    // pero SIN frenar a nadie: entra solo igual que en cualquier
+    // navegador, solo que con un pelín más de tiempo en pantalla (3.5s en
+    // vez de 1.2s) para que alcance a leerlo antes de irse.
     var ua = navigator.userAgent || '';
     var esNavegadorInApp = /Instagram|FBAN|FBAV|TikTok/i.test(ua);
 
-    function continuarIgual() {
-      document.getElementById('iab-banner').classList.remove('show');
-      irALaApp();
-    }
-
     if (esNavegadorInApp) {
       document.getElementById('iab-banner').classList.add('show');
-      // Sin redirect automático acá: se espera a que el usuario elija
-      // (salir a Chrome/Safari, o tocar "Continuar acá igual").
-    } else {
-      setTimeout(irALaApp, 1200);
     }
+    setTimeout(irALaApp, esNavegadorInApp ? 3500 : 1200);
   </script>
 </body>
 </html>

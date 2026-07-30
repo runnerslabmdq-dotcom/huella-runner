@@ -12,6 +12,31 @@ el GAS es la versión más nueva.
 
 ---
 
+## 29/07/2026 (noche, más tarde) — Cartel de Instagram: ya no bloquea, y más claro
+
+Seguimiento del cambio de recién (registro más corto). El fundador
+confirmó también suavizar el aviso que se agregó para quien entra desde
+Instagram — la primera versión frenaba el redirect automático y pedía
+elegir algo antes de seguir (salir a Chrome, o tocar "Continuar acá
+igual"). Con la conversión de registro ya floja (4 de 500 seguidores),
+una decisión extra justo en la entrada podía estar espantando gente sin
+necesidad.
+
+`pwa/index.html`:
+- El aviso ya **no frena a nadie** — se saca el botón "Continuar acá
+  igual" y el estado de pausa. Ahora entra solo para todos, como
+  siempre, solo que con un poco más de tiempo en pantalla si viene de
+  Instagram/Facebook/TikTok (3.5s en vez de 1.2s) para que alcance a
+  leer el aviso antes de irse.
+- Texto reescrito para ser más directo: arranca tranquilizando ("la app
+  va a andar igual, seguí tranquilo") antes de explicar el paso opcional
+  para instalarla bien (ícono, pantalla completa).
+
+Probado localmente con Playwright simulando el user-agent de Instagram:
+confirmado que redirige solo a los 3.5s sin necesitar ningún toque.
+
+---
+
 ## 29/07/2026 (noche) — Registro más corto: de 10 campos visibles a 6
 
 Con 500 seguidores en Instagram y solo 4 registros reales, el fundador
