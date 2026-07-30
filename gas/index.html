@@ -1,8 +1,30 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 29/07/2026 20:57 (hora Argentina)
+  Última actualización: 29/07/2026 23:37 (hora Argentina)
   Cambios en esta versión:
+    - Nueva pantalla "Mi Perfil": el registro más corto (ver abajo) dejó
+      5 campos como "completar después" (Fecha de Nacimiento, Provincia,
+      Ciudad, Celular, Grupo de Running), pero no existía ninguna forma
+      de volver y completarlos — el fundador lo notó al preguntar "pero
+      si después querés completar perfil, ¿cómo hacés?". Se agregó:
+      · Ícono 👤 nuevo al lado de la campanita de notificaciones, en el
+        dashboard — abre el modal "Mi Perfil" con esos 5 campos,
+        precargados con lo que ya haya guardado el usuario.
+      · Reutiliza el mismo mecanismo de Provincia→Ciudad (API Georef) y
+        "Grupo: Otro..." que ya tiene Registro, pero en campos propios
+        (perfil-*) para no tocar esa lógica.
+      · Guardar llama a actualizarPerfilUsuario() (nueva, codigo.gs), que
+        actualiza esas columnas en la fila del usuario en el Sheet.
+      El fundador aclaró que no necesita avisos automáticos para que la
+      gente lo complete — cuando llegue el momento (ofertas regionales,
+      etc.) manda un mensaje general desde el panel admin pidiéndolo.
+    - Sacado el saludo "Hola, [Nombre]" del dashboard (antes solo se
+      ocultaba en pantallas angostas) — a pedido del fundador, ahora que
+      el ícono 👤 de "Mi Perfil" ya deja claro qué es esa zona. El span
+      #user-name se mantiene oculto en el DOM porque login/registro
+      todavía le asignan el nombre — no se tocó esa lógica.
+  Cambios en versiones anteriores:
     - Registro más corto: solo 500 seguidores en Instagram y 4 registros
       reales — el formulario de 10 campos era sospechoso de estar
       espantando gente. Ahora quedan visibles solo Nombre, Apellido,
@@ -590,13 +612,13 @@
     .btn-recover:hover { color: var(--amarillo); }
 
     .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-    /* En pantallas angostas, "Hola, [Nombre]" no entraba junto al logo y
-       los íconos — se partía en 2 líneas y quedaba pisando el logo (caso
-       real reportado por el fundador con un celu más chico). Se oculta
-       el saludo ahí; en pantallas normales/anchas se sigue viendo bien. */
-    @media (max-width: 400px) {
-      .saludo-topbar { display: none; }
-    }
+    /* "Hola, [Nombre]" sacado del todo (antes solo se ocultaba en
+       pantallas angostas, donde se partía en 2 líneas y pisaba el logo).
+       El ícono 👤 de "Mi Perfil" al lado de la campanita ya deja claro
+       que ahí está lo del perfil, sin necesidad del saludo. El span
+       #user-name se mantiene en el DOM (oculto) porque el login/registro
+       todavía le asignan el nombre — no se toca esa lógica. */
+    .saludo-topbar { display: none; }
 
     .armario-header { margin: 10px 0 20px; display: flex; flex-direction: column; align-items: center; }
     .armario-subtitle { font-size: 0.92rem; font-weight: 800; color: var(--plata); text-transform: uppercase; letter-spacing: 2px; margin-top: 3px; }
@@ -1179,6 +1201,8 @@
     .modal-overlay.drawer-lateral.open-drawer { display: flex; }
     .modal-overlay.drawer-lateral.open-drawer .modal-voice-content { transform: translateX(0); }
     .modal-content { background: var(--card-bg); width: 90%; max-width: 350px; padding: 25px; border-radius: 20px; border: 1px solid var(--borde); position: relative; }
+    /* "Mi Perfil" tiene 5 campos — en un celu chico no entra entero sin scroll */
+    #perfil-modal .modal-content { max-height: 85vh; overflow-y: auto; }
     .close-modal { position: absolute; top: 15px; right: 15px; background: none; border: none; color: var(--gris-texto); font-size: 1.2rem; cursor: pointer; }
 
     .modal-historial-content {
@@ -2041,6 +2065,8 @@
       </a>
       <div style="display:flex; align-items:center; gap:12px;">
         <div class="saludo-topbar" style="font-size: 0.75rem; color: var(--gris-texto); white-space:nowrap;">Hola, <span id="user-name" style="color: var(--amarillo); font-weight: 900;">Corredor</span></div>
+        <!-- MI PERFIL -->
+        <button class="btn-notif" id="btn-perfil" onclick="abrirPerfilModal()" title="Mi perfil">👤</button>
         <!-- CAMPANITA NOTIFICACIONES -->
         <button class="btn-notif" id="btn-notif" onclick="abrirNotificaciones()" title="Mis notificaciones">
           🔔
@@ -2337,6 +2363,51 @@
       <strong>Más km (≈850–1000)</strong> si rotás entre varios pares, corrés en tierra o pasto, hacés rodajes tranquilos, o son de entrenamiento diario con buena amortiguación.<br><br>
       Más que el número, mirá cómo las sentís: pisada más dura, molestias nuevas o suela lisa = hora de cambiarlas.
     </div>
+  </div>
+</div>
+
+<!-- MODAL MI PERFIL — datos opcionales que se pueden dejar vacíos al
+     registrarse (ver "Completar perfil" en Registro) y completar acá
+     después, cuando quiera el usuario. -->
+<div class="modal-overlay" id="perfil-modal">
+  <div class="modal-content">
+    <button class="close-modal" onclick="cerrarPerfilModal()">✕</button>
+    <h3 style="text-align:center; margin-bottom:20px; font-size:1rem;">👤 MI PERFIL</h3>
+    <div class="form-group">
+      <label>Fecha de Nacimiento <span style="color:#444;font-weight:400;text-transform:none;font-size:0.65rem;">(opcional)</span></label>
+      <input type="date" id="perfil-fecha-nac" style="color-scheme:dark;">
+    </div>
+    <div class="form-group">
+      <label>Provincia <span style="color:#444;font-weight:400;text-transform:none;font-size:0.65rem;">(opcional)</span></label>
+      <select id="perfil-provincia" onchange="onPerfilProvinciaChange()">
+        <option value="">Seleccionar provincia...</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Ciudad <span style="color:#444;font-weight:400;text-transform:none;font-size:0.65rem;">(opcional)</span></label>
+      <select id="perfil-ciudad" disabled>
+        <option value="">Primero elegí una provincia...</option>
+      </select>
+      <div id="perfil-ciudad-loading" style="display:none;font-size:0.68rem;color:var(--gris-texto);margin-top:5px;padding-left:2px;">
+        <span class="zapa-loading">📍</span> Cargando ciudades...
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Celular <span style="color:#444;font-weight:400;text-transform:none;font-size:0.65rem;">(WhatsApp · opcional)</span></label>
+      <input type="tel" id="perfil-celular" placeholder="Ej. 223 555 1234">
+    </div>
+    <div class="form-group">
+      <label>Grupo de Running <span style="color:#444;font-weight:400;text-transform:none;font-size:0.65rem;">(opcional)</span></label>
+      <select id="perfil-grupo" onchange="onPerfilGrupoChange()">
+        <option value="">Seleccionar...</option>
+      </select>
+      <div class="input-manual-wrap" id="wrap-perfil-grupo-manual">
+        <input type="text" id="perfil-grupo-manual" placeholder="Escribí el nombre de tu grupo...">
+      </div>
+    </div>
+    <button class="btn-primary" id="btn-guardar-perfil" onclick="guardarPerfil()">Guardar</button>
+    <p id="perfil-error" style="color:#ef4444; font-size:0.8rem; text-align:center; margin-top:10px; display:none;"></p>
+    <p id="perfil-ok" style="color:#39FF14; font-size:0.8rem; text-align:center; margin-top:10px; display:none;">✓ Guardado</p>
   </div>
 </div>
 
@@ -3110,6 +3181,193 @@
   }
   function closeKmLimiteModal() {
     document.getElementById('kmlimite-modal').style.display = 'none';
+  }
+
+  /* ════════════════════════════════════
+     MI PERFIL — fecha de nacimiento, provincia/ciudad, celular y grupo
+     de running se pueden dejar vacíos al registrarse (ver "Completar
+     perfil" en Registro) y completar acá después, cuando quiera el
+     usuario. Reutiliza el mismo patrón de Provincia→Ciudad (Georef) y
+     "Grupo: Otro..." que ya tiene Registro, pero en campos propios
+     (perfil-*) para no tocar esa lógica, recién ajustada hoy.
+  ════════════════════════════════════ */
+  var _perfilOpcionesListas = false;
+
+  // Copia las opciones de Provincia y Grupo desde el form de Registro,
+  // para no mantener 2 listas largas duplicadas a mano.
+  function _poblarOpcionesPerfil() {
+    if (_perfilOpcionesListas) return;
+    var provOrigen  = document.getElementById('reg-provincia');
+    var provDestino = document.getElementById('perfil-provincia');
+    if (provOrigen && provDestino) provDestino.innerHTML = provOrigen.innerHTML;
+
+    var grupoOrigen  = document.getElementById('reg-grupo');
+    var grupoDestino = document.getElementById('perfil-grupo');
+    if (grupoOrigen && grupoDestino) grupoDestino.innerHTML = grupoOrigen.innerHTML;
+
+    _perfilOpcionesListas = true;
+  }
+
+  // Misma consulta a la API de Georef que onProvinciaChange() (Registro),
+  // pero sobre los campos de "Mi Perfil". Devuelve la promesa del fetch
+  // para poder esperar a que termine (abrirPerfilModal la usa para
+  // preseleccionar la ciudad ya guardada, una vez cargada la lista).
+  function onPerfilProvinciaChange() {
+    var selectCiudad = document.getElementById('perfil-ciudad');
+    var loadingEl     = document.getElementById('perfil-ciudad-loading');
+    var provincia     = document.getElementById('perfil-provincia').value;
+
+    selectCiudad.innerHTML = '<option value="">Seleccionar ciudad...</option>';
+    selectCiudad.disabled  = true;
+
+    if (!provincia) {
+      selectCiudad.innerHTML = '<option value="">Primero elegí una provincia...</option>';
+      return Promise.resolve();
+    }
+
+    loadingEl.style.display = 'block';
+
+    var url = 'https://apis.datos.gob.ar/georef/api/localidades'
+            + '?provincia=' + encodeURIComponent(provincia)
+            + '&max=1000&campos=nombre&orden=nombre';
+
+    return fetch(url)
+      .then(function(response) {
+        if (!response.ok) throw new Error('Error HTTP ' + response.status);
+        return response.json();
+      })
+      .then(function(data) {
+        loadingEl.style.display = 'none';
+        var localidades = (data && data.localidades) ? data.localidades : [];
+        var nombres = [];
+        var visto   = {};
+        localidades.forEach(function(loc) {
+          var n = (loc.nombre || '').trim();
+          if (n && !visto[n.toLowerCase()]) {
+            visto[n.toLowerCase()] = true;
+            nombres.push(n);
+          }
+        });
+        nombres.sort(function(a, b) { return a.localeCompare(b, 'es'); });
+
+        selectCiudad.innerHTML = '<option value="">Seleccionar ciudad...</option>';
+        nombres.forEach(function(nombre) {
+          var opt = document.createElement('option');
+          opt.value       = nombre;
+          opt.textContent = nombre;
+          selectCiudad.appendChild(opt);
+        });
+
+        selectCiudad.disabled = (nombres.length === 0);
+        if (nombres.length === 0) {
+          selectCiudad.innerHTML = '<option value="">Sin ciudades disponibles</option>';
+        }
+      })
+      .catch(function(err) {
+        loadingEl.style.display = 'none';
+        selectCiudad.innerHTML  = '<option value="">Error al cargar — ingresá manualmente</option>';
+        selectCiudad.disabled   = false;
+        console.warn('Georef API error:', err);
+      });
+  }
+
+  function onPerfilGrupoChange() {
+    var val  = document.getElementById('perfil-grupo').value;
+    var wrap = document.getElementById('wrap-perfil-grupo-manual');
+    if (val === '__otro__') {
+      wrap.classList.add('visible');
+      document.getElementById('perfil-grupo-manual').focus();
+    } else {
+      wrap.classList.remove('visible');
+      document.getElementById('perfil-grupo-manual').value = '';
+    }
+  }
+
+  function abrirPerfilModal() {
+    _poblarOpcionesPerfil();
+    document.getElementById('perfil-error').style.display = 'none';
+    document.getElementById('perfil-ok').style.display     = 'none';
+    document.getElementById('btn-guardar-perfil').innerText = 'Guardar';
+    document.getElementById('btn-guardar-perfil').disabled  = false;
+    document.getElementById('perfil-modal').style.display  = 'flex';
+
+    google.script.run
+      .withSuccessHandler(function(res) {
+        if (!res || !res.success) return;
+        document.getElementById('perfil-fecha-nac').value = res.fechaNacimiento || '';
+        document.getElementById('perfil-celular').value   = res.celular || '';
+
+        document.getElementById('perfil-provincia').value = res.provincia || '';
+        if (res.provincia) {
+          var p = onPerfilProvinciaChange();
+          if (p && p.then) {
+            p.then(function() {
+              document.getElementById('perfil-ciudad').value = res.ciudad || '';
+            });
+          }
+        }
+
+        var selGrupo      = document.getElementById('perfil-grupo');
+        var grupoGuardado = res.grupo || '';
+        var opcionExiste  = Array.prototype.some.call(selGrupo.options, function(o) { return o.value === grupoGuardado; });
+        if (grupoGuardado && !opcionExiste) {
+          selGrupo.value = '__otro__';
+          document.getElementById('perfil-grupo-manual').value = grupoGuardado;
+          onPerfilGrupoChange();
+        } else {
+          selGrupo.value = grupoGuardado;
+        }
+      })
+      .withFailureHandler(function() {})
+      .getPerfilUsuario(currentUserEmail);
+  }
+
+  function cerrarPerfilModal() {
+    document.getElementById('perfil-modal').style.display = 'none';
+  }
+
+  function guardarPerfil() {
+    var grupoSel = document.getElementById('perfil-grupo').value;
+    var grupo = grupoSel === '__otro__'
+      ? document.getElementById('perfil-grupo-manual').value.trim()
+      : grupoSel;
+
+    var datos = {
+      fechaNacimiento: document.getElementById('perfil-fecha-nac').value,
+      provincia:       document.getElementById('perfil-provincia').value,
+      ciudad:          document.getElementById('perfil-ciudad').value,
+      celular:         document.getElementById('perfil-celular').value.trim(),
+      grupo:           grupo
+    };
+
+    var err = document.getElementById('perfil-error');
+    var ok  = document.getElementById('perfil-ok');
+    err.style.display = 'none';
+    ok.style.display   = 'none';
+
+    var btn = document.getElementById('btn-guardar-perfil');
+    btn.innerText = 'Guardando...';
+    btn.disabled  = true;
+
+    google.script.run
+      .withSuccessHandler(function(res) {
+        btn.innerText = 'Guardar';
+        btn.disabled  = false;
+        if (res && res.success) {
+          ok.style.display = 'block';
+          setTimeout(cerrarPerfilModal, 1200);
+        } else {
+          err.innerText = (res && res.error) ? res.error : 'No se pudo guardar.';
+          err.style.display = 'block';
+        }
+      })
+      .withFailureHandler(function(e2) {
+        btn.innerText = 'Guardar';
+        btn.disabled  = false;
+        err.innerText = 'Error de conexión: ' + (e2 && e2.message ? e2.message : e2);
+        err.style.display = 'block';
+      })
+      .actualizarPerfilUsuario(currentUserEmail, datos);
   }
 
   function openRecoverModal() {

@@ -12,6 +12,40 @@ el GAS es la versión más nueva.
 
 ---
 
+## 29/07/2026 (noche, último cambio) — Nueva pantalla "Mi Perfil" + saludo sacado del dashboard
+
+Le faltaba una pata al registro más corto de hoy: los 5 campos que
+pasaron a "opcional, completalo después" (Fecha de Nacimiento,
+Provincia, Ciudad, Celular, Grupo de Running) no tenían ningún lugar
+donde volver a completarlos — el fundador preguntó justamente eso.
+
+- `gas/codigo.gs`: nuevas `getPerfilUsuario(email)` y
+  `actualizarPerfilUsuario(email, datos)` — leen/escriben esos 5 campos
+  en la fila del usuario en la hoja Usuarios.
+- `gas/index.html`:
+  · Nuevo ícono **👤** en el dashboard, al lado de la campanita de
+    notificaciones — abre el modal "Mi Perfil", precargado con lo que
+    ya haya guardado el usuario. Reutiliza el mismo mecanismo de
+    Provincia→Ciudad (API Georef) y "Grupo: Otro..." que ya tiene
+    Registro, pero en campos propios para no tocar esa lógica.
+  · Sacado el saludo "Hola, [Nombre]" del dashboard (antes solo se
+    ocultaba en pantallas angostas) — a pedido del fundador, ahora que
+    el ícono 👤 ya deja claro qué es esa zona. El span `#user-name`
+    sigue en el DOM pero oculto (login/registro todavía lo usan).
+
+El fundador aclaró que no hace falta ningún recordatorio automático
+para que la gente complete el perfil — cuando lo necesite (ofertas
+regionales, etc.) manda un mensaje general desde el panel admin
+pidiéndolo, con las herramientas de notificación que ya existen.
+
+Probado localmente con Playwright simulando las respuestas del backend:
+el modal precarga bien fecha, provincia, celular y grupo; sin conexión
+a la API de Georef en el entorno de prueba no se pudo confirmar la
+precarga de ciudad, pero la lógica queda igual conectada que en
+Registro (mismo patrón, ya probado ahí).
+
+---
+
 ## 29/07/2026 (noche, tercer intento) — Cartel de Instagram: sin cronómetro, con botón
 
 Tercera vuelta sobre el mismo cartel en un rato — el fundador probó la

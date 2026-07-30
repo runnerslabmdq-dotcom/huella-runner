@@ -1,7 +1,14 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 28/07/2026 10:09 (hora Argentina)
+// Última actualización: 29/07/2026 23:37 (hora Argentina)
 // Cambios en esta versión:
+//   - Nuevas getPerfilUsuario(email) y actualizarPerfilUsuario(email,
+//     datos): sostienen la pantalla nueva "Mi Perfil" de Index.html.
+//     Leen/escriben FechaNacimiento, Provincia, Ciudad, Celular y Grupo
+//     de la fila del usuario en Usuarios — los mismos 5 campos que
+//     desde ayer quedaron como "opcional, completar después" en el
+//     registro, pero que hasta ahora no tenían ningún "después" real.
+// Cambios en versiones anteriores:
 //   - Semáforo de desgaste (panel admin): getAdminDashboardData() ahora
 //     agrega 'limite' y 'porcentaje' (km / KM_Limite propio de la
 //     zapatilla) a cada zapatilla de alertasDesgaste. Antes el panel
@@ -550,6 +557,78 @@ function establecerNuevaPassword(email, nuevaPassword) {
     return { success: false, error: 'Usuario no encontrado.' };
   } catch(e) {
     Logger.log('establecerNuevaPassword ERROR: ' + e.toString());
+    return { success: false, error: e.toString() };
+  }
+}
+
+// ============================================================
+// MI PERFIL — datos opcionales (fecha de nacimiento, provincia, ciudad,
+// celular, grupo de running) que se pueden dejar vacíos al registrarse
+// y completar después desde la pantalla "Mi Perfil" (Index.html).
+// ============================================================
+function getPerfilUsuario(email) {
+  try {
+    if (!email) return { success: false, error: 'Email requerido.' };
+    const emailClean = email.toString().trim().toLowerCase();
+    const { sheet, headers } = getSheetAndHeaders('Usuarios', USERS_HEADERS);
+    const data = sheet.getDataRange().getValues();
+    const emailCol      = headers.indexOf('Email');
+    const fechaNacCol   = headers.indexOf('FechaNacimiento');
+    const provinciaCol  = headers.indexOf('Provincia');
+    const ciudadCol     = headers.indexOf('Ciudad');
+    const celularCol    = headers.indexOf('Celular');
+    const grupoCol      = headers.indexOf('Grupo');
+    if (emailCol === -1) return { success: false, error: 'Estructura de Usuarios incorrecta.' };
+
+    for (let i = 1; i < data.length; i++) {
+      const rowEmail = data[i][emailCol] ? data[i][emailCol].toString().trim().toLowerCase() : '';
+      if (rowEmail !== emailClean) continue;
+      return {
+        success:         true,
+        fechaNacimiento: fechaNacCol  !== -1 ? (data[i][fechaNacCol]  || '').toString() : '',
+        provincia:       provinciaCol !== -1 ? (data[i][provinciaCol] || '').toString() : '',
+        ciudad:          ciudadCol    !== -1 ? (data[i][ciudadCol]    || '').toString() : '',
+        celular:         celularCol   !== -1 ? (data[i][celularCol]   || '').toString() : '',
+        grupo:           grupoCol     !== -1 ? (data[i][grupoCol]     || '').toString() : ''
+      };
+    }
+    return { success: false, error: 'Usuario no encontrado.' };
+  } catch(e) {
+    Logger.log('getPerfilUsuario ERROR: ' + e.toString());
+    return { success: false, error: e.toString() };
+  }
+}
+
+function actualizarPerfilUsuario(email, datos) {
+  try {
+    if (!email || !datos) return { success: false, error: 'Datos incompletos.' };
+    const emailClean = email.toString().trim().toLowerCase();
+    const { sheet, headers } = getSheetAndHeaders('Usuarios', USERS_HEADERS);
+    const data = sheet.getDataRange().getValues();
+    const emailCol = headers.indexOf('Email');
+    if (emailCol === -1) return { success: false, error: 'Estructura de Usuarios incorrecta.' };
+
+    for (let i = 1; i < data.length; i++) {
+      const rowEmail = data[i][emailCol] ? data[i][emailCol].toString().trim().toLowerCase() : '';
+      if (rowEmail !== emailClean) continue;
+
+      const campos = {
+        'FechaNacimiento': datos.fechaNacimiento,
+        'Provincia':       datos.provincia,
+        'Ciudad':          datos.ciudad,
+        'Celular':         datos.celular,
+        'Grupo':           datos.grupo
+      };
+      for (const nombreCampo in campos) {
+        const col = _colEnsure(sheet, headers, nombreCampo);
+        sheet.getRange(i + 1, col + 1).setValue(campos[nombreCampo] || '');
+      }
+      SpreadsheetApp.flush();
+      return { success: true };
+    }
+    return { success: false, error: 'Usuario no encontrado.' };
+  } catch(e) {
+    Logger.log('actualizarPerfilUsuario ERROR: ' + e.toString());
     return { success: false, error: e.toString() };
   }
 }
