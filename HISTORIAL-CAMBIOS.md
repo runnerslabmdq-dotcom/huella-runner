@@ -12,6 +12,36 @@ el GAS es la versión más nueva.
 
 ---
 
+## 29/07/2026 (noche, tercer intento) — Cartel de Instagram: sin cronómetro, con botón
+
+Tercera vuelta sobre el mismo cartel en un rato — el fundador probó la
+versión anterior (redirect automático a los 3.5s) en el celu real y no
+le daba tiempo ni a leer la primera frase antes de que lo mandara para
+adentro. Pidió algo con el espíritu del "¿Estás seguro que querés salir
+de Instagram?" que muestran otras apps: sin apuro, que espere a que la
+persona lea y decida.
+
+`pwa/index.html`, versión final (por ahora) de este cartel:
+- **Sin cronómetro.** Si detecta Instagram/Facebook/TikTok, se queda
+  quieto en pantalla completa hasta que la persona toca el botón grande
+  **"Continuar →"** — recién ahí entra a la app. Nada se dispara solo.
+- El texto principal es corto y tranquilizador; la explicación de "cómo
+  instalarla bien" (abrir en Chrome/Safari) queda como texto chico
+  secundario, no lo primero que se lee.
+- Navegadores normales (fuera de Instagram/Facebook/TikTok): sin
+  cambios, siguen entrando solos a los 1.2s como siempre.
+
+Resumen de las 3 versiones que tuvo este cartel en un mismo día, para no
+repetir el mismo vaivén: 1) pausaba y pedía elegir entre 2 opciones
+(mucha fricción) → 2) entraba solo a los 3.5s (poco tiempo para leer) →
+3) esta, sin cronómetro, un solo botón claro, tiempo ilimitado para leer.
+
+Probado localmente con Playwright: confirmado que, sin tocar nada,
+sigue mostrando el cartel después de 5 segundos (no navega solo), y que
+al tocar "Continuar" recién ahí entra.
+
+---
+
 ## 29/07/2026 (noche, más tarde) — Cartel de Instagram: ya no bloquea, y más claro
 
 Seguimiento del cambio de recién (registro más corto). El fundador
