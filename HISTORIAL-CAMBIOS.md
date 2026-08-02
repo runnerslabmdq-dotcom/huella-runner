@@ -12,6 +12,23 @@ el GAS es la versión más nueva.
 
 ---
 
+## 02/08/2026 (mañana) — Agregada marca nueva Joma (modelo R 2000 + foto)
+
+Un usuario ya había cargado "Joma" + "R 2000" a mano vía "Otras..." del
+desplegable de marcas, con esos nombres exactos — a diferencia del caso
+del Pegasus 42, acá la marca ni siquiera existía todavía en el catálogo.
+
+Se agregó (`gas/index.html`): "Joma" como marca nueva en el desplegable,
+"R 2000" como su primer modelo, con foto propia en `modelImages`. Sin
+foto genérica de marca todavía — el fundador va a subir una más
+adelante, para cuando Joma tenga más de un modelo cargado.
+
+Como la foto se resuelve por Marca+Modelo (no por fila del Sheet), al
+usuario que ya lo había cargado le va a aparecer la foto sola apenas se
+publique — no hizo falta tocar el Sheet.
+
+---
+
 ## 30/07/2026 (mañana, un rato después) — Cartel de Instagram: texto secundario más blanco
 
 Seguimiento del cambio de recién: el texto de los 2 pasos de instalación
