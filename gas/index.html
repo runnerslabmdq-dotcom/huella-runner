@@ -1,8 +1,20 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 02/08/2026 09:18 (hora Argentina)
+  Última actualización: 02/08/2026 12:17 (hora Argentina)
   Cambios en esta versión:
+    - Nuevo botón "📤 Compartir" en cada tarjeta del carrusel (abajo a la
+      izquierda de la foto, junto al de eliminar) — a pedido de un
+      usuario real, para no tener que hacer captura de pantalla y
+      subirla a mano. compartirZapatilla() intenta compartir la foto de
+      la zapatilla + un texto armado vía Web Share API (funciona en la
+      mayoría de los celus actuales); si el navegador no soporta
+      compartir archivos, cae en compartir solo el texto (mismo
+      mecanismo de respaldo que ya usa compartirSocialProof()). No
+      comparte la tarjeta completa con la barra de desgaste (eso quedó
+      para más adelante, si esto engancha — necesitaría una librería
+      nueva para "fotografiar" el diseño).
+  Cambios en versiones anteriores:
     - Agregada la marca Joma (nueva, primera vez en el catálogo) con su
       primer modelo "R 2000" y foto propia. Un usuario ya lo había
       cargado a mano vía "Otras..."/"Otros..." con esos nombres exactos
@@ -811,6 +823,26 @@
     }
     .cf-btn-delete:hover  { background: #ff1744; transform: scale(1.15); }
     .cf-btn-delete:active { transform: scale(0.92); }
+
+    /* Botón compartir — mismo estilo que eliminar, pero abajo a la
+       izquierda y en dorado en vez de rojo (no es una acción destructiva) */
+    .cf-btn-share {
+      position: absolute; bottom: 8px; left: 8px;
+      width: 24px; height: 24px;
+      background: var(--amarillo); border: 2px solid #000;
+      border-radius: 50%; display: flex; align-items: center;
+      justify-content: center; cursor: pointer; z-index: 10;
+      font-size: 0.58rem; color: black; font-weight: 900;
+      line-height: 1; transition: transform 0.15s, opacity 0.25s;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .swiper-slide-active .cf-btn-share {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .cf-btn-share:hover  { transform: scale(1.15); }
+    .cf-btn-share:active { transform: scale(0.92); }
 
     /* ── Info del modelo (siempre visible) ── */
     .cf-info {
@@ -3566,6 +3598,8 @@
               warnHtml +
               '<button class="cf-btn-delete" title="Eliminar zapatilla" ' +
                 'onclick="event.stopPropagation(); openConfirmDelete(\'' + rawId + '\', \'' + rawModelo + '\'); return false;">✕</button>' +
+              '<button class="cf-btn-share" title="Compartir" ' +
+                'onclick="event.stopPropagation(); compartirZapatilla(\'' + rawId + '\'); return false;">📤</button>' +
             '</div>' +
 
             // ── Info modelo ──
@@ -3784,6 +3818,44 @@
       navigator.share({ text: _spShareTexto }).catch(function() {});
     } else {
       window.open('https://wa.me/?text=' + encodeURIComponent(_spShareTexto), '_blank');
+    }
+  }
+
+  // ── Compartir la foto de una zapatilla (a pedido de un usuario real,
+  // para no tener que hacer captura de pantalla y subirla a mano). Usa
+  // la Web Share API con la foto como archivo cuando el navegador lo
+  // permite (la mayoría de los celus Android/iOS actuales); si no,
+  // cae en compartir solo el texto — mismo patrón que
+  // compartirSocialProof(), un escalón más simple que "compartir la
+  // tarjeta completa" (foto + barra de desgaste como una sola imagen),
+  // que se dejó para más adelante si esto engancha. ──
+  async function compartirZapatilla(idZapa) {
+    var shoe = allUserShoes.find(function(x) { return x.ID_Zapa === idZapa; });
+    if (!shoe) return;
+    var km = Number(shoe.KM_Actuales) || 0;
+    var texto = 'Mi ' + shoe.Marca + ' ' + shoe.Modelo + ' ya lleva ' + km + ' km 👟 — la controlo con Huella Runner.';
+    var fotoReal = (shoe.Foto_URL || '').toString().trim();
+    var imgUrl   = fotoReal || getShoeImage(shoe.Marca, shoe.Modelo);
+
+    try {
+      if (navigator.canShare && imgUrl && imgUrl !== IMG_NO_DISPONIBLE) {
+        var resp = await fetch(imgUrl);
+        var blob = await resp.blob();
+        var file = new File([blob], 'zapatilla.jpg', { type: blob.type || 'image/jpeg' });
+        if (navigator.canShare({ files: [file] })) {
+          await navigator.share({ files: [file], text: texto });
+          return;
+        }
+      }
+    } catch (e) {
+      console.warn('compartirZapatilla: no se pudo compartir la foto, uso el respaldo de texto', e);
+    }
+
+    // Respaldo: compartir solo el texto (funciona en cualquier navegador)
+    if (navigator.share) {
+      navigator.share({ text: texto }).catch(function() {});
+    } else {
+      window.open('https://wa.me/?text=' + encodeURIComponent(texto), '_blank');
     }
   }
 
