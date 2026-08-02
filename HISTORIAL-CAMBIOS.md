@@ -12,6 +12,38 @@ el GAS es la versión más nueva.
 
 ---
 
+## 02/08/2026 (tarde) — Compartir: opción B (texto quemado en la imagen) + ícono nuevo
+
+Seguimiento del botón de compartir (opción A) de recién: el fundador lo
+probó en un celu real y confirmó el comportamiento esperado — en
+WhatsApp llegaba la foto con el texto de km, pero en Instagram solo
+llegaba la foto, sin el texto (Instagram ignora cualquier texto que
+viaje al lado de una imagen compartida desde otra app; no es algo que
+se pueda arreglar desde nuestro código).
+
+Se avanzó con la opción B: en vez de mandar foto + texto por separado,
+`compartirZapatilla()` arma ahora una sola imagen nueva con
+`_armarImagenParaCompartir()` — dibuja la foto real de la zapatilla más
+el badge de marca, el modelo, la barra de desgaste (con el mismo código
+de colores que el resto de la app) y una marca de agua "HUELLA RUNNER",
+todo directo con `<canvas>`, sin sumar ninguna librería nueva (se evaluó
+`html2canvas` pero dibujar a mano es más liviano y no depende de
+"fotografiar" el diseño real, que tiene gradientes/blur que no siempre
+se capturan bien). Esa imagen final es la que se comparte — como el
+texto ya es parte de los píxeles, se ve completo sin importar qué app
+lo reciba del otro lado.
+
+De paso, a pedido del fundador, se cambió el ícono del botón: de la
+carita 📤 a un SVG con el ícono estándar de "compartir" de Android (un
+nodo conectado con 2 líneas a otros 2 nodos).
+
+Probado localmente con Playwright: se generó la imagen final completa
+con una foto de prueba (sin acceso a Cloudinary desde este entorno) —
+salió con todos los elementos bien ubicados y legibles. Confirmar en un
+celu real que también funcione bien con las fotos reales de Cloudinary.
+
+---
+
 ## 02/08/2026 (mediodía) — Botón "Compartir" en cada zapatilla (opción A)
 
 Un usuario real (el único activo hasta ahora) pidió por Instagram poder
