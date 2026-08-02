@@ -12,6 +12,38 @@ el GAS es la versión más nueva.
 
 ---
 
+## 02/08/2026 (mediodía) — Botón "Compartir" en cada zapatilla (opción A)
+
+Un usuario real (el único activo hasta ahora) pidió por Instagram poder
+compartir la imagen de su zapatilla sin tener que hacer captura de
+pantalla. Se evaluaron 2 caminos — compartir solo la foto (simple,
+reutiliza el mecanismo ya armado para el "dato de comunidad") vs.
+compartir la tarjeta completa con la barra de desgaste como una imagen
+armada (más laborioso, necesita una librería nueva tipo html2canvas y
+un respaldo para navegadores que no soporten compartir archivos). Se
+avanzó con la opción simple primero.
+
+**Antes de este cambio se guardó un punto de referencia** (commit
+`6c2be2374a8d27428dea5f053dce2573364e517c`, el estado justo antes de
+esto) para poder volver atrás fácil si la prueba no convence — no se
+pudo crear como tag de git por permisos del entorno, pero el commit ya
+queda guardado igual en GitHub para siempre.
+
+`gas/index.html`: nuevo botón 📤 en cada tarjeta del carrusel (junto al
+de eliminar). `compartirZapatilla()` intenta compartir la foto real de
+la zapatilla + un texto armado vía Web Share API; si el navegador no
+soporta compartir archivos, cae en compartir solo el texto — mismo
+patrón de respaldo que ya usa `compartirSocialProof()`.
+
+Probado localmente con Playwright: el botón aparece bien posicionado en
+la tarjeta activa, y el camino de respaldo (compartir solo texto) arma
+el mensaje correcto. El camino principal (compartir con foto) no se
+pudo probar de punta a punta en este entorno por no tener acceso a
+internet para bajar la imagen real de Cloudinary — a confirmar en un
+celu real.
+
+---
+
 ## 02/08/2026 (mañana) — Agregada marca nueva Joma (modelo R 2000 + foto)
 
 Un usuario ya había cargado "Joma" + "R 2000" a mano vía "Otras..." del
