@@ -1,7 +1,14 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 29/07/2026 23:37 (hora Argentina)
+// Última actualización: 03/08/2026 17:45 (hora Argentina)
 // Cambios en esta versión:
+//   - BUG arreglado: getShoeHistory() mostraba los entrenamientos
+//     RECHAZADOS por el anti-fraude (ej. alguien tipeó 300km en vez de
+//     30) como una fila fantasma de "0 km" en el Historial del propio
+//     usuario, sin ninguna explicación — confundía a quien le pasaba.
+//     Ahora esas filas no se muestran (nunca se acreditaron, no son un
+//     entrenamiento real). Encontrado en revisión de bugs del 03/08.
+// Cambios en versiones anteriores:
 //   - Nuevas getPerfilUsuario(email) y actualizarPerfilUsuario(email,
 //     datos): sostienen la pantalla nueva "Mi Perfil" de Index.html.
 //     Leen/escriben FechaNacimiento, Provincia, Ciudad, Celular y Grupo
@@ -1002,6 +1009,7 @@ function getShoeHistory(email, idZapatilla) {
     const fechaCol     = headers.indexOf('Fecha');
     const horaCol      = headers.indexOf('Hora');
     const idEntrenoCol = headers.indexOf('ID_Entreno');
+    const estadoCol    = headers.indexOf('Estado_Validacion');
 
     if (emailCol === -1 || idZapaCol === -1 || kmCol === -1 || fechaCol === -1) {
       Logger.log('getShoeHistory: faltan columnas');
@@ -1040,6 +1048,8 @@ function getShoeHistory(email, idZapatilla) {
     for (let i = 1; i < data.length; i++) {
       const rowEmail = data[i][emailCol] ? data[i][emailCol].toString().trim().toLowerCase() : '';
       const rowId    = data[i][idZapaCol] ? data[i][idZapaCol].toString() : '';
+      const rowEstado = estadoCol !== -1 ? (data[i][estadoCol] || '').toString().trim().toLowerCase() : '';
+      if (rowEstado === 'rechazada') continue; // intento bloqueado por el anti-fraude: no acreditó km, no es un entrenamiento real
       if (rowEmail === emailClean && rowId === idZapatilla.toString()) {
         const idEntreno = (idEntrenoCol !== -1 && data[i][idEntrenoCol])
           ? data[i][idEntrenoCol].toString()

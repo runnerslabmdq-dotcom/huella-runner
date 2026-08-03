@@ -12,6 +12,52 @@ el GAS es la versión más nueva.
 
 ---
 
+## 03/08/2026 (tarde) — Revisión de bugs: 2 arreglos (Sospechosa sin revisar, Rechazada fantasma en Historial)
+
+Revisión completa de bugs pedida por el fundador sobre todo el proyecto
+(los 7 `.gs`/`.html`, más `pwa/index.html` y `landing/index.html`). Se
+encontraron 2 bugs reales que se arreglaron en el momento, más otros
+puntos menores que quedan solo anotados (sin tocar código todavía):
+
+- **BUG arreglado — la actividad "Sospechosa" no la veía nadie**
+  (`trail-points.gs`): el anti-fraude marca un entrenamiento
+  "Sospechosa" cuando el acumulado semanal de la persona supera 180 km
+  — a diferencia de "Rechazada", ese entrenamiento SÍ se acredita igual,
+  quedando "para revisión". El problema: esa revisión no existía en
+  ningún lado del panel admin — la marca quedaba escrita en el Sheet y
+  nadie se enteraba nunca. Nueva `getEntrenamientosSospechosos(token)`
+  (`admin.gs`) + nueva sección "🕵️ Actividad sospechosa — revisar" en
+  el panel (`admin.html`), con los últimos 20 casos, más reciente
+  primero.
+- **BUG arreglado — un entrenamiento rechazado aparecía como fila
+  fantasma de "0 km"** en el Historial del propio usuario
+  (`codigo.gs`, `getShoeHistory()`): si alguien tipeaba mal (ej. 300 km
+  en vez de 30) y el anti-fraude lo bloqueaba, esa persona igual veía
+  una fila rara sin explicación en su propio historial de
+  entrenamientos. Ahora esas filas se filtran — un entrenamiento
+  rechazado nunca se acreditó, no es un entrenamiento real, no debe
+  aparecer en el historial.
+
+**Anotado para más adelante (no se tocó código todavía):**
+- `getAdminDashboardData()` (`codigo.gs`) es la única función que
+  todavía suma entrenamientos "Rechazada" como si fueran actividad real
+  — el mismo bug que se arregló el 28/07 en `admin.gs`, pero esta
+  función quedó afuera de esa tanda. Hoy no se nota (los campos que
+  arma, `retencion` y `rankingActividad`, no los muestra ningún lado del
+  panel), pero conviene parejarlo el día que se use ese dato.
+- `landing/index.html` (la guía de 11 pasos) linkea directo a la URL de
+  `script.google.com`, no a `huella-runner.vercel.app` — si alguien la
+  abre desde Instagram, no tiene el cartel de aviso que sí tiene la
+  entrada principal de la app.
+- `admin.gs` lee una columna `Pisada` de Usuarios que no existe en
+  ningún lado (ni en el registro, ni en el perfil) — queda siempre
+  vacía, resto de una versión vieja del formulario.
+- El simulador de entrenamientos falsos (`simulacion.gs`) — el fundador
+  confirmó que lo desinstala él mismo a mano desde Apps Script
+  (Activadores → borrar `simularEntrenamientosFalsos` si sigue ahí).
+
+---
+
 ## 02/08/2026 (tarde) — Compartir: opción B (texto quemado en la imagen) + ícono nuevo
 
 Seguimiento del botón de compartir (opción A) de recién: el fundador lo
