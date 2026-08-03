@@ -1,7 +1,15 @@
 // ============================================================
 // HUELLA RUNNER — admin.gs
-// Última actualización: 28/07/2026 09:23 (hora Argentina)
+// Última actualización: 03/08/2026 17:45 (hora Argentina)
 // Cambios en esta versión:
+//   - Nueva getEntrenamientosSospechosos(token): el anti-fraude marca
+//     "Sospechosa" un entrenamiento que supera el acumulado semanal (se
+//     acredita igual, a diferencia de "Rechazada"), pero esa marca no se
+//     mostraba en ningún lado del panel — quedaba en el Sheet y nadie se
+//     enteraba. Devuelve los últimos 20 para revisar a mano. La usa la
+//     sección nueva "🕵️ Actividad sospechosa" de Admin.html. Encontrado
+//     en revisión de bugs del 03/08.
+// Cambios en versiones anteriores:
 //   - BUG arreglado (revisión de bugs pedida por el fundador antes de la
 //     Open Beta): getAdminStats(), getAdminUsuarios(), getActividadReciente()
 //     y getActividadPorDia() contaban los entrenamientos RECHAZADOS por el
@@ -539,6 +547,96 @@ function getActividadReciente(token) {
     });
   } catch(e) {
     Logger.log('getActividadReciente ERROR: ' + e.toString());
+    return [];
+  }
+}
+
+// ============================================================
+// ENTRENAMIENTOS SOSPECHOSOS — el anti-fraude los marca "Sospechosa"
+// cuando el acumulado semanal de la persona supera el máximo (180 km),
+// pero a diferencia de "Rechazada" SÍ se acreditan — quedan marcados
+// "para revisión" (ver trail-points.gs), pero hasta esta versión esa
+// revisión no existía en ningún lado del panel: la marca quedaba en el
+// Sheet y nadie se enteraba. Devuelve los últimos 20, más reciente
+// primero, para que el fundador los pueda mirar a mano.
+// ============================================================
+function getEntrenamientosSospechosos(token) {
+  if (!_adminAutorizado(token)) return [];
+  try {
+    const ss = SpreadsheetApp.openById(SHEET_ID);
+
+    // --- Mapa email → nombre completo (hoja Usuarios) ---
+    const nameMap = {};
+    const usersSheet = ss.getSheetByName('Usuarios');
+    if (usersSheet && usersSheet.getLastRow() > 1) {
+      const uData    = usersSheet.getDataRange().getValues();
+      const uHeaders = uData[0];
+      const uEmail   = uHeaders.indexOf('Email');
+      const uNombre  = uHeaders.indexOf('Nombre');
+      const uApell   = uHeaders.indexOf('Apellido');
+      for (let i = 1; i < uData.length; i++) {
+        const em = uData[i][uEmail] ? uData[i][uEmail].toString().trim().toLowerCase() : '';
+        if (em) {
+          const nom = uNombre !== -1 ? uData[i][uNombre].toString().trim() : '';
+          const ape = uApell  !== -1 ? uData[i][uApell].toString().trim()  : '';
+          nameMap[em] = (nom + ' ' + ape).trim() || em;
+        }
+      }
+    }
+
+    // --- Mapa ID_Zapa → "Marca Modelo" (hoja Zapatillas) ---
+    const zapaMap = {};
+    const zapSheet = ss.getSheetByName('Zapatillas');
+    if (zapSheet && zapSheet.getLastRow() > 1) {
+      const zData    = zapSheet.getDataRange().getValues();
+      const zHeaders = zData[0];
+      const zId      = zHeaders.indexOf('ID_Zapa');
+      const zMarca   = zHeaders.indexOf('Marca');
+      const zModelo  = zHeaders.indexOf('Modelo');
+      for (let i = 1; i < zData.length; i++) {
+        const id = zId !== -1 && zData[i][zId] ? zData[i][zId].toString() : '';
+        if (id) {
+          const marca  = zMarca  !== -1 ? (zData[i][zMarca]  || '').toString().trim() : '';
+          const modelo = zModelo !== -1 ? (zData[i][zModelo] || '').toString().trim() : '';
+          zapaMap[id] = (marca + ' ' + modelo).trim();
+        }
+      }
+    }
+
+    const trainSheet = ss.getSheetByName('Entrenamientos');
+    const sospechosos = [];
+    if (trainSheet && trainSheet.getLastRow() > 1) {
+      const tData    = trainSheet.getDataRange().getValues();
+      const tHeaders = tData[0];
+      const tEmailCol  = tHeaders.indexOf('Email_Usuario');
+      const tKmCol     = tHeaders.indexOf('KM_Brutos');
+      const tFechaCol  = tHeaders.indexOf('Fecha');
+      const tZapaCol   = tHeaders.indexOf('ID_Zapa');
+      const tEstadoCol = tHeaders.indexOf('Estado_Validacion');
+      const tMotivoCol = tHeaders.indexOf('Motivo_Rechazo');
+
+      for (let i = tData.length - 1; i >= 1 && sospechosos.length < 20; i--) {
+        const estado = tEstadoCol !== -1 ? (tData[i][tEstadoCol] || '').toString().trim().toLowerCase() : '';
+        if (estado !== 'sospechosa') continue;
+
+        const email  = tEmailCol !== -1 && tData[i][tEmailCol] ? tData[i][tEmailCol].toString().trim().toLowerCase() : '';
+        const idZapa = tZapaCol  !== -1 && tData[i][tZapaCol]  ? tData[i][tZapaCol].toString()  : '';
+        const fechaDate = tFechaCol !== -1 ? _celdaADate(tData[i][tFechaCol]) : null;
+
+        sospechosos.push({
+          email:     email,
+          nombre:    nameMap[email] || email,
+          zapatilla: zapaMap[idZapa] || '',
+          km:        tKmCol !== -1 ? (Number(tData[i][tKmCol]) || 0) : 0,
+          fecha:     fechaDate ? _formatFecha(fechaDate) : '',
+          motivo:    tMotivoCol !== -1 ? (tData[i][tMotivoCol] || '').toString() : ''
+        });
+      }
+    }
+
+    return sospechosos;
+  } catch(e) {
+    Logger.log('getEntrenamientosSospechosos ERROR: ' + e.toString());
     return [];
   }
 }

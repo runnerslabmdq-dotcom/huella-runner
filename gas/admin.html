@@ -1,8 +1,15 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Admin.html
-  Última actualización: 28/07/2026 10:09 (hora Argentina)
+  Última actualización: 03/08/2026 17:45 (hora Argentina)
   Cambios en esta versión:
+    - Nueva sección "🕵️ Actividad sospechosa — revisar": el anti-fraude
+      viene marcando entrenamientos "Sospechosa" (superan el acumulado
+      semanal) desde hace rato, pero se acreditaban igual sin que se
+      vieran en ningún lado del panel. Nueva cargarSospechosos() /
+      renderSospechosos(), reusan el mismo backend getEntrenamientosSospechosos()
+      (admin.gs). Encontrado en revisión de bugs del 03/08.
+  Cambios en versiones anteriores:
     - Semáforo de desgaste arreglado para usar % sobre el límite propio de
       cada zapatilla, no km crudo: a pedido del fundador, después de que la
       revisión de bugs notara que las bandas de color (naranja 600-800 km,
@@ -525,6 +532,14 @@
       <div id="alertas-list"></div>
     </div>
 
+    <!-- 3b. ENTRENAMIENTOS SOSPECHOSOS — el anti-fraude los marca y los
+         acredita igual (no se bloquean como los rechazados), pero antes
+         nadie los veía en ningún lado del panel para revisarlos a mano. -->
+    <div class="panel">
+      <div class="panel-title">🕵️ Actividad sospechosa — revisar</div>
+      <div id="sospechosos-list"><div class="loading-row">Cargando...</div></div>
+    </div>
+
     <!-- 4. USUARIOS REGISTRADOS -->
     <div class="sec-label">Usuarios registrados</div>
     <div class="panel">
@@ -784,6 +799,7 @@
     cargarRanking();
     cargarActividad();
     cargarAlertas();
+    cargarSospechosos();
     cargarUsuarios();
     cargarGrupos();
     cargarActividadPorDia();
@@ -1152,6 +1168,43 @@
         <div class="act-body">
           <div class="act-text">${texto}</div>
           <div class="act-time">${_formatFecha(ev.fecha)}</div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  /* ════════════════════════════════════
+     ACTIVIDAD SOSPECHOSA (anti-fraude — no bloquea, pero hay que revisarla)
+     El entrenamiento SÍ se acredita (no es un "Rechazada"), solo queda
+     marcado porque superó el acumulado semanal — antes esto no se veía
+     en ningún lado del panel, quedaba la marca en el Sheet sin que nadie
+     se enterara.
+  ════════════════════════════════════ */
+  function cargarSospechosos() {
+    google.script.run
+      .withSuccessHandler(renderSospechosos)
+      .withFailureHandler(function() {
+        document.getElementById('sospechosos-list').innerHTML = '<div class="loading-row">Sin datos</div>';
+      })
+      .getEntrenamientosSospechosos(ADMIN_TOKEN);
+  }
+  function renderSospechosos(lista) {
+    const cont = document.getElementById('sospechosos-list');
+    if (!lista || !lista.length) {
+      cont.innerHTML = '<div style="text-align:center;padding:20px;font-size:0.84rem;color:var(--metal);">✅ Nada para revisar por ahora.</div>';
+      return;
+    }
+    cont.innerHTML = lista.map(function(s) {
+      const nombre = sanitize(s.nombre || s.email);
+      const zapaTag = s.zapatilla
+        ? `<span style="color:var(--metal);font-size:0.65rem;display:block;margin-top:1px;">${sanitize(s.zapatilla)}</span>`
+        : '';
+      const motivoTxt = s.motivo ? ' · ' + sanitize(s.motivo) : '';
+      return `<div class="act-item">
+        <div class="act-dot" style="background:var(--naranja);box-shadow:0 0 6px var(--naranja);"></div>
+        <div class="act-body">
+          <div class="act-text"><strong>${nombre}</strong> cargó <strong style="color:var(--naranja)">${s.km} km</strong>${zapaTag}</div>
+          <div class="act-time">${sanitize(s.fecha)}${motivoTxt}</div>
         </div>
       </div>`;
     }).join('');
