@@ -12,6 +12,36 @@ el GAS es la versión más nueva.
 
 ---
 
+## 04/08/2026 (tarde) — Botón "Eliminar mi cuenta" + frase de tranquilidad en el login
+
+A pedido del fundador, pensando en alguien que prueba la app, no le
+gusta, y quiere irse sin dudas de que no le quedan datos guardados
+(hoy solo pedimos el mail, nada más — quería que eso quedara claro y
+fuera fácil de resolver por cuenta propia).
+
+Se evaluó ponerlo como acción directa en la pantalla de Login (debajo
+de "¿Olvidaste tu contraseña?"), pero ahí no hay forma de confirmar
+que quien lo pide es el dueño real de esa cuenta — cualquiera podría
+escribir el mail de otra persona y pedir su baja sin loguearse. Se
+optó por separar en dos partes:
+
+- **Frase de tranquilidad en el Login** (sin acción, solo texto):
+  "Solo pedimos tu mail — y podés borrar tu cuenta cuando quieras,
+  desde Mi Perfil."
+- **Botón real "Eliminar mi cuenta"**, dentro de Mi Perfil (con el
+  usuario ya logueado) — mismo patrón visual de confirmación que ya
+  usa "Borrar zapatilla". Nueva `eliminarCuenta(email)` (`codigo.gs`):
+  borra la fila de Usuarios y todas las filas asociadas a ese mail en
+  Zapatillas, Entrenamientos, Notificaciones y Cupones_Emitidos — es
+  un borrado real, no una desactivación. Bloqueada para el mail admin
+  (no se puede eliminar la cuenta que abre el panel).
+
+De paso, el texto de "Legales → Tus derechos" (que decía "contactando
+a nuestro equipo de soporte") se actualizó para reflejar que ahora es
+autoservicio, no por contacto.
+
+---
+
 ## 03/08/2026 (tarde) — Revisión de bugs: 2 arreglos (Sospechosa sin revisar, Rechazada fantasma en Historial)
 
 Revisión completa de bugs pedida por el fundador sobre todo el proyecto
