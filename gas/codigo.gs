@@ -1,7 +1,15 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 03/08/2026 17:45 (hora Argentina)
+// Última actualización: 04/08/2026 14:03 (hora Argentina)
 // Cambios en esta versión:
+//   - Nueva eliminarCuenta(email): borra la cuenta completa (Usuarios,
+//     Zapatillas, Entrenamientos, Notificaciones, Cupones_Emitidos) a
+//     pedido del propio usuario, ya logueado — pensada para que alguien
+//     que prueba la app y no le gusta pueda irse tranquilo, sabiendo que
+//     no le quedan datos guardados. La usa el botón nuevo "Eliminar mi
+//     cuenta" en Mi Perfil (Index.html). No existe una versión de esto
+//     sin login, para que nadie pueda pedir la baja de otra persona.
+// Cambios en versiones anteriores:
 //   - BUG arreglado: getShoeHistory() mostraba los entrenamientos
 //     RECHAZADOS por el anti-fraude (ej. alguien tipeó 300km en vez de
 //     30) como una fila fantasma de "0 km" en el Historial del propio
@@ -830,6 +838,61 @@ function deleteShoe(email, idZapatilla) {
     return { success: true };
   } catch(e) {
     Logger.log('deleteShoe ERROR: ' + e.toString());
+    return { success: false, error: e.toString() };
+  }
+}
+
+// ============================================================
+// ELIMINAR CUENTA — a pedido del usuario, borra todo lo suyo: fila de
+// Usuarios, zapatillas, entrenamientos, notificaciones y cupones. No es
+// un "desactivar" — es un borrado real, acorde a lo que promete la
+// pantalla de Login ("solo pedimos tu mail, y podés borrar tu cuenta
+// cuando quieras"). Se llama desde "Mi Perfil" (Index.html), con el
+// usuario ya logueado — no existe una versión de esto sin login, para
+// que nadie pueda pedir la baja de la cuenta de otra persona.
+// ============================================================
+function eliminarCuenta(email) {
+  try {
+    if (!email) return { success: false, error: 'Email requerido.' };
+    const emailClean = email.toString().trim().toLowerCase();
+    if (_esEmailAdmin(emailClean)) {
+      return { success: false, error: 'Esta cuenta es admin del sistema, no se puede eliminar desde acá.' };
+    }
+    const ss = SpreadsheetApp.openById(SHEET_ID);
+
+    // Borra filas por email en las hojas que dependen de una cuenta.
+    ['Zapatillas', 'Entrenamientos', 'Notificaciones', 'Cupones_Emitidos'].forEach(function(nombreHoja) {
+      const sheet = ss.getSheetByName(nombreHoja);
+      if (!sheet || sheet.getLastRow() <= 1) return;
+      const data    = sheet.getDataRange().getValues();
+      const headers = data[0];
+      const emailCol = headers.indexOf('Email_Usuario');
+      if (emailCol === -1) return;
+      for (let i = data.length - 1; i >= 1; i--) {
+        const rowEmail = data[i][emailCol] ? data[i][emailCol].toString().trim().toLowerCase() : '';
+        if (rowEmail === emailClean) sheet.deleteRow(i + 1);
+      }
+    });
+
+    // Borra la fila de Usuarios (columna Email, no Email_Usuario).
+    const usersSheet = ss.getSheetByName('Usuarios');
+    if (usersSheet && usersSheet.getLastRow() > 1) {
+      const uData    = usersSheet.getDataRange().getValues();
+      const uHeaders = uData[0];
+      const uEmailCol = uHeaders.indexOf('Email');
+      if (uEmailCol !== -1) {
+        for (let i = uData.length - 1; i >= 1; i--) {
+          const rowEmail = uData[i][uEmailCol] ? uData[i][uEmailCol].toString().trim().toLowerCase() : '';
+          if (rowEmail === emailClean) { usersSheet.deleteRow(i + 1); break; }
+        }
+      }
+    }
+
+    SpreadsheetApp.flush();
+    Logger.log('eliminarCuenta OK: ' + emailClean);
+    return { success: true };
+  } catch(e) {
+    Logger.log('eliminarCuenta ERROR: ' + e.toString());
     return { success: false, error: e.toString() };
   }
 }
