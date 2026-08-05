@@ -12,6 +12,22 @@ el GAS es la versión más nueva.
 
 ---
 
+## 05/08/2026 (mañana, corrección) — El badge OPEN BETA (verde), no "Open Sports", va en la tarjeta de texto
+
+Sigue prueba — mismo checkpoint: commit
+`39f14f9b5410b25d37b5cdd5818b090fb35106fb`.
+
+Se entendió mal el pedido anterior: donde se había puesto el texto
+"Open Sports" (arriba de "Gestioná tus zapatillas...", en el lugar
+que antes decía "Huella Runner · MDQ · ARG") en realidad tenía que ir
+el **badge verde "OPEN BETA"** — el mismo que se ve debajo del logo
+en el header. Corregido: el badge se sacó de ahí arriba y se movió a
+la tarjeta de texto, reemplazando el "Open Sports" que se había
+puesto por error. El header del login ahora queda solo con el título
+y el logo de Open Sports, sin el badge (que se mudó más abajo).
+
+---
+
 ## 05/08/2026 (mañana, seguimiento) — Ajustes a la prueba de Naming Rights Open Sports
 
 Sigue siendo prueba — mismo checkpoint de respaldo: commit
