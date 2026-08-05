@@ -12,6 +12,17 @@ el GAS es la versión más nueva.
 
 ---
 
+## 05/08/2026 (mediodía) — Se descarta la prueba de Naming Rights Open Sports
+
+El fundador decidió no seguir con la prueba de branding de Open Sports
+por ahora. `index.html` vuelve exacto al checkpoint
+`39f14f9b5410b25d37b5cdd5818b090fb35106fb` — deshace todo lo de las
+versiones v1/v2/v3 (#108, #109, #110, #111, #112). No se pierde nada:
+esas 5 PRs quedan en el historial de GitHub por si se quiere retomar
+la idea más adelante.
+
+---
+
 ## 05/08/2026 (mañana, ajuste v3) — Open Beta se muda a la tarjeta, "Powered by opensports" más chico
 
 Sigue prueba — mismo checkpoint: commit
