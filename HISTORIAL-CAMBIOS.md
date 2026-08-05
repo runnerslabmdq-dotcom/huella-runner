@@ -12,6 +12,21 @@ el GAS es la versión más nueva.
 
 ---
 
+## 05/08/2026 (mañana, ajuste v3) — Open Beta se muda a la tarjeta, "Powered by opensports" más chico
+
+Sigue prueba — mismo checkpoint: commit
+`39f14f9b5410b25d37b5cdd5818b090fb35106fb`. El fundador vio la v2 en
+el celu (`/dev`) y pidió 2 ajustes:
+
+- "Powered by opensports" (arriba de "HUELLA RUNNER") un poco más
+  chico que en la v2.
+- El badge "Open Beta" ya no va debajo del título — se sacó de ahí y
+  se movió a la tarjeta de texto, reemplazando "Huella Runner · MDQ ·
+  ARG" (arriba de "Gestioná tus zapatillas..."), con un tamaño más
+  discreto.
+
+---
+
 ## 05/08/2026 (mañana, reinicio) — Naming Rights Open Sports, prueba v2 desde cero
 
 El fundador ya había vuelto a pegar en el `/dev` el código original
