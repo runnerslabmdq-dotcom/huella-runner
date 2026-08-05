@@ -12,6 +12,22 @@ el GAS es la versión más nueva.
 
 ---
 
+## 05/08/2026 (tarde) — Se saca la pantalla de bienvenida, "Open Beta" pasa a ser "Demo"
+
+- **Pantalla de bienvenida (onboarding) eliminada**: la app arranca
+  directo en Login. Esa pantalla ya no aportaba nada que el Login no
+  tuviera — Login ya tiene Iniciar sesión, Regístrate, "¿Olvidaste tu
+  contraseña?" y su propio "VER LEGALES +" al pie. Se borró también
+  `cerrarPantallaOnboarding()` y el script que la ocultaba con
+  localStorage, código que quedaba sin uso.
+- **"OPEN BETA" → "DEMO"**: el badge verde del login y el cartel (i)
+  que lo explica. El texto del cartel también se simplificó — antes
+  hablaba de carga de servidores y escalabilidad (jerga técnica que no
+  le decía nada a un corredor común); ahora dice simplemente que se
+  están haciendo mejoras todo el tiempo.
+
+---
+
 ## 05/08/2026 (mediodía) — Se descarta la prueba de Naming Rights Open Sports
 
 El fundador decidió no seguir con la prueba de branding de Open Sports
