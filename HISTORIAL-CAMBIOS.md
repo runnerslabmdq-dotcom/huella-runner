@@ -12,6 +12,39 @@ el GAS es la versión más nueva.
 
 ---
 
+## 05/08/2026 (mañana) — ⚠️ PRUEBA: Naming Rights Open Sports en Login y carrusel
+
+**Esto es una prueba — NO pegar como "Nueva versión" en Apps Script,
+solo como "Probar implementaciones" (link `/dev`, lo ve solo el
+fundador).** Checkpoint de referencia antes de este cambio: commit
+`39f14f9b5410b25d37b5cdd5818b090fb35106fb` — si la prueba no convence,
+volver ahí.
+
+A pedido del fundador, para ver cómo se vería la app con Open Sports
+como sponsor (todavía sin acuerdo cerrado — ver
+`docs/pitch-tiendas-partnership.md` y el dossier de Naming Rights ya
+armado):
+
+- **Login**: se sacó "Powered by Huella Runner MDQ" de arriba del
+  título. Debajo de "HUELLA RUNNER" ahora aparece el logo real de
+  Open Sports (el mismo PNG recortado a mano — fondo rojo sacado,
+  letras "open" blanco / "sports" amarillo intactas — que se usó para
+  el dossier de la propuesta). El badge "Open Beta" se corrió para
+  abajo, ahora queda debajo del logo de Open Sports.
+- **Pie del carrusel** ("Tus zapatillas activas"): mismo cambio,
+  "Powered by Huella Runner MDQ" reemplazado por el logo de Open
+  Sports.
+- El logo va incrustado directo en el HTML en base64 (no en
+  Cloudinary) — es lo más simple para una prueba, pero si se decide
+  dejarlo en firme hay que pasarlo a una URL de Cloudinary como el
+  resto de las fotos de la app, porque duplicado dos veces en base64
+  le suma bastante peso al archivo.
+- Pantallas de Registro y Recuperar Contraseña quedaron sin tocar
+  (siguen con "Powered by Huella Runner MDQ") — el pedido fue puntual
+  para Login y carrusel.
+
+---
+
 ## 04/08/2026 (tarde) — Botón "Eliminar mi cuenta" + frase de tranquilidad en el login
 
 A pedido del fundador, pensando en alguien que prueba la app, no le
