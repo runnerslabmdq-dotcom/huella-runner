@@ -12,6 +12,30 @@ el GAS es la versión más nueva.
 
 ---
 
+## 05/08/2026 (mañana, seguimiento) — Ajustes a la prueba de Naming Rights Open Sports
+
+Sigue siendo prueba — mismo checkpoint de respaldo: commit
+`39f14f9b5410b25d37b5cdd5818b090fb35106fb`. El fundador probó el link
+`/dev` en el celu y pidió 3 ajustes:
+
+- Logo de Open Sports del Login, 50% más grande.
+- La tarjeta de texto de abajo del login decía "Huella Runner · MDQ ·
+  ARG" justo arriba de "Gestioná tus zapatillas..." — se cambió a
+  "Open Sports".
+- Pie del carrusel: se sacó el logo-imagen (quedaba chico ahí) y
+  volvió el texto de siempre ("Powered by..."), pero ahora dice
+  "Powered by opensports" con los colores reales de la marca (blanco
+  + amarillo), misma tipografía que usaba con Huella Runner.
+
+También reportó una palabra "con" flotando sola arriba a la derecha
+del login en la captura que mandó — se revisó todo el HTML/CSS tocado
+y no aparece ningún texto suelto que la explique. Es probable que sea
+un artefacto de tener varias ventanas de Chrome superpuestas en la
+captura, no algo del código. Pendiente: confirmar si sigue apareciendo
+mirando el `/dev` en una sola ventana, sin nada superpuesto.
+
+---
+
 ## 05/08/2026 (mañana) — ⚠️ PRUEBA: Naming Rights Open Sports en Login y carrusel
 
 **Esto es una prueba — NO pegar como "Nueva versión" en Apps Script,
