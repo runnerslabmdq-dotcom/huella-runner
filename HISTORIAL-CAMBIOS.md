@@ -12,6 +12,31 @@ el GAS es la versión más nueva.
 
 ---
 
+## 05/08/2026 (mañana, reinicio) — Naming Rights Open Sports, prueba v2 desde cero
+
+El fundador ya había vuelto a pegar en el `/dev` el código original
+(el de antes de las 3 pruebas anteriores de hoy), así que se retomó
+desde el checkpoint limpio (commit
+`39f14f9b5410b25d37b5cdd5818b090fb35106fb`) en vez de seguir
+parchando encima de lo anterior — más simple y menos lugar para
+confundirse. **Sigue siendo prueba** — pegar solo con "Probar
+implementaciones" (`/dev`), no publicar versión real.
+
+Esta vez sin logo-imagen (se sacó esa idea): todo texto, mismo
+mecanismo que ya existía para "Powered by Huella Runner MDQ":
+
+- **Login**: arriba de "HUELLA RUNNER" (donde antes decía "Powered by
+  Huella Runner MDQ") ahora dice "Powered by opensports", con los
+  colores reales de la marca (blanco "open" + amarillo "sports"), al
+  doble de tamaño que la versión que ya estaba probada en el pie del
+  carrusel.
+- El badge "Open Beta" se queda en su lugar de siempre (debajo del
+  título), solo un poco más grande.
+- **Pie del carrusel**: mismo texto "Powered by opensports" (esto ya
+  se había probado antes y quedó igual).
+
+---
+
 ## 05/08/2026 (mañana, corrección) — El badge OPEN BETA (verde), no "Open Sports", va en la tarjeta de texto
 
 Sigue prueba — mismo checkpoint: commit
