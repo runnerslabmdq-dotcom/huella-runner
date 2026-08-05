@@ -1,8 +1,20 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 04/08/2026 14:03 (hora Argentina)
+  Última actualización: 05/08/2026 16:20 (hora Argentina)
   Cambios en esta versión:
+    - Sacada la pantalla de bienvenida (onboarding) que se veía antes
+      de llegar al Login — arranca directo en Login, que ya tenía sus
+      propios accesos a Registro y "¿Olvidaste tu contraseña?", y su
+      propio "VER LEGALES +" al pie (no hacía falta agregarlo, ya
+      estaba). Se borró cerrarPantallaOnboarding() y el script que la
+      ocultaba vía localStorage, que quedaban sin uso.
+    - "OPEN BETA" → "DEMO" (badge del login y cartel explicativo). El
+      texto del cartel (i) también cambió: de la explicación técnica
+      de antes (carga de servidores, escalabilidad) a algo más simple:
+      "Estamos haciendo mejoras todo el tiempo — puede haber cambios y
+      ajustes mientras seguimos puliendo la app."
+  Cambios en versiones anteriores:
     - Nuevo botón "Eliminar mi cuenta" en Mi Perfil (con modal de
       confirmación, mismo patrón visual que borrar zapatilla), para que
       alguien que prueba la app y no le gusta pueda irse tranquilo sin
@@ -1767,104 +1779,6 @@
 </head>
 <body>
 
-<!-- PANTALLA INICIAL HUELLA RUNNER -->
-<div id="onboarding-screen" style="
-  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background: #000; z-index: 9999;
-  display: flex; flex-direction: column; align-items: center; justify-content: space-between;
-  padding: 44px 20px 32px; box-sizing: border-box; overflow: hidden;">
-
-  <!-- Fondo decorativo -->
-  <div style="position:absolute;inset:0;pointer-events:none;overflow:hidden;">
-    <div style="position:absolute;top:-80px;left:-80px;width:320px;height:320px;
-      border-radius:50%;background:radial-gradient(circle,rgba(220,253,139,0.07) 0%,transparent 70%);"></div>
-    <div style="position:absolute;bottom:-60px;right:-60px;width:260px;height:260px;
-      border-radius:50%;background:radial-gradient(circle,rgba(220,253,139,0.05) 0%,transparent 70%);"></div>
-  </div>
-
-    <!-- Header -->
-  <div style="text-align:center;position:relative;z-index:1;margin-top:8px;">
-    <div style="font-family:'Montserrat',sans-serif;color:var(--gris-powered);font-size:0.5rem;text-transform:uppercase;letter-spacing:2px;
-      margin-bottom:4px;font-weight:700;line-height:1.5;">
-      Powered by <span style="font-style:italic;">Huella <span style="color:var(--amarillo);">Runner</span></span> MDQ
-    </div>
-    <h1 style="font-size:2.4rem;font-weight:900;margin:8px 0 0;
-      letter-spacing:2px;line-height:1.05;font-family:'Bebas Neue',sans-serif;">
-      <span style="color:var(--plata);display:inline-block;transform:skewX(-8deg);">HUELLA</span>
-      <span style="color:var(--amarillo);display:inline-block;transform:skewX(-8deg);">RUNNER</span>
-    </h1>
-    <div style="font-size:0.85rem;font-weight:900;letter-spacing:4px;text-transform:uppercase;
-      color:#CCFF00;margin-top:8px;text-shadow:0 0 8px rgba(204,255,0,0.6);">
-      Open Beta
-      <button onclick="openBetaInfoModal()" aria-label="¿Qué es Open Beta?"
-        style="background:none;border:1px solid #CCFF00;color:#CCFF00;border-radius:50%;
-        width:16px;height:16px;line-height:1;font-size:0.6rem;font-weight:900;letter-spacing:0;
-        text-transform:none;text-shadow:none;cursor:pointer;display:inline-flex;align-items:center;
-        justify-content:center;vertical-align:middle;margin-left:4px;padding:0;">i</button>
-    </div>
-  </div>
-
-  <!-- Card central -->
-  <div style="background:linear-gradient(135deg,#0d0d0d 0%,#141414 100%);
-    border:1px solid #1f1f1f;border-radius:20px;padding:24px 20px;
-    width:100%;max-width:380px;position:relative;z-index:1;margin:20px 0;">
-    <div style="height:2px;background:linear-gradient(90deg,transparent,var(--amarillo),transparent);
-      margin:-24px -20px 20px;border-radius:20px 20px 0 0;opacity:0.6;"></div>
-    <ul style="list-style:none;padding:0;margin:0;color:#d8d8d8;font-size:0.82rem;line-height:1.6;">
-      <li style="margin-bottom:18px;display:flex;align-items:flex-start;gap:12px;">
-        <span style="color:var(--amarillo);font-size:1.1rem;line-height:1;flex-shrink:0;">✔</span>
-        <span><strong style="color:#fff;">Regístrate e ingresa</strong> de forma simple y directa.</span>
-      </li>
-      <li style="margin-bottom:18px;display:flex;align-items:flex-start;gap:12px;">
-        <span style="color:var(--amarillo);font-size:1.1rem;line-height:1;flex-shrink:0;">✔</span>
-        <span><strong style="color:#fff;">Registra tus zapatillas</strong> y cárgales los kilómetros de cada entrenamiento y carrera.</span>
-      </li>
-      <li style="display:flex;align-items:flex-start;gap:12px;">
-        <span style="color:var(--amarillo);font-size:1.1rem;line-height:1;flex-shrink:0;">✔</span>
-        <span><strong style="color:#fff;">Recibí novedades, ofertas y premios</strong> exclusivos para la comunidad Huella Runner.</span>
-      </li>
-    </ul>
-  </div>
-
-  <!-- Footer -->
-  <div style="text-align:center;width:100%;position:relative;z-index:1;">
-    <button onclick="var el=document.getElementById('legales-acordeon');el.style.display=el.style.display==='none'?'block':'none';this.innerText=el.style.display==='none'?'VER LEGALES +':'CERRAR LEGALES −';" style="
-      background:none;border:none;color:#A89440;font-size:0.72rem;font-weight:700;
-      cursor:pointer;letter-spacing:2px;text-transform:uppercase;
-      font-family:'Montserrat',sans-serif;padding:4px 0;margin-bottom:10px;">VER LEGALES +</button>
-    <div id="legales-acordeon" style="display:none;text-align:left;background:#0d0d0d;border:1px solid #1f1f1f;
-      border-radius:12px;padding:16px 18px;margin:0 auto 14px;max-width:380px;width:100%;
-      font-size:0.72rem;color:#999;line-height:1.7;">
-      <p style="color:#d8d8d8;font-weight:700;margin:0 0 10px;font-size:0.75rem;">Privacidad y Tratamiento de Datos</p>
-      <p style="margin:0 0 8px;">Nuestra prioridad es proteger tu información. Solo recolectamos los datos estrictamente necesarios para el funcionamiento y mejora de la aplicación.</p>
-      <p style="margin:0 0 8px;"><strong style="color:#bbb;">Uso interno:</strong> La información proporcionada se utiliza exclusivamente con fines analíticos y estadísticos para optimizar la experiencia del usuario y mejorar el rendimiento técnico.</p>
-      <p style="margin:0 0 8px;"><strong style="color:#bbb;">No compartición:</strong> Bajo ninguna circunstancia vendemos, alquilamos ni compartimos tus datos personales con terceros con fines comerciales o de marketing ajenos a nuestra plataforma.</p>
-      <p style="margin:0 0 8px;"><strong style="color:#bbb;">Seguridad:</strong> Implementamos medidas técnicas y organizativas para garantizar la confidencialidad y protección de tus datos frente a accesos no autorizados.</p>
-      <p style="margin:0;"><strong style="color:#bbb;">Tus derechos:</strong> Puedes solicitar la consulta, modificación o eliminación de tus datos en cualquier momento contactando a nuestro equipo de soporte.</p>
-    </div>
-    <button onclick="cerrarPantallaOnboarding()" style="
-      background:linear-gradient(180deg,var(--amarillo-top) 0%,var(--amarillo) 45%,var(--amarillo-dark) 100%);
-      color:#000;border:none;padding:16px;font-size:0.9rem;font-weight:900;
-      border-radius:14px;width:100%;max-width:380px;
-      box-shadow:0 4px 20px rgba(220,253,139,0.25);cursor:pointer;
-      text-transform:uppercase;letter-spacing:0.5px;margin-bottom:16px;
-      font-family:'Montserrat',sans-serif;">
-      Aceptar y Continuar
-    </button>
-  </div>
-</div>
-<script>
-  // Si ya se aceptó la bienvenida antes en este celu/navegador, no se
-  // vuelve a mostrar — va directo al login. Se oculta acá (apenas se
-  // parsea, antes de que se termine de cargar el resto de la página)
-  // para que no haya ni un parpadeo de la pantalla completa.
-  try {
-    if (localStorage.getItem('hr_onboarding_visto') === '1') {
-      document.getElementById('onboarding-screen').style.display = 'none';
-    }
-  } catch(e) {}
-</script>
-
 <!-- TOAST CONFIRMACIÓN KM -->
 <div id="km-toast">✅ +0 km guardados</div>
 
@@ -1885,8 +1799,8 @@
       </h1>
       <div style="font-size:0.85rem;font-weight:900;letter-spacing:4px;text-transform:uppercase;
         color:#CCFF00;margin-top:8px;text-shadow:0 0 8px rgba(204,255,0,0.6);">
-        Open Beta
-        <button onclick="openBetaInfoModal()" aria-label="¿Qué es Open Beta?"
+        Demo
+        <button onclick="openBetaInfoModal()" aria-label="¿Qué es Demo?"
           style="background:none;border:1px solid #CCFF00;color:#CCFF00;border-radius:50%;
           width:16px;height:16px;line-height:1;font-size:0.6rem;font-weight:900;letter-spacing:0;
           text-transform:none;text-shadow:none;cursor:pointer;display:inline-flex;align-items:center;
@@ -2415,8 +2329,8 @@
   <div class="modal-recover-content">
     <button class="close-modal" onclick="closeBetaInfoModal()">✕</button>
     <div class="recover-icon">🧪</div>
-    <div class="recover-title">¿Qué es Open Beta?</div>
-    <div class="recover-desc" id="openbeta-desc">Acceso libre a cualquier usuario antes del lanzamiento oficial. Puede haber errores menores — nos sirve para medir la carga en los servidores, la escalabilidad, y recibir feedback masivo antes de la versión final.</div>
+    <div class="recover-title">¿Qué es Demo?</div>
+    <div class="recover-desc" id="openbeta-desc">Estamos haciendo mejoras todo el tiempo — puede haber cambios y ajustes mientras seguimos puliendo la app.</div>
   </div>
 </div>
 
@@ -2577,18 +2491,6 @@
 <script>
   let currentUserEmail = '';
   const KM_LIMITE_DEFAULT = 850; // igual al umbral global de trail-points.gs (TP.KM_UMBRAL_CUPON)
-
-  // =====================================================
-  // ONBOARDING INICIAL
-  // =====================================================
-  function cerrarPantallaOnboarding() {
-    try { localStorage.setItem('hr_onboarding_visto', '1'); } catch(e) {}
-    var ob = document.getElementById('onboarding-screen');
-    if (!ob) return;
-    ob.style.transition = 'opacity 0.4s ease';
-    ob.style.opacity = '0';
-    setTimeout(function(){ ob.style.display = 'none'; }, 420);
-  }
 
   // =====================================================
   // TEMA CLARO / OSCURO
