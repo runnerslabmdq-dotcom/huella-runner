@@ -1,21 +1,8 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 05/08/2026 11:52 (hora Argentina)
+  Última actualización: 04/08/2026 14:03 (hora Argentina)
   Cambios en esta versión:
-    - ⚠️ PRUEBA — Naming Rights Open Sports, versión 3 (ajustes sobre
-      la v2 de recién). Solo probar con "Probar implementaciones"
-      (/dev), NO publicar como versión real todavía. Checkpoint de
-      referencia: commit 39f14f9b5410b25d37b5cdd5818b090fb35106fb.
-      · "Powered by opensports" de arriba del título: un poco más
-        chico que en la v2 (1.24rem → 1rem).
-      · El badge "Open Beta" ya NO va debajo del título — se sacó de
-        ahí y se movió a la tarjeta de texto, en el lugar que tenía
-        "Huella Runner · MDQ · ARG" (arriba de "Gestioná tus
-        zapatillas..."), con un tamaño más discreto que el que tenía
-        arriba.
-      · Pie del carrusel: sin cambios respecto a la v2 ("Powered by
-        opensports").
     - Nuevo botón "Eliminar mi cuenta" en Mi Perfil (con modal de
       confirmación, mismo patrón visual que borrar zapatilla), para que
       alguien que prueba la app y no le gusta pueda irse tranquilo sin
@@ -1887,15 +1874,24 @@
   <div id="view-login" style="display:block;">
     <!-- Header -->
     <div style="text-align:center;position:relative;z-index:1;margin-top:8px;margin-bottom:16px;">
-      <div style="font-family:'Montserrat',sans-serif;font-size:1rem;text-transform:uppercase;letter-spacing:2px;
+      <div style="font-family:'Montserrat',sans-serif;color:var(--gris-powered);font-size:0.5rem;text-transform:uppercase;letter-spacing:2px;
         margin-bottom:6px;font-weight:700;line-height:1;">
-        Powered by <span style="font-style:italic;">open<span style="color:#FFE600;">sports</span></span>
+        Powered by <span style="font-style:italic;">Huella <span style="color:var(--amarillo);">Runner</span></span> MDQ
       </div>
       <h1 style="font-size:2.4rem;font-weight:900;margin:0;
         letter-spacing:2px;line-height:1.05;font-family:'Bebas Neue',sans-serif;">
         <span style="color:var(--plata);display:inline-block;transform:skewX(-8deg);">HUELLA</span>
         <span style="color:var(--amarillo);display:inline-block;transform:skewX(-8deg);">RUNNER</span>
       </h1>
+      <div style="font-size:0.85rem;font-weight:900;letter-spacing:4px;text-transform:uppercase;
+        color:#CCFF00;margin-top:8px;text-shadow:0 0 8px rgba(204,255,0,0.6);">
+        Open Beta
+        <button onclick="openBetaInfoModal()" aria-label="¿Qué es Open Beta?"
+          style="background:none;border:1px solid #CCFF00;color:#CCFF00;border-radius:50%;
+          width:16px;height:16px;line-height:1;font-size:0.6rem;font-weight:900;letter-spacing:0;
+          text-transform:none;text-shadow:none;cursor:pointer;display:inline-flex;align-items:center;
+          justify-content:center;vertical-align:middle;margin-left:4px;padding:0;">i</button>
+      </div>
     </div>
 
     <div class="card">
@@ -1920,14 +1916,7 @@
       <div class="intro-section" style="margin-top:18px; margin-bottom:4px; text-align:center;">
         <div class="intro-footer-row" style="justify-content:center; margin-bottom:8px;">
           <div class="intro-dot"></div>
-          <span style="display:inline-flex;align-items:center;gap:4px;font-family:'Montserrat',sans-serif;
-            font-size:0.68rem;font-weight:900;letter-spacing:2.5px;text-transform:uppercase;color:#CCFF00;
-            text-shadow:0 0 5px rgba(204,255,0,0.45);">Open Beta
-            <button onclick="openBetaInfoModal()" aria-label="¿Qué es Open Beta?" style="background:none;
-              border:1px solid #CCFF00;color:#CCFF00;border-radius:50%;width:14px;height:14px;line-height:1;
-              font-size:0.55rem;font-weight:900;letter-spacing:0;text-transform:none;text-shadow:none;
-              cursor:pointer;display:inline-flex;align-items:center;justify-content:center;padding:0;">i</button>
-          </span>
+          <span class="intro-footer-text" style="color:var(--amarillo); letter-spacing:2px;">Huella Runner · MDQ · ARG</span>
         </div>
         <div class="intro-divider"></div>
         <div class="intro-body" style="text-align:center; line-height:1.8;">
@@ -2168,7 +2157,7 @@
     </div>
     <!-- POWERED BY — al fondo del dashboard -->
     <div style="text-align:center; padding: 8px 0 16px; margin-top: -10px;">
-      <span style="font-family:'Montserrat',sans-serif; font-size:0.62rem; font-weight:700; color:var(--gris-powered); text-transform:uppercase; letter-spacing:2px;">Powered by <span style="font-style:italic;">open<span style="color:#FFE600;">sports</span></span></span>
+      <span style="font-family:'Montserrat',sans-serif; font-size:0.62rem; font-weight:700; color:var(--gris-powered); text-transform:uppercase; letter-spacing:2px;">Powered by <span style="font-style:italic;">Huella <span style="color:var(--amarillo);">Runner</span></span> MDQ</span>
     </div>
 
   </div>
