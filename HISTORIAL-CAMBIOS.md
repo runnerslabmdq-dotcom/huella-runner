@@ -12,6 +12,20 @@ el GAS es la versión más nueva.
 
 ---
 
+## 06/08/2026 (tarde, seguimiento) — Fotos nuevas en la landing (carrusel + Mi Perfil)
+
+El fundador subió 2 capturas nuevas a Cloudinary:
+- Paso 4 (zapatillas/carrusel): foto actualizada, ahora muestra las
+  tarjetas anchas actuales (en vez de la captura vieja del 27/07).
+- Paso 11 (Mi Perfil): tenía el paso agregado pero sin foto — ahora sí
+  tiene, mostrando la pantalla con "Eliminar mi cuenta".
+
+Pendiente: la foto del Paso 3 (login) todavía muestra "Open Beta" —
+se actualiza cuando el fundador publique la versión real con "Demo" y
+mande una captura nueva.
+
+---
+
 ## 06/08/2026 (tarde) — landing/index.html actualizada al estado actual de la app
 
 La guía de uso (landing/) se había quedado desactualizada — seguía
