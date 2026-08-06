@@ -12,6 +12,41 @@ el GAS es la versión más nueva.
 
 ---
 
+## 06/08/2026 (noche) — landing/index.html reemplazada: ahora es una vidriera, no la guía de pasos
+
+Pediste algo "espectacular" para la landing, con movimientos tipo dashboard.
+Primero armé un preview aparte (Artifact) para que lo vieras sin tocar nada
+real, y una vez que dijiste que sí, reemplazamos por completo
+`landing/index.html`: antes eran los 12 pasos con captura por captura, ahora
+es una landing corta tipo vidriera/showcase, con:
+
+- Título grande animado ("Cada zapatilla tiene un límite") con el mismo
+  estilo tipográfico de la app (Bebas Neue inclinada + Montserrat).
+- Una medidora de desgaste animada (como un tanque de nafta), que se llena
+  sola y va contando los kilómetros — la idea central de la página.
+- Las 2 capturas reales que mandaste (carrusel y Mi Perfil), mostradas como
+  si fueran fotos de un celular, apareciendo de a una al bajar.
+- 3 tarjetas cortas explicando qué hace la app (sin planillas aparte,
+  alertas antes de romperse, funciona directo en Instagram).
+- Botón final para abrir la app.
+
+**Importante — qué se perdió:** la guía vieja explicaba paso a paso (con
+captura de cada pantalla) cómo registrarse, cargar zapatillas, etc. Esa
+guía ya NO está en esta página — te avisé del cambio antes de hacerlo y
+confirmaste igual que la reemplacemos. El texto y las 13 capturas de la
+guía vieja siguen recuperables en el historial de git de
+`landing/index.html` (no se borraron, solo dejaron de mostrarse) por si en
+algún momento hace falta traerlos de vuelta, enteros o en parte.
+
+Las 2 capturas nuevas se incrustaron directo en el archivo (no tienen URL
+de Cloudinary todavía) — pesan poco porque ya estaban comprimidas, pero si
+en algún momento las subís a Cloudinary, se pueden reemplazar por el link
+para que el archivo pese menos.
+
+**Pendiente:** las capturas usadas ya están un poco viejas (dicen "OPEN
+BETA" en vez de "DEMO", y muestran una zapatilla distinta a la actual) —
+conviene actualizarlas cuando tengas capturas más frescas.
+
 ## 06/08/2026 (tarde, seguimiento) — Fotos nuevas en la landing (carrusel + Mi Perfil)
 
 El fundador subió 2 capturas nuevas a Cloudinary:
