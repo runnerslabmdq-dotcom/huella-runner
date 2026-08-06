@@ -1,57 +1,41 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — landing/index.html (guía de uso)
-  Última actualización: 27/07/2026 17:26 (hora Argentina)
+  Última actualización: 06/08/2026 15:48 (hora Argentina)
 
-  Cambios en esta versión (el fundador vio la primera versión publicada
-  y no le gustó — fotos gigantes, letra plana, sin dinamismo):
-    - Fotos ahora tipo "mockup de celular": achicadas (max 210px de
-      ancho), centradas, con marco negro y sombra — antes ocupaban el
-      100% del ancho de la tarjeta y se veían enormes y pegadas al
-      borde.
-    - Se les fijó relación de aspecto 9:19.5 (proporción típica de
-      captura de celular) en vez de depender del tamaño real de la
-      imagen: sin esto, mientras cargaban (son 13 fotos en la página)
-      el espacio se desarmaba y quedaba un punto roto en su lugar.
-      Probado localmente con fotos de prueba antes de aplicar.
-    - Número de cada paso: círculo con degradé dorado (antes plano,
-      un solo tono) + sombra suave.
-    - Franja neón sutil en el borde izquierdo de cada tarjeta y en el
-      borde de los "tips" — el mismo guiño de color que ya usa la app
-      real (barra de km, badges), para que la guía no se sienta tan
-      distinta/plana comparada con la app de verdad.
+  Cambios en esta versión: actualizada para reflejar el estado actual
+  de la app (dejó de coincidir con varios cambios recientes):
+    - "Open Beta" → "Demo" en todos lados (badge y aviso), acorde al
+      cambio ya hecho en la app real.
+    - Nuevo aviso "No hace falta instalar nada": la app se puede usar
+      directo desde Instagram sin instalar — instalar pasa a
+      presentarse como opcional, no como paso obligatorio.
+    - Aviso "Tus datos" ahora menciona que se puede eliminar la cuenta
+      cuando quieras, desde Mi Perfil.
+    - Nuevo Paso 11 "Mi Perfil": completar datos opcionales y cómo
+      eliminar la cuenta. Sin foto todavía — falta que el fundador
+      suba una captura a Cloudinary.
+    - Pendiente: las fotos de los Pasos 3 (login) y 4 (zapatillas)
+      quedaron desactualizadas visualmente (login sigue mostrando
+      "Open Beta" en la captura vieja, y las tarjetas del carrusel
+      real ahora son más anchas) — se actualizan cuando el fundador
+      suba capturas nuevas a Cloudinary.
 
-  Sitio estático para Vercel (Root Directory = landing/). Reemplaza a la
-  landing de marketing anterior: a pedido del fundador, la landing ahora
-  ES la explicación de cómo se usa la app, para acompañar el lanzamiento
-  de la Open Beta del 1 de agosto.
+  (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
+  en la raíz del repo.)
 
-  De paso resuelve dos cosas que habían quedado marcadas en la landing
-  vieja: las estadísticas sin fuente ("70% de los runners...") ya no
-  están, y las capturas que apuntaban a ../assets/screenshots/ (ruta que
-  se rompía con Root Directory = landing/) se reemplazaron por las
-  capturas nuevas del fundador, servidas desde Cloudinary.
-
-  Basada en el guión que pasó el fundador (11 pasos), más 3 cosas que
-  pidió agregar sí o sí: el cartel azul de Google y cómo cerrarlo, que
-  esto es una Open Beta y puede haber errores, y cómo instalar la app en
-  la pantalla de inicio del celular.
-
-  IMÁGENES: las 13 capturas están asignadas EN EL ORDEN en que las pasó
-  el fundador, siguiendo su propia tabla (Paso 0 lleva 2, Paso 2 lleva 2,
-  el resto 1 cada uno = 13). No se pudieron verificar una por una porque
-  este entorno no tiene acceso a Cloudinary — si alguna quedó en el paso
-  equivocado, se cambia el link del <img> de esa sección y listo. Cada
-  una está marcada con un comentario para encontrarla rápido.
-  Se les agregó f_auto,q_auto,w_700 (transformación de Cloudinary, igual
-  que hace _cloudinaryChica() en la app) para que pesen poco en el celu.
+  Sitio estático para Vercel (Root Directory = landing/). IMÁGENES: las
+  13 capturas originales están en el orden que pasó el fundador — cada
+  una marcada con un comentario para encontrarla rápido. Llevan
+  f_auto,q_auto,w_700 (transformación de Cloudinary, igual que
+  _cloudinaryChica() en la app) para que pesen poco en el celu.
 -->
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Huella Runner — Cómo usar la app</title>
-<meta name="description" content="Guía paso a paso de Huella Runner: registrate, cargá tus zapatillas, sumá kilómetros y sabé cuándo cambiarlas. Versión Open Beta.">
+<meta name="description" content="Guía paso a paso de Huella Runner: registrate, cargá tus zapatillas, sumá kilómetros y sabé cuándo cambiarlas.">
 <meta name="theme-color" content="#080808">
 <link rel="icon" href="https://res.cloudinary.com/dlayzh9ln/image/upload/v1784824681/icon192_unoplg.png" type="image/png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -248,10 +232,10 @@
   <div class="wrap">
     <div class="powered">Powered by <em>Huella <span class="r">Runner</span></em> MDQ</div>
     <div class="wordmark"><span class="w1">HUELLA</span> <span class="w2">RUNNER</span></div>
-    <div class="badge-beta">● Open Beta</div>
+    <div class="badge-beta">● Demo</div>
 
     <h1>Cómo usar la app,<br><span class="hl">paso a paso.</span></h1>
-    <p>Registrá tus zapatillas, sumá los kilómetros de cada salida y enterate a tiempo de cuándo conviene cambiarlas.</p>
+    <p>Registrá tus zapatillas, sumá los kilómetros de cada salida y enterate a tiempo de cuándo conviene cambiarlas. Directo desde Instagram, sin instalar nada.</p>
 
     <div class="btn-row">
       <a class="btn btn--gold"
@@ -266,14 +250,19 @@
   <div class="wrap">
 
     <div class="aviso aviso--beta">
-      <h3>Esto es una Open Beta</h3>
-      <p>Acceso libre para cualquier runner, antes del lanzamiento oficial. <strong>Puede haber errores menores</strong> — nos sirve justamente para eso: ver cómo se comporta con mucha gente usándola al mismo tiempo y escuchar qué le falta.</p>
-      <p class="chico">Si algo no funciona o se ve raro, avisanos. Cada comentario nos ayuda a llegar mejor a la versión final.</p>
+      <h3>Esto es una Demo</h3>
+      <p>Estamos haciendo mejoras todo el tiempo — <strong>puede haber cambios y ajustes</strong> mientras seguimos puliendo la app.</p>
+      <p class="chico">Si algo no funciona o se ve raro, avisanos. Cada comentario nos ayuda a mejorarla.</p>
+    </div>
+
+    <div class="aviso">
+      <h3>No hace falta instalar nada</h3>
+      <p class="chico">Podés usar Huella Runner directo desde Instagram, sin instalar ni bajar nada — tocás el link de la bio y entrás. Si después querés tenerla con ícono propio en tu celu, más abajo te explicamos cómo instalarla en dos toques (es opcional).</p>
     </div>
 
     <div class="aviso">
       <h3>Tus datos</h3>
-      <p class="chico">Huella Runner es gratis y no pide datos de tarjeta, clave bancaria ni nada por el estilo. Dentro de la app, al pie de la pantalla, tenés <strong>VER LEGALES</strong> con la política de privacidad completa.</p>
+      <p class="chico">Huella Runner es gratis y no pide datos de tarjeta, clave bancaria ni nada por el estilo. Dentro de la app, al pie de la pantalla, tenés <strong>VER LEGALES</strong> con la política de privacidad completa. Y si en algún momento no querés seguir usándola, podés eliminar tu cuenta vos mismo, cuando quieras, desde Mi Perfil — sin tener que escribirnos.</p>
     </div>
 
   </div>
@@ -282,9 +271,9 @@
 <!-- ════════════ INSTALAR EN EL CELULAR ════════════ -->
 <section>
   <div class="wrap">
-    <div class="sec-tag">Antes que nada</div>
+    <div class="sec-tag">Opcional</div>
     <h2>Instalala en tu pantalla de inicio</h2>
-    <p class="sub">No hace falta bajarla de ninguna tienda. En dos toques te queda con su ícono, como cualquier otra app — y se abre a pantalla completa, sin las flechas del navegador.</p>
+    <p class="sub">Esto es opcional — la app anda igual desde Instagram, sin instalar nada. Pero si querés tenerla con su ícono propio y a pantalla completa, en dos toques la instalás, sin bajar nada de ninguna tienda.</p>
 
     <div class="instalar">
       <div class="os">
@@ -317,7 +306,7 @@
   <div class="wrap">
     <div class="sec-tag">Guía completa</div>
     <h2>De cero a tu primera carga de kilómetros</h2>
-    <p class="sub">Son once pasos cortos. Con los tres primeros ya estás adentro.</p>
+    <p class="sub">Son doce pasos cortos. Con los tres primeros ya estás adentro.</p>
 
     <!-- ─────────── PASO 0 ─────────── -->
     <div class="paso">
@@ -490,6 +479,16 @@
         <img loading="lazy" alt="Formulario para cargar una zapatilla nueva"
              src="https://res.cloudinary.com/dlayzh9ln/image/upload/f_auto,q_auto,w_700/v1785181202/WhatsApp_Image_2026-07-27_at_09.46.28_3_vfjoax.jpg">
       </figure>
+    </div>
+
+    <!-- ─────────── PASO 11 ─────────── -->
+    <div class="paso">
+      <div class="paso-top">
+        <div class="paso-num">11</div>
+        <div class="paso-title">Mi Perfil</div>
+      </div>
+      <p>Tocando el ícono 👤 de arriba entrás a <strong>Mi Perfil</strong>. Ahí podés completar (o cambiar) tu fecha de nacimiento, provincia, ciudad, celular y grupo de running — todo opcional.</p>
+      <div class="tip">💡 ¿No querés seguir usando la app? Al pie de Mi Perfil tenés <strong>Eliminar mi cuenta</strong> — se borra todo (tu cuenta, tus zapatillas, tu historial) al toque, sin tener que escribirnos.</div>
     </div>
 
   </div>
