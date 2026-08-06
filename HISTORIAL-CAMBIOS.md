@@ -12,6 +12,33 @@ el GAS es la versión más nueva.
 
 ---
 
+## 06/08/2026 (tarde) — landing/index.html actualizada al estado actual de la app
+
+La guía de uso (landing/) se había quedado desactualizada — seguía
+mencionando "Open Beta", no decía nada de Mi Perfil ni de poder
+eliminar la cuenta, y presentaba instalar la app como paso obligatorio.
+
+- "Open Beta" → "Demo" en el badge y el aviso de arriba.
+- Nuevo aviso "No hace falta instalar nada": deja claro que la app se
+  usa directo desde Instagram sin instalar, e instalar pasa a
+  presentarse como opcional (sección "Instalala..." también se
+  suavizó en ese sentido).
+- Aviso "Tus datos" ahora menciona que se puede eliminar la cuenta
+  cuando quieras, desde Mi Perfil.
+- Nuevo **Paso 11: Mi Perfil** — completar datos opcionales y cómo
+  eliminar la cuenta. Se agregó sin foto (pendiente que el fundador
+  suba una captura a Cloudinary).
+- **Pendiente**: fotos de los Pasos 3 (login) y 4 (zapatillas) quedaron
+  visualmente desactualizadas (login real sigue mostrando "Open Beta"
+  hasta que se publique esa versión; las tarjetas del carrusel real
+  ahora son más anchas) — se actualizan cuando el fundador suba
+  capturas nuevas.
+- Aplicada la misma regla de "últimos 2 cambios" en el encabezado del
+  archivo — el historial completo de antes queda documentado más abajo
+  en este mismo `.md` (entrada del 27/07/2026, sin tocar).
+
+---
+
 ## 05/08/2026 (noche) — Tarjetas del carrusel más anchas/bajas + arreglo de "Historial" cortado
 
 - **Tarjetas del carrusel**: el slide pasó de 62% a 72% de ancho (máx.
