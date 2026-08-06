@@ -1,8 +1,16 @@
-<!DOCTYPE html>
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 05/08/2026 16:20 (hora Argentina)
+  Última actualización: 05/08/2026 21:53 (hora Argentina)
   Cambios en esta versión:
+    - Tarjetas del carrusel más anchas y más bajas: el slide pasó de
+      62% a 72% de ancho (máx. 240px -> 280px, sigue siendo un %,
+      así que escala proporcional en cualquier celu) y la foto de
+      proporción 3:4 a 4:4.4 (más cuadrada). De paso, arreglado que
+      "HISTORIAL" se cortaba en pantallas angostas (sobre todo
+      adentro del navegador de Instagram): se le sacó espaciado entre
+      letras a los botones Sumar KM / Historial (0.5px -> 0.2px, y a
+      0 en el breakpoint de pantallas chicas).
+  Cambios en versiones anteriores:
     - Sacada la pantalla de bienvenida (onboarding) que se veía antes
       de llegar al Login — arranca directo en Login, que ya tenía sus
       propios accesos a Registro y "¿Olvidaste tu contraseña?", y su
@@ -14,499 +22,9 @@
       de antes (carga de servidores, escalabilidad) a algo más simple:
       "Estamos haciendo mejoras todo el tiempo — puede haber cambios y
       ajustes mientras seguimos puliendo la app."
-  Cambios en versiones anteriores:
-    - Nuevo botón "Eliminar mi cuenta" en Mi Perfil (con modal de
-      confirmación, mismo patrón visual que borrar zapatilla), para que
-      alguien que prueba la app y no le gusta pueda irse tranquilo sin
-      dejar datos guardados. Usa la eliminarCuenta() nueva de codigo.gs.
-    - Nueva frase debajo de "¿Olvidaste tu contraseña?" en el login:
-      "Solo pedimos tu mail — y podés borrar tu cuenta cuando quieras,
-      desde Mi Perfil." — y el texto de Legales actualizado para
-      reflejar que la baja ahora es autoservicio, no por contacto.
-  Cambios en versiones anteriores:
-    - "Compartir" (opción B): el botón 📤 ahora arma una sola imagen con
-      la foto + marca + modelo + barra de desgaste + km + marca de agua
-      "HUELLA RUNNER", todo dibujado directo con <canvas> (sin librería
-      nueva). Antes se mandaba la foto y el texto por separado — andaba
-      bien en WhatsApp, pero Instagram solo tomaba la foto e ignoraba el
-      texto (así funciona el share de Instagram, no depende de
-      nosotros). "Quemando" el texto sobre la imagen se ve completo en
-      cualquier app donde se comparta. Nuevas _armarImagenParaCompartir(),
-      _cargarImagenParaCanvas(), _dibujarImagenCover(), _rectRedondeado().
-    - Ícono del botón cambiado de 📤 a un SVG (el ícono estándar de
-      "compartir" de Android — un nodo con 2 líneas a otros 2 nodos), a
-      pedido del fundador.
-  Cambios en versiones anteriores:
-    - Nuevo botón "📤 Compartir" en cada tarjeta del carrusel (abajo a la
-      izquierda de la foto, junto al de eliminar) — a pedido de un
-      usuario real, para no tener que hacer captura de pantalla y
-      subirla a mano. compartirZapatilla() intenta compartir la foto de
-      la zapatilla + un texto armado vía Web Share API (funciona en la
-      mayoría de los celus actuales); si el navegador no soporta
-      compartir archivos, cae en compartir solo el texto (mismo
-      mecanismo de respaldo que ya usa compartirSocialProof()). No
-      comparte la tarjeta completa con la barra de desgaste (eso quedó
-      para más adelante, si esto engancha — necesitaría una librería
-      nueva para "fotografiar" el diseño).
-  Cambios en versiones anteriores:
-    - Agregada la marca Joma (nueva, primera vez en el catálogo) con su
-      primer modelo "R 2000" y foto propia. Un usuario ya lo había
-      cargado a mano vía "Otras..."/"Otros..." con esos nombres exactos
-      — le va a aparecer la foto sola apenas se publique, sin tocar el
-      Sheet (mismo mecanismo que el Pegasus 42). Sin foto genérica de
-      marca todavía — el fundador va a subir una más adelante.
-  Cambios en versiones anteriores:
-    - Agregado "Pegasus 42" (Nike) al desplegable, con foto propia. Un
-      usuario ya lo había cargado a mano vía "Otros..." con exactamente
-      ese nombre — como la foto se busca por Marca+Modelo (no por
-      usuario), le va a aparecer sola apenas se publique, sin tocar el
-      Sheet.
-  Cambios en versiones anteriores:
-    - Nueva pantalla "Mi Perfil": el registro más corto (ver abajo) dejó
-      5 campos como "completar después" (Fecha de Nacimiento, Provincia,
-      Ciudad, Celular, Grupo de Running), pero no existía ninguna forma
-      de volver y completarlos — el fundador lo notó al preguntar "pero
-      si después querés completar perfil, ¿cómo hacés?". Se agregó:
-      · Ícono 👤 nuevo al lado de la campanita de notificaciones, en el
-        dashboard — abre el modal "Mi Perfil" con esos 5 campos,
-        precargados con lo que ya haya guardado el usuario.
-      · Reutiliza el mismo mecanismo de Provincia→Ciudad (API Georef) y
-        "Grupo: Otro..." que ya tiene Registro, pero en campos propios
-        (perfil-*) para no tocar esa lógica.
-      · Guardar llama a actualizarPerfilUsuario() (nueva, codigo.gs), que
-        actualiza esas columnas en la fila del usuario en el Sheet.
-      El fundador aclaró que no necesita avisos automáticos para que la
-      gente lo complete — cuando llegue el momento (ofertas regionales,
-      etc.) manda un mensaje general desde el panel admin pidiéndolo.
-    - Sacado el saludo "Hola, [Nombre]" del dashboard (antes solo se
-      ocultaba en pantallas angostas) — a pedido del fundador, ahora que
-      el ícono 👤 de "Mi Perfil" ya deja claro qué es esa zona. El span
-      #user-name se mantiene oculto en el DOM porque login/registro
-      todavía le asignan el nombre — no se tocó esa lógica.
-  Cambios en versiones anteriores:
-    - Registro más corto: solo 500 seguidores en Instagram y 4 registros
-      reales — el formulario de 10 campos era sospechoso de estar
-      espantando gente. Ahora quedan visibles solo Nombre, Apellido,
-      Email, Contraseña (x2) y Nivel de Corredor; Fecha de Nacimiento,
-      Provincia, Ciudad, Celular y Grupo de Running pasaron a un bloque
-      colapsado "👤 Completar perfil (opcional)" (mismo patrón de
-      acordeón que ya usa "VER LEGALES +"), cerrado por defecto. Nada de
-      esto cambia validación ni backend — esos campos ya eran opcionales
-      del lado del servidor, solo se veían todos juntos y obligaban a
-      scrollear de más antes de poder registrarse. El ícono 👤 (silueta
-      neutra) se eligió a propósito en vez de un emoji de persona con
-      género marcado, a pedido del fundador.
-  Cambios en versiones anteriores:
-    - Pantalla de Login: "¿No tienes cuenta? Regístrate" y "¿Olvidaste tu
-      contraseña?" ahora están justo debajo del botón "Iniciar Sesión"
-      (antes quedaban más abajo, después de la tarjeta con el texto
-      "Huella Runner · MDQ · ARG..."). A pedido del fundador, para que
-      alguien sin cuenta no tenga que bajar tanto para encontrar el link
-      de registro. Cambio solo de orden, sin tocar textos ni funciones.
-  Cambios en versiones anteriores:
-    - Fix: en pantallas angostas, "Hola, [Nombre]" (arriba a la derecha
-      del dashboard) no entraba junto al logo y los íconos — se partía
-      en 2 líneas y quedaba pisando el logo "HUELLA RUNNER". Reportado
-      por el fundador con foto real de un celu más chico (en el de él,
-      más ancho, se veía bien). Se oculta el saludo debajo de 400px de
-      ancho de pantalla — no se saca en general, solo donde no entra.
-  Cambios en versiones anteriores:
-    - Nuevo ⓘ al lado de "Límite de km (opcional)" (formulario de nueva
-      zapatilla): abre un cartel corto que explica cuándo conviene un
-      número más bajo (≈650: un solo par sin rotar, asfalto, ritmos
-      fuertes, zapatillas livianas de competencia) y cuándo más alto
-      (≈850–1000: rotación, tierra/pasto, rodajes tranquilos,
-      entrenamiento diario amortiguado), y aclara que la señal que más
-      importa no es el número sino cómo se sienten. Texto pensado corto
-      a propósito: el fundador preguntó si no era mucho, y el cartel no
-      scrolleaba.
-    - Los modales tipo .modal-recover-content ahora tienen
-      max-height 85vh + scroll: si un texto se hace largo, en un celu
-      chico se cortaba abajo sin poder leerlo.
-    - Fix de un cabo suelto del cambio de esta mañana (650 → 850): las
-      constantes ya estaban en 850, pero el formulario seguía mostrando
-      650 en dos lugares (el placeholder del casillero y el texto de
-      ayuda "Si no ponés nada, usamos 650 km").
-  Cambios en versiones anteriores:
-    - Sacado el alert() de diagnóstico temporal de abrirLockerModal():
-      ya cumplió su función (mostró que al frontend le llegaba
-      archived=null, la pista que destrabó el bug del Locker). El
-      arreglo en sí está en codigo.gs — ver ahí la explicación completa.
-  Cambios en versiones anteriores:
-    - Letra del cartel "¿Qué es Open Beta?" un poco más grande y más
-      clara (0.72rem gris → 0.8rem plata) — el fundador la vio bien pero
-      pidió aclararla. Cambio acotado solo a ese cartel (#openbeta-desc),
-      no toca el texto del cartel de "Recuperar Contraseña" que comparte
-      la misma clase base.
-  Cambios en versiones anteriores:
-    - "Versión Demo" → "Open Beta" (pantalla de bienvenida y login), con
-      un ícono (ⓘ) al lado que abre un cartel corto explicando qué es
-      una beta abierta — a pedido del fundador, para cuando lance el 1
-      de agosto.
-    - KM_LIMITE_DEFAULT (tope por defecto si el usuario no elige uno
-      propio): 650 → 850. Ver también trail-points.gs (TP.KM_UMBRAL_CUPON,
-      misma actualización) — quien ya haya puesto su propio límite en
-      una zapatilla no se ve afectado, solo cambia el default.
-  Cambios en versiones anteriores:
-    - Desplegable "Grupo de running" (registro): agregados 18 grupos
-      nuevos que el fundador recopiló (Mar del Plata/Pinamar, Tandil,
-      Necochea, La Plata/GBA, Rosario, y "Team Pura Vida"), más 4 grupos
-      de MDQ que ya estaban en la lista y no tenían aclarado dónde
-      quedan. Los que no son de MDQ llevan la ciudad/provincia entre
-      paréntesis, salvo que ya la digan en el nombre (ej. "Kumelen
-      Running Tandil"). 2 cosas sin confirmar, quedaron así por ahora:
-      · "Kuden Group Tandil" (ya existía) — el fundador mandó "Kuden
-        Group" como grupo de Villa Gesell/Pinamar, no de Tandil. No se
-        tocó el nombre existente por la duda; falta confirmar cuál es.
-      · "FC Running Team (La Plata)" — el dato original decía
-        "FC Running Team / Runner Callejero", ambiguo si es un solo
-        nombre o dos alternativas; se eligió el primero.
-  Cambios en versiones anteriores:
-    - Foto real por zapatilla: si la fila de esa zapatilla en el Sheet
-      (pestaña "Zapatillas") tiene la columna Foto_URL cargada, se
-      muestra esa foto en el carrusel y en el Locker en vez de la
-      genérica del modelo. Sin esa columna/valor, sigue mostrando lo
-      de siempre (foto de modelo → genérica de marca → "no disponible").
-      Pensado para cuando un usuario manda la foto de su propia zapa:
-      el fundador la retoca, la sube a Cloudinary y pega el link a mano
-      en esa columna, en la fila de ese usuario/zapatilla — no hace
-      falta ninguna pantalla nueva. Requiere que la columna Foto_URL
-      exista en el Sheet (paso manual del fundador, una sola vez).
-  Cambios en versiones anteriores (revisión de bugs pedida por el fundador):
-    - Fix: doble-toque en "Guardar" podía duplicar datos. Los botones de
-      login, crear cuenta, definir contraseña nueva, agregar zapatilla
-      y cargar kilómetros solo cambiaban el texto mientras esperaban la
-      respuesta del servidor, pero seguían habilitados — un segundo
-      toque (típico con mala señal) podía disparar la acción dos veces
-      (ej. sumar los km cargados por duplicado). Ahora se deshabilitan
-      hasta tener respuesta, igual que ya hacían "archivar", "eliminar"
-      y "recuperar contraseña". De paso, "Guardar Entrenamiento" no
-      tenía manejo de error de conexión (se quedaba en "Guardando..."
-      para siempre si fallaba la red) — ahora sí lo tiene.
-    - Fix: una comilla doble (") en un modelo de zapatilla cargado a
-      mano (opción "Otra marca/Otro modelo") podía romper el botón
-      "Eliminar" de esa tarjeta y el "Reactivar" en el Locker — el
-      escapado solo cubría la comilla simple, no la doble, y esa
-      comilla doble cortaba el atributo onclick a la mitad. Nueva
-      función escInlineJs() (al lado de sanitize()) que escapa ambas;
-      reemplaza el escapado suelto que había en 2 lugares.
-  Cambios en versiones anteriores:
-    - Texto de los mensajes de notificaciones (.notif-mensaje) otro 10%
-      más grande: 1.15rem → 1.27rem, a pedido del fundador.
-  Cambios en versiones anteriores:
-    - Texto de los mensajes de notificaciones (.notif-mensaje) un 40%
-      más grande: 0.82rem → 1.15rem, a pedido del fundador.
-  Cambios en versiones anteriores:
-    - 3 modelos más de Puma (sin foto propia todavía): Deviate Nitro
-      Elite 3, Foreverrun Nitro, Electrify Nitro 3. De paso se resolvió
-      una duda pendiente: "Foreverrun Nitro" (sin el "2") es un modelo
-      real y distinto de "Foreverrun Nitro 2" — no era el nombre
-      cortado de un link viejo, sino un modelo aparte. Total: 141
-      modelos en 16 marcas. Sigue sin tocar "Deviate Nitro 4
-      Hombre/Mujer" (misma duda de siempre, pendiente).
-  Cambios en versiones anteriores:
-    - Agregada la marca Brooks (nueva, entre Asics y Dynafit en el
-      desplegable) con su primer modelo: Levitate 5. El badge de color
-      para Brooks ya existía en el código (badge-brooks) sin usarse
-      hasta ahora. Sin foto genérica de marca todavía — hasta que se
-      suba una, muestra "imagen no disponible" en vez de la genérica.
-    - 10 modelos más de la misma tanda de Run&Bike Online: Adidas
-      (Pureboost 5, Switch FWD, Ultraboost 5, Adizero SL2, Supernova
-      Prima), Under Armour (Infinite Elite), Nike (Invincible 3,
-      Infinity RN 4 Blueprint, Alphafly 3 Blueprint, Pegasus 40). Sin
-      foto propia todavía. Total: 138 modelos en 16 marcas.
-      Quedan 2 dudas sin resolver (a pedido del fundador, no se tocó
-      nada): "Asics Sonicblast" vs "Soniblast", y "Nike Air Zoom
-      Pegasus" (sin número) como posible variante de "Pegasus 41".
-  Cambios en versiones anteriores:
-    - BUG arreglado (modo claro): dos cambios de ayer dejaron colores
-      fijos que se veían bien en oscuro pero eran ilegibles en modo
-      claro (fondo claro). El logo "HUELLA" de arriba a la izquierda
-      quedó en #ffffff fijo (blanco sobre fondo claro = invisible); el
-      "Powered by Huella Runner MDQ" (4 lugares) y "Gestioná tus
-      zapatillas..." quedaron en #aaaaaa fijo (gris pálido sobre fondo
-      claro = casi ilegible). Se cambiaron a var(--plata) y a una
-      variable nueva var(--gris-powered) (#aaaaaa en oscuro, #555555 en
-      claro) que sí se adaptan al tema — el modo oscuro queda
-      pixel-idéntico a como estaba, solo se corrigió el claro. Detectado
-      por el fundador con capturas reales en modo claro.
-  Cambios en versiones anteriores:
-    - Agregados 7 modelos nuevos más (mismo relevamiento de Run&Bike
-      Online, sin foto propia todavía): Nike Vaporfly 4, Nike Pegasus
-      Premium, Nike Pegasus Premium QS, Nike Vomero Plus, Adidas
-      Adizero Pro 4, Adidas Hyperboost Edge, Asics Superblast 2.
-      Quedó pendiente una duda: la tienda lista "Asics Sonicblast" (con
-      C) que podría ser la misma zapatilla que "Soniblast" (sin C) ya
-      cargada — no se tocó hasta confirmar con el fundador si es un
-      error de tipeo en uno de los dos lados o son modelos distintos.
-  Cambios en versiones anteriores:
-    - Agregados 30 modelos nuevos al desplegable (solo nombres, sin
-      foto propia todavía — usan la genérica de su marca hasta que se
-      suban las fotos reales), sacados de un relevamiento de
-      Run&Bike Online: Saucony (Endorphin Pro 4, Axon 3, Endorphin
-      Speed 4), Adidas (Adizero Evo SL, Adizero Boston 13, Adizero Evo
-      SL ATR, Adizero Evo SL Exo, Supernova Ease 2, Runfalcon 6 Kids,
-      Boost Run), Puma (Deviate Nitro 3 Wtr+, Velocity Nitro 4
-      Digitokyo, Deviate Nitro 3 Digitokyo, Deviate Nitro 2), Salomon
-      (Aero Blaze 3 GRVL, Aero Glide 3, Aero Glide 3 GRVL, DRX Defy
-      GRVL), Skechers y Fila (primeros modelos de estas 2 marcas —
-      antes solo tenían la genérica): Glide Step Altus, Max Cushioning
-      Propulsion, Aero Burst, Aero Spark, Racer Carbon 3, Racer Carbon
-      2, Float Maxxi 2 Pro), y New Balance (Fresh Foam X 1080 v14/v13,
-      Fresh Foam X Evoz v3, FuelCell Rebel v5, FuelCell Supercomp
-      Trainer v4). Quedaron afuera "Deviate Nitro 4 Mujer/Hombre"
-      (ambiguo con el "Deviate Nitro 4" genérico que ya existía) y un
-      link de "Foreverrun Nitro" con nombre cortado — a pedido del
-      fundador, pendientes de definir después.
-  Cambios en versiones anteriores:
-    - Texto informativo de la pantalla de login ("Gestioná tus
-      zapatillas running..." y "acceso exclusivo a ofertas..."): un
-      poco más grande (0.82rem → 0.86rem) y más claro (de un gris
-      #888888 a #aaaaaa) para que se lea mejor. Es una sola clase
-      CSS (.intro-body) con un solo uso en todo el archivo, así que no
-      afecta a nada más.
-  Cambios en versiones anteriores:
-    - Nuevo ícono de la PWA: "HR" en Bebas Neue (H blanca + R dorada,
-      inclinadas, fondo negro), reemplaza al ícono viejo que no se
-      veía bien en la pantalla de inicio del celu. Se actualizaron los
-      3 lugares que apuntaban al ícono anterior: <link rel="icon">,
-      <link rel="apple-touch-icon"> y los dos tamaños (192/512) del
-      manifest. Ojo: aunque esto quede bien publicado, Android puede
-      seguir mostrando el ícono viejo si ya estaba instalado — hay que
-      sacar el acceso directo de la pantalla de inicio y agregarlo de
-      nuevo para que tome el cambio.
-  Cambios en versiones anteriores:
-    - "Powered by Huella Runner MDQ" de las 3 pantallas de login/
-      registro/onboarding (arriba del logo grande) ahora tiene el mismo
-      estilo que el del pie del carrusel: más chico (0.5rem), "Huella
-      Runner" en cursiva y "Runner" en dorado.
-    - "Tus zapatillas activas" (subtítulo del carrusel): un poco más
-      chico, y la palabra "zapatillas" en dorado (el resto queda igual).
-    - Notificaciones: se puede seleccionar varios mensajes a la vez
-      (botón "Seleccionar" arriba, tocás cada tarjeta para tildarla,
-      como en Google Fotos) y borrarlos juntos con un solo botón. El
-      borrado individual (el tacho por mensaje) sigue igual que antes.
-      No se tocó el backend — ya borraba "de mentira" (solo se oculta
-      para ese usuario, el registro queda en el Sheet para siempre), acá
-      solo se agregó la forma de elegir varios de una.
-  Cambios en versiones anteriores:
-    - Dentro del "Powered by Huella Runner MDQ" del pie del carrusel:
-      "Huella Runner" ahora en cursiva (font-style:italic — acá sí hay
-      itálica real porque es tipografía Montserrat, no Bebas Neue) y
-      "Runner" en el mismo dorado que el resto de la app. "Powered by"
-      y "MDQ" quedan sin cambios.
-  Cambios en versiones anteriores:
-    - Logo de arriba a la izquierda (adentro de la app, .nav-logo-inline):
-      "Huella" pasa de plata a blanco puro, "Runner" queda igual
-      (dorado), y las dos palabras ahora se inclinan (mismo
-      transform:skewX(-8deg) que ya tenían los otros 4 logos). La
-      tipografía (Bebas Neue) no se tocó, a pedido del fundador.
-    - El "Powered by Huella Runner MDQ" del pie del carrusel se aclaró
-      un poco (de #888888 a #aaaaaa) para que se lea mejor — solo esa
-      frase puntual, no se tocó la variable --gris-texto que comparten
-      otros ~46 textos secundarios de la app.
-  Cambios en versiones anteriores:
-    - "RUNNER" tiene una leve inclinación hacia la derecha
-      (transform:skewX(-8deg)) en los 4 logos de login/registro/
-      contraseña, a pedido del fundador. Se usa un inclinado por CSS en
-      vez de font-style:italic porque Bebas Neue no tiene una variante
-      itálica propia.
-  Cambios en versiones anteriores:
-    - Unificado el logo "HUELLA RUNNER" de las 4 pantallas de login/
-      registro/contraseña (onboarding, login, registro, elegir
-      contraseña nueva) con el que ya se usa en el resto de la app:
-      antes tenían degradé verde + blanco/plata en tipografía
-      Montserrat (un diseño viejo que quedó sin actualizar); ahora usan
-      plata + dorado sólido en Bebas Neue, igual que el logo de arriba a
-      la izquierda dentro de la app. De paso se sacaron 3 clases CSS
-      (.logo, .logo-huella, .logo-runner) que quedaron sin usar de un
-      diseño anterior.
-  Cambios en versiones anteriores:
-    - Agregados 12 modelos nuevos, cada uno con su foto propia: Hoka
-      Mafate Speed 4, Hoka Match 6, Hoka Solimar, Saucony Endorphin
-      Azura, Adidas Terrex Agravic 4, Asics Novablast 5 Tokyo, New
-      Balance FuelCell Rebel v3, New Balance Fresh Foam X Vongo v6
-      (primeros modelos de New Balance, antes la marca estaba sin
-      ninguno cargado), Nike Pegasus 39, Nike Structure 25, Nike Winflo
-      9, Under Armour Hovr Synergy (primer modelo de Under Armour, antes
-      sin ninguno). Ver docs/cloudinarys-zapatillas.md.
-      De los 13 links recibidos, "Nike Air Zoom Pegasus 41" se dejó
-      afuera — misma zapatilla que "Pegasus 41" (ya cargada), Nike sacó
-      el "Air Zoom" del nombre hace unas versiones. Pendiente confirmar
-      con el fundador si era para reemplazar esa foto.
-  Cambios en versiones anteriores:
-    - Agregado 1 modelo más de Saucony: Endorphin (el modelo base de esa
-      línea, distinto de Endorphin Pro 5 que ya estaba).
-  Cambios en versiones anteriores:
-    - Agregados 7 modelos de Saucony al catálogo, cada uno con su foto
-      propia: Kinvara Pro, Triumph 23, Triumph 21, Triumph 22, Kinvara
-      14, Ride 16, Endorphin Pro 5. Ver docs/cloudinarys-zapatillas.md
-      (llegó un 8vo link que era en realidad Nike Revolution 7, ya
-      cargado antes — no se agregó de nuevo).
-  Cambios en versiones anteriores:
-    - La barra de progreso de km (debajo de cada zapatilla) tenía el
-      fondo negro puro, igual que el resto de la tarjeta — cuando el
-      uso era bajo (poco relleno amarillo) la barra prácticamente no se
-      veía. Se le agregó un contorno finito gris al 50% de opacidad
-      para que el "track" completo sea visible siempre, esté vacía o
-      llena.
-  Cambios en versiones anteriores:
-    - BUG arreglado (de verdad esta vez): el ícono que se ve al agregar
-      la app a la pantalla de inicio venía del manifest metido en la
-      línea 172 (data URI), no del que se había tocado en codigo.gs —
-      ese quedó sin usar. Si el navegador (ej. Brave) no llega a hacer
-      la instalación completa de PWA y arma un acceso directo simple,
-      usa el favicon de la página — y no había ninguno declarado. Se
-      agregó un <link rel="icon"> estándar apuntando al mismo ícono
-      "HR" de Cloudinary, para cubrir ese camino también. De paso, el
-      theme_color de ese manifest (que seguía en neón lima viejo,
-      #E9FF00) se actualizó al dorado actual (#C5B358).
-  Cambios en versiones anteriores:
-    - Agregados 11 modelos de Nike al catálogo, cada uno con su foto
-      propia: Vomero 17, Run Defy, Winflo 11, Revolution 7, Revolution
-      8, Renew Run 3, Pegasus Plus, LunarSpider, Pegasus 41, Downshifter
-      13, Quest 5. Ver docs/cloudinarys-zapatillas.md (llegó un link
-      duplicado para Renew Run 3, se usó uno solo).
-  Cambios en versiones anteriores:
-    - "VER LEGALES +" ahora también está en la pantalla de Login, no
-      solo en el onboarding inicial. Antes, una vez que se aceptaba el
-      onboarding una vez (queda guardado en el celu), no había forma de
-      volver a ver el texto de privacidad sin borrar datos del
-      navegador. Mismo texto, mismo diseño, id de acordeón distinto
-      (legales-acordeon-login) para no chocar con el del onboarding.
-  Cambios en versiones anteriores:
-    - BUG arreglado: los botones rápidos de km (5K/10K/21K/42K, modal
-      Registrar KM) tenían fondo oscuro hardcodeado (#1a1a1a) con texto
-      var(--plata) — en modo claro, --plata pasa a ser oscuro también,
-      así que el texto quedaba invisible (oscuro sobre oscuro). Ahora
-      usan var(--card-bg)/var(--borde), que sí cambian según el tema.
-    - BUG (dudoso, arreglado igual): el parseo de fecha en el buzón de
-      notificaciones usaba new Date(raw) sobre un string "dd/MM/yyyy",
-      que en JS se puede confundir con formato MM/dd/yyyy. Ahora se
-      parsea a mano (mismo criterio que ya usa _formatFecha en
-      Admin.html), sea que llegue como texto o como objeto Date.
-    - Agregados 5 modelos de Hoka al catálogo, cada uno con su foto
-      propia: Cielo X1 2.0, Arahi 7, Clifton 8, Clifton 10, Rocket X2.
-      De paso, se actualizó la foto de Hoka Bondi 9 (mismo modelo, foto
-      nueva). Ver docs/cloudinarys-zapatillas.md.
-    - Paso 1 del límite de km por zapatilla: en "Nueva Zapatilla" ahora
-      hay un campo opcional "Límite de km" (si se deja vacío, usa 650
-      como antes). El carrusel ya no usa el número fijo MAX_KM=900 para
-      la barra de progreso — ahora usa el límite propio de cada
-      zapatilla (KM_Limite), que es el mismo que dispara el estado
-      Crítico y el cupón de desgaste. Antes convivían dos números de
-      "límite" distintos sin querer (900 en la barra, 650 en todo lo
-      demás); ahora es uno solo.
-    - Agregados 10 modelos de Asics (street) al catálogo, cada uno con
-      su foto propia: Gel Nimbus 26, Soniblast, Cayano 32, Gel Rocket 11,
-      Megablast, Gel Trebuco 13, Gel Cumulus 27, Cayano 32 W, Novablast,
-      Novablast 5 Lite. Ver docs/cloudinarys-zapatillas.md.
-    - Mismo arreglo de peso de imagen (_cloudinaryChica) aplicado también
-      a las fotos grandes del carrusel principal (480px) y del Locker
-      (400px) — antes solo estaba en la miniatura de "Nueva Zapatilla".
-      No pierde calidad visible: nunca agranda una foto más chica que el
-      original, solo evita bajar más resolución de la que el celu puede
-      mostrar.
-    - BUG REAL arreglado: la miniatura de "Nueva Zapatilla" (Tanda 2)
-      bajaba la foto original completa de Cloudinary y recién ahí la
-      achicaba con CSS a 120x120 — pesaba mucho y hacía tardar más la
-      pantalla en aparecer, sobre todo con 3G/4G. Ahora se le pide a
-      Cloudinary una versión ya redimensionada (240px, comprimida) vía
-      parámetros en la URL (_cloudinaryChica()), no el archivo entero.
-  Cambios en versiones anteriores (Tanda 4 de la revisión completa — carrusel):
-    - Carrusel de zapatillas activas: indicador "2 de 5" debajo de los
-      puntitos, además de los puntitos ya existentes. Solo cuenta
-      zapatillas reales, no la tarjeta de "agregar".
-  Cambios en versiones anteriores (Tanda 3 de la revisión completa — modales):
-    - Registrar KM: botones rápidos 5K/10K/21K/42K además del campo libre.
-    - Historial: nuevo botón ✏️ para corregir el km de un registro ya
-      cargado (típico error de tipeo), sin borrar y perder la fecha
-      original. Usa un prompt nativo simple, no un modal nuevo.
-    - Confirmar eliminar zapatilla: el botón "Eliminar para siempre" ahora
-      avisa cuántos km de historial se van a perder, si hay alguno.
-    - Locker: cada zapatilla archivada muestra desde cuándo está guardada.
-    - Modal de voz: más ejemplos de frases válidas (antes solo uno).
-    - Modal "dato de comunidad": botón "📤 Compartir" (Web Share API en
-      el celu, WhatsApp como respaldo en desktop).
-    - Confirmar borrar entrenamiento ya mostraba fecha y km específico
-      del registro — no hizo falta tocarlo, ya estaba bien.
-  Cambios en versiones anteriores (Tanda 2 de la revisión completa):
-    - Agregar zapatilla: miniatura de la foto (genérica o de modelo) que
-      se actualiza en vivo apenas elegís marca, y de nuevo cuando además
-      elegís modelo — usa la misma resolución de imagen de siempre
-      (getShoeImage), así que nunca se desincroniza de lo que ves después
-      en la tarjeta ya guardada.
-  Cambios en versiones anteriores (4 bugs reales de la revisión completa):
-    - Eliminado el panel admin chico dentro de la app (view-admin-notif,
-      abrirPanelAdmin, adminEnviarNotificacion y todo lo asociado) —
-      había quedado roto por el candado de seguridad, y duplicaba al
-      panel completo (Admin.html) con una variable de admin distinta
-      (ADMIN_EMAIL). Ahora hay un solo camino de admin.
-    - Sacado todo lo de voucher/Open Sports: badge "Premio" y tarjeta de
-      código en las notificaciones, checkbox "¿Es un Premio?" (vivía en
-      el panel chico que se eliminó). El sistema de cupones por desgaste
-      (trail-points.gs, HR-DESGASTE-) no se tocó, es independiente.
-    - Nueva pantalla "Elegí tu contraseña nueva" (view-set-password):
-      aparece automáticamente después de iniciar sesión con una
-      contraseña temporal (la de "Olvidé mi contraseña"). Pide la
-      contraseña nueva dos veces (mismo patrón que ya tenía Registro) y
-      recién después deja pasar al dashboard. Agregado también un botón
-      de mostrar/ocultar contraseña (👁️) en Login, Registro y esta
-      pantalla nueva.
-    - "Recuperar contraseña": el texto ya no promete "tus credenciales"
-      (imposible desde que se hashean) — ahora explica que se manda una
-      temporal y que después se elige una definitiva.
-    - Bienvenida (onboarding): ya no se muestra en cada visita — se
-      guarda en el celu que ya se vio (localStorage) y va directo al
-      login. Antes tapaba la pantalla completa cada vez, sin excepción.
-  Cambios en versiones anteriores:
-    - Integrado el modal "dato de comunidad" (diseñado hace tiempo en
-      social-proof-ui.html, nunca pegado) que se abre al registrar una
-      zapatilla: "¡Zapatilla registrada!" + cuántos runners más usan esa
-      marca/modelo + km globales acumulados, con botón "¡A entrenar! 🏃".
-      Solo se muestra si ya hay datos reales de comunidad (si el modelo
-      es nuevo, no se abre nada). Reemplaza el aviso por buzón de
-      notificaciones que se había armado antes para esto mismo.
-  Cambios en versiones anteriores:
-    - Agregados 11 modelos de Adidas (street) al catálogo, cada uno con
-      su foto propia: Adizero Evo, Ultrarun 5, Duramo SL2, Supernova
-      Glise, Supernova Rise 3, Duramo Speed, Adistar ByD, Supernova 2,
-      Questar 3, Adizero Drive, Response 2. Ver docs/cloudinarys-zapatillas.md.
-    - "VERSIÓN DEMO" agrandada (0.6rem → 0.85rem) en la pantalla de
-      bienvenida, y agregada también debajo del título en la pantalla
-      de login (antes solo estaba en la bienvenida).
-    - Agregadas 7 marcas street al desplegable de zapatillas (Adidas,
-      Asics, Fila, New Balance, Nike, Skechers, Under Armour) con su
-      foto genérica. Todavía sin modelos específicos cargados (usan
-      "Otros..." para el modelo).
-    - Arreglada la genérica de Saucony: usaba por error una foto de la
-      Peregrine 16 en vez de una foto genérica de marca.
-    - Nuevo docs/cloudinarys-zapatillas.md con el catálogo ordenado de
-      todos los links de Cloudinary usados.
-    - Agregado "VERSIÓN DEMO" en neon/fluo (#CCFF00) debajo del título
-      HUELLA RUNNER en la pantalla de bienvenida.
-    - Sacado "trail" de los 2 párrafos de la pantalla de bienvenida
-      (onboarding): "Registra tus zapatillas" y "comunidad Huella
-      Runner".
-    - Botón "Ver en tienda" de cada zapatilla: sacado el link a
-      todotrail.com.ar y el texto "todo trail". Ahora dice
-      "🛒 Próximamente" sin acción (deshabilitado), a pedido del
-      fundador, hasta que haya un destino real para ese botón.
-    - irATodoTrail() queda sin usar por ahora, lista para cuando se
-      reactive con un link real.
-    - Sacado el título grande "MIS ZAPAS" de la pantalla del armario;
-      "Tus zapatillas activas" ahora es más grande y ocupa su lugar.
-    - Sacado el campo "Apodo" del formulario de agregar zapatilla (ya
-      no se pide al registrar una zapa nueva).
-    - BUG REAL arreglado: el logo del dashboard decía "Todo Trail" en
-      minúsculas ("Todo"/"Trail"), por eso no lo agarró la búsqueda
-      anterior que solo miraba mayúsculas. Ahora dice "Huella"/"Runner".
-      (Si todavía ves "TODO TRAIL" en el dashboard, es que falta volver
-      a pegar este archivo en el GAS — en este repo ya está arreglado.)
-    - doRegister() y doLogin(): si algo fallaba antes de llegar al
-      servidor, no se veía ningún mensaje. Ahora siempre avisa.
-    - Mantiene: sin "TODO TRAIL" en bienvenida/login/registro, acordeón
-      legal + toggle de tema
+  (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
+  en la raíz del repo — a partir de ahora este encabezado solo guarda
+  los últimos 2 cambios, para no seguir creciendo sin límite.)
 -->
 <html lang="es">
 <head>
@@ -743,8 +261,8 @@
 
     /* ── Cada slide: más estrecho para que se vean los laterales ── */
     .swiper-coverflow .swiper-slide {
-      width: 62% !important;
-      max-width: 240px;
+      width: 72% !important;
+      max-width: 280px;
       border-radius: 22px;
       overflow: visible;
       cursor: pointer;
@@ -792,7 +310,7 @@
     /* ── Foto ── */
     .cf-photo-wrap {
       width: 100%;
-      aspect-ratio: 3 / 4;    /* ligeramente más alto */
+      aspect-ratio: 4 / 4.4;    /* tarjeta más ancha y más baja */
       background: #0d0d0d;
       overflow: hidden;
       position: relative;
@@ -930,7 +448,7 @@
       color: #000; border: none;
       padding: 10px 6px; border-radius: 50px;
       font-size: 0.62rem; font-weight: 900; cursor: pointer;
-      text-transform: uppercase; letter-spacing: 0.5px;
+      text-transform: uppercase; letter-spacing: 0.2px;
       font-family: 'Montserrat', sans-serif;
       transition: opacity 0.2s, transform 0.15s;
       white-space: nowrap;
@@ -941,7 +459,7 @@
       border: 1.5px solid #C0C0C0;
       padding: 10px 6px; border-radius: 50px;
       font-size: 0.62rem; font-weight: 900; cursor: pointer;
-      text-transform: uppercase; letter-spacing: 0.5px;
+      text-transform: uppercase; letter-spacing: 0.2px;
       font-family: 'Montserrat', sans-serif;
       transition: background 0.2s, transform 0.15s;
       white-space: nowrap;
@@ -1097,6 +615,7 @@
       .cf-btn-train, .cf-btn-history {
         padding: 8px 4px;
         font-size: 0.58rem;
+        letter-spacing: 0;
       }
       .cf-btn-todotrail {
         padding: 7px 4px;

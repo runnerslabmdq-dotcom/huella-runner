@@ -12,6 +12,28 @@ el GAS es la versión más nueva.
 
 ---
 
+## 05/08/2026 (noche) — Tarjetas del carrusel más anchas/bajas + arreglo de "Historial" cortado
+
+- **Tarjetas del carrusel**: el slide pasó de 62% a 72% de ancho (máx.
+  240px → 280px — sigue siendo un porcentaje, así que escala
+  proporcional en cualquier celu, no es un tamaño fijo). La foto pasó
+  de proporción 3:4 a 4:4.4 (más cuadrada), para que la tarjeta
+  completa quede más baja sin achicar el texto ni los botones.
+- **Arreglado**: la palabra "HISTORIAL" se cortaba en pantallas
+  angostas, sobre todo adentro del navegador de Instagram — se le sacó
+  espaciado entre letras a los botones "Sumar KM" / "Historial" (0.5px
+  → 0.2px, y a 0 en el breakpoint de pantallas chicas ≤390px), y la
+  tarjeta más ancha le da más lugar de entrada.
+- **Nueva regla de acá en más** (charlada con el fundador): el
+  encabezado de cada archivo `.gs`/`.html` va a guardar solo **los
+  últimos 2 cambios**, no todo el historial — la razón completa,
+  siempre, vive acá en este archivo. Se aplicó por primera vez hoy en
+  `index.html`, recortando ~480 líneas de comentario viejo (todo ese
+  historial recortado ya está preservado en las entradas anteriores de
+  este mismo `.md`, no se perdió nada).
+
+---
+
 ## 05/08/2026 (tarde) — Se saca la pantalla de bienvenida, "Open Beta" pasa a ser "Demo"
 
 - **Pantalla de bienvenida (onboarding) eliminada**: la app arranca
