@@ -126,3 +126,36 @@ vos no tengas que hacerlo a ojo.
 **CTA:** Registrate gratis. Link en bio.
 
 `#running #correr #huellarunner #mardelplata #runners`
+
+---
+
+## Hooks sueltos, para Historias o Reels sobre video POV corriendo
+
+Sin Desarrollo ni CTA — pensados como texto solo, superpuesto sobre un
+video (ej. POV de alguien corriendo). Alegóricos/frases conocidas, sin
+nombrar "zapatillas" ni "km" a propósito, para que el video complete la
+idea.
+
+### Tanda 1
+
+1. Nadie te aplaude los primeros diez minutos.
+2. Lo que no se ve, es lo que más pesa.
+3. El que aguanta el primer paso, no necesita el último empujón.
+4. Ojos que no ven, huella que no se olvida.
+5. Detrás de cada gran carrera, hay una rutina que nadie graba.
+6. Hay cosas que se gastan en silencio, y siguen sosteniéndote.
+7. El cuerpo se cansa. Lo que te lleva, también.
+
+> El 4 y el 7 son los que más de cerca tocan la idea de la app (la
+> huella, lo que te lleva) sin nombrarla — buenos para cerrar con
+> logo/link. El 1, 2 y 3 son más generales, sirven cualquier día.
+
+### Tanda 2 — más exorbitantes
+
+1. Hay batallas que se ganan solo, a las 6 de la mañana, sin que nadie las vea.
+2. El asfalto no perdona. Vos tampoco deberías.
+3. Cada paso es una decisión que el cuerpo ya no discute.
+4. No corrés para llegar. Corrés para no quedarte.
+5. El límite no está en la pierna. Está en la cabeza que todavía no lo sabe.
+6. Cuando el cuerpo pide parar, ahí empieza lo que de verdad importa.
+7. No hay trofeo para los kilómetros que nadie vio. Solo vos sabés que pasaron.
