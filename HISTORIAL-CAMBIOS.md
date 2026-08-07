@@ -12,6 +12,16 @@ el GAS es la versión más nueva.
 
 ---
 
+## 07/08/2026 (noche) — Typo real: "Supernova Glise" → "Supernova Glide" (Adidas)
+
+El fundador estaba revisando el desplegable de zapatillas y notó el nombre
+raro. Se confirmó en el código: el modelo se cargó como "Supernova Glise"
+en vez de "Supernova Glide" (el modelo real de Adidas). Corregido el texto
+del desplegable y la clave interna que conecta el nombre con su foto
+(`adidas_supernova_glise` → `adidas_supernova_glide`) — la foto en sí no
+se tocó, sigue siendo la misma ya subida a Cloudinary, solo se corrigió la
+referencia para que la siga encontrando.
+
 ## 06/08/2026 (noche) — landing/index.html reemplazada: ahora es una vidriera, no la guía de pasos
 
 Pediste algo "espectacular" para la landing, con movimientos tipo dashboard.

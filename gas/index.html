@@ -1,27 +1,16 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 05/08/2026 21:53 (hora Argentina)
+  Última actualización: 07/08/2026 20:39 (hora Argentina)
   Cambios en esta versión:
-    - Tarjetas del carrusel más anchas y más bajas: el slide pasó de
-      62% a 72% de ancho (máx. 240px -> 280px, sigue siendo un %,
-      así que escala proporcional en cualquier celu) y la foto de
-      proporción 3:4 a 4:4.4 (más cuadrada). De paso, arreglado que
-      "HISTORIAL" se cortaba en pantallas angostas (sobre todo
-      adentro del navegador de Instagram): se le sacó espaciado entre
-      letras a los botones Sumar KM / Historial (0.5px -> 0.2px, y a
-      0 en el breakpoint de pantallas chicas).
+    - Typo en el desplegable de Adidas: "Supernova Glise" → "Supernova
+      Glide" (nombre real del modelo). Se corrigió también la clave de
+      la foto (modelImages: adidas_supernova_glise →
+      adidas_supernova_glide) para que siga encontrando la misma
+      imagen ya subida a Cloudinary — no hizo falta tocar la foto.
   Cambios en versiones anteriores:
-    - Sacada la pantalla de bienvenida (onboarding) que se veía antes
-      de llegar al Login — arranca directo en Login, que ya tenía sus
-      propios accesos a Registro y "¿Olvidaste tu contraseña?", y su
-      propio "VER LEGALES +" al pie (no hacía falta agregarlo, ya
-      estaba). Se borró cerrarPantallaOnboarding() y el script que la
-      ocultaba vía localStorage, que quedaban sin uso.
-    - "OPEN BETA" → "DEMO" (badge del login y cartel explicativo). El
-      texto del cartel (i) también cambió: de la explicación técnica
-      de antes (carga de servidores, escalabilidad) a algo más simple:
-      "Estamos haciendo mejoras todo el tiempo — puede haber cambios y
-      ajustes mientras seguimos puliendo la app."
+    - Tarjetas del carrusel más anchas y más bajas (62%→72% de ancho,
+      foto 3:4→4:4.4) + arreglado que "HISTORIAL" se cortaba en
+      pantallas angostas (menos espaciado entre letras en los botones).
   (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
   en la raíz del repo — a partir de ahora este encabezado solo guarda
   los últimos 2 cambios, para no seguir creciendo sin límite.)
@@ -2111,7 +2100,7 @@
     "adidas_adizero_evo":            "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784309382/Adidas_Adizero_Evo_ST_ccf06u.png",
     "adidas_ultrarun_5":             "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784309382/Adidas_Ultrarun_5_ST_dbncgx.png",
     "adidas_duramo_sl2":             "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784309380/Adidas_Duramo_SL2_ST_cbk5qi.png",
-    "adidas_supernova_glise":        "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784309381/Adidas_Supernova_Glise_ST_id2jov.png",
+    "adidas_supernova_glide":        "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784309381/Adidas_Supernova_Glise_ST_id2jov.png",
     "adidas_supernova_rise_3":       "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784309381/Adidas_Supernova_Rise_3_ST_hffj6b.png",
     "adidas_duramo_speed":           "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784309380/Adidas_Duramo_Speed_ST_mwspb4.png",
     "adidas_adistar_byd":            "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784309380/Adidas_Adistar_ByD_ST_objw8i.png",
@@ -2264,7 +2253,7 @@
       "Adizero Evo",
       "Ultrarun 5",
       "Duramo SL2",
-      "Supernova Glise",
+      "Supernova Glide",
       "Supernova Rise 3",
       "Duramo Speed",
       "Adistar ByD",
