@@ -7,6 +7,14 @@
 > Mismo banco de voz que `docs/textos-emotivos-para-postear.md` (más
 > emotivo/manifiesto) — estas son más cortas y con estructura fija para
 > posteos puntuales, no manifiestos largos.
+>
+> **Actualización 07/08/2026 07:55:** el fundador no va a grabar su voz
+> — el formato real es texto superpuesto sobre un video POV de alguien
+> corriendo (no carrusel). Se están reformulando los 7 días, uno por
+> uno, a un formato de "script de texto sobre video" usando las
+> técnicas de `docs/storytelling-guiones-ig.md`. El Día 1 ya está
+> reformulado abajo; los Días 2-7 todavía están en el formato viejo
+> (Hook/Desarrollo/CTA para carrusel) hasta que se reformulen.
 
 ## Cadencia recomendada
 
@@ -27,7 +35,37 @@
 
 ---
 
-## Día 1 — El límite invisible
+## Día 1 — El límite invisible (REFORMULADO — script de texto sobre video)
+
+**Formato:** texto superpuesto sobre video POV de alguien corriendo,
+apareciendo en este orden (no todo junto, va entrando de a líneas):
+
+1. Tus piernas no sienten nada raro hoy.
+2. Tu zapatilla tampoco se ve mal.
+3. Pero ya perdió la mitad de lo que tenía para dar.
+4. Y eso no se siente. Se mide.
+5. Huella Runner suma cada km y te avisa antes de que sea tarde.
+6. *(CTA, últimos 2 segundos)* Link en bio. Se abre directo desde Instagram.
+
+**Caption (corto, el texto ya está en el video):** "Se sentía igual.
+No lo era."
+
+`#running #mardelplata #huellarunner #zapatillasrunning #correr`
+
+**Técnicas usadas** (ver `docs/storytelling-guiones-ig.md`): el baile
+("no sienten nada / no se ve mal" = contexto → "**pero** ya perdió la
+mitad" = conflicto → "**y** eso no se siente, se mide" = por lo tanto);
+ritmo variado (frases cortas y largas mezcladas); dirección (se
+escribió primero la línea 4, la más memorable, y se armó el resto
+alrededor); gafas de la historia (la zapatilla como testigo silencioso,
+no rendimiento); hook visual desde el segundo 0, sincronizado con el
+video. Ajuste pedido por el fundador: no decir que el runner "no sabe"
+o "no siente" (suena a que es su culpa) — el desgaste directamente NO
+se siente ni se ve, es invisible, no es ignorancia de nadie.
+
+---
+
+## Día 1 — versión original (carrusel, sin usar por ahora)
 
 **Hook:** ¿Sabés cuántos km le quedan a tu zapatilla antes de que sea
 hora de cambiarla?
