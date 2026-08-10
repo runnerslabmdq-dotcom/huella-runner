@@ -1,104 +1,25 @@
 // ============================================================
 // HUELLA RUNNER — admin.gs
-// Última actualización: 03/08/2026 17:45 (hora Argentina)
+// Última actualización: 10/08/2026 06:57 (hora Argentina)
 // Cambios en esta versión:
+//   - BUG real: "Últimas 8 semanas" y "Últimos 6 meses" del panel admin
+//     mostraban números gigantes (ej. "3575340000000 km") en meses
+//     anteriores al lanzamiento real. Causa: filas viejas de
+//     Entrenamientos (datos de prueba de simulacion.gs, de antes del 1
+//     de agosto) tenían la celda KM_Sumados guardada como Date en vez
+//     de número — Number(unDate) devuelve los milisegundos desde 1970,
+//     un número de 13 dígitos. Nuevo helper _kmSeguro() (trata un Date
+//     como 0 en vez de sumarlo) reemplaza los 4 Number(...) sueltos de
+//     este archivo que sumaban km directo del Sheet. Mismo bug también
+//     en codigo.gs (3 lugares), corregido en el mismo cambio.
+// Cambios en versiones anteriores:
 //   - Nueva getEntrenamientosSospechosos(token): el anti-fraude marca
-//     "Sospechosa" un entrenamiento que supera el acumulado semanal (se
-//     acredita igual, a diferencia de "Rechazada"), pero esa marca no se
-//     mostraba en ningún lado del panel — quedaba en el Sheet y nadie se
-//     enteraba. Devuelve los últimos 20 para revisar a mano. La usa la
-//     sección nueva "🕵️ Actividad sospechosa" de Admin.html. Encontrado
-//     en revisión de bugs del 03/08.
-// Cambios en versiones anteriores:
-//   - BUG arreglado (revisión de bugs pedida por el fundador antes de la
-//     Open Beta): getAdminStats(), getAdminUsuarios(), getActividadReciente()
-//     y getActividadPorDia() contaban los entrenamientos RECHAZADOS por el
-//     anti-fraude (ej. alguien tipeó 300 km en vez de 30 km) como si fueran
-//     actividad real. No inflaba los km totales (esos ya quedaban en 0 para
-//     un rechazo), pero sí los conteos: "Activos hoy" y "Registros hoy" del
-//     resumen general, el gráfico de 7 días, y "Actividad reciente" podía
-//     mostrar "Fulano sumó 0 km" para un intento bloqueado. getInsightsExtendidos()
-//     ya filtraba Estado_Validacion==='Rechazada' desde antes; ahora las 4
-//     funciones más viejas hacen lo mismo.
-// Cambios en versiones anteriores:
-//   - Fix: "Actividad reciente" mostraba mal la hora (ej. "hace 12h" en
-//     un entrenamiento recién cargado al mediodía) — encontrado al
-//     probar el simulador nuevo. _combinarFechaHora() no contemplaba
-//     que la celda Hora puede venir como objeto Date (cuando Sheets la
-//     detecta sola como valor de hora, no como texto "HH:mm"); en ese
-//     caso el código viejo hacía horaRaw.toString().split(':'), que
-//     fallaba en silencio y dejaba la hora en medianoche. Mismo caso ya
-//     contemplado en getShoeHistory() (codigo.gs), pero nunca se había
-//     aplicado acá.
-// Cambios en versiones anteriores:
-//   - Nueva función getCumpleanosProximos(token): usuarios con cumpleaños
-//     en los próximos 7 días (compara solo mes/día de FechaNacimiento, no
-//     el año). La usa el nuevo segmento "Cumpleaños" del panel de
-//     notificaciones, pensado para mandar un descuento/premio en su semana.
-//     Nueva _parseFechaNacimiento(): FechaNacimiento se guarda como texto
-//     "yyyy-mm-dd" y _celdaADate() la interpretaría en UTC, corriendo la
-//     fecha un día para atrás con el huso de Argentina — esta función
-//     arma la fecha local a mano para evitar ese corrimiento.
-//   - getInsightsExtendidos() ahora también devuelve abandono.todosEmails
-//     (la lista completa de inactivos/nunca-entrenaron, no solo el top 10
-//     que se muestra en pantalla) — la necesita el segmento "Inactivos"
-//     del panel de notificaciones para poder mandarle a todos, no solo
-//     a los primeros 10.
-// Cambios en versiones anteriores:
-//   - getAdminUsuarios(token) ahora también devuelve provincia,
-//     fechaRegistro (texto legible) y fechaRegistroTs (epoch ms, para
-//     ordenar). Se usa en Admin.html para el filtro por provincia y
-//     para mostrar los usuarios más nuevos primero por defecto. El
-//     fundador notó que la lista de "Usuarios registrados" se hacía
-//     interminable al simular 50+ usuarios.
-// Cambios en versiones anteriores:
-//   - Nueva función getHistorialNotificaciones(token): devuelve el
-//     historial completo de mensajes enviados (destinatario, mensaje,
-//     fecha, si se leyó, si el usuario lo ocultó de su lado) — hasta
-//     300, más reciente primero. La usa Admin.html en un "Ver historial
-//     completo" dentro de Salud del Sistema. El registro en la hoja
-//     Notificaciones nunca se borra (deleteNotificacion() solo marca
-//     "Oculto"), así que esto siempre puede reconstruir qué se dijo y
-//     a quién, aunque el usuario haya borrado el mensaje de su lado.
-// Cambios en versiones anteriores:
-//   - BUG arreglado: "Actividad Reciente" mostraba mal el tiempo
-//     transcurrido (ej. "hace 16h" para algo cargado hace 2 minutos).
-//     Causa: en la hoja Entrenamientos, "Fecha" y "Hora" son columnas
-//     separadas — getActividadReciente() solo leía "Fecha" (sin hora),
-//     así que cada evento quedaba con la hora en medianoche, y el
-//     tiempo transcurrido se calculaba desde la medianoche, no desde
-//     el momento real. Nueva función _combinarFechaHora() arma el Date
-//     correcto juntando las dos columnas. Se usa acá y también en
-//     getInsightsExtendidos() (agregada hoy mismo, tenía el mismo
-//     problema de fondo, aunque no se notaba porque ahí solo se usan
-//     días completos, no horas).
-// Cambios en versiones anteriores:
-//   - Nueva función getInsightsExtendidos(token): ranking de constancia
-//     (días distintos con actividad en 30 días), horario pico real
-//     (usa la columna Hora de Entrenamientos), tendencia semanal
-//     (últimas 8 semanas + semana actual vs. anterior) y mensual
-//     (últimos 6 meses), abandono real (activos7/30 + lista de quién no
-//     entrena hace 14+ días o nunca), y tasa de lectura de
-//     notificaciones. La usa Admin.html en varias secciones nuevas.
-//   - getActividadReciente() ahora devuelve los últimos 5 eventos, no
-//     10 (a pedido del fundador).
-// Cambios en versiones anteriores:
-//   - Nueva función getSystemHealth(token): cupones emitidos
-//     (total/disponibles/usados) y última corrida del cron nocturno de
-//     Cache_Modelos. La usa la sección nueva "Salud del sistema" del
-//     panel (Admin.html).
-//   - BUG DE SEGURIDAD arreglado: getAdminStats, getAdminUsuarios,
-//     getRankingUsuarios, getActividadReciente y getActividadPorDia no
-//     revisaban el token de admin — solo se protegía qué PANTALLA se
-//     mostraba, no las funciones en sí, así que cualquiera podía
-//     llamarlas directo desde la consola del navegador sin loguearse.
-//     Ahora piden el token y lo validan igual que la pantalla.
-//   - ADMIN_TOKEN ya no está escrito en este archivo (que está en
-//     GitHub) — se mudó a Propiedades del script de Apps Script.
-//     _getAdminToken() lo lee de ahí. Sin configurar esa propiedad,
-//     nadie puede entrar al panel (falla "cerrado", no "abierto").
-//   - Agregado ADMIN_EMAILS: huellarunner@gmail.com ahora es admin
-//     automáticamente (sin depender de la columna Rol del sheet)
+//     "Sospechosa" un entrenamiento que supera el acumulado semanal,
+//     pero esa marca no se mostraba en ningún lado del panel. Devuelve
+//     los últimos 20 para revisar a mano ("🕵️ Actividad sospechosa").
+// (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
+// en la raíz del repo — a partir de ahora este encabezado solo guarda
+// los últimos 2 cambios, para no seguir creciendo sin límite.)
 // ============================================================
 
 // ⚠️ REEMPLAZAR el doGet() del archivo principal (Code.gs) por este:
@@ -509,7 +430,7 @@ function getActividadReciente(token) {
         if (estadoVal === 'rechazada') continue; // intento bloqueado por el anti-fraude, no es actividad real
 
         const email = tData[i][tEmailCol] ? tData[i][tEmailCol].toString().trim().toLowerCase() : '';
-        const km    = Number(tData[i][tKmCol]) || 0;
+        const km    = _kmSeguro(tData[i][tKmCol]);
         const idZapa = tZapaCol !== -1 && tData[i][tZapaCol] ? tData[i][tZapaCol].toString() : '';
         const horaRaw   = tHoraCol !== -1 ? tData[i][tHoraCol] : '';
         const fechaDate = _combinarFechaHora(tData[i][tFechaCol], horaRaw);
@@ -627,7 +548,7 @@ function getEntrenamientosSospechosos(token) {
           email:     email,
           nombre:    nameMap[email] || email,
           zapatilla: zapaMap[idZapa] || '',
-          km:        tKmCol !== -1 ? (Number(tData[i][tKmCol]) || 0) : 0,
+          km:        tKmCol !== -1 ? _kmSeguro(tData[i][tKmCol]) : 0,
           fecha:     fechaDate ? _formatFecha(fechaDate) : '',
           motivo:    tMotivoCol !== -1 ? (tData[i][tMotivoCol] || '').toString() : ''
         });
@@ -678,7 +599,7 @@ function getActividadPorDia(token) {
         if (estadoVal === 'rechazada') continue; // intento bloqueado por el anti-fraude, no es actividad real
 
         const email     = tData[i][tEmailCol] ? tData[i][tEmailCol].toString().trim().toLowerCase() : '';
-        const km        = Number(tData[i][tKmCol]) || 0;
+        const km        = _kmSeguro(tData[i][tKmCol]);
         const fechaDate = _celdaADate(tData[i][tFechaCol]);
         if (!fechaDate) continue;
 
@@ -811,7 +732,7 @@ function getInsightsExtendidos(token) {
         if (estado === 'rechazada') continue; // no acreditó km, no cuenta como actividad real
 
         const email = tEmail !== -1 && tData[i][tEmail] ? tData[i][tEmail].toString().trim().toLowerCase() : '';
-        const km    = tKm !== -1 ? (Number(tData[i][tKm]) || 0) : 0;
+        const km    = tKm !== -1 ? _kmSeguro(tData[i][tKm]) : 0;
         const horaRawVal = tHora !== -1 ? tData[i][tHora] : '';
         const fechaDate  = tFecha !== -1 ? _combinarFechaHora(tData[i][tFecha], horaRawVal) : null;
         if (!email || !fechaDate) continue;
@@ -1025,6 +946,20 @@ function _formatFechaHora(date) {
   const hh   = String(date.getHours()).padStart(2, '0');
   const min  = String(date.getMinutes()).padStart(2, '0');
   return dd + '/' + mm + '/' + yyyy + ' ' + hh + ':' + min;
+}
+
+// ------------------------------------------------------------
+// _kmSeguro: convierte el valor crudo de una celda de km a número,
+// blindado contra el caso en que Sheets guardó la celda como Date en
+// vez de número (pasa con filas viejas/datos de prueba corruptos).
+// Number(unDate) devuelve los milisegundos desde 1970 — un número de
+// 13 dígitos que arruinaba las sumas de km (números gigantes tipo
+// "3575340000000 km" en "Últimas 8 semanas" / "Últimos 6 meses" del
+// panel admin, todos de fechas antes del lanzamiento real).
+// ------------------------------------------------------------
+function _kmSeguro(valor) {
+  if (Object.prototype.toString.call(valor) === '[object Date]') return 0;
+  return Number(valor) || 0;
 }
 
 // ------------------------------------------------------------
