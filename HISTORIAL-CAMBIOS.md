@@ -12,6 +12,35 @@ el GAS es la versión más nueva.
 
 ---
 
+## 09/08/2026 (noche) — Botón "Ver en tienda" activado: link temporal a Open Sports
+
+El botón que decía "🛒 Próximamente" (apagado, sin link) debajo de Sumar
+KM / Historial ahora funciona: abre la tienda online de Open Sports,
+filtrada por el género y el talle reales de esa zapatilla —
+`https://www.opensports.com.ar/{hombre|mujer}/zapatillas/running/talle-calzado-{talle}.html`
+(estructura de URL confirmada por el fundador, no inventada).
+
+**Importante — qué es y qué no es esto:**
+- Es un link de compra directo a la tienda pública de Open Sports, no
+  un cupón ni un descuento — no implica que haya un partnership
+  confirmado con ellos (siguen sin ser un partner confirmado, como ya
+  estaba anotado en `docs/sucursales-open-sports.md`).
+- El botón (`.cf-btn-opensports` en `gas/index.html`) usa colores y
+  tipografía al tono de Open Sports (rojo, blanco, detalle amarillo) —
+  no su logo.
+- Se probó la estructura del link solo con talles enteros (el
+  fundador pasó ejemplos con talle 43); para talles con .5, el link se
+  arma igual pero no está confirmado que Open Sports lo acepte en ese
+  formato exacto — a revisar si algún usuario reporta que no le abre
+  bien.
+- Quedó documentado en el código (`irATiendaSponsor()`) el punto para
+  agregar más adelante un sponsor que cubra una sola provincia/zona —
+  hoy no hace falta esa lógica porque Open Sports vende online a todo
+  el país, así que es el mismo link para cualquier usuario.
+- La función vieja `irATodoTrail()` (otro partner, de antes del
+  rebranding a Huella Runner) se dejó intacta sin usar, por si sirve
+  de referencia.
+
 ## 07/08/2026 (noche) — Typo real: "Supernova Glise" → "Supernova Glide" (Adidas)
 
 El fundador estaba revisando el desplegable de zapatillas y notó el nombre
