@@ -1,18 +1,16 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 09/08/2026 23:11 (hora Argentina)
+  Última actualización: 10/08/2026 08:51 (hora Argentina)
   Cambios en esta versión:
+    - Foto agregada para Nike Vomero Plus (ya estaba en el desplegable,
+      le faltaba la imagen). Botón "Ver en tienda": el texto "SPORTS"
+      ahora en amarillo (#FFE600), como el logo real de Open Sports —
+      "OPEN" se deja blanco.
+  Cambios en versiones anteriores:
     - Botón "Ver en tienda" (antes "Próximamente", apagado) activado:
       ahora abre la tienda online de Open Sports, filtrada por género
-      y talle reales de la zapatilla (irATiendaSponsor(), estructura de
-      URL pasada por el fundador). Estilo del botón (rojo/blanco/borde
-      amarillo) al tono de Open Sports, sin usar su logo. Es un link
-      de compra directo, no un cupón — y no implica partnership
-      confirmado. Dejado comentado el punto de extensión para cuando
-      haya un sponsor que cubra una sola zona (lógica por Provincia).
-  Cambios en versiones anteriores:
-    - Typo en el desplegable de Adidas: "Supernova Glise" → "Supernova
-      Glide" (nombre real del modelo), con su clave de foto corregida.
+      y talle reales de la zapatilla — link de compra directo, no
+      implica partnership confirmado (ver HISTORIAL-CAMBIOS.md).
   (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
   en la raíz del repo — a partir de ahora este encabezado solo guarda
   los últimos 2 cambios, para no seguir creciendo sin límite.)
@@ -496,6 +494,7 @@
       transition: transform 0.15s ease, opacity 0.2s;
     }
     .cf-btn-opensports:active { transform: scale(0.96); opacity: 0.88; }
+    .cf-btn-opensports-sports { color: #FFE600; }
 
     /* ── Slide especial dual: nueva zapa + locker ── */
     .cf-add-slide .cf-neon-wrap {
@@ -2142,6 +2141,7 @@
     "asics_novablast_5_lite":        "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784515579/Asics_Novablast_5_Lite_ST_degekm.png",
     "asics_novablast_5_tokyo":       "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784776848/Zapatillas_Asics_Novablast_5_Tokyo_cgyrgd.png",
     "nike_vomero_17":                "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784652140/Nike_Vomero_17_ST_vfjbd2.png",
+    "nike_vomero_plus":              "https://res.cloudinary.com/klxkj07e/image/upload/v1786362411/Nike_Vomero_Plus_ST_gapsue.png",
     "nike_run_defy":                 "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784652132/Nike_Run_Defy_ST_orldn0.png",
     "nike_winflo_11":                "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784652128/Nike_Winflo_11_k27h8n.png",
     "nike_revolution_7":             "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784652127/Nike_Revolution_7_a4z8wi.png",
@@ -3140,7 +3140,7 @@
               '<div class="cf-btn-row-shop">' +
                 '<button class="cf-btn-opensports" ' +
                   'onclick="event.stopPropagation(); irATiendaSponsor(\'' + rawGenero + '\', \'' + rawTalle + '\'); return false;">' +
-                  '🛒 OPEN SPORTS</button>' +
+                  '🛒 OPEN <span class="cf-btn-opensports-sports">SPORTS</span></button>' +
               '</div>' +
             '</div>' +
 

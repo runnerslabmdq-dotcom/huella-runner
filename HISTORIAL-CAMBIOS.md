@@ -12,6 +12,16 @@ el GAS es la versión más nueva.
 
 ---
 
+## 10/08/2026 (mañana, seguimiento) — Foto de Nike Vomero Plus + "SPORTS" en amarillo
+
+- **Nike Vomero Plus** ya estaba en el desplegable de Nike, pero le faltaba
+  foto (mostraba la genérica). Agregada la foto real que pasó el fundador
+  (`modelImages["nike_vomero_plus"]`).
+- Botón "Ver en tienda": el texto "SPORTS" ahora se muestra en amarillo
+  (`#FFE600`), "OPEN" se deja blanco — mismo tratamiento de color que el
+  logo real de Open Sports (rojo de fondo, "open" blanco + "sports"
+  amarillo), sin usar el logo en sí.
+
 ## 10/08/2026 (mañana) — BUG real: números gigantes en "Últimas 8 semanas"/"Últimos 6 meses" del panel admin
 
 El fundador mandó una captura del panel admin con números como
