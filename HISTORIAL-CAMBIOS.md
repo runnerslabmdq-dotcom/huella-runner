@@ -12,6 +12,38 @@ el GAS es la versión más nueva.
 
 ---
 
+## 10/08/2026 (mañana) — BUG real: números gigantes en "Últimas 8 semanas"/"Últimos 6 meses" del panel admin
+
+El fundador mandó una captura del panel admin con números como
+"3575340000000 km" en las semanas/meses anteriores al lanzamiento real
+(fines de julio) — mientras que las semanas recientes mostraban números
+normales (53 km, 17 km, etc.).
+
+**Causa encontrada:** filas viejas de la pestaña Entrenamientos —
+generadas por `simulacion.gs` (datos de prueba, de antes de abrir la
+Demo al público) — tenían la celda `KM_Sumados` guardada como un
+**objeto Date** en vez de un número (Google Sheets a veces interpreta
+así una celda, mismo patrón de bug ya visto antes en este proyecto con
+fechas de cumpleaños y del Locker). El código sumaba esos valores con
+`Number(celda) || 0` — pero `Number()` sobre un Date no da 0, da los
+milisegundos desde 1970 (un número de 13 dígitos), así que el `|| 0`
+nunca se activaba y ese numerazo se sumaba como si fueran km reales.
+
+**Arreglado:** nuevo helper `_kmSeguro(valor)` en `admin.gs` (trata un
+Date como 0 en vez de convertirlo a milisegundos) — reemplaza los 7
+`Number(...)` sueltos que sumaban km directo del Sheet: 4 en `admin.gs`
+(estadísticas semanales/mensuales, actividad sospechosa, actividad por
+día, actividad reciente) y 3 en `codigo.gs` (reactivar zapatilla,
+historial de zapatilla, segmentación de notificaciones).
+
+**Lo que el fundador puede hacer, si quiere (opcional):** las filas
+viejas de Entrenamientos de antes del 01/08 (los datos de prueba de
+`simulacion.gs`) se pueden borrar directo del Sheet — ya estaba anotado
+en el propio código que se iban a borrar antes de abrir la Demo, y
+parece que quedaron algunas sin borrar. No es necesario para que el
+número dejen de verse mal (el código ya no las suma mal), pero limpiaría
+el Sheet.
+
 ## 09/08/2026 (noche) — Botón "Ver en tienda" activado: link temporal a Open Sports
 
 El botón que decía "🛒 Próximamente" (apagado, sin link) debajo de Sumar

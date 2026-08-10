@@ -1,28 +1,19 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 04/08/2026 14:03 (hora Argentina)
+// Última actualización: 10/08/2026 06:57 (hora Argentina)
 // Cambios en esta versión:
+//   - BUG real: sumas de km podían dar números gigantes (ver admin.gs,
+//     mismo cambio) cuando una celda KM_Sumados/KM_Actuales quedaba
+//     guardada como Date en vez de número (filas viejas de datos de
+//     prueba). Los 3 Number(...) sueltos de este archivo (reactivateShoe,
+//     getShoeHistory, segmentación de notificaciones) ahora usan el
+//     helper nuevo _kmSeguro() (definido en admin.gs, mismo proyecto de
+//     Apps Script) que trata un Date como 0 en vez de sumarlo.
+// Cambios en versiones anteriores:
 //   - Nueva eliminarCuenta(email): borra la cuenta completa (Usuarios,
 //     Zapatillas, Entrenamientos, Notificaciones, Cupones_Emitidos) a
-//     pedido del propio usuario, ya logueado — pensada para que alguien
-//     que prueba la app y no le gusta pueda irse tranquilo, sabiendo que
-//     no le quedan datos guardados. La usa el botón nuevo "Eliminar mi
-//     cuenta" en Mi Perfil (Index.html). No existe una versión de esto
-//     sin login, para que nadie pueda pedir la baja de otra persona.
-// Cambios en versiones anteriores:
-//   - BUG arreglado: getShoeHistory() mostraba los entrenamientos
-//     RECHAZADOS por el anti-fraude (ej. alguien tipeó 300km en vez de
-//     30) como una fila fantasma de "0 km" en el Historial del propio
-//     usuario, sin ninguna explicación — confundía a quien le pasaba.
-//     Ahora esas filas no se muestran (nunca se acreditaron, no son un
-//     entrenamiento real). Encontrado en revisión de bugs del 03/08.
-// Cambios en versiones anteriores:
-//   - Nuevas getPerfilUsuario(email) y actualizarPerfilUsuario(email,
-//     datos): sostienen la pantalla nueva "Mi Perfil" de Index.html.
-//     Leen/escriben FechaNacimiento, Provincia, Ciudad, Celular y Grupo
-//     de la fila del usuario en Usuarios — los mismos 5 campos que
-//     desde ayer quedaron como "opcional, completar después" en el
-//     registro, pero que hasta ahora no tenían ningún "después" real.
+//     pedido del propio usuario, ya logueado, vía "Eliminar mi cuenta"
+//     en Mi Perfil.
 // Cambios en versiones anteriores:
 //   - Semáforo de desgaste (panel admin): getAdminDashboardData() ahora
 //     agrega 'limite' y 'porcentaje' (km / KM_Limite propio de la
@@ -1038,7 +1029,7 @@ function reactivateShoe(email, idZapatilla) {
       const rowEmail = data[i][emailCol] ? data[i][emailCol].toString().trim().toLowerCase() : '';
       if (rowId === idZapatilla.toString() && rowEmail === emailClean) {
         // Restaura el estado de desgaste según los km, no un texto fijo.
-        const km      = kmCol !== -1 ? (Number(data[i][kmCol]) || 0) : 0;
+        const km      = kmCol !== -1 ? _kmSeguro(data[i][kmCol]) : 0;
         const limite  = limiteCol !== -1 ? (Number(data[i][limiteCol]) || TP.KM_UMBRAL_CUPON) : TP.KM_UMBRAL_CUPON;
         sheet.getRange(i + 1, estadoCol + 1).setValue(_calcularEstadoDesgaste(km, limite));
         SpreadsheetApp.flush();
@@ -1120,7 +1111,7 @@ function getShoeHistory(email, idZapatilla) {
         history.push({
           ID_Entreno: idEntreno,
           Fecha:      normalizarFecha(data[i][fechaCol], horaCol !== -1 ? data[i][horaCol] : ''),
-          KM_Sumados: Number(data[i][kmCol]) || 0
+          KM_Sumados: _kmSeguro(data[i][kmCol])
         });
       }
     }
@@ -1792,7 +1783,7 @@ function getAdminDashboardData(token) {
 
       for (var j = 1; j < tData.length; j++) {
         var temail = tData[j][tEmailC] ? tData[j][tEmailC].toString().trim().toLowerCase() : '';
-        var tkm    = Number(tData[j][tKmC]) || 0;
+        var tkm    = _kmSeguro(tData[j][tKmC]);
         if (temail) kmMap[temail] = (kmMap[temail] || 0) + tkm;
 
         // ── Retención: actividad reciente ──
