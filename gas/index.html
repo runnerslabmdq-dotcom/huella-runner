@@ -1,16 +1,18 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 07/08/2026 20:39 (hora Argentina)
+  Última actualización: 09/08/2026 23:11 (hora Argentina)
   Cambios en esta versión:
-    - Typo en el desplegable de Adidas: "Supernova Glise" → "Supernova
-      Glide" (nombre real del modelo). Se corrigió también la clave de
-      la foto (modelImages: adidas_supernova_glise →
-      adidas_supernova_glide) para que siga encontrando la misma
-      imagen ya subida a Cloudinary — no hizo falta tocar la foto.
+    - Botón "Ver en tienda" (antes "Próximamente", apagado) activado:
+      ahora abre la tienda online de Open Sports, filtrada por género
+      y talle reales de la zapatilla (irATiendaSponsor(), estructura de
+      URL pasada por el fundador). Estilo del botón (rojo/blanco/borde
+      amarillo) al tono de Open Sports, sin usar su logo. Es un link
+      de compra directo, no un cupón — y no implica partnership
+      confirmado. Dejado comentado el punto de extensión para cuando
+      haya un sponsor que cubra una sola zona (lógica por Provincia).
   Cambios en versiones anteriores:
-    - Tarjetas del carrusel más anchas y más bajas (62%→72% de ancho,
-      foto 3:4→4:4.4) + arreglado que "HISTORIAL" se cortaba en
-      pantallas angostas (menos espaciado entre letras en los botones).
+    - Typo en el desplegable de Adidas: "Supernova Glise" → "Supernova
+      Glide" (nombre real del modelo), con su clave de foto corregida.
   (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
   en la raíz del repo — a partir de ahora este encabezado solo guarda
   los últimos 2 cambios, para no seguir creciendo sin límite.)
@@ -475,6 +477,25 @@
       display: flex; align-items: center; justify-content: center; gap: 4px;
       opacity: 0.6; cursor: default;
     }
+    /* ── Botón "Ver en tienda" — temporal a Open Sports (talle/rubro
+       reales, ver irATiendaSponsor()). Colores/tipografía al estilo de
+       Open Sports, sin usar su logo. ── */
+    .cf-btn-opensports {
+      flex: 1;
+      background: linear-gradient(180deg, #D12127 0%, #b81a1f 100%);
+      color: #fff; border: none;
+      border-bottom: 2px solid #FFE600;
+      padding: 9px 6px; border-radius: 10px;
+      font-size: 0.6rem; font-weight: 900;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      font-family: 'Montserrat', sans-serif;
+      white-space: nowrap;
+      display: flex; align-items: center; justify-content: center; gap: 4px;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.2s;
+    }
+    .cf-btn-opensports:active { transform: scale(0.96); opacity: 0.88; }
 
     /* ── Slide especial dual: nueva zapa + locker ── */
     .cf-add-slide .cf-neon-wrap {
@@ -606,7 +627,7 @@
         font-size: 0.58rem;
         letter-spacing: 0;
       }
-      .cf-btn-todotrail {
+      .cf-btn-todotrail, .cf-btn-opensports {
         padding: 7px 4px;
         font-size: 0.54rem;
       }
@@ -3044,6 +3065,8 @@
       // ID real sin sanitize para usar en funciones JS (ya está sanitizado para HTML)
       var rawId     = escInlineJs(s.ID_Zapa);
       var rawModelo = escInlineJs(s.Modelo);
+      var rawGenero = escInlineJs(s.Genero);
+      var rawTalle  = escInlineJs(s.Talle);
 
       var barColor = 'linear-gradient(90deg, #F0FF00, #BFCA00)';
       if (perc >= 85) barColor = 'linear-gradient(90deg, #ef4444, #ff6b6b)';
@@ -3115,7 +3138,9 @@
                   '})();">📋 HISTORIAL</button>' +
               '</div>' +
               '<div class="cf-btn-row-shop">' +
-                '<button class="cf-btn-todotrail" disabled>🛒 Próximamente</button>' +
+                '<button class="cf-btn-opensports" ' +
+                  'onclick="event.stopPropagation(); irATiendaSponsor(\'' + rawGenero + '\', \'' + rawTalle + '\'); return false;">' +
+                  '🛒 OPEN SPORTS</button>' +
               '</div>' +
             '</div>' +
 
@@ -3841,6 +3866,23 @@
     }
 
     var url = baseUrl + (params.length ? '?' + params.join('&') : '');
+    window.open(url, '_blank');
+  }
+
+  // ── Botón "Ver en tienda" — temporal a Open Sports, filtrado por
+  // género + talle de la zapatilla (estructura de URL real, pasada por
+  // el fundador). No es un partner confirmado todavía — es un link de
+  // compra directa a su tienda online, no un cupón ni descuento.
+  //
+  // Hoy hay un solo sponsor para todo el país (Open Sports vende
+  // online a cualquier provincia). El día que haya un sponsor que solo
+  // cubra una zona puntual, acá es donde se agrega la lógica por
+  // provincia del usuario (ya se carga en Mi Perfil, campo Provincia).
+  function irATiendaSponsor(genero, talleEU) {
+    var generoUrl = (genero || '').toString().trim().toLowerCase() === 'mujer' ? 'mujer' : 'hombre';
+    var talle = (talleEU || '').toString().trim();
+    var url = 'https://www.opensports.com.ar/' + generoUrl +
+      '/zapatillas/running/talle-calzado-' + talle + '.html';
     window.open(url, '_blank');
   }
 
