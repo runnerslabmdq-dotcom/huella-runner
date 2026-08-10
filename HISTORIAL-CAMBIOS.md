@@ -12,6 +12,14 @@ el GAS es la versión más nueva.
 
 ---
 
+## 10/08/2026 (mediodía) — Botón "Ver en tienda": cursiva + sin borde amarillo
+
+El fundador ya vio el botón en la app real (capturas del panel/app con
+"OPEN SPORTS" andando) y pidió dos ajustes finos:
+- Texto en cursiva (`font-style: italic`).
+- Sacado el borde amarillo de abajo del botón (quedaba muy cargado con
+  el "SPORTS" ya en amarillo).
+
 ## 10/08/2026 (mañana, seguimiento) — Foto de Nike Vomero Plus + "SPORTS" en amarillo
 
 - **Nike Vomero Plus** ya estaba en el desplegable de Nike, pero le faltaba
