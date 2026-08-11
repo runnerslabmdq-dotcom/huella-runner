@@ -12,6 +12,12 @@ el GAS es la versión más nueva.
 
 ---
 
+## 11/08/2026 (mañana, seguimiento) — Foto de Adidas Adizero Boston 13
+
+Ya estaba en el desplegable de Adidas, le faltaba la foto (mostraba la
+genérica). Agregada la foto real que pasó el fundador
+(`modelImages["adidas_adizero_boston_13"]`).
+
 ## 11/08/2026 (mañana) — Cumpleaños automático: notificación + mail, sin depender de que el fundador se acuerde
 
 El fundador preguntó si había alguna forma de que se le avisara solo
