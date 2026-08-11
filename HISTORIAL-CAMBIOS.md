@@ -12,6 +12,24 @@ el GAS es la versión más nueva.
 
 ---
 
+## 11/08/2026 (mediodía, seguimiento) — Foto de Adizero Boston 13, reemplazada por una subida a Imgur
+
+El recorte automático de Cloudinary del cambio anterior no dejó bien
+centrada la zapatilla (confirmado por el fundador). En vez de seguir
+ajustando parámetros a ciegas, subió una foto nueva ya encuadrada por
+su cuenta — esta vez a Imgur (primera vez que se usa esa plataforma en
+el proyecto, alternativa a Cloudinary que se está por quedarse sin
+cupo gratis). `modelImages["adidas_adizero_boston_13"]` apunta ahora a
+`i.imgur.com/mj2PeDc.jpeg`, sin transformación — Imgur no tiene el
+motor de recorte automático que sí tiene Cloudinary, así que si en
+algún momento queda mal encuadrada de nuevo, la solución sería que el
+fundador la recorte él mismo antes de subir (o volver a Cloudinary,
+donde si se puede ajustar el recorte por URL sin volver a subir).
+
+No se pudo previsualizar la imagen desde acá antes de aplicarla — el
+entorno bloquea el acceso a imgur.com igual que a Cloudinary, así que
+se confió en que la subida ya viene bien encuadrada.
+
 ## 11/08/2026 (mediodía) — Foto de Adizero Boston 13, recortada y centrada sin volver a subir nada
 
 El fundador subió la foto más alta de lo normal (por error) y en la
