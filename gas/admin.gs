@@ -1,22 +1,16 @@
 // ============================================================
 // HUELLA RUNNER — admin.gs
-// Última actualización: 10/08/2026 06:57 (hora Argentina)
+// Última actualización: 10/08/2026 21:35 (hora Argentina)
 // Cambios en esta versión:
-//   - BUG real: "Últimas 8 semanas" y "Últimos 6 meses" del panel admin
-//     mostraban números gigantes (ej. "3575340000000 km") en meses
-//     anteriores al lanzamiento real. Causa: filas viejas de
-//     Entrenamientos (datos de prueba de simulacion.gs, de antes del 1
-//     de agosto) tenían la celda KM_Sumados guardada como Date en vez
-//     de número — Number(unDate) devuelve los milisegundos desde 1970,
-//     un número de 13 dígitos. Nuevo helper _kmSeguro() (trata un Date
-//     como 0 en vez de sumarlo) reemplaza los 4 Number(...) sueltos de
-//     este archivo que sumaban km directo del Sheet. Mismo bug también
-//     en codigo.gs (3 lugares), corregido en el mismo cambio.
+//   - BUG real: "Usuarios Totales" del panel admin contaba también la
+//     cuenta admin (huellarunner@gmail.com) — getAdminStats() hacía
+//     getLastRow()-1 (cuenta filas nomás), sin excluirla. Ahora recorre
+//     la hoja Usuarios y descarta los emails de ADMIN_EMAILS (mismo
+//     helper _esEmailAdmin() que ya se usa en eliminarCuenta). El
+//     fundador notó la diferencia comparando contra sus usuarios reales.
 // Cambios en versiones anteriores:
-//   - Nueva getEntrenamientosSospechosos(token): el anti-fraude marca
-//     "Sospechosa" un entrenamiento que supera el acumulado semanal,
-//     pero esa marca no se mostraba en ningún lado del panel. Devuelve
-//     los últimos 20 para revisar a mano ("🕵️ Actividad sospechosa").
+//   - BUG real: sumas de km daban números gigantes (filas viejas con
+//     KM_Sumados guardado como Date). Nuevo helper _kmSeguro().
 // (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
 // en la raíz del repo — a partir de ahora este encabezado solo guarda
 // los últimos 2 cambios, para no seguir creciendo sin límite.)
@@ -90,10 +84,17 @@ function getAdminStats(token) {
   try {
     const ss = SpreadsheetApp.openById(SHEET_ID);
 
-    // --- Usuarios ---
+    // --- Usuarios (sin contar la cuenta admin) ---
     const usersSheet = ss.getSheetByName('Usuarios');
-    const usuariosTotales = usersSheet && usersSheet.getLastRow() > 1
-      ? usersSheet.getLastRow() - 1 : 0;
+    let usuariosTotales = 0;
+    if (usersSheet && usersSheet.getLastRow() > 1) {
+      const uData     = usersSheet.getDataRange().getValues();
+      const uEmailCol = uData[0].indexOf('Email');
+      for (let i = 1; i < uData.length; i++) {
+        const email = uEmailCol !== -1 && uData[i][uEmailCol] ? uData[i][uEmailCol].toString().trim().toLowerCase() : '';
+        if (email && !_esEmailAdmin(email)) usuariosTotales++;
+      }
+    }
 
     // --- Zapatillas ---
     const zapSheet = ss.getSheetByName('Zapatillas');

@@ -12,6 +12,24 @@ el GAS es la versión más nueva.
 
 ---
 
+## 10/08/2026 (noche) — BUG real: "Usuarios Totales" contaba la cuenta admin
+
+El fundador vio una captura del panel: "Usuarios Totales: 10" — y notó
+que ahí adentro estaba contada la cuenta admin (`huellarunner@gmail.com`),
+que no es un usuario real. Su propia cuenta (`edragotto@hotmail.com`)
+sí es real (la usa de verdad), así que esa debía seguir contando.
+
+**Causa:** `getAdminStats()` calculaba `usuariosTotales` con
+`usersSheet.getLastRow() - 1` — un conteo de filas nomás, sin mirar
+si alguna era la cuenta admin.
+
+**Arreglado:** ahora recorre la hoja Usuarios y descarta los emails que
+están en `ADMIN_EMAILS` (mismo helper `_esEmailAdmin()` que ya usa
+`eliminarCuenta()` para no dejar borrar la cuenta admin). El resto de
+los números de "Resumen general" (Activos hoy, Zapatillas activas, Km
+registrados hoy) no se tocaron — el fundador solo reportó el de
+Usuarios Totales.
+
 ## 10/08/2026 (mediodía) — Botón "Ver en tienda": cursiva + sin borde amarillo
 
 El fundador ya vio el botón en la app real (capturas del panel/app con
