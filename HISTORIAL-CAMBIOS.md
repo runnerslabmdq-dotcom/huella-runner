@@ -12,6 +12,47 @@ el GAS es la versión más nueva.
 
 ---
 
+## 11/08/2026 (mañana) — Cumpleaños automático: notificación + mail, sin depender de que el fundador se acuerde
+
+El fundador preguntó si había alguna forma de que se le avisara solo
+cuando hay un cumpleaños, en vez de tener que entrar al panel a
+revisar el segmento "🎂 Cumpleaños esta semana" (que ya existía, pero
+era 100% manual: había que entrar, elegir el segmento y apretar
+enviar). Se le explicó el estado real:
+
+- Hoy no hay ningún aviso automático al fundador.
+- Al usuario solo le llega por notificación in-app (la campanita),
+  nunca por mail ni celular, y solo si el fundador lo manda a mano.
+- Mail: la herramienta ya existe en el código (`MailApp`, la misma que
+  manda el mail de "recuperar contraseña"), solo faltaba conectarla acá.
+- Celular (SMS/WhatsApp): no hay nada armado, y no es gratis — pediría
+  un servicio pago aparte (Twilio o WhatsApp Business API). Se dejó
+  afuera de este cambio.
+
+**Elegido: automatizarlo del todo.** Nueva `enviarCumpleanosDeHoy()`
+(`codigo.gs`), pensada para correr sola una vez al día vía un trigger
+de tiempo (mismo mecanismo que ya usa el cron nocturno de
+`Cache_Modelos`, ver `social-proof.gs`). Cada día que corre:
+- Busca usuarios cuyo cumpleaños es HOY (compara mes/día de
+  `FechaNacimiento`, con `_parseFechaNacimiento()` que ya existía).
+- Le manda a cada uno notificación in-app (reutiliza `enviarNotificacion()`)
+  **y** un mail (`MailApp`), con un saludo — sin prometer premio ni
+  descuento, porque hoy no hay ninguno armado (mismo criterio de
+  honestidad que el resto de la app).
+- No le manda nada a la cuenta admin.
+
+**Pendiente, del lado del fundador:** la función ya está en el código,
+pero no corre sola hasta que se instale el trigger a mano — mismos
+pasos que ya usó antes para el cron nocturno:
+**Apps Script → Activadores → "+ Añadir activador" → Función:
+`enviarCumpleanosDeHoy` → Tipo: Activador de tiempo → Diario → Entre
+7:00 y 8:00 AM → Guardar.**
+
+De paso, el header de `codigo.gs` tenía pendiente el recorte a "últimos
+2 cambios" desde hacía rato (se le había aplicado a medias) — se
+terminó de aplicar en este mismo cambio. Todo lo que tenía quedó
+comprobado que ya está en este archivo, con otras palabras.
+
 ## 10/08/2026 (noche) — BUG real: "Usuarios Totales" contaba la cuenta admin
 
 El fundador vio una captura del panel: "Usuarios Totales: 10" — y notó
