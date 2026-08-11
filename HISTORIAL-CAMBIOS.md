@@ -12,6 +12,43 @@ el GAS es la versión más nueva.
 
 ---
 
+## 11/08/2026 (mediodía) — Botón Open Sports "apagado" + arreglado el bug de la fecha de cumpleaños en Mi Perfil
+
+Después de la revisión completa del proyecto, Esteban pidió dos cosas
+puntuales de la lista de hallazgos:
+
+**1. Botón "Ver en tienda" (Open Sports), apagado.**
+Le gusta el estilo (rojo, "SPORTS" en amarillo, cursiva) y no quería
+perderlo, pero tampoco que parezca activo sin tener un sponsor
+confirmado. Se guardó el estilo completo en el CSS (`.cf-btn-opensports`,
+sin tocar) y se sumó una clase nueva `.cf-btn-opensports-off` que pisa
+los colores a gris sobre negro, saca el link (`disabled`, sin
+`onclick`) y agrega un "Próximamente" bien chico abajo del texto. Para
+reactivarlo el día que haya un sponsor de verdad: sacar la clase
+`cf-btn-opensports-off` del botón en `gas/index.html` (buscar
+`cf-btn-opensports cf-btn-opensports-off`) — el resto queda igual.
+
+**2. BUG real arreglado: la fecha de cumpleaños no volvía a aparecer en Mi Perfil.**
+Ya lo habíamos diagnosticado antes pero nunca se había arreglado.
+`getPerfilUsuario()` (`codigo.gs`) hacía `.toString()` directo sobre la
+celda `FechaNacimiento` — si Sheets la guardó como fecha nativa (no
+texto), tira un texto larguísimo tipo "Wed Jan 15 1995..." que el campo
+`<input type="date">` de Mi Perfil no entiende, así que el campo
+quedaba vacío aunque el dato estuviera bien guardado en el Sheet.
+Arreglado con `_parseFechaNacimiento()` (ya existía, en `admin.gs`) +
+`Utilities.formatDate()`, para devolver siempre `yyyy-mm-dd` sin
+importar cómo haya quedado guardada la celda.
+
+**Quedó pendiente, no incluido en este cambio — necesita más charla o
+confirmación:**
+- El misterio del `ID_Entreno` que a veces no se carga: sigue sin
+  confirmar, falta que Esteban revise el texto exacto de esa columna en
+  el Sheet de Entrenamientos.
+- La falta de un token de sesión real (cualquiera que sepa el email de
+  otro usuario podría, en teoría, tocar su cuenta desde la consola del
+  navegador) — es un cambio de arquitectura más grande, se dejó afuera
+  de este arreglo puntual a propósito.
+
 ## 11/08/2026 (mediodía, seguimiento) — Foto de Adizero Boston 13, reemplazada por una subida a Imgur
 
 El recorte automático de Cloudinary del cambio anterior no dejó bien

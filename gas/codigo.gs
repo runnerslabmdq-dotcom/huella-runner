@@ -1,19 +1,18 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 11/08/2026 07:07 (hora Argentina)
+// Última actualización: 11/08/2026 11:40 (hora Argentina)
 // Cambios en esta versión:
-//   - Nueva enviarCumpleanosDeHoy(): antes, el segmento "Cumpleaños" del
-//     panel admin era 100% manual (había que entrar y mandar a mano).
-//     Esta función, pensada para correr sola una vez al día vía trigger
-//     de tiempo, le manda notificación in-app + mail a cada usuario que
-//     cumple años hoy, sin que el fundador tenga que acordarse. No
-//     promete premio/descuento (no hay ninguno armado todavía). NECESITA
-//     que el fundador instale el trigger a mano en Apps Script (ver
-//     instrucciones en el comentario de la función) — sin eso, la
-//     función existe pero no corre sola.
+//   - BUG real: getPerfilUsuario() hacía .toString() directo sobre la
+//     celda FechaNacimiento — si Sheets la guardó como Date nativo (no
+//     texto), tiraba un texto larguísimo tipo "Wed Jan 15 1995..." que
+//     <input type="date"> no entiende, y el campo de fecha quedaba
+//     vacío en Mi Perfil aunque el dato estuviera bien guardado. Ahora
+//     usa _parseFechaNacimiento() (admin.gs) + Utilities.formatDate()
+//     para devolver siempre "yyyy-mm-dd", venga como Date o como texto.
 // Cambios en versiones anteriores:
-//   - BUG real: sumas de km podían dar números gigantes — nuevo helper
-//     _kmSeguro() (ver admin.gs para el detalle completo).
+//   - Nueva enviarCumpleanosDeHoy(): notificación + mail automático el
+//     día del cumpleaños, sin depender de que Esteban entre al panel
+//     (ver HISTORIAL-CAMBIOS.md).
 // (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
 // en la raíz del repo — a partir de ahora este encabezado solo guarda
 // los últimos 2 cambios, para no seguir creciendo sin límite.)
@@ -438,9 +437,22 @@ function getPerfilUsuario(email) {
     for (let i = 1; i < data.length; i++) {
       const rowEmail = data[i][emailCol] ? data[i][emailCol].toString().trim().toLowerCase() : '';
       if (rowEmail !== emailClean) continue;
+
+      // FechaNacimiento puede haber quedado guardada como Date nativo de
+      // Sheets — un .toString() directo tira un texto larguísimo tipo
+      // "Wed Jan 15 1995..." que <input type="date"> no entiende, y el
+      // campo queda vacío en Mi Perfil aunque el dato esté bien guardado.
+      // _parseFechaNacimiento() (admin.gs) entiende los dos formatos
+      // (Date u "yyyy-mm-dd" texto) y acá se re-formatea siempre igual.
+      let fechaNacFormateada = '';
+      if (fechaNacCol !== -1 && data[i][fechaNacCol]) {
+        const fNac = _parseFechaNacimiento(data[i][fechaNacCol]);
+        if (fNac) fechaNacFormateada = Utilities.formatDate(fNac, TZ_AR, 'yyyy-MM-dd');
+      }
+
       return {
         success:         true,
-        fechaNacimiento: fechaNacCol  !== -1 ? (data[i][fechaNacCol]  || '').toString() : '',
+        fechaNacimiento: fechaNacFormateada,
         provincia:       provinciaCol !== -1 ? (data[i][provinciaCol] || '').toString() : '',
         ciudad:          ciudadCol    !== -1 ? (data[i][ciudadCol]    || '').toString() : '',
         celular:         celularCol   !== -1 ? (data[i][celularCol]   || '').toString() : '',

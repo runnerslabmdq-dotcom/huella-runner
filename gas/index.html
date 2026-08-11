@@ -1,15 +1,16 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 11/08/2026 11:10 (hora Argentina)
+  Última actualización: 11/08/2026 11:40 (hora Argentina)
   Cambios en esta versión:
-    - El recorte automático de Cloudinary (c_fill,ar_4:4.4,g_auto) para
-      Adizero Boston 13 no centró bien la zapatilla. El fundador subió
-      una foto nueva a Imgur, ya encuadrada por su cuenta —
-      modelImages["adidas_adizero_boston_13"] apunta ahora a esa URL
-      (i.imgur.com), sin transformación (Imgur no tiene el mismo motor
-      de recorte que Cloudinary).
+    - Botón "Ver en tienda" (Open Sports) "apagado": mismo estilo que ya
+      estaba (rojo/amarillo/cursiva) queda guardado en el CSS para
+      cuando se reactive, pero el botón ahora se pinta gris sobre negro,
+      sin click, con "Próximamente" chiquito abajo — hasta que haya un
+      sponsor confirmado. Clase nueva cf-btn-opensports-off, se saca del
+      botón para reactivar.
   Cambios en versiones anteriores:
-    - Recorte de Cloudinary para esa misma foto (ver HISTORIAL-CAMBIOS.md).
+    - Foto de Adizero Boston 13 reemplazada por una subida a Imgur (ver
+      HISTORIAL-CAMBIOS.md).
   (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
   en la raíz del repo — a partir de ahora este encabezado solo guarda
   los últimos 2 cambios, para no seguir creciendo sin límite.)
@@ -494,6 +495,28 @@
     }
     .cf-btn-opensports:active { transform: scale(0.96); opacity: 0.88; }
     .cf-btn-opensports-sports { color: #FFE600; }
+    /* ── Apagado: mismo estilo (cursiva, layout, "OPEN"+"SPORTS")
+       guardado arriba para cuando haya un sponsor confirmado — acá
+       solo se pisa el color, a gris sobre negro, sin click, con
+       "Próximamente" chiquito abajo. Para reactivar: sacar la clase
+       "cf-btn-opensports-off" del botón (ver template más abajo). ── */
+    .cf-btn-opensports.cf-btn-opensports-off {
+      flex-direction: column;
+      gap: 1px;
+      background: #141414;
+      color: #555;
+      cursor: default;
+      padding: 7px 6px 6px;
+    }
+    .cf-btn-opensports.cf-btn-opensports-off .cf-btn-opensports-sports { color: #555; }
+    .cf-btn-opensports-off-tag {
+      font-style: normal;
+      font-size: 0.42rem;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      color: #3a3a3a;
+    }
 
     /* ── Slide especial dual: nueva zapa + locker ── */
     .cf-add-slide .cf-neon-wrap {
@@ -3138,9 +3161,9 @@
                   '})();">📋 HISTORIAL</button>' +
               '</div>' +
               '<div class="cf-btn-row-shop">' +
-                '<button class="cf-btn-opensports" ' +
-                  'onclick="event.stopPropagation(); irATiendaSponsor(\'' + rawGenero + '\', \'' + rawTalle + '\'); return false;">' +
-                  '🛒 OPEN <span class="cf-btn-opensports-sports">SPORTS</span></button>' +
+                '<button class="cf-btn-opensports cf-btn-opensports-off" disabled>' +
+                  '🛒 OPEN <span class="cf-btn-opensports-sports">SPORTS</span>' +
+                  '<span class="cf-btn-opensports-off-tag">Próximamente</span></button>' +
               '</div>' +
             '</div>' +
 
