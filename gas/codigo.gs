@@ -1,173 +1,22 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 10/08/2026 06:57 (hora Argentina)
+// Última actualización: 11/08/2026 07:07 (hora Argentina)
 // Cambios en esta versión:
-//   - BUG real: sumas de km podían dar números gigantes (ver admin.gs,
-//     mismo cambio) cuando una celda KM_Sumados/KM_Actuales quedaba
-//     guardada como Date en vez de número (filas viejas de datos de
-//     prueba). Los 3 Number(...) sueltos de este archivo (reactivateShoe,
-//     getShoeHistory, segmentación de notificaciones) ahora usan el
-//     helper nuevo _kmSeguro() (definido en admin.gs, mismo proyecto de
-//     Apps Script) que trata un Date como 0 en vez de sumarlo.
+//   - Nueva enviarCumpleanosDeHoy(): antes, el segmento "Cumpleaños" del
+//     panel admin era 100% manual (había que entrar y mandar a mano).
+//     Esta función, pensada para correr sola una vez al día vía trigger
+//     de tiempo, le manda notificación in-app + mail a cada usuario que
+//     cumple años hoy, sin que el fundador tenga que acordarse. No
+//     promete premio/descuento (no hay ninguno armado todavía). NECESITA
+//     que el fundador instale el trigger a mano en Apps Script (ver
+//     instrucciones en el comentario de la función) — sin eso, la
+//     función existe pero no corre sola.
 // Cambios en versiones anteriores:
-//   - Nueva eliminarCuenta(email): borra la cuenta completa (Usuarios,
-//     Zapatillas, Entrenamientos, Notificaciones, Cupones_Emitidos) a
-//     pedido del propio usuario, ya logueado, vía "Eliminar mi cuenta"
-//     en Mi Perfil.
-// Cambios en versiones anteriores:
-//   - Semáforo de desgaste (panel admin): getAdminDashboardData() ahora
-//     agrega 'limite' y 'porcentaje' (km / KM_Limite propio de la
-//     zapatilla) a cada zapatilla de alertasDesgaste. Antes el panel
-//     coloreaba/agrupaba por km crudo (bandas fijas 300/600/800) — con
-//     el límite por zapatilla ya en uso, dos zapatillas con el mismo km
-//     pueden tener urgencias bien distintas si sus límites son
-//     distintos. Ver admin.html para el consumo de estos campos nuevos.
-// Cambios en versiones anteriores:
-//   - BUG DEL LOCKER RESUELTO. Síntoma: el Locker mostraba siempre "El
-//     Locker está vacío" aunque las zapatillas estuvieran bien
-//     archivadas en el Sheet. Causa: google.script.run no puede
-//     empaquetar un objeto que contenga un Date nativo de Sheets —
-//     cuando pasa, al frontend le llega null (no una lista vacía: null)
-//     sin error ni aviso, y el código lo interpretaba como "no hay
-//     nada". La única columna con fecha es Fecha_Archivado, y solo la
-//     tienen las archivadas — por eso fallaba el Locker y no el
-//     carrusel de activas. Se diagnosticó con _diagLocker() (el
-//     servidor devolvía las 2 zapatillas bien) más un alert temporal en
-//     el frontend (que recibía archived=null).
-//     Fix: nueva _filaZapaAObjeto(headers, fila), que convierte
-//     cualquier celda Date a texto "dd/MM/yyyy" antes de devolverla.
-//     Se aplica en getArchivedShoes() y también en getUserShoes() — una
-//     zapatilla reactivada conserva su Fecha_Archivado vieja, así que el
-//     mismo problema podía aparecer en el carrusel de activas.
-// Cambios en versiones anteriores:
-//   - Nueva función _diagLocker() — TEMPORAL, para diagnosticar el bug
-//     reportado por el fundador: el Locker no muestra zapatillas
-//     archivadas aunque el Sheet las tenga bien guardadas (confirmado
-//     en 2 usuarios distintos, edragotto@hotmail.com y
-//     estebandragotto@gmail.com). Compara lo que devuelve
-//     getArchivedShoes() contra un recuento manual fila por fila, para
-//     encontrar dónde se pierde el dato. Correr a mano desde el editor
-//     y mirar el Registro de ejecución. Se puede borrar una vez
-//     resuelto — no la usa ninguna pantalla.
-// Cambios en versiones anteriores:
-//   - Nuevo tipo de destinatario 'lista' en enviarNotificacion(): permite
-//     mandar un mensaje a un array de emails ya armado del lado del panel
-//     admin (ej. "zapas en alerta", "inactivos", "cumpleaños de la
-//     semana"), en vez de solo todos/grupo/individual. Valida que cada
-//     email corresponda a un usuario real antes de mandar nada. Requiere
-//     token de admin, igual que "todos"/"grupo".
-//   - Fix: getAdminDashboardData() arma alertasDesgaste (zapas en zona
-//     crítica) sin el campo email — el panel admin lo necesitaba para el
-//     filtro "Alerta Zapas" de "Usuarios registrados" (buscaba a.email,
-//     que nunca existía) y ahora también para el segmento nuevo de
-//     notificaciones. Sin este fix, ese filtro nunca mostraba resultados.
-// Cambios en versiones anteriores:
-//   - PERFORMANCE: enviarNotificacion() escribía una fila por vez en la
-//     hoja Notificaciones, con un SpreadsheetApp.flush() por cada
-//     destinatario — con envíos masivos ("todos"/"grupo") eso se
-//     notaba (el fundador lo detectó mandando a 53 usuarios simulados:
-//     tardaba mucho más que mandar a 1-3). Ahora arma todas las filas
-//     en memoria y las escribe de una sola vez con un solo flush, sin
-//     importar si son 3 o 300 destinatarios.
-// Cambios en versiones anteriores:
-//   - "HUELLA" también en cursiva ahora en el logo de los correos
-//     (antes solo "RUNNER" estaba en font-style:italic) — a pedido del
-//     fundador, para que las dos palabras se vean inclinadas.
-// Cambios en versiones anteriores:
-//   - Unificado el formato del logo en los correos (bienvenida y
-//     recuperación de contraseña): tenían un tercer esquema de color
-//     que había quedado suelto (verde lima #dcfd8b + plata), distinto
-//     tanto del login viejo como del resto de la app. Ahora usan
-//     plata + dorado (#C5B358, el mismo dorado de toda la app), con
-//     "RUNNER" en cursiva real (font-style:italic — en emails es más
-//     confiable que un inclinado por CSS, que Gmail/Outlook no siempre
-//     respetan). También se pasó a dorado la contraseña temporal
-//     resaltada y la mención de "Huella Runner" en el correo de
-//     bienvenida, que usaban el mismo verde lima viejo.
-// Cambios en versiones anteriores:
-//   - BUG arreglado: el ícono de la PWA (page=icon) devolvía un SVG
-//     como texto plano (Content-Type text/plain), no una imagen real —
-//     por eso al agregar la app a la pantalla de inicio del celu
-//     aparecía un ícono genérico en vez del logo. El manifest ahora
-//     apunta directo a los PNG reales ya alojados en Vercel
-//     (huella-runner.vercel.app/icons/icon-192.png y icon-512.png,
-//     los mismos que ya usa la pantalla de bienvenida de la PWA). Se
-//     sacó el generador de ícono roto, que ya no lo usa nadie. De paso,
-//     el color de fondo/tema del manifest (que seguía en negro+neón
-//     lima viejo) se actualizó al negro+dorado actual de la marca.
-// Cambios en versiones anteriores:
-//   - BUG arreglado: getAdminDashboardData() (alertas de desgaste del
-//     panel admin) comparaba el km de cada zapatilla contra el umbral
-//     global fijo (TP.KM_UMBRAL_CUPON, 650) en vez del KM_Limite propio
-//     de cada zapatilla — quedó desincronizado del Paso 1 del límite
-//     por zapatilla. Encontrado en revisión de bugs del 20/07.
-// Cambios en versiones anteriores:
-//   - Paso 1 del límite de km por zapatilla: addShoe() ahora acepta un
-//     límite de km opcional por zapatilla (formData.kmLimite). Si no se
-//     indica, usa el umbral global de siempre (TP.KM_UMBRAL_CUPON, 650)
-//     como valor por defecto. Se guarda en la columna nueva KM_Limite
-//     de la hoja Zapatillas (se crea sola si no existe).
-//   - reactivateShoe(), deleteTraining() y editarEntrenamiento() ahora
-//     recalculan el estado de desgaste usando el KM_Limite propio de
-//     cada zapatilla (con fallback a 650 para las zapatillas viejas que
-//     no tienen ese dato guardado), en vez del umbral global fijo.
-//   - Nueva función editarEntrenamiento(email, idEntreno, idZapatilla,
-//     kmNuevo): corrige el km de un registro ya cargado sin borrarlo,
-//     ajustando el km de la zapatilla por la diferencia (delta).
-//   - archiveShoe() ahora guarda la fecha de archivado
-//     (Fecha_Archivado), para mostrarla en el Locker.
-//   - enviarNotificacion() ya no genera código de voucher ni distingue
-//     tipo "Premio" — se sacó todo lo de Open Sports/voucher del envío
-//     de notificaciones (a pedido del fundador). Se guarda 'Mensaje'
-//     siempre. _generarCodigoVoucher() eliminada.
-//   - loginUser() ahora devuelve requiereCambioPassword: true cuando la
-//     cuenta entró con una contraseña temporal (la que genera
-//     recoverPassword). recoverPassword() marca la cuenta con la
-//     columna nueva Requiere_Cambio_Password al mandar la temporal.
-//   - Nueva función establecerNuevaPassword(email, nuevaPassword): la
-//     usa la pantalla nueva "Elegí tu contraseña nueva" (Index.html)
-//     para que el usuario defina su contraseña definitiva después de
-//     entrar con la temporal, con doble ingreso.
-//   - addShoe() ya no manda ninguna notificación al buzón — ahora
-//     devuelve el dato de comunidad (socialProof) directo en la
-//     respuesta, para que Index.html lo muestre al toque en una
-//     ventanita (modal) al registrar la zapatilla.
-//   - addShoe() encolaba la notificación de "dato de comunidad" para
-//     mandar 24hs después — se sacó ese delay, mandándola al toque (y
-//     solo si hay datos reales) vía _notificarDatoComunidadSiHayDatos()
-//     en social-proof.gs (esa función también se sacó después, ver
-//     arriba). Sacadas las llamadas de respaldo a
-//     procesarNotificacionesDiferidas() en getNotificacionesUsuario()
-//     y contarNoLeidas() (esa función ya no existe, ver social-proof.gs).
-//   - BUG DE SEGURIDAD arreglado: getAdminDashboardData() y
-//     enviarNotificacion() (envíos a "todos"/"grupo") no revisaban el
-//     token de admin. Ahora sí — ver detalle en admin.gs.
-//   - BUG DE SEGURIDAD arreglado: las contraseñas se guardaban y se
-//     reenviaban por mail en texto plano. Ahora se guardan hasheadas
-//     (_hashPassword, formato "salt$hash"). Los usuarios ya registrados
-//     se migran solos al formato nuevo la próxima vez que inicien
-//     sesión, sin hacer nada distinto. "Olvidé mi contraseña" ya no
-//     reenvía la contraseña vieja (no se puede leer de un hash) — ahora
-//     genera una nueva y la manda por mail, mismo flujo de siempre.
-//   - getAdminUrl() ahora arma el link con el token real leído de
-//     Propiedades del script (ver admin.gs), no de una constante en
-//     este código.
-//   - Sacado "trail" y "sendero" del mail de bienvenida (catálogo,
-//     comunidad, desgaste, despedida) y de la descripción del manifest
-//     PWA. Emojis de montaña 🏔️ cambiados por 🏃.
-//   - BUG REAL arreglado: las notificaciones diferidas de Social Proof
-//     quedaban encoladas en Notif_Diferidas para siempre y nunca
-//     llegaban a la app. Causa: procesarNotificacionesDiferidas() (en
-//     social-proof.gs) solo corre si hay un trigger horario configurado
-//     a mano en Apps Script, y nunca se conectó como respaldo. Ahora
-//     getNotificacionesUsuario() y contarNoLeidas() la llaman solas
-//     cada vez que alguien abre o revisa su buzón, así no depende de
-//     que el trigger esté configurado.
-//   - loginUser: ahora también es admin si el email está en ADMIN_EMAILS
-//     (ver admin.gs), sin depender de la columna Rol del sheet
-//   - (mantiene: SHEET_ID "Huella Runner Final 1407", Fecha_Registro,
-//     TRAIN_HEADERS unificado, Email_Usuario en Notificaciones, try/catch
-//     en login/registro, auto-creación de columnas)
+//   - BUG real: sumas de km podían dar números gigantes — nuevo helper
+//     _kmSeguro() (ver admin.gs para el detalle completo).
+// (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
+// en la raíz del repo — a partir de ahora este encabezado solo guarda
+// los últimos 2 cambios, para no seguir creciendo sin límite.)
 // ============================================
 
 const SHEET_ID = '1ThbstRTiGHL3Vfkc6mtX_BluSDYTxQx6-KOSu9QFTPk';
@@ -1461,6 +1310,66 @@ function enviarNotificacion(destinatarioTipo, destinatarioValor, mensaje, tipo, 
   } catch(e) {
     Logger.log('enviarNotificacion ERROR: ' + e.toString());
     return { success: false, error: e.toString() };
+  }
+}
+
+// ============================================================
+// CUMPLEAÑOS AUTOMÁTICO — pensada para correr sola, una vez al día
+// (trigger de tiempo, ver instrucciones abajo). A cada usuario que
+// cumple años HOY (compara solo mes/día de FechaNacimiento) le manda
+// notificación in-app + mail, sin que el fundador tenga que entrar al
+// panel ni acordarse. No promete premio/descuento (todavía no hay
+// ninguno armado) — solo un saludo. No le manda nada a la cuenta admin.
+//
+// TRIGGER: En Apps Script Editor → Activadores → "+ Añadir activador"
+//   Función: enviarCumpleanosDeHoy
+//   Tipo: Activador de tiempo → Diario → Entre 7:00 y 8:00 AM
+// (mismo mecanismo que el trigger nocturno de Cache_Modelos, ver
+// social-proof.gs)
+// ============================================================
+function enviarCumpleanosDeHoy() {
+  try {
+    const ss    = SpreadsheetApp.openById(SHEET_ID);
+    const sheet = ss.getSheetByName('Usuarios');
+    if (!sheet || sheet.getLastRow() <= 1) return;
+
+    const data    = sheet.getDataRange().getValues();
+    const headers = data[0];
+    const emailCol = headers.indexOf('Email');
+    const nomCol   = headers.indexOf('Nombre');
+    const fechaCol = headers.indexOf('FechaNacimiento');
+    if (emailCol === -1 || fechaCol === -1) return;
+
+    const hoy = new Date();
+    const mensaje = '🎂 ¡Feliz cumpleaños de parte de todo el equipo de Huella Runner! Que este año te sume muchos kilómetros lindos. 👟';
+    let enviados = 0;
+
+    for (let i = 1; i < data.length; i++) {
+      const email = data[i][emailCol] ? data[i][emailCol].toString().trim().toLowerCase() : '';
+      if (!email || _esEmailAdmin(email)) continue;
+
+      const fNac = _parseFechaNacimiento(data[i][fechaCol]);
+      if (!fNac) continue;
+      if (fNac.getMonth() !== hoy.getMonth() || fNac.getDate() !== hoy.getDate()) continue;
+
+      const nombre = nomCol !== -1 ? (data[i][nomCol] || '').toString().trim() : '';
+
+      enviarNotificacion('individual', email, mensaje, 'Mensaje', '', '');
+
+      try {
+        MailApp.sendEmail({
+          to:      email,
+          subject: '🎂 ¡Feliz cumpleaños, ' + (nombre || 'runner') + '!',
+          body:    mensaje
+        });
+      } catch (mailErr) {
+        Logger.log('enviarCumpleanosDeHoy: error de mail para ' + email + ': ' + mailErr.toString());
+      }
+      enviados++;
+    }
+    Logger.log('enviarCumpleanosDeHoy OK: ' + enviados + ' saludos enviados.');
+  } catch(e) {
+    Logger.log('enviarCumpleanosDeHoy ERROR: ' + e.toString());
   }
 }
 
