@@ -12,6 +12,26 @@ el GAS es la versión más nueva.
 
 ---
 
+## 11/08/2026 (mediodía) — Foto de Adizero Boston 13, recortada y centrada sin volver a subir nada
+
+El fundador subió la foto más alta de lo normal (por error) y en la
+tarjeta la zapatilla quedaba recortada/desviada del centro. En vez de
+pedirle que suba otra vez, se usó una transformación de Cloudinary
+(`c_fill,ar_4:4.4,g_auto`) agregada directo en la URL ya guardada —
+recorta la MISMA imagen ya subida, centrada en el objeto principal
+(la zapatilla, detectada automáticamente por contraste de color contra
+el fondo blanco y negro), sin tocar el archivo original ni gastar
+cupo nuevo de Cloudinary.
+
+**Sobre el límite de Cloudinary** (el fundador ya no puede subir más
+fotos con su cuenta actual, gratis): no hace falta pagar los USD 29 —
+alcanza con crear una segunda cuenta gratis de Cloudinary (mismo
+proceso que ya conoce, otro mail) — de hecho el proyecto ya usa 2
+cuentas distintas (`dlayzh9ln` y `klxkj07e`), así que sumar una
+tercera no cambia nada del lado del código. Alternativa más simple
+todavía si no quiere manejar más cuentas: Imgur, que no pide cuenta
+para subir una imagen suelta y da un link directo.
+
 ## 11/08/2026 (mañana, seguimiento) — Foto de Adidas Adizero Boston 13
 
 Ya estaba en el desplegable de Adidas, le faltaba la foto (mostraba la
