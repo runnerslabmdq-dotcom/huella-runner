@@ -1,15 +1,12 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 12/08/2026 10:50 (hora Argentina)
+  Última actualización: 12/08/2026 11:30 (hora Argentina)
   Cambios en esta versión:
-    - "Reactivar zapatilla" del Locker usaba confirm() nativo del
-      navegador — en Apps Script eso muestra un cartel feo con la URL
-      técnica del iframe (googleusercontent.com) antes del mensaje, que
-      no se puede sacar por CSS/JS. Cambiado a un modal propio (mismo
-      patrón que ya se usa para borrar entrenamiento/notificación),
-      mensaje corto y limpio, sin nada raro.
+    - Letra de los mensajes de notificaciones (.notif-mensaje), ~15%
+      más chica: 1.27rem → 1.08rem, a pedido de Esteban.
   Cambios en versiones anteriores:
-    - Botón "Ver en tienda" (Open Sports) "apagado" (ver HISTORIAL-CAMBIOS.md).
+    - "Reactivar zapatilla" del Locker: modal propio en vez del
+      confirm() feo del navegador (ver HISTORIAL-CAMBIOS.md).
   (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
   en la raíz del repo — a partir de ahora este encabezado solo guarda
   los últimos 2 cambios, para no seguir creciendo sin límite.)
@@ -1292,7 +1289,7 @@
     }
     .notif-tipo-badge.mensaje { background: rgba(192,192,192,0.12); color: #C0C0C0; border: 1px solid rgba(192,192,192,0.2); }
     .notif-fecha { font-size: 0.58rem; color: var(--gris-texto); font-weight: 700; }
-    .notif-mensaje { font-size: 1.27rem; color: var(--plata); line-height: 1.55; margin-bottom: 10px; }
+    .notif-mensaje { font-size: 1.08rem; color: var(--plata); line-height: 1.55; margin-bottom: 10px; }
 
     .notif-actions {
       display: flex;

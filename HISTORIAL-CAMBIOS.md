@@ -12,6 +12,13 @@ el GAS es la versión más nueva.
 
 ---
 
+## 12/08/2026 (mediodía) — Letra de las notificaciones, ~15% más chica
+
+Esteban vio la pantalla de Notificaciones en el celu y la pidió un
+poco más chica. `.notif-mensaje` pasó de `1.27rem` a `1.08rem` (~15%
+menos) — el resto de la pantalla (fecha, badge "Aviso", botones) no se
+tocó.
+
 ## 12/08/2026 (mañana, seguimiento) — "Reactivar zapatilla" del Locker: cartel feo del navegador reemplazado por un modal propio
 
 Esteban reactivó una zapatilla del Locker (después de arreglar lo de
