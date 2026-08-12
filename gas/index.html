@@ -1,16 +1,15 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 11/08/2026 11:40 (hora Argentina)
+  Última actualización: 12/08/2026 10:50 (hora Argentina)
   Cambios en esta versión:
-    - Botón "Ver en tienda" (Open Sports) "apagado": mismo estilo que ya
-      estaba (rojo/amarillo/cursiva) queda guardado en el CSS para
-      cuando se reactive, pero el botón ahora se pinta gris sobre negro,
-      sin click, con "Próximamente" chiquito abajo — hasta que haya un
-      sponsor confirmado. Clase nueva cf-btn-opensports-off, se saca del
-      botón para reactivar.
+    - "Reactivar zapatilla" del Locker usaba confirm() nativo del
+      navegador — en Apps Script eso muestra un cartel feo con la URL
+      técnica del iframe (googleusercontent.com) antes del mensaje, que
+      no se puede sacar por CSS/JS. Cambiado a un modal propio (mismo
+      patrón que ya se usa para borrar entrenamiento/notificación),
+      mensaje corto y limpio, sin nada raro.
   Cambios en versiones anteriores:
-    - Foto de Adizero Boston 13 reemplazada por una subida a Imgur (ver
-      HISTORIAL-CAMBIOS.md).
+    - Botón "Ver en tienda" (Open Sports) "apagado" (ver HISTORIAL-CAMBIOS.md).
   (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
   en la raíz del repo — a partir de ahora este encabezado solo guarda
   los últimos 2 cambios, para no seguir creciendo sin límite.)
@@ -1858,6 +1857,20 @@
       <button class="btn-confirm-cancel" onclick="closeConfirmDeleteTraining()">Cancelar</button>
       <button class="btn-confirm-delete" id="btn-confirm-delete-training-ok" onclick="executeDeleteTraining()">Borrar</button>
     </div>
+  </div>
+</div>
+
+<!-- MODAL CONFIRMAR REACTIVAR ZAPATILLA (Locker) -->
+<div class="modal-overlay" id="confirm-reactivar-modal">
+  <div class="modal-confirm-training-content">
+    <div class="confirm-icon">↩️</div>
+    <div class="confirm-title">Reactivar zapatilla</div>
+    <div class="confirm-msg" id="confirm-reactivar-msg"></div>
+    <input type="hidden" id="confirm-reactivar-id">
+    <div class="confirm-btn-row">
+      <button class="btn-confirm-cancel" onclick="closeConfirmReactivar()">Cancelar</button>
+    </div>
+    <button class="btn-confirm-archive" onclick="executeReactivar()">Reactivar</button>
   </div>
 </div>
 
@@ -3838,7 +3851,18 @@
   }
 
   function reactivarZapa(idZapa, modelo) {
-    if (!confirm('¿Reactivar ' + modelo + '? Vuelve a tu carrusel activo.')) return;
+    document.getElementById('confirm-reactivar-id').value = idZapa;
+    document.getElementById('confirm-reactivar-msg').textContent = '¿Reactivar ' + modelo + '? Vuelve a tu carrusel activo.';
+    document.getElementById('confirm-reactivar-modal').style.display = 'flex';
+  }
+
+  function closeConfirmReactivar() {
+    document.getElementById('confirm-reactivar-modal').style.display = 'none';
+  }
+
+  function executeReactivar() {
+    const idZapa = document.getElementById('confirm-reactivar-id').value;
+    closeConfirmReactivar();
     google.script.run
       .withSuccessHandler(function(res) {
         if (res && res.success) {

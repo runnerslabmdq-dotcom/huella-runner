@@ -12,6 +12,23 @@ el GAS es la versión más nueva.
 
 ---
 
+## 12/08/2026 (mañana, seguimiento) — "Reactivar zapatilla" del Locker: cartel feo del navegador reemplazado por un modal propio
+
+Esteban reactivó una zapatilla del Locker (después de arreglar lo de
+`_kmSeguro`) y se encontró con un cartel de confirmación feo, con texto
+técnico raro arriba del mensaje ("Una página insertada en
+n-gdd2rh2...script.googleusercontent.com dice"). Eso es el `confirm()`
+nativo del navegador — cuando la app corre adentro de Apps Script (un
+iframe de `googleusercontent.com`), Chrome le agrega automáticamente
+esa URL antes del mensaje, y no hay forma de sacarlo con CSS ni JS, es
+parte del navegador.
+
+**Arreglado**: `reactivarZapa()` (`gas/index.html`) ya no usa
+`confirm()` — ahora abre un modal propio (mismo estilo que ya se usa
+para "Borrar registro" o "Borrar notificación"), con el mensaje corto
+y limpio, sin nada del navegador de por medio. Botón "Reactivar" en
+dorado (reutiliza el mismo estilo que ya tenía el botón "Archivar").
+
 ## 12/08/2026 (mañana) — Cartel de Instagram (pwa/index.html): sin logo, sin ojitos, sin "sin apuro"
 
 Esteban vio el cartel real en el celu ("Estás entrando desde
