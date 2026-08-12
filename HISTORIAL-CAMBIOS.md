@@ -12,6 +12,22 @@ el GAS es la versión más nueva.
 
 ---
 
+## 12/08/2026 (mañana) — Cartel de Instagram (pwa/index.html): sin logo, sin ojitos, sin "sin apuro"
+
+Esteban vio el cartel real en el celu ("Estás entrando desde
+Instagram") y pidió recortarlo:
+- Sacado el logo (ícono HR de 64px) de arriba del cartel.
+- Sacado el emoji 👀 antes del título.
+- Sacado "Sin apuro —" al principio de la segunda frase — queda "Leé
+  tranquilo y tocá el botón cuando quieras seguir." (misma idea, sin
+  repetir el concepto de "sin apuro" dos veces con el resto del texto).
+- El resto (el botón "Continuar →" y los 2 pasos para instalar) se
+  dejó igual.
+
+Cambio en `pwa/index.html`, el archivo que se sirve en
+`huella-runner.vercel.app` — se actualiza solo al pushear a `main`, no
+hace falta que Esteban pegue nada en Apps Script para este cambio.
+
 ## 11/08/2026 (mediodía) — Botón Open Sports "apagado" + arreglado el bug de la fecha de cumpleaños en Mi Perfil
 
 Después de la revisión completa del proyecto, Esteban pidió dos cosas
