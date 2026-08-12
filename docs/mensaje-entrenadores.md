@@ -49,3 +49,18 @@ lesiones arrancan justo ahí. Te pido que la pruebes y, si te sirve, la
 compartas con tu grupo. Es gratis, se abre desde Instagram, sin
 instalar nada. Cuantos más seamos, más fuerza para conseguir
 beneficios reales con marcas. Te dejo el link: [LINK]. ¡Gracias!
+
+## Versión broadcast/grupo (12/08/2026, escrita por Esteban)
+
+Pensada para postear o mandar a un grupo (WhatsApp, story con link en
+bio) en vez de a una persona sola — por eso todo en plural ("ustedes"),
+no en "vos".
+
+Buen día! ¿Cómo están? Les comento que armé una app (todavía demo)
+para runners acá en MDQ: Huella Runner. Carga los km de cada zapatilla
+y va controlando el desgaste — seguro vieron más de una lesión que
+arrancó en una zapatilla gastada que nadie notó a tiempo. Sin
+compromiso, la pueden probar y, si les sirve, compartirla con su
+grupo. Es gratis, se abre desde Instagram, sin instalar nada. Cuantos
+más seamos, más fuerza para conseguir beneficios reales con marcas.
+Les dejo el link en la bio. ¡Gracias!
