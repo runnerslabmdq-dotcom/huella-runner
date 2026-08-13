@@ -12,6 +12,27 @@ el GAS es la versión más nueva.
 
 ---
 
+## 12/08/2026 (noche) — CHECKPOINT de respaldo antes de probar el iframe de Google en pwa/index.html
+
+Esteban confirmó que en este momento todo anda bien (Locker, notificaciones,
+panel admin, botón Open Sports apagado, etc.). Antes de tocar
+`pwa/index.html` para probar que la app se vea envuelta en un iframe
+(así no se ve más "script.google.com" en la barra de direcciones —
+pensado para cuando se le muestre la app a un sponsor), queda anotado
+este punto como "conocido bueno" para volver si algo sale mal:
+
+**Commit de referencia: `cc9eb0b8a827100d0151432b3d11d49052af9603`**
+
+Para volver a este estado si hiciera falta:
+`git show cc9eb0b8a827100d0151432b3d11d49052af9603:pwa/index.html > pwa/index.html`
+(mismo mecanismo que se usó para revertir la prueba de Open Sports en
+`gas/index.html`, en su momento — no reescribe el historial de git,
+solo trae el contenido de ese momento).
+
+No se pudo dejar un tag de git en GitHub (el proxy de este entorno
+rechazó el push de tags con error 403) — por eso el respaldo queda
+documentado acá en vez de como tag.
+
 ## 12/08/2026 (mediodía) — Letra de las notificaciones, ~15% más chica
 
 Esteban vio la pantalla de Notificaciones en el celu y la pidió un
