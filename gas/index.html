@@ -1,12 +1,16 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 13/08/2026 14:54 (hora Argentina)
+  Última actualización: 13/08/2026 15:36 (hora Argentina)
   Cambios en esta versión:
-    - 3 modelos nuevos de Adidas (Adizero Adios Pro 4, Hyperboost,
-      Zenboost) + marca nueva "On" (Cloudmonster 3, primera vez que
-      aparece esta marca en el catálogo) — todos con foto.
+    - BUG real: "On" no aparecía en el desplegable de marca porque el
+      <select id="shoe-marca"> es una lista fija en el HTML, separada
+      del objeto catalogo{} que solo maneja los MODELOS — le faltaba
+      la opción <option value="On">. Agregada. De paso, todos los
+      modelos de cada marca en catalogo{} quedaron ordenados
+      alfabéticamente (antes estaban en el orden en que se fueron
+      agregando, sin criterio).
   Cambios en versiones anteriores:
-    - Adidas Adizero Boston 12 (modelo + foto) (ver HISTORIAL-CAMBIOS.md).
+    - 3 modelos nuevos de Adidas + marca "On" (ver HISTORIAL-CAMBIOS.md).
   (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
   en la raíz del repo — a partir de ahora este encabezado solo guarda
   los últimos 2 cambios, para no seguir creciendo sin límite.)
@@ -1648,6 +1652,7 @@
           <option value="New Balance">New Balance</option>
           <option value="Nike">Nike</option>
           <option value="Nnormal">Nnormal</option>
+          <option value="On">On</option>
           <option value="Osx">Osx</option>
           <option value="Puma">Puma</option>
           <option value="Salomon">Salomon</option>
@@ -2283,84 +2288,84 @@
   // =====================================================
   const catalogo = {
     "Dynafit":      ["Alpine Trail"],
-    "Hoka":         ["Mafate X", "Speedgoat 6", "Torrent 4", "Challenger ATR 7", "Challenger ATR 8", "Speedgoat 6 Mid Gore", "Transport", "Mafate 5 Black", "Bondi 9", "Bondi 9 W", "Cielo X1 2.0", "Arahi 7", "Clifton 8", "Clifton 10", "Rocket X2", "Mafate Speed 4", "Match 6", "Solimar"],
+    "Hoka":         ["Arahi 7", "Bondi 9", "Bondi 9 W", "Challenger ATR 7", "Challenger ATR 8", "Cielo X1 2.0", "Clifton 8", "Clifton 10", "Mafate 5 Black", "Mafate Speed 4", "Mafate X", "Match 6", "Rocket X2", "Solimar", "Speedgoat 6", "Speedgoat 6 Mid Gore", "Torrent 4", "Transport"],
     "Joma":         ["R 2000"],
     "La Sportiva":  ["Prodigio Pro M", "Prodigio Pro Max", "Prodigio Pro W"],
     "Nnormal":      ["Kjerag", "Tomir 2.0"],
     "Osx":          ["Libertador"],
-    "Salomon": ["Supercross","Supercross 4","Speedcross Peak","X Adventure",
-  "Genesis Trail","Ultra Glide 4 Trail","Ultra Flow 2","Aero Glide 4",
-  "Aero Blaze 3 GRVL","Aero Glide 3","Aero Glide 3 GRVL","DRX Defy GRVL"],
+    "Salomon": ["Aero Blaze 3 GRVL", "Aero Glide 3", "Aero Glide 3 GRVL", "Aero Glide 4",
+  "DRX Defy GRVL", "Genesis Trail", "Speedcross Peak", "Supercross", "Supercross 4",
+  "Ultra Flow 2", "Ultra Glide 4 Trail", "X Adventure"],
     "Saucony": [
-      "Peregrine 16 Blanca",
-      "Peregrine 16 Carbon",
-      "Xodus 4",
-      "Kinvara Pro",
-      "Triumph 23",
-      "Triumph 21",
-      "Triumph 22",
-      "Kinvara 14",
-      "Ride 16",
-      "Endorphin Pro 5",
+      "Axon 3",
       "Endorphin",
       "Endorphin Azura",
       "Endorphin Pro 4",
-      "Axon 3",
-      "Endorphin Speed 4"
+      "Endorphin Pro 5",
+      "Endorphin Speed 4",
+      "Kinvara 14",
+      "Kinvara Pro",
+      "Peregrine 16 Blanca",
+      "Peregrine 16 Carbon",
+      "Ride 16",
+      "Triumph 21",
+      "Triumph 22",
+      "Triumph 23",
+      "Xodus 4"
     ],
     "Adidas": [
-      "Adizero Evo",
-      "Ultrarun 5",
-      "Duramo SL2",
-      "Supernova Glide",
-      "Supernova Rise 3",
-      "Duramo Speed",
       "Adistar ByD",
-      "Supernova 2",
-      "Questar 3",
-      "Adizero Drive",
-      "Response 2",
-      "Terrex Agravic 4",
-      "Adizero Evo SL",
-      "Adizero Boston 13",
+      "Adizero Adios Pro 4",
       "Adizero Boston 12",
+      "Adizero Boston 13",
+      "Adizero Drive",
+      "Adizero Evo",
+      "Adizero Evo SL",
       "Adizero Evo SL ATR",
       "Adizero Evo SL Exo",
-      "Supernova Ease 2",
-      "Runfalcon 6 Kids",
-      "Boost Run",
       "Adizero Pro 4",
+      "Adizero SL2",
+      "Boost Run",
+      "Duramo SL2",
+      "Duramo Speed",
+      "Hyperboost",
       "Hyperboost Edge",
       "Pureboost 5",
-      "Switch FWD",
-      "Ultraboost 5",
-      "Adizero SL2",
+      "Questar 3",
+      "Response 2",
+      "Runfalcon 6 Kids",
+      "Supernova 2",
+      "Supernova Ease 2",
+      "Supernova Glide",
       "Supernova Prima",
-      "Adizero Adios Pro 4",
-      "Hyperboost",
+      "Supernova Rise 3",
+      "Switch FWD",
+      "Terrex Agravic 4",
+      "Ultraboost 5",
+      "Ultrarun 5",
       "Zenboost"
     ],
     "Asics": [
-      "Gel Nimbus 26",
-      "Soniblast",
       "Cayano 32",
-      "Gel Rocket 11",
-      "Megablast",
-      "Gel Trebuco 13",
-      "Gel Cumulus 27",
       "Cayano 32 W",
+      "Gel Cumulus 27",
+      "Gel Nimbus 26",
+      "Gel Rocket 11",
+      "Gel Trebuco 13",
+      "Megablast",
       "Novablast",
       "Novablast 5 Lite",
       "Novablast 5 Tokyo",
+      "Soniblast",
       "Superblast 2"
     ],
     "Brooks":       ["Levitate 5"],
-    "Fila":         ["Racer Carbon 3", "Racer Carbon 2", "Float Maxxi 2 Pro"],
-    "New Balance":  ["FuelCell Rebel v3", "Fresh Foam X Vongo v6", "Fresh Foam X 1080 v14", "Fresh Foam X 1080 v13", "Fresh Foam X Evoz v3", "FuelCell Rebel v5", "FuelCell Supercomp Trainer v4"],
-    "Nike":         ["Vomero 17", "Run Defy", "Winflo 11", "Revolution 7", "Revolution 8", "Renew Run 3", "Pegasus Plus", "LunarSpider", "Pegasus 41", "Downshifter 13", "Quest 5", "Pegasus 39", "Structure 25", "Winflo 9", "Vaporfly 4", "Pegasus Premium", "Pegasus Premium QS", "Vomero Plus", "Invincible 3", "Infinity RN 4 Blueprint", "Alphafly 3 Blueprint", "Pegasus 40", "Pegasus 42"],
+    "Fila":         ["Float Maxxi 2 Pro", "Racer Carbon 2", "Racer Carbon 3"],
+    "New Balance":  ["Fresh Foam X 1080 v13", "Fresh Foam X 1080 v14", "Fresh Foam X Evoz v3", "Fresh Foam X Vongo v6", "FuelCell Rebel v3", "FuelCell Rebel v5", "FuelCell Supercomp Trainer v4"],
+    "Nike":         ["Alphafly 3 Blueprint", "Downshifter 13", "Infinity RN 4 Blueprint", "Invincible 3", "LunarSpider", "Pegasus 39", "Pegasus 40", "Pegasus 41", "Pegasus 42", "Pegasus Plus", "Pegasus Premium", "Pegasus Premium QS", "Quest 5", "Renew Run 3", "Revolution 7", "Revolution 8", "Run Defy", "Structure 25", "Vaporfly 4", "Vomero 17", "Vomero Plus", "Winflo 9", "Winflo 11"],
     "On":           ["Cloudmonster 3"],
-    "Puma":         ["Magnify Nitro 3", "Foreverrun Nitro 2", "Deviate Nitro 3", "Deviate Nitro 4", "Velocity Nitro 4", "Deviate Nitro 3 Wtr+", "Velocity Nitro 4 Digitokyo", "Deviate Nitro 3 Digitokyo", "Deviate Nitro 2", "Deviate Nitro Elite 3", "Foreverrun Nitro", "Electrify Nitro 3"],
-    "Skechers":     ["Glide Step Altus", "Max Cushioning Propulsion", "Aero Burst", "Aero Spark"],
+    "Puma":         ["Deviate Nitro 2", "Deviate Nitro 3", "Deviate Nitro 3 Digitokyo", "Deviate Nitro 3 Wtr+", "Deviate Nitro 4", "Deviate Nitro Elite 3", "Electrify Nitro 3", "Foreverrun Nitro", "Foreverrun Nitro 2", "Magnify Nitro 3", "Velocity Nitro 4", "Velocity Nitro 4 Digitokyo"],
+    "Skechers":     ["Aero Burst", "Aero Spark", "Glide Step Altus", "Max Cushioning Propulsion"],
     "Under Armour": ["Hovr Synergy", "Infinite Elite"],
   };
 

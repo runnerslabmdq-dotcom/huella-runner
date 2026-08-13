@@ -12,6 +12,35 @@ el GAS es la versión más nueva.
 
 ---
 
+## 13/08/2026 (tarde, seguimiento) — BUG real: "On" no aparecía + todos los desplegables de modelo ordenados alfabéticamente
+
+Esteban ya había pegado y publicado el cambio anterior (que sumaba la
+marca "On"), pero "On" seguía sin aparecer para elegir. Causa real
+encontrada: la lista de marcas del desplegable
+(`<select id="shoe-marca">`) es una lista de `<option>` fija, escrita
+directo en el HTML — está separada del objeto `catalogo{}` (que solo
+define qué MODELOS tiene cada marca una vez que ya la elegiste).
+Agregar "On" a `catalogo{}` no la hacía aparecer como opción elegible,
+porque el desplegable de marca ni sabía que "On" existía. Agregada la
+opción que faltaba.
+
+De paso, a pedido de Esteban, se ordenaron alfabéticamente los modelos
+de **todas** las marcas dentro de `catalogo{}` (Adidas, Nike, Puma,
+Asics, Hoka, Saucony, Salomon, Fila, New Balance, Skechers) — antes
+estaban en el orden en que se fueron agregando con el tiempo, sin
+ningún criterio, lo que hacía más difícil encontrar un modelo
+puntual en desplegables largos (Adidas tiene 29 modelos, Nike 23).
+Se usó orden alfabético "natural" (Clifton 8 antes que Clifton 10, no
+al revés como saldría con orden de texto puro) para que se sienta
+intuitivo. Verificado con un chequeo automático que no se perdió
+ningún modelo en el reordenamiento.
+
+**No se tocaron** (ya estaban bien, o el orden no es alfabético a
+propósito): el desplegable de Provincia y el de Grupos de Running (ya
+estaban alfabéticos), el de Talle (orden numérico, correcto así), el
+de Nivel de running en el registro (Principiante → Pro, tiene un
+orden de progresión que se rompería si se alfabetizara).
+
 ## 13/08/2026 (tarde) — 3 modelos de Adidas + marca nueva "On" (Cloudmonster 3)
 
 Esteban pasó una lista larga (scrapeada de runandbike.com.ar) de
