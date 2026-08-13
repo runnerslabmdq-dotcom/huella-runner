@@ -1,5 +1,13 @@
 # Pitch para partnership con tiendas de zapatillas
 
+> ⚠️ **RECORDATORIO (agregado 13/08/2026)**: apenas se cierre el
+> PRIMER acuerdo real y pago con una marca/tienda, pasar el proyecto de
+> Vercel a plan **Pro** (~USD 20/mes). El plan gratis ("Hobby") que se
+> usa hoy está pensado para proyectos personales, no comerciales —
+> tiene sentido seguir gratis mientras no entra plata, pero cambia en
+> cuanto haya un sponsor pagando de verdad. Avisarle a Esteban en ese
+> momento si todavía no se hizo.
+
 > Creado: 20/07/2026. Mensajes listos para proponerle a una tienda
 > local un partnership tipo "comisión por conversión" (ver la charla de
 > monetización en `HISTORIAL-CAMBIOS.md` — opción 2: la tienda nunca
