@@ -119,6 +119,26 @@
       font-family: sans-serif;
       cursor: pointer;
     }
+    /* ── PRUEBA: iframe en vez de redirect ──
+       Antes, irALaApp() hacía window.location.replace(GAS_URL) — el
+       navegador pasaba a mostrar "script.google.com" en la barra de
+       direcciones, lo cual se ve poco profesional (ej. al mostrarle la
+       app a un sponsor). Ahora la app de Apps Script se muestra
+       "envuelta" en un <iframe> adentro de esta misma página, así la
+       barra de direcciones se queda siempre en huella-runner.vercel.app.
+       RIESGO A PROBAR (no se puede verificar sin el celu real): Apps
+       Script podría bloquear que lo enmarquen desde otro dominio, o
+       algún navegador podría cortar cookies de un iframe de otro
+       origen — si eso pasa, hay que volver al redirect de antes. */
+    #app-frame {
+      display: none;
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      z-index: 5;
+    }
   </style>
 </head>
 <body>
@@ -127,7 +147,7 @@
     <button class="iab-continue-btn" onclick="irALaApp()">Continuar →</button>
     <p class="iab-sub">¿Querés instalarla en tu celu, con ícono propio y pantalla completa? Son 2 pasos:<br>1) Tocá ⋯ arriba a la derecha → "Abrir en el navegador".<br>2) Ya en Chrome o Safari, tocá el menú → "Agregar a pantalla de inicio".</p>
   </div>
-  <div class="splash">
+  <div class="splash" id="splash">
     <img src="./icons/icon-512.png" alt="Huella Runner">
     <div>
       <div class="splash-title">HUELLA <span>RUNNER</span></div>
@@ -135,6 +155,7 @@
     </div>
     <div class="loader"><div class="loader-bar"></div></div>
   </div>
+  <iframe id="app-frame" title="Huella Runner"></iframe>
   <script>
     const GAS_URL = 'https://script.google.com/macros/s/AKfycbwxh1GRAiybZJYM4w82ny7RXwjpraOBKmh8s4jZcIaNFkqMRgZHYe0x8-kNMIIQEintRw/exec';
     if ('serviceWorker' in navigator) {
@@ -143,12 +164,15 @@
     }
 
     function irALaApp() {
-      // replace() en vez de href: reemplaza este paso en el historial en
-      // vez de agregar uno. Así, si el usuario aprieta "atrás" desde la
-      // app, no queda un escalón intermedio de más donde caer en una
-      // pantalla en blanco. (No lo resuelve del todo: el marco interno
-      // de Google sigue estando, es una limitación de Apps Script.)
-      window.location.replace(GAS_URL + '?v=' + Date.now());
+      var banner = document.getElementById('iab-banner');
+      if (banner) banner.classList.remove('show');
+
+      var frame = document.getElementById('app-frame');
+      frame.addEventListener('load', function() {
+        document.getElementById('splash').style.display = 'none';
+        frame.style.display = 'block';
+      }, { once: true });
+      frame.src = GAS_URL + '?v=' + Date.now();
     }
 
     // Instagram y Facebook agregan su propia marca al user-agent del

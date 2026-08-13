@@ -12,6 +12,32 @@ el GAS es la versión más nueva.
 
 ---
 
+## 12/08/2026 (noche) — ⚠️ EXPERIMENTO sin mergear: pwa/index.html envuelve la app en un iframe (sin "script.google.com" en la barra)
+
+**Todavía NO está en producción** — queda como PR abierto (sin mergear)
+para que Esteban lo pruebe mañana desde el link de preview de Vercel,
+antes de que toque `huella-runner.vercel.app` (el link real de la bio
+de Instagram).
+
+**Por qué**: Esteban quiere ofrecerle naming/auspicio a marcas (Open
+Sports, Run & Bike, Todo Trail) y le preocupa que un sponsor vea
+"script.google.com" en la barra de direcciones al entrar — no se ve
+profesional para una negociación así.
+
+**Qué cambia**: antes, `irALaApp()` hacía
+`window.location.replace(GAS_URL)` — el navegador pasaba de lleno a la
+URL de Google. Ahora la app de Apps Script se muestra "envuelta" en un
+`<iframe>` adentro de esta misma página — la barra de direcciones se
+queda siempre en `huella-runner.vercel.app`, nunca en Google.
+
+**Riesgo real, sin confirmar todavía** (no se puede probar desde acá,
+sin acceso a un celu real): Apps Script podría bloquear que lo
+enmarquen desde otro dominio, o algún navegador podría cortar cookies
+de un iframe de otro origen y romper el login. Si algo de esto pasa
+mañana al probar, se vuelve al redirect de antes — para eso quedó el
+checkpoint documentado arriba (commit
+`cc9eb0b8a827100d0151432b3d11d49052af9603`).
+
 ## 12/08/2026 (noche) — CHECKPOINT de respaldo antes de probar el iframe de Google en pwa/index.html
 
 Esteban confirmó que en este momento todo anda bien (Locker, notificaciones,
