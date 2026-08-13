@@ -126,10 +126,14 @@
        app a un sponsor). Ahora la app de Apps Script se muestra
        "envuelta" en un <iframe> adentro de esta misma página, así la
        barra de direcciones se queda siempre en huella-runner.vercel.app.
-       RIESGO A PROBAR (no se puede verificar sin el celu real): Apps
-       Script podría bloquear que lo enmarquen desde otro dominio, o
-       algún navegador podría cortar cookies de un iframe de otro
-       origen — si eso pasa, hay que volver al redirect de antes. */
+       CONFIRMADO en PC por Esteban (12-13/08/2026): sin el cartel de
+       Google, pero "Compartir" no funcionaba — el iframe no tenía
+       permiso explícito para usar el Web Share API del celu (se pierde
+       por default en un iframe de otro origen). Agregado allow="web-share"
+       (y clipboard-write, por si el respaldo de compartir usa portapapeles).
+       Falta confirmar en celu real que esto lo arregla del todo, y que
+       no aparezcan otros problemas (cookies de sesión cortadas, etc.) —
+       si algo no anda, volver al redirect de antes. */
     #app-frame {
       display: none;
       position: fixed;
@@ -155,7 +159,7 @@
     </div>
     <div class="loader"><div class="loader-bar"></div></div>
   </div>
-  <iframe id="app-frame" title="Huella Runner"></iframe>
+  <iframe id="app-frame" title="Huella Runner" allow="web-share; clipboard-write"></iframe>
   <script>
     const GAS_URL = 'https://script.google.com/macros/s/AKfycbwxh1GRAiybZJYM4w82ny7RXwjpraOBKmh8s4jZcIaNFkqMRgZHYe0x8-kNMIIQEintRw/exec';
     if ('serviceWorker' in navigator) {
