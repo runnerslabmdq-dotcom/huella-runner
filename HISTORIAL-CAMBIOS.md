@@ -12,6 +12,21 @@ el GAS es la versión más nueva.
 
 ---
 
+## 13/08/2026 (tarde) — 3 modelos de Adidas + marca nueva "On" (Cloudmonster 3)
+
+Esteban pasó una lista larga (scrapeada de runandbike.com.ar) de
+zapatillas en venta, pidiendo que se filtren los modelos genuinamente
+nuevos. De 24 links, eran solo 11 modelos distintos (el resto, mismo
+modelo en otro talle/color) — 7 ya estaban en el catálogo, 4 eran
+nuevos. Los 4 se agregaron con foto (Esteban las pasó por Imgur):
+
+- **Adidas Adizero Adios Pro 4**
+- **Adidas Hyperboost** (distinto del "Hyperboost Edge" que ya estaba)
+- **Adidas Zenboost**
+- **On Cloudmonster 3** — primera vez que la marca "On" aparece en el
+  catálogo (ya existía el estilo de badge `.badge-on` preparado desde
+  antes, pero nunca se había usado ningún modelo de esa marca).
+
 ## 13/08/2026 (mañana, seguimiento) — Foto de Adidas Adizero Boston 12
 
 Ya estaba el 13 en el desplegable, faltaba el 12 — agregado el modelo
