@@ -12,6 +12,34 @@ el GAS es la versión más nueva.
 
 ---
 
+## 13/08/2026 (mañana, seguimiento) — Foto de Adidas Adizero Boston 12
+
+Ya estaba el 13 en el desplegable, faltaba el 12 — agregado el modelo
+y la foto que pasó Esteban (Imgur).
+
+## 13/08/2026 (madrugada) — Iframe de pwa/index.html: PROBADO y MERGEADO — ya está en producción
+
+Actualización del experimento de abajo: Esteban lo probó en PC (sin
+cartel de Google, perfecto) y en el celu — con un detalle: "Compartir"
+no funcionaba dentro del iframe. Causa confirmada: el iframe no tenía
+permiso explícito para el Web Share API del celu (se pierde por
+default en un iframe de otro origen). Arreglado agregando
+`allow="web-share; clipboard-write"` al iframe, mismo PR sin mergear
+todavía en ese momento.
+
+Con ese arreglo, probado de nuevo y confirmado por Esteban: sin cartel
+de Google, compartir funcionando. **Mergeado** — ya está en
+`huella-runner.vercel.app` (el link real de la bio de Instagram), no
+solo en el link de preview.
+
+De paso: Esteban registró el dominio propio `huellarunner.com.ar`
+(vía NIC Argentina, no fue gratis como se pensaba, costó $8700 ARS)
+para en algún momento reemplazar el `.vercel.app` — pendiente de
+conectarlo a Vercel cuando esté activo (tarda 24hs desde el registro).
+También quedó anotado en `docs/pitch-tiendas-partnership.md`: pasar
+Vercel a plan Pro apenas haya un sponsor pagando de verdad (el plan
+gratis es para uso no comercial).
+
 ## 12/08/2026 (noche) — ⚠️ EXPERIMENTO sin mergear: pwa/index.html envuelve la app en un iframe (sin "script.google.com" en la barra)
 
 **Todavía NO está en producción** — queda como PR abierto (sin mergear)
