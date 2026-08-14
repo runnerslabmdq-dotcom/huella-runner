@@ -12,6 +12,28 @@ el GAS es la versión más nueva.
 
 ---
 
+## 14/08/2026 (tarde) — Fotos para los 4 modelos que no tenían ninguna imagen
+
+Esteban pidió un listado de todo el catálogo marcando qué modelos no
+tienen foto propia, para priorizar. De los 151 modelos, 98 tenían foto
+propia, 45 sin foto propia caían en la genérica de la marca, y 8
+quedaban sin ninguna imagen (ni propia ni genérica) porque Brooks y
+Puma no tienen foto genérica de marca cargada — mostraban el cartel
+"imagen no disponible". Esteban pasó 4 fotos (Imgur) para las más
+fáciles de conseguir, agregadas a `modelImages{}`:
+
+- **Brooks Levitate 5**
+- **Puma Deviate Nitro 2**
+- **Puma Deviate Nitro 3 Digitokyo**
+- **Puma Foreverrun Nitro** (distinto de "Foreverrun Nitro 2", que ya
+  tenía foto)
+
+Quedan sin foto, mismo motivo (sin propia ni genérica): Puma Deviate
+Nitro 3 Wtr+, Puma Deviate Nitro Elite 3, Puma Electrify Nitro 3, Puma
+Velocity Nitro 4 Digitokyo — 4 de los 12 modelos de Puma. Más barato a
+futuro: conseguir una foto genérica de marca para Puma (arregla estas
+4 de una sola vez) en vez de una por una.
+
 ## 14/08/2026 (mediodía, seguimiento) — Fotos (Imgur) para los 3 modelos de hoy
 
 Esteban pasó 3 links de Imgur, uno por modelo, en el mismo orden en que
