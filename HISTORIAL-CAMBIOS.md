@@ -12,6 +12,20 @@ el GAS es la versión más nueva.
 
 ---
 
+## 14/08/2026 (mediodía, seguimiento) — Fotos (Imgur) para los 3 modelos de hoy
+
+Esteban pasó 3 links de Imgur, uno por modelo, en el mismo orden en que
+se habían agregado (confirmado con él antes de cargarlos, porque este
+entorno no pudo abrir Imgur para verificar — está bloqueado por la
+política de red del sandbox remoto). Agregados a `modelImages{}` en
+`gas/index.html`:
+
+- **Hoka Speedgoat 7** → `hoka_speedgoat_7`
+- **Nnormal Kjerag 2** → `nnormal_kjerag_2`
+- **Salomon Aero Glide 4 GRVL** → `salomon_aero_glide_4_grvl`
+
+Ya no caen en la genérica de marca, tienen foto propia.
+
 ## 14/08/2026 (mañana) — 3 modelos nuevos: Hoka Speedgoat 7, Nnormal Kjerag 2, Salomon Aero Glide 4 GRVL
 
 Esteban pasó otra lista larga para filtrar. De todos los modelos, la
