@@ -1,16 +1,13 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 13/08/2026 15:36 (hora Argentina)
+  Última actualización: 14/08/2026 12:59 (hora Argentina)
   Cambios en esta versión:
-    - BUG real: "On" no aparecía en el desplegable de marca porque el
-      <select id="shoe-marca"> es una lista fija en el HTML, separada
-      del objeto catalogo{} que solo maneja los MODELOS — le faltaba
-      la opción <option value="On">. Agregada. De paso, todos los
-      modelos de cada marca en catalogo{} quedaron ordenados
-      alfabéticamente (antes estaban en el orden en que se fueron
-      agregando, sin criterio).
+    - Fotos propias (Imgur) para los 3 modelos agregados hoy en
+      catalogo{}: Hoka Speedgoat 7, Nnormal Kjerag 2, Salomon Aero
+      Glide 4 GRVL (ver HISTORIAL-CAMBIOS.md).
   Cambios en versiones anteriores:
-    - 3 modelos nuevos de Adidas + marca "On" (ver HISTORIAL-CAMBIOS.md).
+    - 3 modelos nuevos en catalogo{} (mismos de arriba, sin foto en ese
+      momento) + BUG "On" en desplegable de marca (ver HISTORIAL-CAMBIOS.md).
   (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
   en la raíz del repo — a partir de ahora este encabezado solo guarda
   los últimos 2 cambios, para no seguir creciendo sin límite.)
@@ -2128,12 +2125,14 @@
     "osx_libertador":                "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781782941/OSX_Libertador_TT_wzi9fm.png",
     "nnormal_tomir_2.0":             "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781783033/Nnormal_Tomir_2.0_TT_vzqclg.png",
     "nnormal_kjerag":                "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781783037/Nnormal_Kjerag_TT_b77tln.png",
+    "nnormal_kjerag_2":              "https://i.imgur.com/EqqcGdK.jpeg",
     "la_sportiva_prodigio_pro_m":    "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781783404/La_Sportiva_Prodigio_Pro_M_TT_ptntbw.png",
     "la_sportiva_prodigio_pro_max":  "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781783406/La_Sportiva_Prodigio_Pro_Max_TT_y2lbjk.png",
     "la_sportiva_prodigio_pro_w":    "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781783407/La_Sportiva_Prodigio_Pro_W_TT_deh7xw.png",
     "dynafit_alpine_trail":          "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781783433/Dinafit_Alpine_Trail_TT_ba9tvb.png",
     "hoka_mafate_x":                 "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781783457/Hoka_Mafate_X_TT_t2mxou.png",
     "hoka_speedgoat_6":              "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781783457/Hoka_Speedgoat_6_TT_gjrgx7.png",
+    "hoka_speedgoat_7":              "https://i.imgur.com/BlMWw20.jpeg",
     "hoka_torrent_4":                "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781783459/Hoka_Torrent_4_SSTW_TT_pjqlup.png",
     "hoka_challenger_atr_7":         "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781881682/Hoka_Challenger_ATR_7_ST_TT_ve19yo.png",
     "hoka_bondi_9":                  "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784566173/Hoka_Bondi_9_ST_prrffp.png",
@@ -2154,6 +2153,7 @@
     "salomon_ultra_glide_4_trail":   "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781797817/Salomon_Ultra_Glide_4_Trail_TT_pytavn.png",
     "salomon_ultra_flow_2":          "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781797820/Salomon_Ultra_Flow_2_TT_jlpf2h.png",
     "salomon_aero_glide_4":          "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781797825/Salomon_Aero_Glide_4_TT_kiwztx.png",
+    "salomon_aero_glide_4_grvl":     "https://i.imgur.com/2jRHVoA.jpeg",
     "adidas_adizero_evo":            "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784309382/Adidas_Adizero_Evo_ST_ccf06u.png",
     "adidas_adizero_boston_13":      "https://i.imgur.com/mj2PeDc.jpeg",
     "adidas_adizero_boston_12":      "https://i.imgur.com/LF4FTAN.jpeg",
@@ -2288,13 +2288,13 @@
   // =====================================================
   const catalogo = {
     "Dynafit":      ["Alpine Trail"],
-    "Hoka":         ["Arahi 7", "Bondi 9", "Bondi 9 W", "Challenger ATR 7", "Challenger ATR 8", "Cielo X1 2.0", "Clifton 8", "Clifton 10", "Mafate 5 Black", "Mafate Speed 4", "Mafate X", "Match 6", "Rocket X2", "Solimar", "Speedgoat 6", "Speedgoat 6 Mid Gore", "Torrent 4", "Transport"],
+    "Hoka":         ["Arahi 7", "Bondi 9", "Bondi 9 W", "Challenger ATR 7", "Challenger ATR 8", "Cielo X1 2.0", "Clifton 8", "Clifton 10", "Mafate 5 Black", "Mafate Speed 4", "Mafate X", "Match 6", "Rocket X2", "Solimar", "Speedgoat 6", "Speedgoat 6 Mid Gore", "Speedgoat 7", "Torrent 4", "Transport"],
     "Joma":         ["R 2000"],
     "La Sportiva":  ["Prodigio Pro M", "Prodigio Pro Max", "Prodigio Pro W"],
-    "Nnormal":      ["Kjerag", "Tomir 2.0"],
+    "Nnormal":      ["Kjerag", "Kjerag 2", "Tomir 2.0"],
     "Osx":          ["Libertador"],
     "Salomon": ["Aero Blaze 3 GRVL", "Aero Glide 3", "Aero Glide 3 GRVL", "Aero Glide 4",
-  "DRX Defy GRVL", "Genesis Trail", "Speedcross Peak", "Supercross", "Supercross 4",
+  "Aero Glide 4 GRVL", "DRX Defy GRVL", "Genesis Trail", "Speedcross Peak", "Supercross", "Supercross 4",
   "Ultra Flow 2", "Ultra Glide 4 Trail", "X Adventure"],
     "Saucony": [
       "Axon 3",

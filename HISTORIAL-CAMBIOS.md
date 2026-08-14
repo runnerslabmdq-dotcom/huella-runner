@@ -12,6 +12,39 @@ el GAS es la versión más nueva.
 
 ---
 
+## 14/08/2026 (mediodía, seguimiento) — Fotos (Imgur) para los 3 modelos de hoy
+
+Esteban pasó 3 links de Imgur, uno por modelo, en el mismo orden en que
+se habían agregado (confirmado con él antes de cargarlos, porque este
+entorno no pudo abrir Imgur para verificar — está bloqueado por la
+política de red del sandbox remoto). Agregados a `modelImages{}` en
+`gas/index.html`:
+
+- **Hoka Speedgoat 7** → `hoka_speedgoat_7`
+- **Nnormal Kjerag 2** → `nnormal_kjerag_2`
+- **Salomon Aero Glide 4 GRVL** → `salomon_aero_glide_4_grvl`
+
+Ya no caen en la genérica de marca, tienen foto propia.
+
+## 14/08/2026 (mañana) — 3 modelos nuevos: Hoka Speedgoat 7, Nnormal Kjerag 2, Salomon Aero Glide 4 GRVL
+
+Esteban pasó otra lista larga para filtrar. De todos los modelos, la
+mayoría ya estaban en el catálogo (Speedgoat 6, Mafate 5, Mafate X,
+Torrent 4, Tomir 2.0, Ultra Glide 4, Ultra Flow 2, Genesis, Prodigio
+Pro M/Max/W, Challenger ATR 8, Xodus 4, Libertador). Genuinamente
+nuevos, 3, agregados a `catalogo{}` en `gas/index.html` (orden
+alfabético, sin foto propia todavía — caen en la genérica de marca):
+
+- **Hoka Speedgoat 7** — generación siguiente al Speedgoat 6 que ya
+  estaba.
+- **Nnormal Kjerag 2** — versión más nueva del "Kjerag" a secas que ya
+  estaba.
+- **Salomon Aero Glide 4 GRVL** — combinación nueva; ya existían
+  "Aero Glide 4" (ruta) y "Aero Glide 3 GRVL" (gravel) por separado.
+
+Quedó afuera de la lista una bota de trekking (Hoka Anacapa Breeze
+Mid) — no es zapatilla de running, no se agregó.
+
 ## 13/08/2026 (tarde, seguimiento) — BUG real: "On" no aparecía + todos los desplegables de modelo ordenados alfabéticamente
 
 Esteban ya había pegado y publicado el cambio anterior (que sumaba la
