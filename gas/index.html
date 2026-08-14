@@ -1,16 +1,13 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 13/08/2026 15:36 (hora Argentina)
+  Última actualización: 14/08/2026 11:37 (hora Argentina)
   Cambios en esta versión:
-    - BUG real: "On" no aparecía en el desplegable de marca porque el
-      <select id="shoe-marca"> es una lista fija en el HTML, separada
-      del objeto catalogo{} que solo maneja los MODELOS — le faltaba
-      la opción <option value="On">. Agregada. De paso, todos los
-      modelos de cada marca en catalogo{} quedaron ordenados
-      alfabéticamente (antes estaban en el orden en que se fueron
-      agregando, sin criterio).
+    - 3 modelos nuevos en catalogo{}: Hoka Speedgoat 7, Nnormal Kjerag 2,
+      Salomon Aero Glide 4 GRVL. Sin foto propia todavía — usan la
+      genérica de marca (ver HISTORIAL-CAMBIOS.md).
   Cambios en versiones anteriores:
-    - 3 modelos nuevos de Adidas + marca "On" (ver HISTORIAL-CAMBIOS.md).
+    - BUG real: "On" no aparecía en el desplegable de marca + modelos
+      de catalogo{} ordenados alfabéticamente (ver HISTORIAL-CAMBIOS.md).
   (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
   en la raíz del repo — a partir de ahora este encabezado solo guarda
   los últimos 2 cambios, para no seguir creciendo sin límite.)
@@ -2288,13 +2285,13 @@
   // =====================================================
   const catalogo = {
     "Dynafit":      ["Alpine Trail"],
-    "Hoka":         ["Arahi 7", "Bondi 9", "Bondi 9 W", "Challenger ATR 7", "Challenger ATR 8", "Cielo X1 2.0", "Clifton 8", "Clifton 10", "Mafate 5 Black", "Mafate Speed 4", "Mafate X", "Match 6", "Rocket X2", "Solimar", "Speedgoat 6", "Speedgoat 6 Mid Gore", "Torrent 4", "Transport"],
+    "Hoka":         ["Arahi 7", "Bondi 9", "Bondi 9 W", "Challenger ATR 7", "Challenger ATR 8", "Cielo X1 2.0", "Clifton 8", "Clifton 10", "Mafate 5 Black", "Mafate Speed 4", "Mafate X", "Match 6", "Rocket X2", "Solimar", "Speedgoat 6", "Speedgoat 6 Mid Gore", "Speedgoat 7", "Torrent 4", "Transport"],
     "Joma":         ["R 2000"],
     "La Sportiva":  ["Prodigio Pro M", "Prodigio Pro Max", "Prodigio Pro W"],
-    "Nnormal":      ["Kjerag", "Tomir 2.0"],
+    "Nnormal":      ["Kjerag", "Kjerag 2", "Tomir 2.0"],
     "Osx":          ["Libertador"],
     "Salomon": ["Aero Blaze 3 GRVL", "Aero Glide 3", "Aero Glide 3 GRVL", "Aero Glide 4",
-  "DRX Defy GRVL", "Genesis Trail", "Speedcross Peak", "Supercross", "Supercross 4",
+  "Aero Glide 4 GRVL", "DRX Defy GRVL", "Genesis Trail", "Speedcross Peak", "Supercross", "Supercross 4",
   "Ultra Flow 2", "Ultra Glide 4 Trail", "X Adventure"],
     "Saucony": [
       "Axon 3",
