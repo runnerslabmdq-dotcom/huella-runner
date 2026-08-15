@@ -77,10 +77,17 @@
           fundador probó en el celu y no le daba tiempo ni a leerlo, se
           iba antes de terminar la frase.
        3) Esta versión (la que queda): sin cronómetro. Se muestra fijo,
-          con un solo botón grande "Continuar →" — entra recién cuando la
-          persona lo toca, sin apuro, leyendo a su ritmo. En cualquier
-          otro navegador (fuera de Instagram/Facebook/TikTok) el
-          comportamiento no cambió: sigue entrando solo a los 1.2s. */
+          con un solo botón grande — entra recién cuando la persona lo
+          toca, sin apuro. En cualquier otro navegador (fuera de
+          Instagram/Facebook/TikTok) el comportamiento no cambió: sigue
+          entrando solo a los 1.2s.
+       4) 14/08/2026: texto cambiado de aviso técnico ("Estás entrando
+          desde Instagram") a gancho de valor ("Un toque y ves cuántos
+          km lleva tu zapatilla") — el aviso técnico no daba ningún
+          motivo para tocar el botón. Sacado también el bloque de "cómo
+          instalar" (quedaba como fricción extra justo en la entrada,
+          nadie llega hasta acá para instalar) — esa info se comunica
+          aparte, en un posteo de Instagram dedicado. */
     .iab-banner {
       display: none;
       position: fixed;
@@ -102,12 +109,6 @@
       max-width: 320px;
     }
     .iab-banner strong { color: #C5B358; }
-    .iab-banner .iab-sub {
-      color: #E8E8E8;
-      font-size: 0.7rem;
-      line-height: 1.6;
-      max-width: 300px;
-    }
     .iab-continue-btn {
       background: #C5B358;
       color: #080808;
@@ -147,9 +148,8 @@
 </head>
 <body>
   <div class="iab-banner" id="iab-banner">
-    <p><strong>Estás entrando desde Instagram.</strong><br>Leé tranquilo y tocá el botón cuando quieras seguir.</p>
-    <button class="iab-continue-btn" onclick="irALaApp()">Continuar →</button>
-    <p class="iab-sub">¿Querés instalarla en tu celu, con ícono propio y pantalla completa? Son 2 pasos:<br>1) Tocá ⋯ arriba a la derecha → "Abrir en el navegador".<br>2) Ya en Chrome o Safari, tocá el menú → "Agregar a pantalla de inicio".</p>
+    <p><strong>Un toque y ves cuántos km lleva tu zapatilla.</strong></p>
+    <button class="iab-continue-btn" onclick="irALaApp()">Ver mis zapatillas →</button>
   </div>
   <div class="splash" id="splash">
     <img src="./icons/icon-512.png" alt="Huella Runner">

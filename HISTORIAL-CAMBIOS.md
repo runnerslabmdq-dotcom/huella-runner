@@ -12,6 +12,26 @@ el GAS es la versión más nueva.
 
 ---
 
+## 15/08/2026 (tarde) — Cartel de Instagram: gancho de valor en vez de aviso técnico
+
+Charlando sobre por qué los 700 seguidores/8,1 mil vistas de Instagram
+no se traducen en gente usando la app: el cartel que ve alguien al
+entrar desde Instagram ("Estás entrando desde Instagram. Leé tranquilo
+y tocá el botón...") es un aviso técnico, no da ningún motivo para
+tocar el botón — y encima venía con un bloque extra de "cómo instalar"
+que sumaba fricción justo en el peor momento (la entrada).
+
+Cambios en `pwa/index.html`:
+- Texto del cartel: de aviso técnico a gancho de valor — *"Un toque y
+  ves cuántos km lleva tu zapatilla."* Botón: "Ver mis zapatillas →"
+  (antes "Continuar →").
+- Sacado el bloque de instrucciones de instalación (2 pasos) — esa
+  info se va a comunicar en un posteo de Instagram aparte, no en el
+  punto de entrada.
+- Este archivo se sirve directo en `huella-runner.vercel.app` — se
+  actualiza solo al pushear a `main`, no requiere pegar nada en Apps
+  Script.
+
 ## 14/08/2026 (tarde) — Fotos para los 4 modelos que no tenían ninguna imagen
 
 Esteban pidió un listado de todo el catálogo marcando qué modelos no
