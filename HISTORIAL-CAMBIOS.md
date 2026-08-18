@@ -12,6 +12,25 @@ el GAS es la versión más nueva.
 
 ---
 
+## 17/08/2026 (noche, seguimiento) — Pantalla de Login: menos texto debajo del botón
+
+Esteban mandó dos capturas de la pantalla de Login real, pidiendo
+sacar contenido que quedaba largo antes de llegar a "Próximamente" y
+"Ver legales". En `gas/index.html`, dentro de `view-login`, se sacó:
+
+- El párrafo "Solo pedimos tu mail — y podés borrar tu cuenta cuando
+  quieras, desde Mi Perfil."
+- El bloque completo "Huella Runner · MDQ · ARG" (título + separador)
+  y el texto "Gestioná tus zapatillas running y registrá cada
+  kilómetro recorrido."
+
+Queda: los campos de Email/Contraseña, "Iniciar Sesión", "¿No tienes
+cuenta? Regístrate", "¿Olvidaste tu contraseña?", y directamente
+"Próximamente: acceso exclusivo a ofertas y beneficios con marcas
+líderes en running." + "Ver legales" — más arriba que antes, sin el
+texto de relleno en el medio. Pendiente: Esteban lo pega en Apps
+Script mañana.
+
 ## 17/08/2026 (noche) — Cartel de Instagram: de "ver" a "probar", con reaseguro de rapidez
 
 Esteban confirmó en el celu que el cambio del cartel del 15/08 ya
