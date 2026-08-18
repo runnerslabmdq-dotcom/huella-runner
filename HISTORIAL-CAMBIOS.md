@@ -12,6 +12,23 @@ el GAS es la versión más nueva.
 
 ---
 
+## 17/08/2026 (noche) — Cartel de Instagram: de "ver" a "probar", con reaseguro de rapidez
+
+Esteban confirmó en el celu que el cambio del cartel del 15/08 ya
+estaba en vivo, y pidió una segunda vuelta de texto combinando todo lo
+hablado en la sesión (honestidad, foco en la acción, atacar la excusa
+de "esto me va a llevar rato"). Cambios en `pwa/index.html`:
+
+- Texto principal: "Un toque y ves cuántos km lleva tu zapatilla" →
+  **"Probá Huella Runner"** (invitación en vez de descripción pasiva).
+- Agregada una línea chica debajo: **"Registrate en un minuto, cargá
+  tus zapatillas y empezá a sumar los km de cada una."** — apunta
+  directo a la fricción mental de "esto me va a llevar rato".
+- Botón: "Ver mis zapatillas" → **"Empezar"** (ya no asume que la
+  persona tiene zapatillas cargadas).
+- Se sirve directo en `huella-runner.vercel.app`, no requiere Apps
+  Script.
+
 ## 15/08/2026 (tarde) — Cartel de Instagram: gancho de valor en vez de aviso técnico
 
 Charlando sobre por qué los 700 seguidores/8,1 mil vistas de Instagram

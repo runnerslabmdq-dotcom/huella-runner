@@ -87,7 +87,13 @@
           motivo para tocar el botón. Sacado también el bloque de "cómo
           instalar" (quedaba como fricción extra justo en la entrada,
           nadie llega hasta acá para instalar) — esa info se comunica
-          aparte, en un posteo de Instagram dedicado. */
+          aparte, en un posteo de Instagram dedicado.
+       5) 17/08/2026: segunda vuelta de texto — de "ver" (pasivo) a
+          "probar" (invitación), y agregada una línea chica debajo
+          aclarando que el registro es rápido ("en un minuto") — ataca
+          directo la excusa más común para no entrar ("esto me va a
+          llevar rato"). Botón "Ver mis zapatillas" → "Empezar", porque
+          ya no asume que la persona tiene zapatillas cargadas. */
     .iab-banner {
       display: none;
       position: fixed;
@@ -109,6 +115,12 @@
       max-width: 320px;
     }
     .iab-banner strong { color: #C5B358; }
+    .iab-banner .iab-sub {
+      color: #aaaaaa;
+      font-size: 0.8rem;
+      line-height: 1.5;
+      max-width: 280px;
+    }
     .iab-continue-btn {
       background: #C5B358;
       color: #080808;
@@ -148,8 +160,9 @@
 </head>
 <body>
   <div class="iab-banner" id="iab-banner">
-    <p><strong>Un toque y ves cuántos km lleva tu zapatilla.</strong></p>
-    <button class="iab-continue-btn" onclick="irALaApp()">Ver mis zapatillas →</button>
+    <p><strong>Probá Huella Runner</strong></p>
+    <p class="iab-sub">Registrate en un minuto, cargá tus zapatillas y empezá a sumar los km de cada una.</p>
+    <button class="iab-continue-btn" onclick="irALaApp()">Empezar →</button>
   </div>
   <div class="splash" id="splash">
     <img src="./icons/icon-512.png" alt="Huella Runner">
