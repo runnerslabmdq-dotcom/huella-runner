@@ -12,6 +12,38 @@ el GAS es la versión más nueva.
 
 ---
 
+## 19/08/2026 (mañana) — DEV: botones de tienda sponsor para San Luis (Open Sports + Todo Trail)
+
+Charla sobre modelos de negocio con auspiciantes: en vez de migrar todo
+a un solo sponsor nacional, Esteban prefiere quedarse dueño de Huella
+Runner y sumar sponsors locales en las provincias donde Open Sports no
+tiene sucursales (ver `docs/sucursales-open-sports.md` — no cubre
+Santa Fe, Córdoba, San Luis, etc.). Primer caso de prueba: **San
+Luis**, con Todo Trail como sponsor local.
+
+Cambios en `gas/index.html`:
+- Nueva variable `currentUserProvincia`, cargada una vez en
+  `loadDashboard()` (vía `getPerfilUsuario`) antes de pintar las
+  zapatillas.
+- En cada zapatilla: si `currentUserProvincia === 'San Luis'`, se
+  muestran **2 botones activos** debajo de Sumar KM/Historial — Open
+  Sports y Todo Trail — en vez del botón gris "Próximamente" de
+  siempre. Ambos abren la tienda filtrada por género y talle de esa
+  zapatilla puntual, usando las funciones `irATiendaSponsor()` e
+  `irATodoTrail()` que ya estaban armadas en el código pero apagadas.
+- Botón de Todo Trail: tipografía/color de su marca ("TODO" blanco +
+  "TRAIL" naranja `#FF7A1A`), sin usar su isotipo de triángulos — a
+  pedido del fundador.
+- **Para cualquier otra provincia, no cambia nada** — sigue el botón
+  "Próximamente" de siempre.
+
+**Pendiente de verificar, no se tocó hoy:** la tabla de conversión de
+talle EU→AR/cm que usa `irATodoTrail()` tiene al menos una
+inconsistencia con un link real que pasó Esteban (AR 42 figura como
+27cm en el código, pero el link real de Todo Trail usaba 28cm para ese
+mismo talle) — si el filtro de talle no coincide en la tienda real,
+revisar esa tabla completa con Todo Trail.
+
 ## 17/08/2026 (noche, seguimiento) — Pantalla de Login: menos texto debajo del botón
 
 Esteban mandó dos capturas de la pantalla de Login real, pidiendo
