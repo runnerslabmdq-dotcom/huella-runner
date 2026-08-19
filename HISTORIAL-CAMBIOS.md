@@ -12,6 +12,41 @@ el GAS es la versión más nueva.
 
 ---
 
+## 19/08/2026 (mañana, seguimiento) — Checkpoint de respaldo + fix visual "SPORTS" corrido
+
+**Checkpoint de respaldo:** Esteban probó el DEV de San Luis (PR #152)
+desde la URL `/dev` de Apps Script (vista previa, sin publicar todavía
+— nada de esto afectó usuarios reales) y le gustó. Pidió, como
+costumbre del proyecto, dejar anotado a qué commit volver si en algún
+momento decide que no. El commit de `main` **justo antes** del DEV de
+San Luis es:
+
+```
+203944f482592c430cbe444405e498be6fbf2f84
+```
+
+Si hace falta revertir: pedirlo acá, se hace un `git revert` del PR
+#152 (deshace solo ese cambio, sin tocar nada de lo que vino
+después) y se abre como PR nuevo. Importante: esto es sobre el
+repositorio — no afecta lo que ven los usuarios reales hasta que
+Esteban pegue el archivo resultante en Apps Script y publique una
+nueva versión.
+
+**Fix visual:** de paso, Esteban notó que "SPORTS" se veía corrido
+como un milímetro respecto a "OPEN" en el botón de tienda. Causa: el
+emoji 🛒 tiene una caja de línea más alta que el texto solo, y sin un
+`line-height` fijo, el `<span>` de "SPORTS" quedaba centrado con una
+métrica levemente distinta a la del resto del botón. Agregado
+`line-height: 1` a `.cf-btn-opensports` y, preventivamente, a
+`.cf-btn-todotrail` (mismo patrón, mismo riesgo).
+
+**Pendiente, no se tocó hoy:** activar el botón de Open Sports para
+las provincias donde sí tiene sucursal (ver
+`docs/sucursales-open-sports.md`), y definir qué pasa en las
+provincias sin sucursal donde la compra sería solo online (¿envío
+gratis confirmado? no lo sabemos todavía). Eso es un paso más grande
+que este fix, queda para la próxima sesión.
+
 ## 19/08/2026 (mañana) — DEV: botones de tienda sponsor para San Luis (Open Sports + Todo Trail)
 
 Charla sobre modelos de negocio con auspiciantes: en vez de migrar todo
