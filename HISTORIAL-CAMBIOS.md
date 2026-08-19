@@ -12,6 +12,20 @@ el GAS es la versión más nueva.
 
 ---
 
+## 19/08/2026 (noche) — Plan de testing de posteos (adaptación del 3:2:2) — guardado sin convencer del todo
+
+Nuevo `docs/plan-testing-posteos-3-2-2.md`. Esteban preguntó cómo
+aplicar el método de testing creativo 3:2:2 (de publicidad paga, Meta
+Ads) pero con posteos orgánicos en vez de videos pagos. Se armaron 6
+combinaciones (3 pares que aíslan copy, creativo y hook por separado)
+en vez de las 12 automáticas del método original, ya que sin pago no
+hay reparto automático de presupuesto — hay que postear en secuencia y
+comparar a mano con las estadísticas de cada posteo.
+
+**Importante:** Esteban pidió guardarlo igual, pero dijo explícitamente
+que no lo convenció del todo. Queda documentado como referencia, no
+para ejecutar tal cual sin retomar la charla primero.
+
 ## 19/08/2026 (tarde, seguimiento) — Versión pulida del pitch de Open Sports (email + DM)
 
 Agregada a `docs/pitch-open-sports.md`: segunda vuelta más formal y
