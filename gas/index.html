@@ -1,14 +1,13 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 19/08/2026 09:14 (hora Argentina)
+  Última actualización: 19/08/2026 09:36 (hora Argentina)
   Cambios en esta versión:
-    - DEV San Luis: usuarios con Provincia = "San Luis" ven 2 botones
-      activos debajo de Sumar KM/Historial (Open Sports + Todo Trail,
-      filtrados por género y talle) en vez de "Próximamente". El resto
-      de las provincias no cambia (ver HISTORIAL-CAMBIOS.md).
+    - Fix visual: "SPORTS" se veía corrido respecto a "OPEN" en el botón
+      de tienda (line-height inconsistente por el emoji 🛒). Mismo fix
+      preventivo en el botón de Todo Trail (ver HISTORIAL-CAMBIOS.md).
   Cambios en versiones anteriores:
-    - Pantalla de Login: sacado texto de relleno antes de Próximamente/
-      Legales (ver HISTORIAL-CAMBIOS.md).
+    - DEV San Luis: 2 botones de tienda activos (Open Sports + Todo
+      Trail) solo para esa provincia (ver HISTORIAL-CAMBIOS.md).
   (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
   en la raíz del repo — a partir de ahora este encabezado solo guarda
   los últimos 2 cambios, para no seguir creciendo sin límite.)
@@ -470,6 +469,7 @@
       letter-spacing: 0.5px;
       font-family: 'Montserrat', sans-serif;
       white-space: nowrap;
+      line-height: 1; /* mismo motivo que en .cf-btn-opensports */
       display: flex; align-items: center; justify-content: center; gap: 4px;
       opacity: 0.6; cursor: default;
     }
@@ -487,6 +487,11 @@
       text-transform: uppercase;
       font-family: 'Montserrat', sans-serif;
       white-space: nowrap;
+      /* line-height fijo: el emoji 🛒 tiene una caja de línea más alta
+         que el texto solo, y sin esto "SPORTS" (que va en su propio
+         <span>) queda centrado con una métrica distinta a "OPEN" y se
+         ve corrido un poco más arriba/abajo. */
+      line-height: 1;
       display: flex; align-items: center; justify-content: center; gap: 4px;
       cursor: pointer;
       transition: transform 0.15s ease, opacity 0.2s;
