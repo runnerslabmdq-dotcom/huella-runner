@@ -65,6 +65,42 @@ Si te interesa, lo simple sería arrancar con un código de descuento
 tuyo y ver cómo funciona, sin compromiso de plazo.
 ```
 
+## Versión "el beneficio como motor de crecimiento" (agregada 19/08/2026)
+
+> Pensada para tiendas regionales/locales en ciudades donde hoy no hay
+> ningún sponsor (ej. Rosario, Santa Fe, o cualquier otra fuera de
+> Buenos Aires/Río Negro/La Pampa/Chubut/Neuquén — ver
+> `docs/plan-boton-tienda-por-provincia.md`). Ángulo distinto a las
+> versiones de arriba: en vez de pedir el beneficio como premio por
+> usuarios que ya existen, se lo plantea como lo que ayuda a
+> conseguirlos — sigue siendo honesto sobre que hoy son pocos.
+> **Borrador, pendiente de pulir** — Esteban lo va a revisar antes de
+> usarlo tal cual.
+
+```
+Hola [Nombre]! Soy Esteban, de Huella Runner — una app de Mar del
+Plata para que los corredores controlen el desgaste de sus
+zapatillas: cuántos km lleva cada par, cuándo conviene cambiarlas.
+
+Te escribo porque en [ciudad] hoy no tenemos ningún sponsor — y te
+propongo ser el primero, sin costo fijo.
+
+Sé honesto con vos: hoy la app tiene pocos usuarios todavía, estamos
+recién arrancando. Pero por eso mismo te propongo algo simple: si vos
+ofrecés un beneficio real —un código de descuento, un par de
+zapatillas por mes para sortear entre corredores de tu zona, medias,
+lo que se te ocurra— eso mismo es lo que nos ayuda a conseguir a esos
+usuarios en [ciudad]. No te estoy pidiendo que pagues por algo que ya
+existe, te propongo construirlo juntos: vos ponés el beneficio, yo
+pongo la difusión y la app para entregarlo.
+
+Como sos el único sponsor de tu zona en este momento, cualquier
+corredor de ahí que use la app te va a ver a vos, no a la competencia
+— exclusividad real, mientras seas el primero en decir que sí.
+
+¿Tenés unos minutos esta semana para charlarlo?
+```
+
 ## Notas para variar según a quién se lo mandes
 
 - Si es una tienda multimarca: enfocar el mensaje en "el corredor llega
