@@ -12,6 +12,29 @@ el GAS es la versión más nueva.
 
 ---
 
+## 19/08/2026 (tarde) — Dos pitches nuevos: Open Sports (formal) y tiendas regionales (beneficio como motor de crecimiento)
+
+Borradores, pendientes de que Esteban los pula antes de usarlos.
+
+- **Nuevo `docs/pitch-open-sports.md`**: mensaje específico para Open
+  Sports (cadena grande, no una tienda chica). Ángulo: formalizar algo
+  que ya pasa sin acuerdo (el botón "Ver en tienda" ya les manda
+  tráfico) en vez de arrancar de cero. Incluye 2 preguntas clave para
+  hacerles directo: si quieren aparecer a nivel país o solo donde
+  tienen sucursal, y si les interesa un código de descuento exclusivo
+  aunque hoy haya pocos usuarios.
+- **`docs/pitch-tiendas-partnership.md`**: agregada una versión nueva
+  ("el beneficio como motor de crecimiento") para tiendas
+  regionales/locales sin sponsor hoy (ej. Rosario, Santa Fe). Ángulo
+  distinto a las versiones anteriores: en vez de pedir el beneficio
+  como premio por usuarios que ya existen, se plantea como lo que
+  ayuda a conseguirlos — sigue siendo honesto sobre que hoy son pocos.
+
+Importante: la pregunta de si Open Sports quiere aparecer solo donde
+tiene sucursal o a nivel país queda abierta hasta que respondan —
+`docs/plan-boton-tienda-por-provincia.md` hoy asume "solo sucursal"
+como default, pero es un supuesto nuestro, no confirmado por ellos.
+
 ## 19/08/2026 (mediodía) — Plan documentado: botón de tienda por provincia (sin implementar todavía)
 
 Nuevo `docs/plan-boton-tienda-por-provincia.md` — solo documentación,
