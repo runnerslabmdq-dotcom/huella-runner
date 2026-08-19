@@ -12,6 +12,30 @@ el GAS es la versión más nueva.
 
 ---
 
+## 19/08/2026 (mediodía) — Plan documentado: botón de tienda por provincia (sin implementar todavía)
+
+Nuevo `docs/plan-boton-tienda-por-provincia.md` — solo documentación,
+no se tocó ningún archivo de código. Prepara el siguiente paso después
+del DEV de San Luis (PR #152): generalizar el botón de tienda a **todas**
+las provincias, no solo San Luis.
+
+Mapeo confirmado por Esteban:
+- **Open Sports activo**: Buenos Aires, Chubut, La Pampa, Neuquén, Río
+  Negro (las 5 provincias con sucursal, según
+  `docs/sucursales-open-sports.md`).
+- **Todo Trail activo**: San Luis (ya armado).
+- **Resto de las provincias, incluida CABA**: sigue "Próximamente" sin
+  cambios — CABA queda afuera a propósito porque ninguna sucursal
+  listada está en la Ciudad, todas son de la provincia de Buenos
+  Aires.
+
+Quedan sin resolver (documentado en el plan, no bloquean nada): si
+Open Sports ofrece envío gratis en provincias sin sucursal (para
+eventualmente activarlas igual), y la inconsistencia ya conocida en la
+tabla de talles de Todo Trail. El doc también deja el esqueleto de
+código (tabla `PROVINCIA_SPONSOR`) para que la implementación sea
+rápida cuando se confirme arrancar.
+
 ## 19/08/2026 (mañana, seguimiento) — Checkpoint de respaldo + fix visual "SPORTS" corrido
 
 **Checkpoint de respaldo:** Esteban probó el DEV de San Luis (PR #152)
