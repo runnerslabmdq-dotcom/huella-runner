@@ -1,16 +1,14 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 17/08/2026 22:32 (hora Argentina)
+  Última actualización: 19/08/2026 09:14 (hora Argentina)
   Cambios en esta versión:
-    - Pantalla de Login: sacado el texto "Solo pedimos tu mail..." y el
-      bloque "Huella Runner · MDQ · ARG" / "Gestioná tus zapatillas
-      running y registrá cada kilómetro recorrido." — quedan más arriba
-      "Próximamente: acceso exclusivo..." y "VER LEGALES" (ver
-      HISTORIAL-CAMBIOS.md).
+    - DEV San Luis: usuarios con Provincia = "San Luis" ven 2 botones
+      activos debajo de Sumar KM/Historial (Open Sports + Todo Trail,
+      filtrados por género y talle) en vez de "Próximamente". El resto
+      de las provincias no cambia (ver HISTORIAL-CAMBIOS.md).
   Cambios en versiones anteriores:
-    - Fotos propias (Imgur) para 4 modelos sin ninguna imagen: Brooks
-      Levitate 5, Puma Deviate Nitro 2/3 Digitokyo/Foreverrun Nitro
-      (ver HISTORIAL-CAMBIOS.md).
+    - Pantalla de Login: sacado texto de relleno antes de Próximamente/
+      Legales (ver HISTORIAL-CAMBIOS.md).
   (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
   en la raíz del repo — a partir de ahora este encabezado solo guarda
   los últimos 2 cambios, para no seguir creciendo sin límite.)
@@ -517,6 +515,19 @@
       text-transform: uppercase;
       color: #3a3a3a;
     }
+    /* ── DEV San Luis (18/08/2026): botón Todo Trail activo — mismo
+       fondo oscuro que ya tenía .cf-btn-todotrail (apagado), pisando
+       solo color/opacidad/cursor. Tipografía y color al estilo del
+       logo real de Todo Trail (negro/blanco + naranja), sin usar su
+       ísotipo de triángulos — a pedido del fundador. ── */
+    .cf-btn-todotrail.cf-btn-todotrail-on {
+      opacity: 1;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.2s;
+    }
+    .cf-btn-todotrail.cf-btn-todotrail-on:active { transform: scale(0.96); opacity: 0.88; }
+    .cf-btn-todotrail-todo  { color: #fff; }
+    .cf-btn-todotrail-trail { color: #FF7A1A; }
 
     /* ── Slide especial dual: nueva zapa + locker ── */
     .cf-add-slide .cf-neon-wrap {
@@ -2046,6 +2057,10 @@
 
 <script>
   let currentUserEmail = '';
+  // Provincia del usuario logueado — se carga una vez en loadDashboard()
+  // (vía getPerfilUsuario) y se usa para decidir qué botones de tienda
+  // sponsor mostrar en cada zapatilla. Ver DEV San Luis en renderArmario().
+  let currentUserProvincia = '';
   const KM_LIMITE_DEFAULT = 850; // igual al umbral global de trail-points.gs (TP.KM_UMBRAL_CUPON)
 
   // =====================================================
@@ -3003,7 +3018,22 @@
   let _loadRetries = 0;
   const _MAX_RETRIES = 4;
 
-  function loadDashboard() { _loadRetries = 0; _intentarCargar(); }
+  function loadDashboard() {
+    _loadRetries = 0;
+    // Trae la Provincia antes de pintar las zapatillas, porque el botón
+    // de tienda sponsor (DEV San Luis) depende de ese dato. No bloquea
+    // mucho: getPerfilUsuario es liviano comparado con getUserShoes.
+    google.script.run
+      .withSuccessHandler(function(res) {
+        currentUserProvincia = (res && res.provincia) || '';
+        _intentarCargar();
+      })
+      .withFailureHandler(function() {
+        currentUserProvincia = '';
+        _intentarCargar();
+      })
+      .getPerfilUsuario((currentUserEmail || '').trim().toLowerCase());
+  }
 
   function _intentarCargar() {
     var grid = document.getElementById('shoe-grid');
@@ -3118,6 +3148,32 @@
       if (perc >= 85) barColor = 'linear-gradient(90deg, #ef4444, #ff6b6b)';
       else if (perc >= 70) barColor = 'linear-gradient(90deg, #ff9800, #F0FF00)';
 
+      // ── DEV San Luis (18/08/2026): Open Sports no tiene sucursales ahí,
+      // así que para usuarios de esa provincia se muestran 2 botones
+      // activos (Open Sports + Todo Trail) en vez del "Próximamente" de
+      // siempre. Para cualquier otra provincia no cambia nada. Cuando
+      // haya un sponsor confirmado de verdad, esto se generaliza a una
+      // tabla provincia→tienda(s) en vez de este if puntual. ──
+      var shopRowHtml;
+      if (currentUserProvincia === 'San Luis') {
+        shopRowHtml =
+          '<div class="cf-btn-row-shop">' +
+            '<button class="cf-btn-opensports" ' +
+              'onclick="event.stopPropagation(); irATiendaSponsor(\'' + rawGenero + '\', \'' + rawTalle + '\');">' +
+              '🛒 OPEN <span class="cf-btn-opensports-sports">SPORTS</span></button>' +
+            '<button class="cf-btn-todotrail cf-btn-todotrail-on" ' +
+              'onclick="event.stopPropagation(); irATodoTrail(\'' + rawGenero + '\', \'' + rawTalle + '\');">' +
+              '🛒 <span class="cf-btn-todotrail-todo">TODO</span><span class="cf-btn-todotrail-trail">TRAIL</span></button>' +
+          '</div>';
+      } else {
+        shopRowHtml =
+          '<div class="cf-btn-row-shop">' +
+            '<button class="cf-btn-opensports cf-btn-opensports-off" disabled>' +
+              '🛒 OPEN <span class="cf-btn-opensports-sports">SPORTS</span>' +
+              '<span class="cf-btn-opensports-off-tag">Próximamente</span></button>' +
+          '</div>';
+      }
+
       var warnHtml = perc >= 70
         ? '<div class="cf-warn">' + (perc >= 85 ? '⚠️' : '🔶') + '</div>'
         : '';
@@ -3183,11 +3239,7 @@
                     'if(shoe){ currentDetailShoe = shoe; openHistorial(); } ' +
                   '})();">📋 HISTORIAL</button>' +
               '</div>' +
-              '<div class="cf-btn-row-shop">' +
-                '<button class="cf-btn-opensports cf-btn-opensports-off" disabled>' +
-                  '🛒 OPEN <span class="cf-btn-opensports-sports">SPORTS</span>' +
-                  '<span class="cf-btn-opensports-off-tag">Próximamente</span></button>' +
-              '</div>' +
+              shopRowHtml +
             '</div>' +
 
           '</div>' +  // /cf-card
