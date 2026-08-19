@@ -51,6 +51,67 @@ Dos cosas puntuales que te quería preguntar:
 ¿Tenés 15 minutos esta semana para charlarlo?
 ```
 
+## Versión pulida — email corporativo + DM corto (agregada 19/08/2026)
+
+> Segunda vuelta, más formal y más corta, pensada específicamente para
+> una empresa grande (no suena igual que escribirle a una tienda
+> chica). Dos cambios respecto a la versión de arriba: lidera con el
+> valor para Open Sports en el primer párrafo en vez de con el
+> contexto, y no menciona la cantidad de usuarios actual — no es
+> deshonesto omitirlo en un primer contacto (nadie arranca un pitch
+> confesando sus puntos débiles), simplemente no se ofrece ese dato sin
+> que lo pidan. Elegir esta versión o la de arriba según el canal.
+
+### Opción A — Email corporativo (recomendada para el primer contacto formal)
+
+```
+Asunto: Propuesta de alianza: Huella Runner x Open Sports
+
+Hola, [Nombre del contacto / Equipo de Open Sports]:
+
+Soy Esteban, fundador de Huella Runner, una app desarrollada en Mar
+del Plata que ayuda a los corredores a medir el desgaste real de sus
+zapatillas por kilómetros.
+
+Les escribo porque hoy la app redirige automáticamente a nuestros
+usuarios a comprar en la tienda online de Open Sports según su talle.
+Queremos formalizar esta alianza e integrarlos de manera estratégica
+desde esta etapa inicial.
+
+Un código de descuento exclusivo para la comunidad de Huella Runner
+impulsará las conversiones de compra directa en su tienda y
+fortalecerá la adopción de la plataforma entre los corredores de la
+región.
+
+Me gustaría hacerles dos consultas breves:
+- ¿Les interesa tener visibilidad nacional en la app (vía e-commerce)
+  o priorizan las zonas con sucursales físicas?
+- ¿Ven viable generar un código de descuento exclusivo para validar el
+  volumen de conversión?
+
+¿Tienen 15 minutos esta semana para una llamada breve?
+
+Saludos,
+Esteban | Huella Runner
+```
+
+### Opción B — Mensaje directo (LinkedIn / WhatsApp)
+
+```
+Hola, [Nombre]! Soy Esteban, creador de Huella Runner, una app nacida
+en MDQ para que los runners controlen los kilómetros de sus
+zapatillas.
+
+Actualmente la app incluye un botón que deriva a los usuarios a
+comprar el recambio de su calzado directo en Open Sports filtrado por
+talle. Me gustaría formalizar este flujo e integrar un beneficio
+exclusivo (ej. código de descuento) para incentivar la compra directa
+en su tienda.
+
+¿Tendrás 10-15 minutos esta semana para charlarlo brevemente? ¡Muchas
+gracias!
+```
+
 ## Qué hacer con la respuesta a la pregunta 1 (sucursal vs. nacional)
 
 Sea cual sea la respuesta, actualizar `docs/plan-boton-tienda-por-provincia.md`

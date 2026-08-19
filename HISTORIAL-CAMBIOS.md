@@ -12,6 +12,18 @@ el GAS es la versión más nueva.
 
 ---
 
+## 19/08/2026 (tarde, seguimiento) — Versión pulida del pitch de Open Sports (email + DM)
+
+Agregada a `docs/pitch-open-sports.md`: segunda vuelta más formal y
+más corta, con dos formatos (email corporativo y DM/WhatsApp), pensada
+específicamente para el tono de una empresa grande. Diferencia
+principal con la versión anterior: lidera con el valor para Open
+Sports desde el primer párrafo, y no menciona la cantidad de usuarios
+actual en el primer contacto — no es deshonesto omitirlo (nadie
+arranca un pitch con sus puntos débiles), solo no se ofrece ese dato
+sin que lo pidan. Sigue siendo borrador, pendiente de que Esteban lo
+pula.
+
 ## 19/08/2026 (tarde) — Dos pitches nuevos: Open Sports (formal) y tiendas regionales (beneficio como motor de crecimiento)
 
 Borradores, pendientes de que Esteban los pula antes de usarlos.
