@@ -12,6 +12,28 @@ el GAS es la versión más nueva.
 
 ---
 
+## 20/08/2026 (tarde) — Nuevo doc: seguimiento de modelos pendientes por tienda
+
+Nuevo `docs/modelos-pendientes-por-agregar.md` — Esteban va a ir
+pegando listados de zapatillas de distintos negocios (Todo Trail, Open
+Sports, y los que sigan) para comparar contra `catalogo{}`. En vez de
+depender de la memoria de la conversación (que se puede perder), cada
+comparación queda anotada en este archivo, separada en "nuevos sin
+duda", "dudosos" (puede ser el mismo modelo con otro nombre), "baja
+prioridad" (generación vieja de un modelo que ya tenemos) y "marca
+nueva" (la tienda vende una marca que ni siquiera existe en el
+desplegable).
+
+Primera tanda cargada: **Open Sports** (solo las primeras 5 de 24
+páginas del sitio, falta terminar de revisar el resto). Nada de esto
+se agregó todavía al catálogo real — es solo el registro de qué falta,
+a la espera de que Esteban confirme qué suma.
+
+De paso, detectado un posible typo propio: **"Cayano 32" (Asics)
+debería decir "Kayano 32"** — Kayano es el nombre real del modelo,
+"Cayano" no existe como línea de Asics. Pendiente de confirmar y
+corregir (no se tocó el catálogo todavía).
+
 ## 19/08/2026 (noche) — Plan de testing de posteos (adaptación del 3:2:2) — guardado sin convencer del todo
 
 Nuevo `docs/plan-testing-posteos-3-2-2.md`. Esteban preguntó cómo
