@@ -13,6 +13,37 @@ en la intuición, lanza rápido y mejora después.
 
 ---
 
+## Origen y contexto personal
+
+- **Por qué arrancó Huella Runner**: mezcla de un problema propio real y ver
+  la oportunidad — no es solo una idea abstracta, ni solo una necesidad
+  personal, las dos cosas juntas.
+- **Lo lleva solo**: hoy no hay equipo, es un proyecto de una sola persona.
+  No asumir que hay alguien más para delegar tareas de diseño, marketing o
+  ventas — si hace falta esa mano, es Claude quien la pone.
+- **No programa él mismo**, pero fue aprendiendo bastante en el camino —
+  sigue prefiriendo explicaciones sin jerga, pero ya tiene más piso técnico
+  que al principio del proyecto.
+- **Rinde mejor de mañana** para pensar y decidir cosas del proyecto.
+- **Lección de un intento anterior (clave para entender el "simple primero")**:
+  antes de Huella Runner tal como es hoy, probó una versión más completa —
+  con sensaciones, sueño, y otros datos que las apps de running típicas no
+  cubrían. La abandonó porque le pedía demasiada carga manual al usuario.
+  De ahí nació la decisión de quedarse solo con zapatillas + kilómetros. No
+  es una preferencia estética nomás, es una lección aprendida a los golpes.
+
+### Implicancia para Claude
+
+- No dar por sentado que hay un equipo — pensar las propuestas para que las
+  pueda ejecutar una sola persona, o ofrecerse a hacerlas directamente.
+- Cuando aparezca la tentación de sumar más datos/campos "porque estaría
+  bueno", recordar el precedente: más carga para el usuario ya le hizo
+  abandonar una versión entera del proyecto una vez.
+- Explicar sin jerga innecesaria, pero no subestimar que ya entiende bastante
+  del funcionamiento técnico.
+
+---
+
 ## Cómo resuelve problemas
 
 - **Bottom-up**: Descompone en partes chicas y resuelve de a una, especialmente
@@ -60,6 +91,12 @@ en la intuición, lanza rápido y mejora después.
   argumentos. Busca la forma indirecta con razones sólidas.
 - **Ejecuta y mejora**: Si le dicen cómo hacer algo, lo hace, pero si ve que se
   puede mejorar, lo mejora. No es pasivo.
+- **Prefiere el feedback directo, sin filtro** — no hace falta bajarle las
+  cosas de a poco.
+- **Trata de escuchar las críticas** que le llegan de afuera (no defensivo),
+  aunque no siempre esté de acuerdo.
+- **Le gusta que se destaque lo que salió bien**, no solo seguir de largo al
+  siguiente tema.
 
 ### Implicancia para Claude
 
@@ -67,6 +104,10 @@ en la intuición, lanza rápido y mejora después.
 - Al proponer cambios o alternativas, dar el fundamento, no solo la opinión.
 - No ser autoritario con las sugerencias; presentar la mejora como opción, no
   como imposición.
+- Ser directo al dar malas noticias o señalar errores — no hace falta
+  suavizarlo de más.
+- Cuando algo salga bien (un fix, una decisión, un resultado), decirlo
+  explícitamente en vez de pasar de largo.
 
 ---
 
@@ -78,6 +119,13 @@ en la intuición, lanza rápido y mejora después.
   los datos. Es un mix donde la intuición tiene la última palabra por poco.
 - **Se paraliza con extremos**: Muy poca información paraliza. Demasiada también.
   Necesita la justa.
+- **Techo de inversión (tiempo/plata)**: sigue mientras tenga ganas y crea que
+  puede funcionar — señales concretas de que "funciona": que entren usuarios
+  reales, que haya marcas dispuestas a auspiciar, algo de dinero entrando
+  (no mucho, no es la vara).
+- **Tensión que él mismo reconoce**: cuando algo le gusta pero los usuarios lo
+  ignoran, tiende a cortarlo rápido — pero sospecha que a veces debería darle
+  más tiempo antes de sacarlo.
 
 ### Implicancia para Claude
 
@@ -85,6 +133,8 @@ en la intuición, lanza rápido y mejora después.
   recomendación clara.
 - Cuando falte información, decirlo directamente y proponer cómo conseguirla.
 - No abrumar con detalles técnicos innecesarios.
+- Cuando algo no está funcionando pero es reciente, ofrecer la opción de
+  esperar un poco más antes de cortarlo — no solo la de sacarlo ya.
 
 ---
 
@@ -97,14 +147,24 @@ en la intuición, lanza rápido y mejora después.
   usuarios. No es solo un proyecto técnico, es un emprendimiento personal.
 - **Limpieza**: No le gustan las desprolijidades. Si algo quedó desprolijo,
   prefiere limpiarlo.
+- **Frustración #1**: que nadie use lo que se construyó — más que un bug o
+  que algo se vea feo. La adopción real es la métrica que más le importa.
+- **Éxito a 1 año**: usuarios reales usando la app + algo de ingresos
+  entrando (no necesariamente mucho).
+- **Scope creep**: confirmó que quiere que se le avise "lo antes posible"
+  apenas algo se empiece a complicar o agrandar más de lo pedido — no
+  esperar a que esté avanzado para decírselo.
 
 ### Implicancia para Claude
 
 - Priorizar funcionalidad shippeable sobre perfección.
-- Cuando el scope se expanda demasiado, señalarlo y proponer recortar.
+- Cuando el scope se expanda demasiado, señalarlo apenas se note — no
+  esperar a tener el cambio más avanzado para avisar.
 - Mantener el código limpio y ordenado. No dejar TODOs ni hacks sin marcar.
 - Recordar que esto es un emprendimiento, no un ejercicio académico: el valor
   está en que la gente lo use.
+- Ante una decisión de producto, priorizar siempre "¿esto suma usuarios
+  reales?" sobre "¿esto es una feature interesante?".
 
 ---
 
