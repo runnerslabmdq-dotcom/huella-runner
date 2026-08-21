@@ -12,6 +12,18 @@ el GAS es la versión más nueva.
 
 ---
 
+## 20/08/2026 (noche) — Mensaje para la Media Maratón de Buenos Aires (21K)
+
+Nuevo `docs/mensaje-21k-buenos-aires.md`, para postear antes del
+domingo. Ángulo: la carrera es solo la excusa, el logro real ya se
+hizo en los meses de entrenamiento previo — "huella" aparece recién al
+final, como guiño a la marca sin forzarlo antes. Tres versiones:
+
+- Larga (posteo principal).
+- Corta (para Historia).
+- Una aparte para quienes no corren esta carrera puntual pero salen a
+  entrenar igual ese día — para no dejarlos afuera del mensaje.
+
 ## 20/08/2026 (tarde) — Nuevo doc: seguimiento de modelos pendientes por tienda
 
 Nuevo `docs/modelos-pendientes-por-agregar.md` — Esteban va a ir
