@@ -12,6 +12,14 @@ el GAS es la versión más nueva.
 
 ---
 
+## 24/08/2026 14:04 — Splash de entrada: sacado el ícono, queda solo el texto
+
+A pedido del fundador. En `pwa/index.html`, en el bloque `.splash` (lo
+que se ve después de tocar "Empezar" en el cartel de Instagram, antes
+de que cargue la app): sacada la línea `<img src="./icons/icon-512.png"
+...>`. Queda solo "HUELLA RUNNER" + "Powered by Huella Runner MDQ" + la
+barra de carga, sin el ícono arriba.
+
 ## 24/08/2026 (mañana, seguimiento 2) — Foto de Nike Alphafly 3 Blueprint
 
 Agregada a `modelImages{}` en `gas/index.html` — el modelo ya estaba
