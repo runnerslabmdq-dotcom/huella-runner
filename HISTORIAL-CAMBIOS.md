@@ -12,6 +12,13 @@ el GAS es la versión más nueva.
 
 ---
 
+## 23/08/2026 (noche, seguimiento) — Agregado Saucony Endorphin Speed 5
+
+Sumado "Endorphin Speed 5" al desplegable de Saucony en `catalogo{}`
+(`gas/index.html`) — no estaba, solo la "Endorphin Speed 4". Sin foto
+propia por ahora, cae en la genérica de Saucony. Pendiente: el
+fundador pasa la foto mañana para agregarla a `modelImages{}`.
+
 ## 23/08/2026 (noche) — Cartel de Instagram: mención del sorteo, TEMPORAL hasta el 26/8
 
 Esteban lanzó un sorteo (meta: 100 registros de zapatilla + km) para
