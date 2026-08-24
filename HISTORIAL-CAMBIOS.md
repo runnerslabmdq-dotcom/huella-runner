@@ -12,6 +12,12 @@ el GAS es la versión más nueva.
 
 ---
 
+## 24/08/2026 (mañana, seguimiento 2) — Foto de Nike Alphafly 3 Blueprint
+
+Agregada a `modelImages{}` en `gas/index.html` — el modelo ya estaba
+en el desplegable de Nike, sin foto propia (caía en la genérica). Ya
+tiene su foto.
+
 ## 24/08/2026 (mañana, seguimiento) — Foto de Saucony Endorphin Speed 5
 
 Agregada a `modelImages{}` en `gas/index.html` — el modelo que se
