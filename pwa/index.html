@@ -94,11 +94,14 @@
           directo la excusa más común para no entrar ("esto me va a
           llevar rato"). Botón "Ver mis zapatillas" → "Empezar", porque
           ya no asume que la persona tiene zapatillas cargadas.
-       6) 24/08/2026: TEMPORAL — línea chica cambiada para mencionar el
-          sorteo (meta de 100 registros) con fecha límite 26/8. Volver
-          al texto de la versión 5 ("Registrate en un minuto, cargá tus
-          zapatillas y empezá a sumar los km de cada una.") apenas pase
-          el 26/8, esté o no completada la meta. */
+       6) 23/08/2026: TEMPORAL (después revertido) — línea chica
+          mencionaba el sorteo (meta de 100 registros) con fecha límite
+          26/8.
+       7) 24/08/2026: vuelto al texto de la versión 5 antes de la fecha
+          límite del sorteo, a pedido del fundador — el mensaje del
+          sorteo se sigue comunicando en el posteo dedicado, no hace
+          falta duplicarlo acá. De paso, la letra chica (.iab-sub) un
+          poco más grande (0.8rem → 0.92rem). */
     .iab-banner {
       display: none;
       position: fixed;
@@ -122,9 +125,9 @@
     .iab-banner strong { color: #C5B358; }
     .iab-banner .iab-sub {
       color: #aaaaaa;
-      font-size: 0.8rem;
+      font-size: 0.92rem;
       line-height: 1.5;
-      max-width: 280px;
+      max-width: 300px;
     }
     .iab-continue-btn {
       background: #C5B358;
@@ -166,7 +169,7 @@
 <body>
   <div class="iab-banner" id="iab-banner">
     <p><strong>Probá Huella Runner</strong></p>
-    <p class="iab-sub">Registrate, cargá tu zapatilla y un entrenamiento — hasta el 26/8 entrás en el sorteo. Un minuto.</p>
+    <p class="iab-sub">Registrate en un minuto, cargá tus zapatillas y empezá a sumar los km de cada una.</p>
     <button class="iab-continue-btn" onclick="irALaApp()">Empezar →</button>
   </div>
   <div class="splash" id="splash">

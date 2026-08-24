@@ -12,6 +12,20 @@ el GAS es la versión más nueva.
 
 ---
 
+## 24/08/2026 (mañana) — Cartel de Instagram: vuelto al texto de siempre + letra un poco más grande
+
+Esteban pidió volver al texto anterior (antes del 26/8, la fecha
+límite que habíamos puesto) — el mensaje del sorteo se sigue
+comunicando en el posteo dedicado, no hacía falta duplicarlo en el
+cartel de entrada. En `pwa/index.html`:
+
+- Línea chica: vuelta a "Registrate en un minuto, cargá tus zapatillas
+  y empezá a sumar los km de cada una."
+- Tamaño de esa línea (`.iab-sub`): 0.8rem → 0.92rem, un poco más
+  grande a pedido del fundador.
+
+Se sirve directo en `huella-runner.vercel.app`, ya está en vivo.
+
 ## 23/08/2026 (noche, seguimiento) — Agregado Saucony Endorphin Speed 5
 
 Sumado "Endorphin Speed 5" al desplegable de Saucony en `catalogo{}`
