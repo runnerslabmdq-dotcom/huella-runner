@@ -12,6 +12,12 @@ el GAS es la versión más nueva.
 
 ---
 
+## 24/08/2026 (mañana, seguimiento) — Foto de Saucony Endorphin Speed 5
+
+Agregada a `modelImages{}` en `gas/index.html` — el modelo que se
+sumó ayer al desplegable ya tiene foto propia, deja de caer en la
+genérica de Saucony.
+
 ## 24/08/2026 (mañana) — Cartel de Instagram: vuelto al texto de siempre + letra un poco más grande
 
 Esteban pidió volver al texto anterior (antes del 26/8, la fecha
