@@ -12,6 +12,21 @@ el GAS es la versión más nueva.
 
 ---
 
+## 23/08/2026 (noche) — Cartel de Instagram: mención del sorteo, TEMPORAL hasta el 26/8
+
+Esteban lanzó un sorteo (meta: 100 registros de zapatilla + km) para
+empujar la conversión de seguidores a usuarios reales — venía de una
+racha difícil (1300 seguidores en 22 días, 15 usuarios reales) y en
+vez de agrandar el proyecto (llevarlo a otros países) se decidió
+primero resolver la conversión acá. El posteo del sorteo ya se publicó
+sin anunciar el premio todavía (se revela al llegar a la meta).
+
+Cambio en `pwa/index.html`: la línea chica del cartel de entrada desde
+Instagram menciona ahora el sorteo y la fecha límite (26/8) en vez del
+texto genérico de siempre — **es TEMPORAL**, queda anotado en el
+comentario del código que hay que volver al texto anterior apenas pase
+el 26/8, se haya completado la meta o no.
+
 ## 20/08/2026 (noche) — Mensaje para la Media Maratón de Buenos Aires (21K)
 
 Nuevo `docs/mensaje-21k-buenos-aires.md`, para postear antes del
