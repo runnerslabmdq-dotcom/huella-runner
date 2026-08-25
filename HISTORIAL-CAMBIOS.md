@@ -12,6 +12,17 @@ el GAS es la versión más nueva.
 
 ---
 
+## 25/08/2026 16:12 — Foto genérica de Puma
+
+Agregada a `brandImages{}` en `gas/index.html` — Puma era una de las
+pocas marcas sin genérica cargada (junto con Brooks), así que sus
+modelos sin foto propia (Deviate Nitro 3 Wtr+, Deviate Nitro Elite 3,
+Electrify Nitro 3, Velocity Nitro 4 Digitokyo) mostraban "imagen no
+disponible" en vez de al menos una zapatilla Puma cualquiera, como
+pasa con el resto de las marcas. Detectado en la auditoría de las 152
+zapatillas del catálogo — de esas 48 sin foto propia, estas 4 eran las
+únicas sin ni siquiera la genérica.
+
 ## 25/08/2026 12:40 — Panel admin: nueva "franja de atención" arriba de todo
 
 A pedido del fundador, pensando en cuando la base de usuarios crezca
