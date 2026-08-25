@@ -1,8 +1,19 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Admin.html
-  Última actualización: 03/08/2026 17:45 (hora Argentina)
+  Última actualización: 25/08/2026 12:40 (hora Argentina)
   Cambios en esta versión:
+    - Nueva "franja de atención" arriba de todo, antes de "Resumen
+      general": 3 contadores compactos — 🔥 Zapas en alerta, 🕵️
+      Sospechosos, 💤 Abandono real (14+ días) — clickeables, cada uno
+      lleva directo a su sección. No pide nada nuevo al backend: reusa
+      los mismos datos que ya cargan renderAlertas(), renderSospechosos()
+      y cargarInsightsExtendidos() (nueva actualizarFranjaAtencion()).
+      Pensada para cuando la base de usuarios crezca: hoy con ~19
+      usuarios se puede ver todo el panel de un scroll, pero con
+      cientos ya no — esta franja dice de entrada qué necesita mirarse,
+      sin tener que bajar por toda la página. A pedido del fundador.
+  Cambios en versiones anteriores:
     - Nueva sección "🕵️ Actividad sospechosa — revisar": el anti-fraude
       viene marcando entrenamientos "Sospechosa" (superan el acumulado
       semanal) desde hace rato, pero se acreditaban igual sin que se
@@ -216,6 +227,16 @@
     .adm-badge { background: var(--neon); color: #000; font-size: 0.6rem; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; padding: 5px 12px; border-radius: 4px; }
     .adm-refresh { background: transparent; border: 1px solid var(--borde2); border-radius: 6px; color: var(--metal); font-size: 0.7rem; font-weight: 700; font-family: 'Montserrat', sans-serif; padding: 7px 14px; cursor: pointer; transition: all 0.15s; }
     .adm-refresh:hover { color: var(--neon); border-color: var(--neon); }
+
+    /* ══ FRANJA DE ATENCIÓN ══ */
+    .atencion-strip { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 24px; }
+    .atencion-chip {
+      flex: 1; min-width: 150px; background: var(--card); border: 1px solid var(--borde2);
+      border-radius: 10px; padding: 14px 16px; cursor: pointer; transition: border-color 0.15s;
+    }
+    .atencion-chip:hover { border-color: var(--neon); }
+    .atencion-num { font-size: 1.5rem; font-weight: 900; color: var(--metal); line-height: 1; }
+    .atencion-label { font-size: 0.64rem; font-weight: 700; color: var(--metal); text-transform: uppercase; letter-spacing: 1px; margin-top: 6px; }
 
     /* ══ LAYOUT ══ */
     .wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
@@ -508,6 +529,26 @@
 
   <div class="wrap">
 
+    <!-- 0. FRANJA DE ATENCIÓN — resumen de "qué necesita que mires hoy",
+         para no tener que bajar por toda la página a buscarlo. Cada
+         número reusa los mismos datos que ya cargan las secciones de
+         abajo (alertas, sospechosos, abandono real) — al tocar un chip,
+         te lleva directo a esa sección. -->
+    <div class="atencion-strip" id="atencion-strip">
+      <div class="atencion-chip" onclick="activarFiltro('alerta-zapas'); document.querySelector('.users-toolbar').scrollIntoView({behavior:'smooth',block:'start'});">
+        <div class="atencion-num" id="atencion-alertas">—</div>
+        <div class="atencion-label">🔥 Zapas en alerta</div>
+      </div>
+      <div class="atencion-chip" onclick="document.getElementById('panel-sospechosos').scrollIntoView({behavior:'smooth',block:'start'});">
+        <div class="atencion-num" id="atencion-sospechosos">—</div>
+        <div class="atencion-label">🕵️ Sospechosos</div>
+      </div>
+      <div class="atencion-chip" onclick="setInsTab('comercial'); document.querySelector('.insights-panel').scrollIntoView({behavior:'smooth',block:'start'});">
+        <div class="atencion-num" id="atencion-inactivos">—</div>
+        <div class="atencion-label">💤 Abandono real (14+ días)</div>
+      </div>
+    </div>
+
     <!-- 1. MÉTRICAS -->
     <div class="sec-label">Resumen general</div>
     <div class="metrics-grid" id="metrics-grid">
@@ -535,7 +576,7 @@
     <!-- 3b. ENTRENAMIENTOS SOSPECHOSOS — el anti-fraude los marca y los
          acredita igual (no se bloquean como los rechazados), pero antes
          nadie los veía en ningún lado del panel para revisarlos a mano. -->
-    <div class="panel">
+    <div class="panel" id="panel-sospechosos">
       <div class="panel-title">🕵️ Actividad sospechosa — revisar</div>
       <div id="sospechosos-list"><div class="loading-row">Cargando...</div></div>
     </div>
@@ -773,6 +814,7 @@
   const USERS_PAGE_SIZE   = 25;
   let alertasData         = [];
   let alertasFull         = [];
+  let sospechososFull     = [];
   let actividadPorDiaData = [];
   let insightsExtData     = null;
   let insTabActual        = 'comunidad';
@@ -845,6 +887,7 @@
       .withSuccessHandler(function(data) {
         if (!data || !data.success) return;
         insightsExtData = data;
+        actualizarFranjaAtencion();
         _renderConstancia();
         _renderHorarioReal();
         _renderTendenciaExtendida();
@@ -1190,6 +1233,8 @@
   }
   function renderSospechosos(lista) {
     const cont = document.getElementById('sospechosos-list');
+    sospechososFull = lista || [];
+    actualizarFranjaAtencion();
     if (!lista || !lista.length) {
       cont.innerHTML = '<div style="text-align:center;padding:20px;font-size:0.84rem;color:var(--metal);">✅ Nada para revisar por ahora.</div>';
       return;
@@ -1238,6 +1283,7 @@
     const alertas = data.alertasDesgaste || [];
     alertasData = alertas.map(function(a) { return (a.email || '').toLowerCase(); });
     alertasFull = alertas;
+    actualizarFranjaAtencion();
 
     // Alimenta el panel Insights con datos del dashboard
     _renderInsightsDesdeDashboard(data);
@@ -1610,6 +1656,26 @@
   /* ════════════════════════════════════════════════════
      PESTAÑAS INSIGHTS — controlador
   ════════════════════════════════════════════════════ */
+  /* ════════════════════════════════════════════════════
+     FRANJA DE ATENCIÓN — pinta los 3 contadores de arriba de todo
+     con lo que ya cargaron renderAlertas/renderSospechosos/
+     cargarInsightsExtendidos. Se llama desde cada uno de esos —
+     no pide datos propios, solo reusa lo que ya hay.
+  ════════════════════════════════════════════════════ */
+  function actualizarFranjaAtencion() {
+    _pintarAtencion('atencion-alertas', alertasFull.length, 'var(--naranja)');
+    _pintarAtencion('atencion-sospechosos', sospechososFull.length, 'var(--amarillo)');
+    if (insightsExtData && insightsExtData.abandono) {
+      _pintarAtencion('atencion-inactivos', insightsExtData.abandono.lista.length, 'var(--rojo)');
+    }
+  }
+  function _pintarAtencion(id, num, colorSiHay) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = num;
+    el.style.color = num > 0 ? colorSiHay : 'var(--metal)';
+  }
+
   function setInsTab(tab) {
     insTabActual = tab;
     document.querySelectorAll('.ins-tab').forEach(function(el, i) {

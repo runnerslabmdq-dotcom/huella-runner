@@ -12,6 +12,24 @@ el GAS es la versión más nueva.
 
 ---
 
+## 25/08/2026 12:40 — Panel admin: nueva "franja de atención" arriba de todo
+
+A pedido del fundador, pensando en cuando la base de usuarios crezca
+(hoy ~19, pero no va a quedar así): en `gas/admin.html`, arriba de
+"Resumen general", nueva franja con 3 contadores compactos y
+clickeables — 🔥 Zapas en alerta, 🕵️ Sospechosos, 💤 Abandono real
+(14+ días sin entrenar o nunca entrenaron). Cada uno lleva directo a
+su sección al tocarlo, en vez de tener que bajar scrolleando por toda
+la página para encontrar qué necesita revisión.
+
+No pide nada nuevo al backend — reusa los mismos datos que ya cargan
+`renderAlertas()`, `renderSospechosos()` y `cargarInsightsExtendidos()`
+(nueva función `actualizarFranjaAtencion()` que solo pinta lo que ya
+llegó). El contador de "Abandono real" usa el mismo dato que ya existía
+en la tarjeta de Insight Comercial (14+ días sin entrenar, o nunca
+entrenaron) — a propósito no el de "no entrenó hoy", que es un número
+mucho más ruidoso y casi siempre alto.
+
 ## 24/08/2026 14:04 — Splash de entrada: sacado el ícono, queda solo el texto
 
 A pedido del fundador. En `pwa/index.html`, en el bloque `.splash` (lo
