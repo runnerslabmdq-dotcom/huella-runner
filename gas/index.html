@@ -1,12 +1,22 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 26/08/2026 10:05 (hora Argentina)
+  Última actualización: 26/08/2026 11:09 (hora Argentina)
   Cambios en esta versión:
-    - Salomon S/LAB Genesis 2: modelo nuevo en catalogo{}, con foto propia.
+    - Nueva cajita de Drop / Talón / Antepié en la tarjeta de "Mis
+      Zapas" (dato técnico opcional, dropData{} + getDropInfo()):
+      arriba a la derecha, adentro de la foto, transparente y sin
+      emojis. Si el modelo no tiene el dato cargado, no se muestra
+      nada — no hace falta tenerlos todos. Cargados 85 modelos
+      (Adidas, Nike, Saucony, Asics, Hoka, New Balance, Salomon), a
+      pedido del fundador. Se corre para abajo si coincide con el
+      aviso de zapa en zona crítica (mismo rincón).
+    - De paso, 2 nombres de modelo corregidos en catalogo{} (typos
+      viejos, detectados al cruzar los datos de drop): Asics "Cayano
+      32" → "Kayano 32" (no se tocó "Cayano 32 W"), Asics "Soniblast"
+      → "Sonicblast", Hoka "Match 6" → "Mach 6". modelImages{}
+      actualizado con las mismas claves nuevas.
   Cambios en versiones anteriores:
-    - Salomon Spectur 3: modelo nuevo en catalogo{}, con foto propia.
-    - Marca nueva "Topper" + Puma Scend Pro 2 + foto nueva de Salomon
-      Ultra Flow 2 (ver HISTORIAL-CAMBIOS.md).
+    - Salomon S/LAB Genesis 2: modelo nuevo en catalogo{}, con foto propia.
   (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
   en la raíz del repo — a partir de ahora este encabezado solo guarda
   los últimos 2 cambios, para no seguir creciendo sin límite.)
@@ -341,6 +351,26 @@
       display: flex; align-items: center; justify-content: center;
       backdrop-filter: blur(4px);
     }
+
+    /* Drop / altura talón-antepié — dato técnico opcional (dropData{}) */
+    .cf-drop-box {
+      position: absolute; top: 8px; right: 8px;
+      background: rgba(10,10,10,0.42); backdrop-filter: blur(3px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 7px; padding: 5px 7px;
+      z-index: 2;
+    }
+    /* Corrida para abajo cuando el aviso de desgaste (.cf-warn) también
+       está visible en el mismo rincón, para no superponerse. */
+    .cf-drop-box.cf-drop-box-shifted { top: 34px; }
+    .cf-drop-row {
+      display: flex; align-items: center; justify-content: space-between; gap: 7px;
+      font-size: 0.48rem; font-weight: 400; white-space: nowrap;
+      padding: 1px 0; letter-spacing: 0.2px;
+    }
+    .cf-drop-row + .cf-drop-row { border-top: 1px solid rgba(255,255,255,0.08); margin-top: 1px; padding-top: 3px; }
+    .cf-drop-label { color: #aaa; }
+    .cf-drop-val   { color: var(--plata); font-weight: 700; }
 
     /* Botón eliminar — solo visible en slide activo */
     .cf-btn-delete {
@@ -2162,7 +2192,7 @@
     "hoka_clifton_10":               "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784566172/Hoka_Clifton_10_ST_lv5tzi.png",
     "hoka_rocket_x2":                "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784566172/Hoka_Rocket_X2_ST_op1myq.png",
     "hoka_mafate_speed_4":           "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784776880/Hoka_Mafate_Speed_4_vgdgzo.png",
-    "hoka_match_6":                  "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784776864/Hoka_Match_6_ST_xiailk.png",
+    "hoka_mach_6":                   "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784776864/Hoka_Match_6_ST_xiailk.png",
     "hoka_solimar":                  "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784776859/Hoka_Solimar_ST_zdbvvx.png",
     "salomon_genesis_trail":         "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781797818/Salomon_Genesis_Trail_TT_djsnsp.png",
     "salomon_ultra_glide_4_trail":   "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781797817/Salomon_Ultra_Glide_4_Trail_TT_pytavn.png",
@@ -2190,8 +2220,8 @@
     "adidas_response_2":             "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784309378/Adidas_Response_2_ST_puheud.png",
     "adidas_terrex_agravic_4":       "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784776872/Adidas_Terrex_Agravic_4_TT_kcacj2.png",
     "asics_gel_nimbus_26":           "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784516015/Asics_Gel_Nimbus_26_y9xxun.png",
-    "asics_soniblast":               "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784516014/Asics_Soniblast_ST_q6yctt.png",
-    "asics_cayano_32":               "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784515590/Asics_Cayano_32_ST_t1micm.png",
+    "asics_sonicblast":              "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784516014/Asics_Soniblast_ST_q6yctt.png",
+    "asics_kayano_32":               "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784515590/Asics_Cayano_32_ST_t1micm.png",
     "asics_gel_rocket_11":           "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784515588/Asics_Gel_Rocket_11_ST_au0xy6.png",
     "asics_megablast":               "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784515587/Asics_Megablast_ST_l21b6u.png",
     "asics_gel_trebuco_13":          "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784515585/Asics_Gel_Trebuco_13_ST_mrokpf.png",
@@ -2233,6 +2263,122 @@
     "nike_winflo_9":                 "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784776813/Nike_Winflo_9_ST_cgnsxu.png",
     "under_armour_hovr_synergy":     "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784776814/Under_Armour_Hovr_Synergy_ST_qba0pj.png"
   };
+
+  // ════════════════════════════════════════════════════════════
+  // DROP / ALTURA DE TALÓN Y ANTEPIÉ — dato técnico opcional por
+  // modelo (mismo criterio que modelImages: clave "marca_modelo"
+  // normalizada). Si un modelo no está acá, la tarjeta simplemente no
+  // muestra la cajita — no hace falta tener el dato de las 156 zapas
+  // para arrancar. Datos investigados por el fundador (no siempre son
+  // la especificación oficial exacta de fábrica; para algunos modelos
+  // con más de una fuente se usó el valor "oficial" del fabricante en
+  // vez del medido en laboratorio, para no complicar la cajita con
+  // dos números). Se va completando de a tandas por marca.
+  // ════════════════════════════════════════════════════════════
+  const dropData = {
+    // — Adidas (26/08/2026) — Zenboost sin specs estándar, no incluida
+    "adidas_adistar_byd":            { drop: 6,   talon: 40,   antepie: 34 },
+    "adidas_adizero_adios_pro_4":    { drop: 6,   talon: 39,   antepie: 33 },
+    "adidas_adizero_boston_12":      { drop: 7,   talon: 38,   antepie: 31 },
+    "adidas_adizero_boston_13":      { drop: 6,   talon: 36,   antepie: 30 },
+    "adidas_adizero_drive":          { drop: 6.5, talon: 38,   antepie: 31.5 },
+    "adidas_adizero_evo":            { drop: 6,   talon: 39,   antepie: 33 },
+    "adidas_duramo_sl2":             { drop: 9,   talon: 36,   antepie: 27 },
+    "adidas_duramo_speed":           { drop: 6.5, talon: 36.5, antepie: 30 },
+    "adidas_hyperboost":             { drop: 6,   talon: 45,   antepie: 39 },
+    "adidas_questar_3":              { drop: 5,   talon: 29,   antepie: 24 },
+    "adidas_response_2":             { drop: 8,   talon: 30,   antepie: 22 },
+    "adidas_supernova_2":            { drop: 9,   talon: 32,   antepie: 23 },
+    "adidas_supernova_glide":        { drop: 8,   talon: 36,   antepie: 28 },
+    "adidas_supernova_rise_3":       { drop: 8,   talon: 37,   antepie: 29 },
+    "adidas_terrex_agravic_4":       { drop: 8,   talon: 36,   antepie: 28 },
+    "adidas_ultrarun_5":             { drop: 10,  talon: 34.3, antepie: 24.8 },
+
+    // — Nike (26/08/2026) —
+    "nike_alphafly_3_blueprint":     { drop: 8,  talon: 40, antepie: 32 },
+    "nike_downshifter_13":           { drop: 10, talon: 33, antepie: 23 },
+    "nike_lunarspider":              { drop: 8,  talon: 24, antepie: 16 },
+    "nike_pegasus_39":               { drop: 10, talon: 33, antepie: 23 },
+    "nike_pegasus_41":               { drop: 10, talon: 37, antepie: 27 },
+    "nike_pegasus_42":               { drop: 10, talon: 37, antepie: 27 },
+    "nike_pegasus_plus":             { drop: 10, talon: 34, antepie: 24 },
+    "nike_quest_5":                  { drop: 9,  talon: 31, antepie: 22 },
+    "nike_renew_run_3":              { drop: 10, talon: 32, antepie: 22 },
+    "nike_revolution_7":             { drop: 10, talon: 31, antepie: 21 },
+    "nike_revolution_8":             { drop: 10, talon: 31, antepie: 21 },
+    "nike_run_defy":                 { drop: 10, talon: 32, antepie: 22 },
+    "nike_structure_25":             { drop: 10, talon: 37, antepie: 27 },
+    "nike_vomero_17":                { drop: 10, talon: 39, antepie: 29 },
+    "nike_vomero_plus":              { drop: 10, talon: 39, antepie: 29 },
+    "nike_winflo_9":                 { drop: 10, talon: 33, antepie: 23 },
+    "nike_winflo_11":                { drop: 10, talon: 37, antepie: 27 },
+
+    // — Saucony (26/08/2026) —
+    "saucony_endorphin":             { drop: 8,  talon: 35,   antepie: 27 },
+    "saucony_endorphin_azura":       { drop: 8,  talon: 31,   antepie: 23 },
+    "saucony_endorphin_pro_5":       { drop: 8,  talon: 39.5, antepie: 31.5 },
+    "saucony_endorphin_speed_5":     { drop: 8,  talon: 36,   antepie: 28 },
+    "saucony_kinvara_14":            { drop: 4,  talon: 31,   antepie: 27 },
+    "saucony_kinvara_pro":           { drop: 8,  talon: 42,   antepie: 34 },
+    "saucony_peregrine_16_blanca":   { drop: 4,  talon: 28,   antepie: 24 },
+    "saucony_peregrine_16_carbon":   { drop: 4,  talon: 28,   antepie: 24 },
+    "saucony_ride_16":               { drop: 8,  talon: 35,   antepie: 27 },
+    "saucony_triumph_21":            { drop: 10, talon: 37,   antepie: 27 },
+    "saucony_triumph_22":            { drop: 10, talon: 37,   antepie: 27 },
+    "saucony_triumph_23":            { drop: 10, talon: 37,   antepie: 27 },
+    "saucony_xodus_4":               { drop: 4,  talon: 28.5, antepie: 24.5 },
+
+    // — Asics (26/08/2026) — nombres ya corregidos (Kayano, Sonicblast)
+    "asics_kayano_32":               { drop: 8,  talon: 40,   antepie: 32 },
+    "asics_cayano_32_w":             { drop: 8,  talon: 39,   antepie: 31 },
+    "asics_gel_cumulus_27":          { drop: 8,  talon: 38.5, antepie: 30.5 },
+    "asics_gel_nimbus_26":           { drop: 8,  talon: 41.5, antepie: 33.5 },
+    "asics_gel_rocket_11":           { drop: 10, talon: 29,   antepie: 19 },
+    "asics_gel_trebuco_13":          { drop: 8,  talon: 34.5, antepie: 26.5 },
+    "asics_megablast":               { drop: 8,  talon: 45,   antepie: 37 },
+    "asics_novablast":               { drop: 10, talon: 32,   antepie: 22 },
+    "asics_novablast_5_lite":        { drop: 8,  talon: 41.5, antepie: 33.5 },
+    "asics_novablast_5_tokyo":       { drop: 8,  talon: 41.5, antepie: 33.5 },
+    "asics_sonicblast":              { drop: 8,  talon: 46,   antepie: 38 },
+
+    // — Hoka (26/08/2026) — "Mach 6" ya corregido (era "Match 6")
+    "hoka_arahi_7":                  { drop: 5, talon: 34, antepie: 29 },
+    "hoka_bondi_9":                  { drop: 4, talon: 43, antepie: 39 },
+    "hoka_bondi_9_w":                { drop: 4, talon: 41, antepie: 37 },
+    "hoka_challenger_atr_7":         { drop: 5, talon: 31, antepie: 26 },
+    "hoka_challenger_atr_8":         { drop: 5, talon: 32, antepie: 27 },
+    "hoka_cielo_x1_2.0":             { drop: 7, talon: 40, antepie: 33 },
+    "hoka_clifton_8":                { drop: 5, talon: 32, antepie: 27 },
+    "hoka_clifton_10":               { drop: 5, talon: 37, antepie: 32 },
+    "hoka_mafate_5_black":           { drop: 4, talon: 35, antepie: 31 },
+    "hoka_mafate_speed_4":           { drop: 4, talon: 33, antepie: 29 },
+    "hoka_mafate_x":                 { drop: 5, talon: 39, antepie: 34 },
+    "hoka_mach_6":                   { drop: 5, talon: 37, antepie: 32 },
+    "hoka_rocket_x2":                { drop: 5, talon: 36, antepie: 31 },
+    "hoka_solimar":                  { drop: 6, talon: 26, antepie: 20 },
+    "hoka_speedgoat_6":              { drop: 5, talon: 40, antepie: 35 },
+    "hoka_speedgoat_6_mid_gore":     { drop: 5, talon: 40, antepie: 35 },
+    "hoka_speedgoat_7":              { drop: 5, talon: 40, antepie: 35 },
+    "hoka_torrent_4":                { drop: 5, talon: 33, antepie: 28 },
+    "hoka_transport":                { drop: 5, talon: 29, antepie: 24 },
+
+    // — New Balance (26/08/2026) —
+    "new_balance_fresh_foam_x_vongo_v6": { drop: 6, talon: 38,   antepie: 32 },
+    "new_balance_fuelcell_rebel_v3":     { drop: 6, talon: 27.5, antepie: 21.5 },
+
+    // — Salomon (26/08/2026) —
+    "salomon_aero_glide_4":          { drop: 10, talon: 37.4, antepie: 27.4 },
+    "salomon_aero_glide_4_grvl":     { drop: 10, talon: 37.4, antepie: 27.4 },
+    "salomon_genesis_trail":         { drop: 8,  talon: 34,   antepie: 26 },
+    "salomon_s/lab_genesis_2":       { drop: 8,  talon: 34,   antepie: 26 },
+    "salomon_spectur_3":             { drop: 8,  talon: 38,   antepie: 30 },
+    "salomon_ultra_flow_2":          { drop: 6,  talon: 32,   antepie: 26 },
+    "salomon_ultra_glide_4_trail":   { drop: 6,  talon: 32,   antepie: 26 },
+  };
+
+  function getDropInfo(marca, modelo) {
+    return dropData[_normKey(marca) + "_" + _normKey(modelo)] || null;
+  }
 
   // Genéricas por marca (fallback cuando el modelo no tiene foto propia).
   // Solo marcas que existen en el desplegable de "Nueva zapatilla".
@@ -2314,7 +2460,7 @@
   // =====================================================
   const catalogo = {
     "Dynafit":      ["Alpine Trail"],
-    "Hoka":         ["Arahi 7", "Bondi 9", "Bondi 9 W", "Challenger ATR 7", "Challenger ATR 8", "Cielo X1 2.0", "Clifton 8", "Clifton 10", "Mafate 5 Black", "Mafate Speed 4", "Mafate X", "Match 6", "Rocket X2", "Solimar", "Speedgoat 6", "Speedgoat 6 Mid Gore", "Speedgoat 7", "Torrent 4", "Transport"],
+    "Hoka":         ["Arahi 7", "Bondi 9", "Bondi 9 W", "Challenger ATR 7", "Challenger ATR 8", "Cielo X1 2.0", "Clifton 8", "Clifton 10", "Mafate 5 Black", "Mafate Speed 4", "Mafate X", "Mach 6", "Rocket X2", "Solimar", "Speedgoat 6", "Speedgoat 6 Mid Gore", "Speedgoat 7", "Torrent 4", "Transport"],
     "Joma":         ["R 2000"],
     "La Sportiva":  ["Prodigio Pro M", "Prodigio Pro Max", "Prodigio Pro W"],
     "Nnormal":      ["Kjerag", "Kjerag 2", "Tomir 2.0"],
@@ -2373,7 +2519,7 @@
       "Zenboost"
     ],
     "Asics": [
-      "Cayano 32",
+      "Kayano 32",
       "Cayano 32 W",
       "Gel Cumulus 27",
       "Gel Nimbus 26",
@@ -2383,7 +2529,7 @@
       "Novablast",
       "Novablast 5 Lite",
       "Novablast 5 Tokyo",
-      "Soniblast",
+      "Sonicblast",
       "Superblast 2"
     ],
     "Brooks":       ["Levitate 5"],
@@ -3192,6 +3338,19 @@
       var warnHtml = perc >= 70
         ? '<div class="cf-warn">' + (perc >= 85 ? '⚠️' : '🔶') + '</div>'
         : '';
+      // Drop / altura talón-antepié: dato opcional (dropData{}). Si el
+      // modelo no lo tiene cargado, no se muestra nada — no bloquea la
+      // tarjeta. Cuando el warning de desgaste también está visible
+      // (mismo rincón, arriba a la derecha), la cajita se corre para abajo
+      // para no taparlo (ver .cf-drop-box-shifted).
+      var dropInfo = getDropInfo(s.Marca, s.Modelo);
+      var dropHtml = dropInfo
+        ? '<div class="cf-drop-box' + (perc >= 70 ? ' cf-drop-box-shifted' : '') + '">' +
+            '<div class="cf-drop-row"><span class="cf-drop-label">Drop</span><span class="cf-drop-val">' + dropInfo.drop + ' mm</span></div>' +
+            '<div class="cf-drop-row"><span class="cf-drop-label">Talón</span><span class="cf-drop-val">' + dropInfo.talon + ' mm</span></div>' +
+            '<div class="cf-drop-row"><span class="cf-drop-label">Antepié</span><span class="cf-drop-val">' + dropInfo.antepie + ' mm</span></div>' +
+          '</div>'
+        : '';
       var badgeCls  = getBrandBadgeClass(s.Marca);
       // Foto real de ESTA zapatilla (columna Foto_URL en el Sheet, cargada a
       // mano por el admin) tiene prioridad sobre la genérica del modelo.
@@ -3214,6 +3373,7 @@
               '<img src="' + shoeImg + '" alt="' + sModelo + '" loading="lazy">' +
               '<div class="cf-badge ' + badgeCls + '">' + sMarca.toUpperCase() + '</div>' +
               warnHtml +
+              dropHtml +
               '<button class="cf-btn-delete" title="Eliminar zapatilla" ' +
                 'onclick="event.stopPropagation(); openConfirmDelete(\'' + rawId + '\', \'' + rawModelo + '\'); return false;">✕</button>' +
               '<button class="cf-btn-share" title="Compartir" ' +

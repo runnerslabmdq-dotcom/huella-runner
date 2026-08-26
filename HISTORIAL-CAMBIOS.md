@@ -12,6 +12,33 @@ el GAS es la versión más nueva.
 
 ---
 
+## 26/08/2026 11:09 — Cajita de Drop/Talón/Antepié en las tarjetas + 3 typos corregidos
+
+En `gas/index.html`, a pedido del fundador:
+
+- **Nueva cajita de dato técnico** en la tarjeta de "Mis Zapas": Drop,
+  altura de talón y de antepié, arriba a la derecha, adentro de la
+  foto — transparente, sin emojis, letra chica (ajustado en varias
+  vueltas de muestra antes de ir al código real). Nuevo `dropData{}` +
+  `getDropInfo(marca, modelo)`, mismo criterio de clave que
+  `modelImages{}`. Si un modelo no tiene el dato cargado, la cajita
+  simplemente no aparece — no bloquea nada.
+- **Cargados 85 modelos** con drop/talón/antepié: Adidas (16, Zenboost
+  quedó afuera por no tener specs estándar), Nike (17), Saucony (13),
+  Asics (11), Hoka (19), New Balance (2), Salomon (7).
+- Cuando el aviso de "zapa en zona crítica" (mismo rincón, arriba a la
+  derecha) también está visible, la cajita de drop se corre para abajo
+  para no superponerse (`.cf-drop-box-shifted`).
+- **3 nombres de modelo corregidos** en `catalogo{}` — typos viejos
+  que salieron a la luz al cruzar los datos de drop contra los
+  nombres reales de fábrica:
+  - Asics "Cayano 32" → "**Kayano 32**" (el nombre real de Asics; no
+    se tocó "Cayano 32 W", queda como estaba a pedido del fundador).
+  - Asics "Soniblast" → "**Sonicblast**".
+  - Hoka "Match 6" → "**Mach 6**".
+  `modelImages{}` actualizado con las mismas claves nuevas — las fotos
+  no cambiaron, solo la clave que las liga al modelo.
+
 ## 26/08/2026 10:05 — Salomon S/LAB Genesis 2
 
 Modelo nuevo en `catalogo{}` (`gas/index.html`), con foto propia.
