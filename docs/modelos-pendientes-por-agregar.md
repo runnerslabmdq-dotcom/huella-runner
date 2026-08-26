@@ -88,8 +88,10 @@ running de opensports.com.ar (de 24 páginas totales — falta el resto).
 
 - **Reebok** (visto: Energen Lite JP) — marca no existe ni en el
   desplegable de "Nueva zapatilla".
-- **Topper** (visto: Fast) — marca argentina, tampoco existe en el
-  desplegable. Puede tener sentido sumarla dado que es local.
+- ~~**Topper** (visto: Fast)~~ — agregada al catálogo y al desplegable
+  el 26/08/2026 (primer modelo cargado: Stance 3, no Fast — el
+  fundador pasó otra foto). El modelo "Fast" visto acá en Open Sports
+  sigue pendiente de agregar si se consigue una foto.
 
 Nota técnica: agregar una marca nueva necesita el mismo cuidado que la
 vez que "On" no aparecía — hay que sumarla tanto a `catalogo{}` como

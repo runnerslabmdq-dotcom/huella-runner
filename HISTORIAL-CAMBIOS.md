@@ -12,6 +12,23 @@ el GAS es la versión más nueva.
 
 ---
 
+## 26/08/2026 09:19 — Marca nueva Topper + Puma Scend Pro 2 + foto nueva de Salomon Ultra Flow 2
+
+En `gas/index.html`, a pedido del fundador:
+
+- **Topper (marca argentina), nueva de verdad** — no existía ni en el
+  catálogo ni en el desplegable. Sumada a `catalogo{}`, al `<option>`
+  fijo de `<select id="shoe-marca">`, y a `brandImages{}` con su
+  genérica. Mismo cuidado que la vez que "On" no aparecía por faltarle
+  el `<option>` del desplegable (ver 17/08/2026). Primer modelo:
+  **Stance 3**, con foto propia.
+- **Puma Scend Pro 2** — modelo nuevo, agregado a `catalogo{}` con foto
+  propia (de paso, ya no depende de la genérica de Puma agregada hoy
+  más temprano).
+- **Salomon Ultra Flow 2** — no era nueva, ya estaba en el catálogo con
+  foto propia. El fundador pasó una foto distinta y pidió reemplazarla;
+  reemplazada en `modelImages{}`.
+
 ## 25/08/2026 16:12 — Foto genérica de Puma
 
 Agregada a `brandImages{}` en `gas/index.html` — Puma era una de las

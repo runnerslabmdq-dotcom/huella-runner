@@ -1,13 +1,17 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 25/08/2026 16:12 (hora Argentina)
+  Última actualización: 26/08/2026 09:19 (hora Argentina)
   Cambios en esta versión:
-    - Foto genérica para Puma en brandImages{} — antes no tenía ninguna,
-      así que los modelos sin foto propia (Deviate Nitro 3 Wtr+, Deviate
-      Nitro Elite 3, Electrify Nitro 3, Velocity Nitro 4 Digitokyo)
-      mostraban "imagen no disponible" en vez de al menos una zapatilla
-      Puma genérica, como pasa con el resto de las marcas.
+    - Marca nueva "Topper" (argentina): sumada a catalogo{}, al
+      desplegable fijo de marcas (<select id="shoe-marca">) y a
+      brandImages{} con su genérica — mismo cuidado que la vez que "On"
+      no aparecía por faltarle el <option>. Primer modelo: Stance 3,
+      con foto propia.
+    - Puma Scend Pro 2: modelo nuevo en catalogo{}, con foto propia.
+    - Salomon Ultra Flow 2: reemplazada la foto por una nueva que pasó
+      el fundador (el modelo ya estaba, no era nuevo — solo cambió la foto).
   Cambios en versiones anteriores:
+    - Foto genérica para Puma en brandImages{} (ver HISTORIAL-CAMBIOS.md).
     - Foto propia para Nike Alphafly 3 Blueprint (ver HISTORIAL-CAMBIOS.md).
   (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
   en la raíz del repo — a partir de ahora este encabezado solo guarda
@@ -1666,6 +1670,7 @@
           <option value="Salomon">Salomon</option>
           <option value="Saucony">Saucony</option>
           <option value="Skechers">Skechers</option>
+          <option value="Topper">Topper</option>
           <option value="Under Armour">Under Armour</option>
           <option value="__otras__">Otras...</option>
         </select>
@@ -2167,7 +2172,7 @@
     "hoka_solimar":                  "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784776859/Hoka_Solimar_ST_zdbvvx.png",
     "salomon_genesis_trail":         "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781797818/Salomon_Genesis_Trail_TT_djsnsp.png",
     "salomon_ultra_glide_4_trail":   "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781797817/Salomon_Ultra_Glide_4_Trail_TT_pytavn.png",
-    "salomon_ultra_flow_2":          "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781797820/Salomon_Ultra_Flow_2_TT_jlpf2h.png",
+    "salomon_ultra_flow_2":          "https://res.cloudinary.com/klxkj07e/image/upload/v1787746190/Salomon_Ultra_FLow_2_bubx16.jpg",
     "salomon_aero_glide_4":          "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781797825/Salomon_Aero_Glide_4_TT_kiwztx.png",
     "salomon_aero_glide_4_grvl":     "https://i.imgur.com/2jRHVoA.jpeg",
     "adidas_adizero_evo":            "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784309382/Adidas_Adizero_Evo_ST_ccf06u.png",
@@ -2220,6 +2225,8 @@
     "puma_deviate_nitro_3_digitokyo":"https://i.imgur.com/xCEiK1S.jpeg",
     "puma_deviate_nitro_4":          "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784774138/Puma_Deviate_Nitro_4_ST_hgbl8q.png",
     "puma_velocity_nitro_4":         "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784774128/Puma_Velocity_Nitro_4_ST_v67k6q.png",
+    "puma_scend_pro_2":              "https://res.cloudinary.com/klxkj07e/image/upload/v1787746189/Puma_Scend_Pro_2_xueotp.jpg",
+    "topper_stance_3":               "https://res.cloudinary.com/klxkj07e/image/upload/v1787746190/Topper_Stance_3_Negra_rmsy8i.jpg",
     "brooks_levitate_5":             "https://i.imgur.com/fogvrsm.jpeg",
     "new_balance_fuelcell_rebel_v3": "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784776859/New_Balance_FuelCell_Rebel_v3_raocwy.png",
     "new_balance_fresh_foam_x_vongo_v6": "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784776856/New_Balance_Fresh_Foam_X_Vongo_v6_ST_ravak2.png",
@@ -2248,6 +2255,7 @@
   "nike":          "https://res.cloudinary.com/dlayzh9ln/image/upload/v1782400516/Nike_Generica_d3yhht.png",
   "puma":          "https://res.cloudinary.com/klxkj07e/image/upload/v1787685113/Puma_Generica_r9y42i.jpg",
   "skechers":      "https://res.cloudinary.com/dlayzh9ln/image/upload/v1782400510/Sketchers_Generica_cgss7k.png",
+  "topper":        "https://res.cloudinary.com/klxkj07e/image/upload/v1787746190/Topper_Generica_dtugj3.jpg",
   "under_armour":  "https://res.cloudinary.com/dlayzh9ln/image/upload/v1782400498/Under_Armour_Generica_svvvik.png"
 };
 
@@ -2387,8 +2395,9 @@
     "New Balance":  ["Fresh Foam X 1080 v13", "Fresh Foam X 1080 v14", "Fresh Foam X Evoz v3", "Fresh Foam X Vongo v6", "FuelCell Rebel v3", "FuelCell Rebel v5", "FuelCell Supercomp Trainer v4"],
     "Nike":         ["Alphafly 3 Blueprint", "Downshifter 13", "Infinity RN 4 Blueprint", "Invincible 3", "LunarSpider", "Pegasus 39", "Pegasus 40", "Pegasus 41", "Pegasus 42", "Pegasus Plus", "Pegasus Premium", "Pegasus Premium QS", "Quest 5", "Renew Run 3", "Revolution 7", "Revolution 8", "Run Defy", "Structure 25", "Vaporfly 4", "Vomero 17", "Vomero Plus", "Winflo 9", "Winflo 11"],
     "On":           ["Cloudmonster 3"],
-    "Puma":         ["Deviate Nitro 2", "Deviate Nitro 3", "Deviate Nitro 3 Digitokyo", "Deviate Nitro 3 Wtr+", "Deviate Nitro 4", "Deviate Nitro Elite 3", "Electrify Nitro 3", "Foreverrun Nitro", "Foreverrun Nitro 2", "Magnify Nitro 3", "Velocity Nitro 4", "Velocity Nitro 4 Digitokyo"],
+    "Puma":         ["Deviate Nitro 2", "Deviate Nitro 3", "Deviate Nitro 3 Digitokyo", "Deviate Nitro 3 Wtr+", "Deviate Nitro 4", "Deviate Nitro Elite 3", "Electrify Nitro 3", "Foreverrun Nitro", "Foreverrun Nitro 2", "Magnify Nitro 3", "Scend Pro 2", "Velocity Nitro 4", "Velocity Nitro 4 Digitokyo"],
     "Skechers":     ["Aero Burst", "Aero Spark", "Glide Step Altus", "Max Cushioning Propulsion"],
+    "Topper":       ["Stance 3"],
     "Under Armour": ["Hovr Synergy", "Infinite Elite"],
   };
 
