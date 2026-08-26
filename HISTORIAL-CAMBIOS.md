@@ -12,6 +12,10 @@ el GAS es la versión más nueva.
 
 ---
 
+## 26/08/2026 10:05 — Salomon S/LAB Genesis 2
+
+Modelo nuevo en `catalogo{}` (`gas/index.html`), con foto propia.
+
 ## 26/08/2026 09:25 — Salomon Spectur 3
 
 Modelo nuevo en `catalogo{}` (`gas/index.html`), con foto propia — a
