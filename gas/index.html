@@ -1,15 +1,15 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 26/08/2026 12:27 (hora Argentina)
+  Última actualización: 26/08/2026 13:10 (hora Argentina)
   Cambios en esta versión:
-    - Última tanda de dropData{}: Dynafit, Joma, La Sportiva, Nnormal,
-      Osx, Brooks, On, Puma (el resto), Topper, Under Armour (22
-      modelos). Con esto quedan 107 de las 108 zapas con foto propia
-      con dato de Drop/Talón/Antepié cargado — solo Adidas Zenboost
-      sigue afuera (sin specs estándar de running).
+    - DEV usuario de muestra: edragotto@hotmail.com ve el botón de Open
+      Sports activo (sin Todo Trail), aparte de San Luis que sigue con
+      los 2 botones. Pensado para tener una demo lista de cara a la
+      reunión con Open Sports — sacar esta excepción puntual cuando
+      haya un sponsor real confirmado.
   Cambios en versiones anteriores:
-    - Nueva cajita de Drop/Talón/Antepié en la tarjeta de "Mis Zapas" +
-      3 nombres de modelo corregidos (ver HISTORIAL-CAMBIOS.md).
+    - Última tanda de dropData{}: 107 de 108 zapas con foto propia con
+      dato de Drop/Talón/Antepié (ver HISTORIAL-CAMBIOS.md).
   (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
   en la raíz del repo — a partir de ahora este encabezado solo guarda
   los últimos 2 cambios, para no seguir creciendo sin límite.)
@@ -3334,6 +3334,11 @@
       // siempre. Para cualquier otra provincia no cambia nada. Cuando
       // haya un sponsor confirmado de verdad, esto se generaliza a una
       // tabla provincia→tienda(s) en vez de este if puntual. ──
+      // ── DEV usuario de muestra (26/08/2026): edragotto@hotmail.com ve
+      // el botón de Open Sports activo (sin Todo Trail), para tener una
+      // demo lista de cara a la reunión con Open Sports. Sacar esta
+      // excepción cuando haya un sponsor real confirmado. ──
+      var esUsuarioDemoOpenSports = (currentUserEmail || '').toString().trim().toLowerCase() === 'edragotto@hotmail.com';
       var shopRowHtml;
       if (currentUserProvincia === 'San Luis') {
         shopRowHtml =
@@ -3344,6 +3349,13 @@
             '<button class="cf-btn-todotrail cf-btn-todotrail-on" ' +
               'onclick="event.stopPropagation(); irATodoTrail(\'' + rawGenero + '\', \'' + rawTalle + '\');">' +
               '🛒 <span class="cf-btn-todotrail-todo">TODO</span><span class="cf-btn-todotrail-trail">TRAIL</span></button>' +
+          '</div>';
+      } else if (esUsuarioDemoOpenSports) {
+        shopRowHtml =
+          '<div class="cf-btn-row-shop">' +
+            '<button class="cf-btn-opensports" ' +
+              'onclick="event.stopPropagation(); irATiendaSponsor(\'' + rawGenero + '\', \'' + rawTalle + '\');">' +
+              '🛒 OPEN <span class="cf-btn-opensports-sports">SPORTS</span></button>' +
           '</div>';
       } else {
         shopRowHtml =
