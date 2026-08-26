@@ -1,19 +1,18 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Admin.html
-  Última actualización: 25/08/2026 12:40 (hora Argentina)
+  Última actualización: 26/08/2026 12:42 (hora Argentina)
   Cambios en esta versión:
-    - Nueva "franja de atención" arriba de todo, antes de "Resumen
-      general": 3 contadores compactos — 🔥 Zapas en alerta, 🕵️
-      Sospechosos, 💤 Abandono real (14+ días) — clickeables, cada uno
-      lleva directo a su sección. No pide nada nuevo al backend: reusa
-      los mismos datos que ya cargan renderAlertas(), renderSospechosos()
-      y cargarInsightsExtendidos() (nueva actualizarFranjaAtencion()).
-      Pensada para cuando la base de usuarios crezca: hoy con ~19
-      usuarios se puede ver todo el panel de un scroll, pero con
-      cientos ya no — esta franja dice de entrada qué necesita mirarse,
-      sin tener que bajar por toda la página. A pedido del fundador.
+    - Nuevo botón 👟 en cada fila/tarjeta de "Usuarios registrados":
+      abre una ventanita con las zapatillas de esa persona (marca,
+      modelo, talle, género, km actual/límite, estado). Antes, para
+      ver esto había que ir directo a la pestaña Zapatillas del Sheet
+      y filtrar a mano por email. Nuevo backend getZapatillasDeUsuario()
+      (admin.gs) + modal uz-modal-overlay / verZapasUsuario() /
+      renderZapasUsuario(). A pedido del fundador.
   Cambios en versiones anteriores:
+    - Nueva "franja de atención" arriba de todo, antes de "Resumen
+      general" (ver HISTORIAL-CAMBIOS.md).
     - Nueva sección "🕵️ Actividad sospechosa — revisar": el anti-fraude
       viene marcando entrenamientos "Sospechosa" (superan el acumulado
       semanal) desde hace rato, pero se acreditaban igual sin que se
@@ -349,6 +348,30 @@
     .notif-btn { font-size: 0.6rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; padding: 5px 10px; border-radius: 5px; background: transparent; color: var(--metal); border: 1px solid var(--borde2); cursor: pointer; transition: all 0.15s; white-space: nowrap; }
     .notif-btn:hover { background: var(--neon); color: #000; border-color: var(--neon); }
 
+    /* ══ MODAL: ZAPATILLAS DE UN USUARIO ══ */
+    .uz-modal-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(3px); z-index: 200;
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    .uz-modal-overlay.show { display: flex; }
+    .uz-modal {
+      background: var(--card); border: 1px solid var(--borde2); border-radius: 16px;
+      width: 100%; max-width: 420px; max-height: 80vh; overflow-y: auto; padding: 20px;
+    }
+    .uz-modal-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+    .uz-modal-title { font-size: 0.9rem; font-weight: 900; color: var(--plata); }
+    .uz-modal-close { background: none; border: none; color: var(--metal); font-size: 1.2rem; cursor: pointer; line-height: 1; padding: 4px; }
+    .uz-modal-close:hover { color: var(--plata); }
+    .uz-shoe-item { display: flex; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--borde); }
+    .uz-shoe-item:last-child { border-bottom: none; }
+    .uz-shoe-info { flex: 1; min-width: 0; }
+    .uz-shoe-model { font-size: 0.82rem; font-weight: 700; color: var(--plata); }
+    .uz-shoe-marca { font-size: 0.62rem; color: var(--metal); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+    .uz-shoe-right { text-align: right; flex-shrink: 0; }
+    .uz-shoe-km { font-size: 0.72rem; font-weight: 900; color: var(--neon); white-space: nowrap; }
+    .uz-shoe-estado { font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 3px; white-space: nowrap; }
+
     /* ══ ALERTAS DESGASTE ══ */
     .alertas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; }
     .alert-card { background: var(--bg2); border: 1px solid var(--borde); border-radius: 10px; padding: 14px 16px; transition: border-color 0.2s; }
@@ -602,7 +625,7 @@
         </select>
         <span class="filter-count" id="filter-count"></span>
       </div>
-      <div class="table-hint">💡 Tocá un runner para enviarle una notificación individual · se muestran los más nuevos primero</div>
+      <div class="table-hint">💡 Tocá un runner para enviarle una notificación individual, o el ícono 👟 para ver sus zapatillas · se muestran los más nuevos primero</div>
       <div class="table-wrap">
         <table class="users-table">
           <thead>
@@ -794,6 +817,16 @@
 </div><!-- /dashboard -->
 
 <div id="toast"></div>
+
+<div class="uz-modal-overlay" id="uz-modal-overlay" onclick="if(event.target===this) cerrarModalZapas()">
+  <div class="uz-modal">
+    <div class="uz-modal-header">
+      <div class="uz-modal-title" id="uz-modal-title">Zapatillas</div>
+      <button class="uz-modal-close" onclick="cerrarModalZapas()">✕</button>
+    </div>
+    <div id="uz-modal-body"><div class="loading-row">Cargando...</div></div>
+  </div>
+</div>
 
 <script>
   // Token de admin: lo puso el backend al armar esta página (ya se
@@ -1460,7 +1493,10 @@
         <td>${niv}</td>
         <td style="font-weight:700;">${u.zapatillas}</td>
         <td style="color:var(--neon);font-weight:900;font-size:0.92rem;">${u.kmTotales}</td>
-        <td><button class="notif-btn" onclick="event.stopPropagation();seleccionarDestinatario('${escE}','${esc}')">✉</button></td>
+        <td>
+          <button class="notif-btn" title="Ver zapatillas" onclick="event.stopPropagation();verZapasUsuario('${escE}','${esc}')">👟</button>
+          <button class="notif-btn" title="Enviar notificación" onclick="event.stopPropagation();seleccionarDestinatario('${escE}','${esc}')">✉</button>
+        </td>
       </tr>`;
     }).join('');
   }
@@ -1490,7 +1526,58 @@
           <div class="user-card-stat"><div class="user-card-stat-lbl">Zapatillas</div><div class="user-card-stat-val">${u.zapatillas}</div></div>
         </div>
         <div class="user-card-actions">
+          <button class="notif-btn" onclick="event.stopPropagation();verZapasUsuario('${escE}','${esc}')">👟 Zapatillas</button>
           <button class="notif-btn" onclick="event.stopPropagation();seleccionarDestinatario('${escE}','${esc}')">✉ Notificación</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  /* ════════════════════════════════════
+     MODAL: ZAPATILLAS DE UN USUARIO — antes, para ver qué zapatillas
+     tenía alguien había que ir directo a la pestaña Zapatillas del
+     Sheet y filtrar a mano por email. Reusa el mismo estilo de
+     semáforo (colores por estado) que ya usás en Alertas/Insights.
+  ════════════════════════════════════ */
+  function verZapasUsuario(email, nombre) {
+    document.getElementById('uz-modal-title').textContent = '👟 Zapatillas — ' + nombre;
+    document.getElementById('uz-modal-body').innerHTML = '<div class="loading-row">Cargando...</div>';
+    document.getElementById('uz-modal-overlay').classList.add('show');
+    google.script.run
+      .withSuccessHandler(renderZapasUsuario)
+      .withFailureHandler(function() {
+        document.getElementById('uz-modal-body').innerHTML = '<div class="loading-row">Error al cargar.</div>';
+      })
+      .getZapatillasDeUsuario(ADMIN_TOKEN, email);
+  }
+  function cerrarModalZapas() {
+    document.getElementById('uz-modal-overlay').classList.remove('show');
+  }
+  function _colorEstadoZapa(estado) {
+    const e = (estado || '').toLowerCase();
+    if (e === 'crítico' || e === 'critico') return 'var(--rojo)';
+    if (e === 'bajo')                       return 'var(--naranja)';
+    if (e === 'positivo')                   return 'var(--amarillo)';
+    return 'var(--verde)';
+  }
+  function renderZapasUsuario(lista) {
+    const cont = document.getElementById('uz-modal-body');
+    if (!lista || !lista.length) {
+      cont.innerHTML = '<div style="text-align:center;padding:20px;font-size:0.82rem;color:var(--metal);">Sin zapatillas registradas.</div>';
+      return;
+    }
+    cont.innerHTML = lista.map(function(z) {
+      const aliasTxt = z.alias ? ` <span style="color:var(--metal);font-weight:400;">(${sanitize(z.alias)})</span>` : '';
+      const estadoTxt   = z.archivada ? 'Archivada' : (z.estado || 'Normal');
+      const estadoColor = z.archivada ? 'var(--metal)' : _colorEstadoZapa(z.estado);
+      return `<div class="uz-shoe-item">
+        <div class="uz-shoe-info">
+          <div class="uz-shoe-model">${sanitize(z.modelo)}${aliasTxt}</div>
+          <div class="uz-shoe-marca">${sanitize(z.marca)} · EU ${sanitize(z.talle)} · ${sanitize(z.genero)}</div>
+        </div>
+        <div class="uz-shoe-right">
+          <div class="uz-shoe-km">${z.km} / ${z.limite} km</div>
+          <div class="uz-shoe-estado" style="color:${estadoColor};">${estadoTxt}</div>
         </div>
       </div>`;
     }).join('');

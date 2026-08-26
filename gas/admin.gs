@@ -564,6 +564,64 @@ function getEntrenamientosSospechosos(token) {
 }
 
 // ============================================================
+// ZAPATILLAS DE UN USUARIO — para el botón 👟 nuevo en "Usuarios
+// registrados" del panel admin. Antes, para ver qué zapatillas tenía
+// alguien había que ir directo a la pestaña Zapatillas del Sheet y
+// filtrar a mano por su email. Devuelve activas Y archivadas (con el
+// campo archivada para distinguirlas), más recientes primero.
+// ============================================================
+function getZapatillasDeUsuario(token, email) {
+  if (!_adminAutorizado(token)) return [];
+  try {
+    if (!email) return [];
+    const emailClean = email.toString().trim().toLowerCase();
+    const ss    = SpreadsheetApp.openById(SHEET_ID);
+    const sheet = ss.getSheetByName('Zapatillas');
+    if (!sheet || sheet.getLastRow() <= 1) return [];
+
+    const data    = sheet.getDataRange().getValues();
+    const headers = data[0];
+    const col = {
+      email:   headers.indexOf('Email_Usuario'),
+      marca:   headers.indexOf('Marca'),
+      modelo:  headers.indexOf('Modelo'),
+      talle:   headers.indexOf('Talle'),
+      genero:  headers.indexOf('Genero'),
+      km:      headers.indexOf('KM_Actuales'),
+      limite:  headers.indexOf('KM_Limite'),
+      alias:   headers.indexOf('Alias'),
+      estado:  headers.indexOf('Estado'),
+    };
+    if (col.email === -1) return [];
+
+    const zapas = [];
+    for (let i = data.length - 1; i >= 1; i--) {
+      const rowEmail = data[i][col.email] ? data[i][col.email].toString().trim().toLowerCase() : '';
+      if (rowEmail !== emailClean) continue;
+
+      const estadoRaw = col.estado !== -1 ? (data[i][col.estado] || '').toString().trim() : '';
+      const archivada = estadoRaw.toLowerCase() === 'archivada';
+
+      zapas.push({
+        marca:     col.marca  !== -1 ? (data[i][col.marca]  || '').toString() : '',
+        modelo:    col.modelo !== -1 ? (data[i][col.modelo] || '').toString() : '',
+        talle:     col.talle  !== -1 ? (data[i][col.talle]  || '').toString() : '',
+        genero:    col.genero !== -1 ? (data[i][col.genero] || '').toString() : '',
+        alias:     col.alias  !== -1 ? (data[i][col.alias]  || '').toString() : '',
+        km:        col.km     !== -1 ? _kmSeguro(data[i][col.km]) : 0,
+        limite:    col.limite !== -1 ? (Number(data[i][col.limite]) || TP.KM_UMBRAL_CUPON) : TP.KM_UMBRAL_CUPON,
+        estado:    archivada ? '' : estadoRaw,
+        archivada: archivada
+      });
+    }
+    return zapas;
+  } catch(e) {
+    Logger.log('getZapatillasDeUsuario ERROR: ' + e.toString());
+    return [];
+  }
+}
+
+// ============================================================
 // ACTIVIDAD POR DÍA — últimos 7 días para el gráfico de barras
 // Retorna array de 7 objetos: { dia, label, cantidad, km }
 // ============================================================
