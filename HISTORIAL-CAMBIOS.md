@@ -12,6 +12,23 @@ el GAS es la versión más nueva.
 
 ---
 
+## 26/08/2026 12:42 — Panel admin: botón 👟 para ver las zapatillas de un usuario
+
+A pedido del fundador: antes, para ver qué zapatillas tenía cargadas
+una persona había que ir directo a la pestaña "Zapatillas" del Sheet y
+filtrar a mano por su email. Ahora, en "Usuarios registrados", cada
+fila (tabla de escritorio) o tarjeta (mobile) tiene un botón 👟 nuevo,
+al lado del de notificar, que abre una ventanita con la lista de esa
+persona: marca, modelo (+ alias si tiene), talle, género, km
+actual/límite y estado (Normal/Positivo/Bajo/Crítico, o "Archivada"),
+coloreado igual que el semáforo que ya usás en Alertas/Insights.
+
+- `gas/admin.gs`: nueva `getZapatillasDeUsuario(token, email)` —
+  requiere token de admin, devuelve activas y archivadas de esa
+  persona, más recientes primero.
+- `gas/admin.html`: nuevo modal (`uz-modal-overlay`) + `verZapasUsuario()`
+  / `renderZapasUsuario()` / `cerrarModalZapas()`.
+
 ## 26/08/2026 12:27 — Última tanda de dropData{}: 22 modelos más
 
 En `gas/index.html`, a pedido del fundador: cargados los últimos 22
