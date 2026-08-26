@@ -12,6 +12,17 @@ el GAS es la versión más nueva.
 
 ---
 
+## 26/08/2026 18:15 — Adidas Terrex Agravic 3 (nueva) + foto de Adizero Evo SL
+
+En `gas/index.html`, a pedido del fundador — surgió al revisar las
+zapatillas de una usuaria real (Luli Blanco) desde el nuevo botón 👟
+del panel admin:
+
+- **Terrex Agravic 3**: no existía en el catálogo (solo la 4).
+  Agregada a `catalogo{}`, con foto propia.
+- **Adizero Evo SL**: ya estaba en el catálogo, pero sin foto propia
+  (caía en la genérica de Adidas). Agregada.
+
 ## 26/08/2026 13:10 — Botón de Open Sports activo para un usuario de muestra
 
 A pedido del fundador, de cara a la reunión con Open Sports: en
