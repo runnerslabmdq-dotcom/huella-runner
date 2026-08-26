@@ -12,6 +12,17 @@ el GAS es la versión más nueva.
 
 ---
 
+## 26/08/2026 13:10 — Botón de Open Sports activo para un usuario de muestra
+
+A pedido del fundador, de cara a la reunión con Open Sports: en
+`gas/index.html`, `edragotto@hotmail.com` ahora ve el botón "Ver en
+tienda" de Open Sports activo (el mismo diseño ya usado para San
+Luis), sin el botón de Todo Trail. San Luis sigue igual, con los 2
+botones activos. Para cualquier otro usuario no cambia nada — sigue
+"Próximamente". Es una excepción puntual por email, para tener algo
+andando para mostrar en la demo — se saca cuando haya un sponsor real
+confirmado (ver `docs/plan-boton-tienda-por-provincia.md`).
+
 ## 26/08/2026 12:42 — Panel admin: botón 👟 para ver las zapatillas de un usuario
 
 A pedido del fundador: antes, para ver qué zapatillas tenía cargadas
