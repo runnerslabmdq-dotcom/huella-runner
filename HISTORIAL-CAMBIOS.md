@@ -12,6 +12,11 @@ el GAS es la versión más nueva.
 
 ---
 
+## 26/08/2026 09:25 — Salomon Spectur 3
+
+Modelo nuevo en `catalogo{}` (`gas/index.html`), con foto propia — a
+pedido del fundador, se le había pasado por alto en la tanda anterior.
+
 ## 26/08/2026 09:19 — Marca nueva Topper + Puma Scend Pro 2 + foto nueva de Salomon Ultra Flow 2
 
 En `gas/index.html`, a pedido del fundador:
