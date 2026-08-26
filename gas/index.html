@@ -1,22 +1,15 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 26/08/2026 11:09 (hora Argentina)
+  Última actualización: 26/08/2026 12:27 (hora Argentina)
   Cambios en esta versión:
-    - Nueva cajita de Drop / Talón / Antepié en la tarjeta de "Mis
-      Zapas" (dato técnico opcional, dropData{} + getDropInfo()):
-      arriba a la derecha, adentro de la foto, transparente y sin
-      emojis. Si el modelo no tiene el dato cargado, no se muestra
-      nada — no hace falta tenerlos todos. Cargados 85 modelos
-      (Adidas, Nike, Saucony, Asics, Hoka, New Balance, Salomon), a
-      pedido del fundador. Se corre para abajo si coincide con el
-      aviso de zapa en zona crítica (mismo rincón).
-    - De paso, 2 nombres de modelo corregidos en catalogo{} (typos
-      viejos, detectados al cruzar los datos de drop): Asics "Cayano
-      32" → "Kayano 32" (no se tocó "Cayano 32 W"), Asics "Soniblast"
-      → "Sonicblast", Hoka "Match 6" → "Mach 6". modelImages{}
-      actualizado con las mismas claves nuevas.
+    - Última tanda de dropData{}: Dynafit, Joma, La Sportiva, Nnormal,
+      Osx, Brooks, On, Puma (el resto), Topper, Under Armour (22
+      modelos). Con esto quedan 107 de las 108 zapas con foto propia
+      con dato de Drop/Talón/Antepié cargado — solo Adidas Zenboost
+      sigue afuera (sin specs estándar de running).
   Cambios en versiones anteriores:
-    - Salomon S/LAB Genesis 2: modelo nuevo en catalogo{}, con foto propia.
+    - Nueva cajita de Drop/Talón/Antepié en la tarjeta de "Mis Zapas" +
+      3 nombres de modelo corregidos (ver HISTORIAL-CAMBIOS.md).
   (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
   en la raíz del repo — a partir de ahora este encabezado solo guarda
   los últimos 2 cambios, para no seguir creciendo sin límite.)
@@ -2374,6 +2367,32 @@
     "salomon_spectur_3":             { drop: 8,  talon: 38,   antepie: 30 },
     "salomon_ultra_flow_2":          { drop: 6,  talon: 32,   antepie: 26 },
     "salomon_ultra_glide_4_trail":   { drop: 6,  talon: 32,   antepie: 26 },
+
+    // — Dynafit / Joma / La Sportiva / Nnormal / Osx / Brooks / On /
+    //   Puma (resto) / Topper / Under Armour (26/08/2026) — última
+    //   tanda, completa las 107 zapas con foto propia (Zenboost aparte).
+    "dynafit_alpine_trail":          { drop: 6,  talon: 30,   antepie: 24 },
+    "joma_r_2000":                   { drop: 10, talon: 30,   antepie: 20 },
+    "la_sportiva_prodigio_pro_m":    { drop: 6,  talon: 34,   antepie: 28 },
+    "la_sportiva_prodigio_pro_max":  { drop: 6,  talon: 38,   antepie: 32 },
+    "la_sportiva_prodigio_pro_w":    { drop: 6,  talon: 33,   antepie: 27 },
+    "nnormal_kjerag":                { drop: 6,  talon: 23.5, antepie: 17.5 },
+    "nnormal_kjerag_2":              { drop: 6,  talon: 23.5, antepie: 17.5 },
+    "nnormal_tomir_2.0":             { drop: 8,  talon: 33,   antepie: 25 },
+    "osx_libertador":                { drop: 10, talon: 28,   antepie: 18 },
+    "brooks_levitate_5":             { drop: 8,  talon: 29.3, antepie: 21.3 },
+    "on_cloudmonster_3":             { drop: 6,  talon: 38,   antepie: 32 },
+    "puma_deviate_nitro_2":          { drop: 8,  talon: 38,   antepie: 30 },
+    "puma_deviate_nitro_3":          { drop: 10, talon: 39,   antepie: 29 },
+    "puma_deviate_nitro_3_digitokyo":{ drop: 10, talon: 39,   antepie: 29 },
+    "puma_deviate_nitro_4":          { drop: 10, talon: 40,   antepie: 30 },
+    "puma_foreverrun_nitro":         { drop: 10, talon: 36,   antepie: 26 },
+    "puma_foreverrun_nitro_2":       { drop: 10, talon: 36,   antepie: 26 },
+    "puma_magnify_nitro_3":          { drop: 10, talon: 40,   antepie: 30 },
+    "puma_scend_pro_2":              { drop: 10, talon: 32,   antepie: 22 },
+    "puma_velocity_nitro_4":         { drop: 10, talon: 36,   antepie: 26 },
+    "topper_stance_3":               { drop: 10, talon: 28,   antepie: 18 },
+    "under_armour_hovr_synergy":     { drop: 8,  talon: 30,   antepie: 22 },
   };
 
   function getDropInfo(marca, modelo) {

@@ -12,6 +12,21 @@ el GAS es la versión más nueva.
 
 ---
 
+## 26/08/2026 12:27 — Última tanda de dropData{}: 22 modelos más
+
+En `gas/index.html`, a pedido del fundador: cargados los últimos 22
+modelos que faltaban — Dynafit (1), Joma (1), La Sportiva (3), Nnormal
+(3), Osx (1), Brooks (1), On (1), Puma resto (9), Topper (1), Under
+Armour (1).
+
+Con esto quedan **107 de las 108 zapas con foto propia** con dato de
+Drop/Talón/Antepié cargado — solo queda afuera **Adidas Zenboost**,
+porque el fundador confirmó que no tiene especificaciones técnicas de
+running estandarizadas (es un modelo orientado a casual wear). Las 48
+zapas restantes del catálogo (las que caen en la foto genérica de
+marca, o sin ninguna foto) siguen sin dato — se puede sumar más
+adelante si en algún momento se les consigue foto propia también.
+
 ## 26/08/2026 11:09 — Cajita de Drop/Talón/Antepié en las tarjetas + 3 typos corregidos
 
 En `gas/index.html`, a pedido del fundador:
