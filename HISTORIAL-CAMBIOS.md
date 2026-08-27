@@ -12,6 +12,13 @@ el GAS es la versión más nueva.
 
 ---
 
+## 27/08/2026 08:27 — Drop de Terrex Agravic 3 y Adizero Evo SL
+
+En `gas/index.html`, `dropData{}`: agregados Adidas Terrex Agravic 3
+(8mm drop / 31mm talón / 23mm antepié) y Adizero Evo SL (6mm drop /
+38.5mm talón / 32.5mm antepié) — los dos modelos que se agregaron ayer
+al catálogo.
+
 ## 26/08/2026 18:15 — Adidas Terrex Agravic 3 (nueva) + foto de Adizero Evo SL
 
 En `gas/index.html`, a pedido del fundador — surgió al revisar las
