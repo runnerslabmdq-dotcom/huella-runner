@@ -12,6 +12,23 @@ el GAS es la versión más nueva.
 
 ---
 
+## 27/08/2026 09:08 — Fix: fecha en inglés en el historial de notificaciones
+
+BUG real, en `gas/admin.gs`. El historial de notificaciones del panel
+admin ("Ver historial completo") mostraba fechas así: *"Wed Aug 26
+2026 21:36:00 GMT-0300 (hora estándar de Argentina)"* — el `toString()`
+nativo de un objeto Date de JavaScript. Causa: `enviarNotificacion()`
+guarda la Fecha como texto formateado, pero Google Sheets a veces
+convierte esa celda sola a un Date real (mismo tipo de bug que ya
+afectó al kilometraje y a la fecha de nacimiento), y
+`getHistorialNotificaciones()` hacía `.toString()` directo sobre eso
+sin chequear.
+
+Nuevo `_formatFechaCortaConHora()` (reusa `_celdaADate()`, que ya
+entiende los dos formatos) muestra siempre **dd/MM/aa hh:mm** — ej.
+"26/08/26 21:36" — corto, en español, sin importar cómo haya quedado
+guardada la celda.
+
 ## 27/08/2026 08:27 — Drop de Terrex Agravic 3 y Adizero Evo SL
 
 En `gas/index.html`, `dropData{}`: agregados Adidas Terrex Agravic 3

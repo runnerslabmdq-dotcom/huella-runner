@@ -1,16 +1,18 @@
 // ============================================================
 // HUELLA RUNNER — admin.gs
-// Última actualización: 10/08/2026 21:35 (hora Argentina)
+// Última actualización: 27/08/2026 09:08 (hora Argentina)
 // Cambios en esta versión:
-//   - BUG real: "Usuarios Totales" del panel admin contaba también la
-//     cuenta admin (huellarunner@gmail.com) — getAdminStats() hacía
-//     getLastRow()-1 (cuenta filas nomás), sin excluirla. Ahora recorre
-//     la hoja Usuarios y descarta los emails de ADMIN_EMAILS (mismo
-//     helper _esEmailAdmin() que ya se usa en eliminarCuenta). El
-//     fundador notó la diferencia comparando contra sus usuarios reales.
+//   - BUG real: el historial de notificaciones (Ver historial completo)
+//     mostraba la fecha en inglés y larguísima ("Wed Aug 26 2026
+//     21:36:00 GMT-0300 (hora estándar de Argentina)") — getHistorialNotificaciones()
+//     hacía .toString() directo sobre la celda Fecha, que Sheets a
+//     veces guarda como Date real en vez de mantener el texto. Nuevo
+//     _formatFechaCortaConHora() (usa _celdaADate()) muestra "dd/MM/aa
+//     hh:mm" en su lugar.
 // Cambios en versiones anteriores:
-//   - BUG real: sumas de km daban números gigantes (filas viejas con
-//     KM_Sumados guardado como Date). Nuevo helper _kmSeguro().
+//   - Nueva getZapatillasDeUsuario(): backend del botón 👟 en
+//     "Usuarios registrados" del panel admin, para ver las zapatillas
+//     de una persona sin ir al Sheet (ver HISTORIAL-CAMBIOS.md).
 // (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
 // en la raíz del repo — a partir de ahora este encabezado solo guarda
 // los últimos 2 cambios, para no seguir creciendo sin límite.)
@@ -944,6 +946,19 @@ function getInsightsExtendidos(token) {
 // marca "Oculto" = TRUE) — esto le da al panel una vista de qué se
 // dijo, a quién, y si lo llegó a leer u ocultar.
 // ============================================================
+// Fecha corta (dd/MM/yy) + hora, para el historial de notificaciones —
+// antes mostraba el toString() nativo del Date en inglés y larguísimo
+// ("Wed Aug 26 2026 21:36:00 GMT-0300 (hora estándar de Argentina)")
+// cuando Sheets había guardado la celda como Date en vez de mantener
+// el texto que escribió enviarNotificacion() (mismo tipo de bug que
+// _kmSeguro/_parseFechaNacimiento). _celdaADate() ya entiende los dos
+// formatos (Date u "dd/mm/yyyy hh:mm" texto).
+function _formatFechaCortaConHora(valor) {
+  const d = _celdaADate(valor);
+  if (!d) return valor ? valor.toString() : '';
+  return Utilities.formatDate(d, TZ_AR, 'dd/MM/yy HH:mm');
+}
+
 function getHistorialNotificaciones(token) {
   if (!_adminAutorizado(token)) return { success: false, error: 'No autorizado.' };
   try {
@@ -964,7 +979,7 @@ function getHistorialNotificaciones(token) {
       historial.push({
         email:   emailCol  !== -1 ? data[i][emailCol].toString()  : '',
         mensaje: msgCol    !== -1 ? data[i][msgCol].toString()    : '',
-        fecha:   fechaCol  !== -1 ? data[i][fechaCol].toString()  : '',
+        fecha:   fechaCol  !== -1 ? _formatFechaCortaConHora(data[i][fechaCol]) : '',
         leido:   leidoCol  !== -1 ? (data[i][leidoCol]  || '').toString().toUpperCase() === 'TRUE' : false,
         oculto:  ocultoCol !== -1 ? (data[i][ocultoCol] || '').toString().toUpperCase() === 'TRUE' : false
       });
