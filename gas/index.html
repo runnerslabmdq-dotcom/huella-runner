@@ -1,12 +1,17 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 27/08/2026 08:27 (hora Argentina)
+  Última actualización: 28/08/2026 13:07 (hora Argentina)
   Cambios en esta versión:
-    - dropData{}: agregados Adidas Terrex Agravic 3 (8mm / 31 talón /
-      23 antepié) y Adizero Evo SL (6mm / 38.5 talón / 32.5 antepié).
+    - New Balance Fresh Foam X Hierro v9: modelo nuevo en catalogo{}
+      (primer trail de esta marca en el catálogo), con foto propia.
+    - Nuevo: el desplegable de "Nueva zapatilla" (no la tarjeta de "Mis
+      Zapas") ahora muestra "(Trail)" o "(Calle)" al lado de cada
+      modelo, para ayudar a elegir. Nuevo modelosTrail{} + _esTrail(),
+      solo cambia el texto visible del <option> — lo que se guarda en
+      el Sheet sigue siendo el nombre limpio de siempre.
   Cambios en versiones anteriores:
-    - Adidas Terrex Agravic 3 (modelo nuevo) + foto de Adizero Evo SL
-      (ver HISTORIAL-CAMBIOS.md).
+    - dropData{}: Adidas Terrex Agravic 3 + Adizero Evo SL (ver
+      HISTORIAL-CAMBIOS.md).
   (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
   en la raíz del repo — a partir de ahora este encabezado solo guarda
   los últimos 2 cambios, para no seguir creciendo sin límite.)
@@ -2247,6 +2252,7 @@
     "topper_stance_3":               "https://res.cloudinary.com/klxkj07e/image/upload/v1787746190/Topper_Stance_3_Negra_rmsy8i.jpg",
     "brooks_levitate_5":             "https://i.imgur.com/fogvrsm.jpeg",
     "new_balance_fuelcell_rebel_v3": "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784776859/New_Balance_FuelCell_Rebel_v3_raocwy.png",
+    "new_balance_fresh_foam_x_hierro_v9": "https://res.cloudinary.com/klxkj07e/image/upload/v1787932497/New_Balance_Hiero_V9_cabmro.jpg",
     "new_balance_fresh_foam_x_vongo_v6": "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784776856/New_Balance_Fresh_Foam_X_Vongo_v6_ST_ravak2.png",
     "nike_pegasus_39":               "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784776839/Nike_Pegasus_39_ST_iueltt.png",
     "nike_pegasus_42":               "https://res.cloudinary.com/dlayzh9ln/image/upload/v1785413720/Nike_Pegasus_42_ST_afhci8.png",
@@ -2555,7 +2561,7 @@
     ],
     "Brooks":       ["Levitate 5"],
     "Fila":         ["Float Maxxi 2 Pro", "Racer Carbon 2", "Racer Carbon 3"],
-    "New Balance":  ["Fresh Foam X 1080 v13", "Fresh Foam X 1080 v14", "Fresh Foam X Evoz v3", "Fresh Foam X Vongo v6", "FuelCell Rebel v3", "FuelCell Rebel v5", "FuelCell Supercomp Trainer v4"],
+    "New Balance":  ["Fresh Foam X 1080 v13", "Fresh Foam X 1080 v14", "Fresh Foam X Evoz v3", "Fresh Foam X Hierro v9", "Fresh Foam X Vongo v6", "FuelCell Rebel v3", "FuelCell Rebel v5", "FuelCell Supercomp Trainer v4"],
     "Nike":         ["Alphafly 3 Blueprint", "Downshifter 13", "Infinity RN 4 Blueprint", "Invincible 3", "LunarSpider", "Pegasus 39", "Pegasus 40", "Pegasus 41", "Pegasus 42", "Pegasus Plus", "Pegasus Premium", "Pegasus Premium QS", "Quest 5", "Renew Run 3", "Revolution 7", "Revolution 8", "Run Defy", "Structure 25", "Vaporfly 4", "Vomero 17", "Vomero Plus", "Winflo 9", "Winflo 11"],
     "On":           ["Cloudmonster 3"],
     "Puma":         ["Deviate Nitro 2", "Deviate Nitro 3", "Deviate Nitro 3 Digitokyo", "Deviate Nitro 3 Wtr+", "Deviate Nitro 4", "Deviate Nitro Elite 3", "Electrify Nitro 3", "Foreverrun Nitro", "Foreverrun Nitro 2", "Magnify Nitro 3", "Scend Pro 2", "Velocity Nitro 4", "Velocity Nitro 4 Digitokyo"],
@@ -2563,6 +2569,36 @@
     "Topper":       ["Stance 3"],
     "Under Armour": ["Hovr Synergy", "Infinite Elite"],
   };
+
+  // ════════════════════════════════════════════════════════════
+  // TRAIL vs. CALLE — solo para el DESPLEGABLE de "Nueva zapatilla"
+  // (el fundador pidió esto puntualmente: se ve en el <option> como
+  // "Modelo (Trail)" / "Modelo (Calle)" para ayudar a elegir, pero NO
+  // en la tarjeta de "Mis Zapas" — ahí se sigue mostrando el nombre
+  // limpio de siempre). El valor guardado (option.value, lo que
+  // termina en la columna Modelo del Sheet) no cambia, solo el texto
+  // visible del desplegable. Clasificación: 27/08/2026, a pedido del
+  // fundador. Lo que no está en este set se asume Calle/Ruta.
+  // ════════════════════════════════════════════════════════════
+  const modelosTrail = new Set([
+    "dynafit_alpine_trail",
+    "hoka_challenger_atr_7", "hoka_challenger_atr_8", "hoka_mafate_5_black",
+    "hoka_mafate_speed_4", "hoka_mafate_x", "hoka_speedgoat_6",
+    "hoka_speedgoat_6_mid_gore", "hoka_speedgoat_7", "hoka_torrent_4",
+    "la_sportiva_prodigio_pro_m", "la_sportiva_prodigio_pro_max", "la_sportiva_prodigio_pro_w",
+    "nnormal_kjerag", "nnormal_kjerag_2", "nnormal_tomir_2.0",
+    "salomon_aero_blaze_3_grvl", "salomon_aero_glide_3_grvl", "salomon_aero_glide_4_grvl",
+    "salomon_drx_defy_grvl", "salomon_genesis_trail", "salomon_s/lab_genesis_2",
+    "salomon_speedcross_peak", "salomon_supercross", "salomon_supercross_4",
+    "salomon_ultra_flow_2", "salomon_ultra_glide_4_trail", "salomon_x_adventure",
+    "saucony_peregrine_16_blanca", "saucony_peregrine_16_carbon", "saucony_xodus_4",
+    "adidas_adizero_evo_sl_atr", "adidas_terrex_agravic_3", "adidas_terrex_agravic_4",
+    "asics_gel_trebuco_13",
+    "new_balance_fresh_foam_x_hierro_v9",
+  ]);
+  function _esTrail(marca, modelo) {
+    return modelosTrail.has(_normKey(marca) + "_" + _normKey(modelo));
+  }
 
   function getBrandBadgeClass(marca) {
     const m = (marca || '').toLowerCase().replace(/\s/g, '');
@@ -2608,7 +2644,10 @@
       const oDefault = document.createElement('option');
       oDefault.value = ''; oDefault.text = 'Seleccionar...'; s.add(oDefault);
       catalogo[marca].forEach(x => {
-        let o = document.createElement('option'); o.value = x; o.text = x; s.add(o);
+        let o = document.createElement('option');
+        o.value = x; // lo que se guarda en el Sheet no cambia
+        o.text = x + (_esTrail(marca, x) ? ' (Trail)' : ' (Calle)'); // solo la etiqueta visible del desplegable
+        s.add(o);
       });
       const oOtros = document.createElement('option');
       oOtros.value = '__otros__'; oOtros.text = 'Otros...'; s.add(oOtros);

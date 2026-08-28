@@ -12,6 +12,23 @@ el GAS es la versión más nueva.
 
 ---
 
+## 28/08/2026 13:07 — New Balance Hierro v9 + etiqueta Trail/Calle en el desplegable
+
+En `gas/index.html`, a pedido del fundador:
+
+- **New Balance Fresh Foam X Hierro v9**: modelo nuevo en `catalogo{}`
+  — primera zapatilla de trail de esta marca en el catálogo (hasta
+  ahora New Balance solo tenía modelos de ruta) — con foto propia.
+- **Etiqueta Trail/Calle en el desplegable**: al elegir marca en
+  "Nueva zapatilla", cada modelo del desplegable ahora se ve como
+  "Modelo (Trail)" o "Modelo (Calle)", para ayudar a elegir. A
+  propósito **solo en el desplegable, no en la tarjeta de "Mis
+  Zapas"** — el fundador lo pidió puntualmente así. Nuevo
+  `modelosTrail{}` (set con los ~34 modelos de trail, clasificados por
+  el fundador) + `_esTrail(marca, modelo)`. Solo cambia el texto
+  visible del `<option>` — el valor que se guarda en el Sheet (columna
+  Modelo) sigue siendo el nombre limpio de siempre, sin el sufijo.
+
 ## 27/08/2026 09:08 — Fix: fecha en inglés en el historial de notificaciones
 
 BUG real, en `gas/admin.gs`. El historial de notificaciones del panel
