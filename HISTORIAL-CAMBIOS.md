@@ -12,6 +12,29 @@ el GAS es la versión más nueva.
 
 ---
 
+## 29/08/2026 23:28 — Notificaciones del panel admin: opción de mandarlas también por email
+
+A pedido del fundador (después de hablar sobre publicidad dirigida en
+Instagram y por qué mandar DM automáticos rompe las reglas de la
+plataforma): el email queda como el canal manual para mensajes más
+personalizados desde el panel, sin tocar Instagram. El resto de la
+comunicación automática (cumpleaños, zapas en alerta) sigue siendo
+solo por la app, como hasta ahora.
+
+- `gas/codigo.gs`: `enviarNotificacion()` acepta un 7mo parámetro
+  opcional `tambienEmail` — si viene en `true`, además de guardar la
+  notificación en la app, le manda el mismo mensaje por mail a cada
+  destinatario (mismo estilo visual que los mails de bienvenida y
+  recuperación de contraseña que ya existían). Un error de mail
+  puntual no frena el resto del envío, se loguea y sigue.
+- `gas/admin.html`: nuevo checkbox "✉️ También por email" en "Enviar
+  notificación" (funciona con las 4 pestañas: Todos / Por grupo /
+  Individual / Segmento).
+- Recordatorio para el fundador: Gmail normal permite hasta 100 mails
+  por día desde Apps Script — no es un problema con la base de
+  usuarios actual, pero es un techo a tener en cuenta si el envío
+  "a todos" se usa seguido con una base mucho más grande.
+
 ## 28/08/2026 13:07 — New Balance Hierro v9 + etiqueta Trail/Calle en el desplegable
 
 En `gas/index.html`, a pedido del fundador:
