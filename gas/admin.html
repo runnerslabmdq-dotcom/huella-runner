@@ -1,18 +1,17 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Admin.html
-  Última actualización: 26/08/2026 12:42 (hora Argentina)
+  Última actualización: 29/08/2026 23:28 (hora Argentina)
   Cambios en esta versión:
-    - Nuevo botón 👟 en cada fila/tarjeta de "Usuarios registrados":
-      abre una ventanita con las zapatillas de esa persona (marca,
-      modelo, talle, género, km actual/límite, estado). Antes, para
-      ver esto había que ir directo a la pestaña Zapatillas del Sheet
-      y filtrar a mano por email. Nuevo backend getZapatillasDeUsuario()
-      (admin.gs) + modal uz-modal-overlay / verZapasUsuario() /
-      renderZapasUsuario(). A pedido del fundador.
+    - Nuevo checkbox "✉️ También por email" en "Enviar notificación":
+      además de la notificación en la app, manda el mismo mensaje por
+      mail a cada destinatario. Se lo pasa a enviarNotificacion()
+      (codigo.gs, nuevo 7mo parámetro tambienEmail). A pedido del
+      fundador — el resto de la comunicación automática (cumpleaños,
+      zapas en alerta) sigue siendo solo por la app.
   Cambios en versiones anteriores:
-    - Nueva "franja de atención" arriba de todo, antes de "Resumen
-      general" (ver HISTORIAL-CAMBIOS.md).
+    - Nuevo botón 👟 en "Usuarios registrados" para ver las zapatillas
+      de una persona sin ir al Sheet (ver HISTORIAL-CAMBIOS.md).
     - Nueva sección "🕵️ Actividad sospechosa — revisar": el anti-fraude
       viene marcando entrenamientos "Sospechosa" (superan el acumulado
       semanal) desde hace rato, pero se acreditaban igual sin que se
@@ -692,6 +691,10 @@
       </div>
       <div class="nf-label">Mensaje</div>
       <textarea class="nf-textarea" id="nf-mensaje" placeholder="Escribí el mensaje que recibirán..."></textarea>
+      <label style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:0.76rem;color:var(--metal);cursor:pointer;">
+        <input type="checkbox" id="nf-tambien-email" style="width:16px;height:16px;cursor:pointer;">
+        ✉️ También por email (además de la notificación en la app)
+      </label>
       <div class="nf-row" style="justify-content:flex-end;">
         <div style="display:flex;align-items:flex-end;">
           <button class="nf-btn" id="nf-btn" onclick="enviarNotif()">Enviar notificación →</button>
@@ -1712,8 +1715,9 @@
         btn.disabled = false; btn.textContent = 'Enviar notificación →';
         if (res && res.success) {
           fb.className = 'nf-feedback ok';
-          fb.textContent = '✓ Enviado a ' + (res.enviados || 1) + ' usuario(s).';
+          fb.textContent = '✓ Enviado a ' + (res.enviados || 1) + ' usuario(s).' + (res.emailsEnviados ? ' (' + res.emailsEnviados + ' por email)' : '');
           document.getElementById('nf-mensaje').value = '';
+          document.getElementById('nf-tambien-email').checked = false;
           limpiarDestinatario();
         } else {
           fb.className = 'nf-feedback err';
@@ -1724,7 +1728,7 @@
         btn.disabled = false; btn.textContent = 'Enviar notificación →';
         fb.className = 'nf-feedback err'; fb.textContent = '✗ Error de conexión.';
       })
-      .enviarNotificacion(dTipo, dValor, mensaje, 'Mensaje', '', ADMIN_TOKEN);
+      .enviarNotificacion(dTipo, dValor, mensaje, 'Mensaje', '', ADMIN_TOKEN, document.getElementById('nf-tambien-email').checked);
   }
 
   /* ════════════════════════════════════

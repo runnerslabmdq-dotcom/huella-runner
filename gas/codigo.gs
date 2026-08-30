@@ -1,18 +1,17 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 11/08/2026 11:40 (hora Argentina)
+// Última actualización: 29/08/2026 23:28 (hora Argentina)
 // Cambios en esta versión:
-//   - BUG real: getPerfilUsuario() hacía .toString() directo sobre la
-//     celda FechaNacimiento — si Sheets la guardó como Date nativo (no
-//     texto), tiraba un texto larguísimo tipo "Wed Jan 15 1995..." que
-//     <input type="date"> no entiende, y el campo de fecha quedaba
-//     vacío en Mi Perfil aunque el dato estuviera bien guardado. Ahora
-//     usa _parseFechaNacimiento() (admin.gs) + Utilities.formatDate()
-//     para devolver siempre "yyyy-mm-dd", venga como Date o como texto.
+//   - enviarNotificacion() ahora acepta un 7mo parámetro opcional
+//     (tambienEmail): si viene en true, además de la notificación en
+//     la app le manda el mismo mensaje por mail a cada destinatario
+//     (mismo estilo visual que enviarEmailBienvenida/recoverPassword).
+//     Nuevo checkbox "✉️ También por email" en el panel admin (Enviar
+//     notificación). Un error de mail puntual no frena el resto del
+//     envío. A pedido del fundador.
 // Cambios en versiones anteriores:
-//   - Nueva enviarCumpleanosDeHoy(): notificación + mail automático el
-//     día del cumpleaños, sin depender de que Esteban entre al panel
-//     (ver HISTORIAL-CAMBIOS.md).
+//   - BUG real: getPerfilUsuario() hacía .toString() directo sobre la
+//     celda FechaNacimiento (ver HISTORIAL-CAMBIOS.md).
 // (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
 // en la raíz del repo — a partir de ahora este encabezado solo guarda
 // los últimos 2 cambios, para no seguir creciendo sin límite.)
@@ -1203,7 +1202,7 @@ function getGruposRunning() {
   }
 }
 
-function enviarNotificacion(destinatarioTipo, destinatarioValor, mensaje, tipo, codigoVoucherManual, token) {
+function enviarNotificacion(destinatarioTipo, destinatarioValor, mensaje, tipo, codigoVoucherManual, token, tambienEmail) {
   try {
     // Los envíos masivos (a todos, a un grupo entero, o a una lista/segmento
     // ya armado desde el panel) son la parte riesgosa — requieren el token
@@ -1317,7 +1316,40 @@ function enviarNotificacion(destinatarioTipo, destinatarioValor, mensaje, tipo, 
 
     const insertados = filas.length;
     Logger.log('enviarNotificacion OK: ' + insertados + ' notif insertadas.');
-    return { success: true, enviados: insertados };
+
+    // Envío opcional por email, además de la notificación en la app —
+    // el admin lo tilda a mano desde el panel (checkbox "También por
+    // email"). Un error de mail para una persona puntual no frena el
+    // resto del envío — se loguea y se sigue.
+    let emailsEnviados = 0;
+    if (tambienEmail) {
+      const mensajeTexto = mensaje.toString().trim();
+      destinatarios.forEach(function(destEmail) {
+        try {
+          MailApp.sendEmail({
+            to:      destEmail,
+            subject: 'Huella Runner — Nuevo mensaje',
+            body:    mensajeTexto,
+            htmlBody:
+              '<div style="font-family:Arial,sans-serif;background:#080808;padding:32px;border-radius:16px;max-width:480px;margin:auto;">' +
+              '<h1 style="color:#E8E8E8;font-size:1.5rem;margin-bottom:4px;font-style:italic;">HUELLA <span style="color:#C5B358;">RUNNER</span></h1>' +
+              '<p style="color:#888;font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;margin-top:0;">Powered by Huella Runner MDQ</p>' +
+              '<hr style="border:none;border-top:1px solid #1f1f1f;margin:20px 0;">' +
+              '<p style="color:#E8E8E8;font-size:1rem;line-height:1.6;">' + mensajeTexto + '</p>' +
+              '<hr style="border:none;border-top:1px solid #1f1f1f;margin:20px 0;">' +
+              '<p style="color:#333;font-size:0.65rem;">— Equipo Huella Runner MDQ</p>' +
+              '</div>',
+            name: 'Huella Runner MDQ'
+          });
+          emailsEnviados++;
+        } catch(mailErr) {
+          Logger.log('enviarNotificacion: error de mail para ' + destEmail + ': ' + mailErr.toString());
+        }
+      });
+      Logger.log('enviarNotificacion: ' + emailsEnviados + ' emails enviados de ' + destinatarios.length);
+    }
+
+    return { success: true, enviados: insertados, emailsEnviados: emailsEnviados };
 
   } catch(e) {
     Logger.log('enviarNotificacion ERROR: ' + e.toString());
