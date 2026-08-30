@@ -1,13 +1,18 @@
 // ============================================================
 // HUELLA RUNNER — trail-points.gs
-// Última actualización: 27/07/2026 08:59 (hora Argentina)
+// Última actualización: 30/08/2026 09:59 (hora Argentina)
 // Cambios en esta versión:
-//   - TP.KM_UMBRAL_CUPON (tope por defecto si el usuario no elige uno
-//     propio en su zapatilla): 650 → 850 km, a pedido del fundador.
-//     Quien ya haya puesto su propio límite no se ve afectado, solo
-//     cambia el valor por defecto. Ver también index.html
-//     (KM_LIMITE_DEFAULT, misma actualización).
+//   - BUG real: al sumar km con decimales muchas veces seguidas
+//     (5.3, 10.5, etc.), JavaScript acumulaba el típico error de coma
+//     flotante (0.1 + 0.2 no da exactamente 0.3) y terminaba guardado
+//     en el Sheet un número tipo "77.86999999999999" en vez de
+//     "77.87". Nuevo _kmRedondeado() — redondea a 2 decimales antes de
+//     guardar KM_Actuales, acá y en deleteTraining/editarEntrenamiento
+//     (codigo.gs). El frontend (index.html) de paso suma su propio
+//     formateador para mostrar bien lo que ya haya quedado guardado
+//     con ruido de antes de este cambio.
 // Cambios en versiones anteriores:
+//   - TP.KM_UMBRAL_CUPON: 650 → 850 km (ver HISTORIAL-CAMBIOS.md).
 //   - Mensaje del cupón de desgaste, más honesto: como todavía no hay
 //     marcas/tiendas asociadas para canjear el cupón, el mensaje ya no
 //     promete "usalo en tu próxima compra" — ahora avisa que la
@@ -232,7 +237,7 @@ function _sumarKmYVerificarUmbral(email, idZapa, kmAcreditados) {
       if (rowId !== idZapa.toString().trim() || rowEmail !== email) continue;
 
       const kmActuales  = Number(data[i][col.km]) || 0;
-      const kmNuevos    = kmActuales + kmAcreditados;
+      const kmNuevos    = _kmRedondeado(kmActuales + kmAcreditados);
       const limite      = Number(data[i][col.limite]) || TP.KM_UMBRAL_CUPON;
 
       // Actualizar KM en la hoja
@@ -270,6 +275,16 @@ function _sumarKmYVerificarUmbral(email, idZapa, kmAcreditados) {
     Logger.log('_sumarKmYVerificarUmbral ERROR: ' + e.toString());
     return null;
   }
+}
+
+// Redondea a 2 decimales — evita que sumas/restas de km con decimales
+// (0.1 + 0.2 = 0.30000000000000004, el error de coma flotante estándar
+// de JavaScript) dejen guardado en el Sheet un número tipo
+// "77.86999999999999" en vez de "77.87". Se aplica siempre que se
+// escribe KM_Actuales (acá, y en deleteTraining/editarEntrenamiento
+// de codigo.gs).
+function _kmRedondeado(n) {
+  return Math.round((Number(n) || 0) * 100) / 100;
 }
 
 function _calcularEstadoDesgaste(km, limite) {

@@ -1,17 +1,14 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 29/08/2026 23:28 (hora Argentina)
+// Última actualización: 30/08/2026 09:59 (hora Argentina)
 // Cambios en esta versión:
-//   - enviarNotificacion() ahora acepta un 7mo parámetro opcional
-//     (tambienEmail): si viene en true, además de la notificación en
-//     la app le manda el mismo mensaje por mail a cada destinatario
-//     (mismo estilo visual que enviarEmailBienvenida/recoverPassword).
-//     Nuevo checkbox "✉️ También por email" en el panel admin (Enviar
-//     notificación). Un error de mail puntual no frena el resto del
-//     envío. A pedido del fundador.
+//   - BUG real: deleteTraining() y editarEntrenamiento() podían dejar
+//     KM_Actuales con ruido de coma flotante (ej. "77.86999999999999")
+//     al restar/ajustar km con decimales. Ahora pasan el resultado por
+//     _kmRedondeado() (trail-points.gs) antes de guardarlo — mismo fix
+//     que en _sumarKmYVerificarUmbral.
 // Cambios en versiones anteriores:
-//   - BUG real: getPerfilUsuario() hacía .toString() directo sobre la
-//     celda FechaNacimiento (ver HISTORIAL-CAMBIOS.md).
+//   - enviarNotificacion() acepta tambienEmail (ver HISTORIAL-CAMBIOS.md).
 // (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
 // en la raíz del repo — a partir de ahora este encabezado solo guarda
 // los últimos 2 cambios, para no seguir creciendo sin límite.)
@@ -1056,7 +1053,7 @@ function deleteTraining(email, idEntreno, idZapatilla, kmADescontar) {
         if (rowZapaId === idZapatilla.toString() && rowEmail === emailClean) {
           const kmActual = Number(shoeData[i][kmCol]) || 0;
           const kmRestar = Number(kmADescontar) || 0;
-          const kmNuevo  = Math.max(kmActual - kmRestar, 0);
+          const kmNuevo  = _kmRedondeado(Math.max(kmActual - kmRestar, 0));
           const limite   = limiteCol !== -1 ? (Number(shoeData[i][limiteCol]) || TP.KM_UMBRAL_CUPON) : TP.KM_UMBRAL_CUPON;
           shoeSheet.getRange(i + 1, kmCol + 1).setValue(kmNuevo);
           const estadoActual = sEstadoCol !== -1 ? shoeData[i][sEstadoCol].toString().trim().toLowerCase() : '';
@@ -1153,7 +1150,7 @@ function editarEntrenamiento(email, idEntreno, idZapatilla, kmNuevo) {
         const rowEmail  = shoeData[i][sEmailCol] ? shoeData[i][sEmailCol].toString().trim().toLowerCase() : '';
         if (rowZapaId === idZapatilla.toString() && rowEmail === emailClean) {
           const kmActual   = Number(shoeData[i][kmCol]) || 0;
-          const kmAjustado = Math.max(kmActual + delta, 0);
+          const kmAjustado = _kmRedondeado(Math.max(kmActual + delta, 0));
           const limite     = limiteCol !== -1 ? (Number(shoeData[i][limiteCol]) || TP.KM_UMBRAL_CUPON) : TP.KM_UMBRAL_CUPON;
           shoeSheet.getRange(i + 1, kmCol + 1).setValue(kmAjustado);
           const estadoActual = sEstadoCol !== -1 ? shoeData[i][sEstadoCol].toString().trim().toLowerCase() : '';
