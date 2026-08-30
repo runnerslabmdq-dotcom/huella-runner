@@ -1,17 +1,18 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 28/08/2026 13:07 (hora Argentina)
+  Última actualización: 30/08/2026 09:59 (hora Argentina)
   Cambios en esta versión:
-    - New Balance Fresh Foam X Hierro v9: modelo nuevo en catalogo{}
-      (primer trail de esta marca en el catálogo), con foto propia.
-    - Nuevo: el desplegable de "Nueva zapatilla" (no la tarjeta de "Mis
-      Zapas") ahora muestra "(Trail)" o "(Calle)" al lado de cada
-      modelo, para ayudar a elegir. Nuevo modelosTrail{} + _esTrail(),
-      solo cambia el texto visible del <option> — lo que se guarda en
-      el Sheet sigue siendo el nombre limpio de siempre.
+    - BUG real: el km de una zapatilla podía mostrarse con ruido de
+      coma flotante (ej. "77.86999999999999 km" en vez de "77.87 km"),
+      típico de sumar decimales muchas veces (0.1 + 0.2 no da 0.3
+      exacto en JavaScript). Nuevo _fmtKm(), aplicado en todos los
+      lugares donde se muestra km (tarjeta, Locker, compartir,
+      historial, toast) — redondea a 2 decimales sin ceros de más. El
+      backend (codigo.gs, trail-points.gs) también se arregló para no
+      seguir guardando el ruido de acá en más.
   Cambios en versiones anteriores:
-    - dropData{}: Adidas Terrex Agravic 3 + Adizero Evo SL (ver
-      HISTORIAL-CAMBIOS.md).
+    - New Balance Hierro v9 + etiqueta Trail/Calle en el desplegable
+      (ver HISTORIAL-CAMBIOS.md).
   (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
   en la raíz del repo — a partir de ahora este encabezado solo guarda
   los últimos 2 cambios, para no seguir creciendo sin límite.)
@@ -2114,10 +2115,22 @@
     // =====================================================
   // TOAST
   // =====================================================
+  // Formatea un km para mostrar: hasta 2 decimales, sin ceros de más
+  // (78 se ve "78", no "78.00"; 77.869999999999994 se ve "77.87").
+  // Arregla visualmente el ruido de coma flotante de sumas/restas
+  // (0.1 + 0.2 = 0.30000000000000004, estándar de JavaScript) que
+  // pueda haber quedado guardado en el Sheet antes de este cambio —
+  // de acá en más los km ya se guardan limpios (ver _kmRedondeado en
+  // trail-points.gs).
+  function _fmtKm(n) {
+    var v = Math.round((Number(n) || 0) * 100) / 100;
+    return v % 1 === 0 ? v.toString() : v.toFixed(2);
+  }
+
   var _toastTimer = null;
   function showKmToast(km) {
     var toast = document.getElementById('km-toast');
-    toast.textContent = '✅ +' + km + ' km guardados';
+    toast.textContent = '✅ +' + _fmtKm(km) + ' km guardados';
     toast.classList.add('show');
     if (_toastTimer) clearTimeout(_toastTimer);
     _toastTimer = setTimeout(function() { toast.classList.remove('show'); }, 2500);
@@ -3467,7 +3480,7 @@
                 '<div class="cf-bar-fill" style="width:' + perc + '%; background:' + barColor + ';"></div>' +
               '</div>' +
               '<div class="cf-km">' +
-                '<span>' + km + ' km / ' + limite + ' km</span>' +
+                '<span>' + _fmtKm(km) + ' km / ' + limite + ' km</span>' +
                 '<span class="km-val">' + percFixed + '%</span>' +
               '</div>' +
             '</div>' +
@@ -3690,7 +3703,7 @@
     var pct     = Math.min(Math.round((km / limite) * 100), 100);
     var fotoReal = (shoe.Foto_URL || '').toString().trim();
     var imgUrl   = fotoReal || getShoeImage(shoe.Marca, shoe.Modelo);
-    var texto    = 'Mi ' + shoe.Marca + ' ' + shoe.Modelo + ' ya lleva ' + km + ' km 👟 — la controlo con Huella Runner.';
+    var texto    = 'Mi ' + shoe.Marca + ' ' + shoe.Modelo + ' ya lleva ' + _fmtKm(km) + ' km 👟 — la controlo con Huella Runner.';
 
     try {
       if (navigator.canShare && imgUrl && imgUrl !== IMG_NO_DISPONIBLE) {
@@ -3776,7 +3789,7 @@
     y += 60;
     ctx.fillStyle = '#E8E8E8';
     ctx.font = '700 34px Montserrat, sans-serif';
-    ctx.fillText(km + ' km / ' + limite + ' km · ' + pct + '%', 48, y);
+    ctx.fillText(_fmtKm(km) + ' km / ' + limite + ' km · ' + pct + '%', 48, y);
 
     // Marca de agua
     ctx.fillStyle = '#555555';
@@ -3905,7 +3918,7 @@
           left.innerHTML = '<div class="historial-fecha">' + (sanitize(h.Fecha) || '—') + '</div>';
           var kmDiv = document.createElement('div');
           kmDiv.className = 'historial-km';
-          kmDiv.innerHTML = (Number(h.KM_Sumados) || 0) + '<span>km</span>';
+          kmDiv.innerHTML = _fmtKm(h.KM_Sumados) + '<span>km</span>';
           left.appendChild(kmDiv);
           var btnEditar = document.createElement('button');
           btnEditar.className = 'btn-delete-training' + (h.ID_Entreno ? '' : ' no-id');
@@ -4035,7 +4048,7 @@
     var km = shoe ? (Number(shoe.KM_Actuales) || 0) : 0;
     document.getElementById('confirm-delete-hint').innerText =
       km > 0
-        ? 'Se borra la zapatilla y sus ' + km + ' km de historial. No se puede deshacer.'
+        ? 'Se borra la zapatilla y sus ' + _fmtKm(km) + ' km de historial. No se puede deshacer.'
         : 'Se borra la zapatilla y todo su historial. No se puede deshacer.';
     document.getElementById('confirm-delete-modal').style.display = 'flex';
   }
@@ -4151,7 +4164,7 @@
         '<div class="locker-card-info">' +
           '<div class="locker-card-model">' + sModelo + '</div>' +
           '<div class="locker-card-sub">' + sMarca + ' · EU ' + sTalle + '</div>' +
-          '<div class="locker-card-km">' + km + ' km</div>' +
+          '<div class="locker-card-km">' + _fmtKm(km) + ' km</div>' +
           (sFecha ? '<div class="locker-card-fecha">Archivada el ' + sFecha + '</div>' : '') +
           '<button class="btn-reactivate" onclick="reactivarZapa(\'' + rawId + '\', \'' + rawMod + '\')">↩ Reactivar</button>' +
         '</div>';

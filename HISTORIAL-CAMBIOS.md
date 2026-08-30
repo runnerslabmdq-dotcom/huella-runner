@@ -12,6 +12,32 @@ el GAS es la versión más nueva.
 
 ---
 
+## 30/08/2026 09:59 — Fix: km con ruido de coma flotante (ej. "77.86999999999999 km")
+
+BUG real. El fundador vio en una zapatilla real "77.86999999999999 km
+/ 950 km" en vez de "77.87 km". Causa: al sumar km con decimales
+muchas veces seguidas (5.3, 10.5, etc.), JavaScript acumula el error
+de coma flotante estándar del lenguaje (0.1 + 0.2 no da exactamente
+0.3 en ninguna computadora) — con el tiempo eso queda guardado tal
+cual en la columna KM_Actuales del Sheet.
+
+Arreglado en dos frentes:
+
+- **De acá en más, se guarda limpio**: nuevo `_kmRedondeado()`
+  (`trail-points.gs`) — redondea a 2 decimales antes de guardar
+  KM_Actuales. Aplicado en `_sumarKmYVerificarUmbral()`
+  (trail-points.gs) y en `deleteTraining()` / `editarEntrenamiento()`
+  (codigo.gs) — los 3 lugares donde se escribe ese campo.
+- **Lo que ya estaba guardado con ruido, se ve bien igual**: nuevo
+  `_fmtKm()` en `gas/index.html`, aplicado en todos los lugares donde
+  se muestra km — la tarjeta de "Mis Zapas", el Locker, compartir
+  zapatilla, la imagen para compartir, el historial de entrenamientos,
+  el toast de "+X km guardados" y el mensaje de confirmación al
+  borrar. Redondea a 2 decimales sin dejar ceros de más (78 se ve
+  "78", no "78.00"). Con esto, aunque un dato viejo siga "sucio" en el
+  Sheet, en la app siempre se ve prolijo — y se termina de limpiar
+  solo la próxima vez que se le sume o edite km a esa zapatilla.
+
 ## 29/08/2026 23:28 — Notificaciones del panel admin: opción de mandarlas también por email
 
 A pedido del fundador (después de hablar sobre publicidad dirigida en
