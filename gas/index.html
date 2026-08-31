@@ -1,12 +1,13 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 31/08/2026 11:19 (hora Argentina)
+  Última actualización: 31/08/2026 12:10 (hora Argentina)
   Cambios en esta versión:
-    - dropData{}: Puma Foreverrun Nitro 2 W (10mm drop / 38 talón /
-      28 antepié).
+    - Logo nuevo (imagen real, no más texto+CSS) en Login/Registro
+      (2 líneas) y en el encabezado de la app (1 línea). De paso,
+      limpiado el CSS de .nav-logo-inline que quedó sin uso (era el
+      texto "Huella"/"Runner" inclinado que ahora reemplaza la imagen).
   Cambios en versiones anteriores:
-    - Puma Foreverrun Nitro 2 W: modelo nuevo, con foto propia (ver
-      HISTORIAL-CAMBIOS.md).
+    - dropData{}: Puma Foreverrun Nitro 2 W (ver HISTORIAL-CAMBIOS.md).
   (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
   en la raíz del repo — a partir de ahora este encabezado solo guarda
   los últimos 2 cambios, para no seguir creciendo sin límite.)
@@ -113,16 +114,10 @@
 
     .nav-logo-inline {
       display: flex;
-      flex-direction: column;
-      align-items: flex-start;
+      align-items: center;
       text-decoration: none;
       line-height: 1;
     }
-    .nav-logo-inline .logo-powered  { font-family: 'Montserrat', sans-serif; font-size: 0.42rem; font-weight: 700; color: var(--gris-texto); text-transform: uppercase; letter-spacing: 2px; }
-    .nav-logo-inline .logo-name-row { display: block; white-space: nowrap; line-height: 1; }
-    .nav-logo-inline .logo-open     { font-family: 'Bebas Neue', sans-serif; font-size: 1.60rem; color: var(--plata);      letter-spacing: 1.5px; display: inline-block; transform: skewX(-8deg); }
-    .nav-logo-inline .logo-sports   { font-family: 'Bebas Neue', sans-serif; font-size: 1.60rem; color: var(--amarillo);   letter-spacing: 1.5px; display: inline-block; transform: skewX(-8deg); }
-    .nav-logo-inline .logo-runbike  { font-family: 'Bebas Neue', sans-serif; font-size: 1.38rem; color: var(--gris-texto); letter-spacing: 1.5px; margin-top: 0; }
 
     .card { background: var(--card-bg); border: 1px solid var(--borde); border-radius: 20px; padding: 25px; margin-bottom: 20px; }
     .form-group { margin-bottom: 15px; text-align: left; }
@@ -1377,11 +1372,8 @@
         margin-bottom:6px;font-weight:700;line-height:1;">
         Powered by <span style="font-style:italic;">Huella <span style="color:var(--amarillo);">Runner</span></span> MDQ
       </div>
-      <h1 style="font-size:2.4rem;font-weight:900;margin:0;
-        letter-spacing:2px;line-height:1.05;font-family:'Bebas Neue',sans-serif;">
-        <span style="color:var(--plata);display:inline-block;transform:skewX(-8deg);">HUELLA</span>
-        <span style="color:var(--amarillo);display:inline-block;transform:skewX(-8deg);">RUNNER</span>
-      </h1>
+      <img src="https://res.cloudinary.com/klxkj07e/image/upload/v1788188712/NEW_LOGO_lktef4.png" alt="Huella Runner"
+        style="width:70%;max-width:280px;height:auto;display:block;margin:0 auto;">
       <div style="font-size:0.85rem;font-weight:900;letter-spacing:4px;text-transform:uppercase;
         color:#CCFF00;margin-top:8px;text-shadow:0 0 8px rgba(204,255,0,0.6);">
         Demo
@@ -1445,11 +1437,8 @@
         margin-bottom:6px;font-weight:700;line-height:1;">
         Powered by <span style="font-style:italic;">Huella <span style="color:var(--amarillo);">Runner</span></span> MDQ
       </div>
-      <h1 style="font-size:2.4rem;font-weight:900;margin:0;
-        letter-spacing:2px;line-height:1.05;font-family:'Bebas Neue',sans-serif;">
-        <span style="color:var(--plata);display:inline-block;transform:skewX(-8deg);">HUELLA</span>
-        <span style="color:var(--amarillo);display:inline-block;transform:skewX(-8deg);">RUNNER</span>
-      </h1>
+      <img src="https://res.cloudinary.com/klxkj07e/image/upload/v1788188712/NEW_LOGO_lktef4.png" alt="Huella Runner"
+        style="width:70%;max-width:280px;height:auto;display:block;margin:0 auto;">
     </div>
 
     <div class="card">
@@ -1635,7 +1624,8 @@
   <div id="view-dashboard" style="display: none;">
     <div class="top-bar">
       <a href="#" class="nav-logo-inline">
-        <span class="logo-name-row" style="margin-top:3px;"><span class="logo-open">Huella</span> <span class="logo-sports">Runner</span></span>
+        <img src="https://res.cloudinary.com/klxkj07e/image/upload/v1788188711/NEW_LOGO_2_imoll8.png" alt="Huella Runner"
+          style="height:28px;width:auto;display:block;">
       </a>
       <div style="display:flex; align-items:center; gap:12px;">
         <div class="saludo-topbar" style="font-size: 0.75rem; color: var(--gris-texto); white-space:nowrap;">Hola, <span id="user-name" style="color: var(--amarillo); font-weight: 900;">Corredor</span></div>
@@ -1762,11 +1752,8 @@
   <!-- VISTA: ELEGIR CONTRASEÑA NUEVA (tras entrar con una temporal) -->
   <div id="view-set-password" style="display: none;">
     <div style="text-align:center;position:relative;z-index:1;margin-top:8px;margin-bottom:16px;">
-      <h1 style="font-size:2.4rem;font-weight:900;margin:0;
-        letter-spacing:2px;line-height:1.05;font-family:'Bebas Neue',sans-serif;">
-        <span style="color:var(--plata);display:inline-block;transform:skewX(-8deg);">HUELLA</span>
-        <span style="color:var(--amarillo);display:inline-block;transform:skewX(-8deg);">RUNNER</span>
-      </h1>
+      <img src="https://res.cloudinary.com/klxkj07e/image/upload/v1788188712/NEW_LOGO_lktef4.png" alt="Huella Runner"
+        style="width:70%;max-width:280px;height:auto;display:block;margin:0 auto;">
     </div>
     <div class="card">
       <h3 style="text-align:center; margin-bottom:8px; font-size:1rem; text-transform:uppercase;">Elegí tu contraseña nueva</h3>

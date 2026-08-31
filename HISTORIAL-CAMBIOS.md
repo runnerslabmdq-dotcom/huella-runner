@@ -12,6 +12,27 @@ el GAS es la versión más nueva.
 
 ---
 
+## 31/08/2026 12:11 — Logo nuevo (imagen real) en vez de texto+CSS
+
+Cambio visual en los 3 frentes de la app — se reemplaza el logo hecho
+con texto y CSS ("HUELLA" plata + "RUNNER" amarillo/neón inclinados)
+por la imagen real del logo nuevo, alojada en Cloudinary.
+
+- **`gas/index.html`**: Login/Registro (logo grande, 2 líneas) y
+  encabezado de la app ya logueado (logo chico, 1 línea, en
+  `.nav-logo-inline`). Limpiado el CSS que quedó sin uso
+  (`.logo-open`, `.logo-sports`, `.logo-runbike`, `.logo-powered`,
+  `.logo-name-row`).
+- **`gas/admin.html`**: encabezado del panel — reemplaza
+  `.adm-logo-text`, sacado del CSS.
+- **`pwa/index.html`**: pantalla de splash al abrir la app — logo
+  grande en vez del ícono cuadrado + texto "HUELLA RUNNER". Sacado
+  `.splash-title` y `.splash img` del CSS (sin uso).
+
+Dos imágenes distintas en Cloudinary: una versión "1 línea" (logo
+chico, para encabezados) y otra "2 líneas" (logo grande, para
+Login/Registro y splash).
+
 ## 31/08/2026 11:19 — Drop de Puma Foreverrun Nitro 2 W
 
 `dropData{}` (`gas/index.html`): 10mm drop / 38mm talón / 28mm
