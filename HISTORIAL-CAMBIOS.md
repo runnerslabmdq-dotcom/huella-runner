@@ -12,6 +12,11 @@ el GAS es la versión más nueva.
 
 ---
 
+## 31/08/2026 11:19 — Drop de Puma Foreverrun Nitro 2 W
+
+`dropData{}` (`gas/index.html`): 10mm drop / 38mm talón / 28mm
+antepié — el modelo mujer agregado hoy mismo.
+
 ## 31/08/2026 10:38 — Puma Foreverrun Nitro 2 W
 
 Modelo nuevo en `catalogo{}` (`gas/index.html`) — variante mujer del
