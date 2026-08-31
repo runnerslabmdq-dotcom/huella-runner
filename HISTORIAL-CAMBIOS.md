@@ -12,6 +12,12 @@ el GAS es la versión más nueva.
 
 ---
 
+## 31/08/2026 10:38 — Puma Foreverrun Nitro 2 W
+
+Modelo nuevo en `catalogo{}` (`gas/index.html`) — variante mujer del
+Foreverrun Nitro 2 que ya estaba, con foto propia. Sufijo "W" (no
+"M"), mismo criterio ya usado en Bondi 9 W / Cayano 32 W.
+
 ## 31/08/2026 09:39 — 7 grupos de running más (los "dudosos" confirmados)
 
 En `gas/index.html`, a pedido del fundador: de los 9 casos dudosos de
