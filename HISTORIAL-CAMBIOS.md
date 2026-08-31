@@ -12,6 +12,17 @@ el GAS es la versión más nueva.
 
 ---
 
+## 31/08/2026 12:36 — Logo: cambio de color
+
+El fundador pasó dos imágenes nuevas (mismo logo, paleta de color
+distinta) para reemplazar las subidas hace un rato. Actualizadas las
+URLs de Cloudinary en los mismos 3 archivos:
+
+- **`gas/index.html`**: Login/Registro (2 líneas) y encabezado de la
+  app logueado (1 línea).
+- **`gas/admin.html`**: encabezado del panel (1 línea).
+- **`pwa/index.html`**: splash de entrada (2 líneas).
+
 ## 31/08/2026 12:11 — Logo nuevo (imagen real) en vez de texto+CSS
 
 Cambio visual en los 3 frentes de la app — se reemplaza el logo hecho
