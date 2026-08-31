@@ -12,6 +12,22 @@ el GAS es la versión más nueva.
 
 ---
 
+## 31/08/2026 09:39 — 7 grupos de running más (los "dudosos" confirmados)
+
+En `gas/index.html`, a pedido del fundador: de los 9 casos dudosos de
+la tanda anterior, confirmó 7 y descartó 2 — `runhub.uy` (es de
+Uruguay, no de acá) y `running_kclips` (parece una cuenta de
+contenido/clips de running, no un grupo de entrenamiento).
+
+Agregados: AG Running Team, Ciro Team Entrenamientos, Ezeiza Run,
+Mariana Mendiburu Running Team (Lobos), MT Running, MyP Run Trail,
+Oxigeno4.
+
+Nota: algunos de estos nombres se armaron a partir del nombre de
+usuario de Instagram (no había un nombre de fantasía confirmado en el
+listado original) — si alguno no es el nombre exacto del grupo,
+avisar para corregirlo.
+
 ## 31/08/2026 09:35 — 9 grupos de running nuevos en el desplegable
 
 En `gas/index.html` (`<select id="reg-grupo">`, compartido con Mi
