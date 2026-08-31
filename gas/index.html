@@ -1,16 +1,17 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 30/08/2026 09:59 (hora Argentina)
+  Última actualización: 31/08/2026 09:35 (hora Argentina)
   Cambios en esta versión:
-    - BUG real: el km de una zapatilla podía mostrarse con ruido de
-      coma flotante (ej. "77.86999999999999 km" en vez de "77.87 km"),
-      típico de sumar decimales muchas veces (0.1 + 0.2 no da 0.3
-      exacto en JavaScript). Nuevo _fmtKm(), aplicado en todos los
-      lugares donde se muestra km (tarjeta, Locker, compartir,
-      historial, toast) — redondea a 2 decimales sin ceros de más. El
-      backend (codigo.gs, trail-points.gs) también se arregló para no
-      seguir guardando el ruido de acá en más.
+    - 9 grupos de running nuevos en el desplegable "Grupo de Running"
+      (registro y Mi Perfil comparten la misma lista): Conquistando KM
+      Running Team, Cuerpos en Movimiento Team, Fenix Team, Kona Team,
+      RG Running Team, Running Group General Pirán, San Pedro Trail
+      Running, Team Physical Runners (Cosquín), Treinorun Running
+      Team. Filtrados de un listado más largo que pasó el fundador —
+      se descartaron cuentas de personas individuales (aunque el
+      nombre mencionara running) y una que ya estaba repetida.
   Cambios en versiones anteriores:
+    - Fix: km con ruido de coma flotante (ver HISTORIAL-CAMBIOS.md).
     - New Balance Hierro v9 + etiqueta Trail/Calle en el desplegable
       (ver HISTORIAL-CAMBIOS.md).
   (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
@@ -1567,11 +1568,14 @@
             <option value="Aventura Avanza">Aventura Avanza</option>
             <option value="Circuitos Running Rosario">Circuitos Running Rosario</option>
             <option value="Club K10">Club K10</option>
+            <option value="Conquistando KM Running Team">Conquistando KM Running Team</option>
             <option value="Corredores Nocturnos (Tandil)">Corredores Nocturnos (Tandil)</option>
             <option value="CROSS Running Club MDQ">CROSS Running Club MDQ</option>
+            <option value="Cuerpos en Movimiento Team">Cuerpos en Movimiento Team</option>
             <option value="Deportes Mar del Plata">Deportes Mar del Plata</option>
             <option value="EmpoweRun">EmpoweRun</option>
             <option value="FC Running Team (La Plata)">FC Running Team (La Plata)</option>
+            <option value="Fenix Team">Fenix Team</option>
             <option value="Forest Run Group (MDQ)">Forest Run Group (MDQ)</option>
             <option value="FP Team (Tandil)">FP Team (Tandil)</option>
             <option value="GO Team Pilar (Pilar, Buenos Aires)">GO Team Pilar (Pilar, Buenos Aires)</option>
@@ -1582,6 +1586,7 @@
             <option value="Halcones La Plata">Halcones La Plata</option>
             <option value="JM Corredores (MDQ)">JM Corredores (MDQ)</option>
             <option value="KM Trail Running">KM Trail Running</option>
+            <option value="Kona Team">Kona Team</option>
             <option value="Kuden Group Tandil">Kuden Group Tandil</option>
             <option value="Kumelen Running Tandil">Kumelen Running Tandil</option>
             <option value="La Era Running Club (Rosario)">La Era Running Club (Rosario)</option>
@@ -1597,16 +1602,21 @@
             <option value="Punto Fit Gym &amp; Run">Punto Fit Gym &amp; Run</option>
             <option value="RA Caminantes">RA Caminantes</option>
             <option value="Ranerzzz">Ranerzzz</option>
+            <option value="RG Running Team">RG Running Team</option>
             <option value="Run Club MDP">Run Club MDP</option>
             <option value="Runners Fox Pinamar">Runners Fox Pinamar</option>
+            <option value="Running Group General Pirán">Running Group General Pirán</option>
             <option value="Running Tandil">Running Tandil</option>
             <option value="Runtrek Club">Runtrek Club</option>
+            <option value="San Pedro Trail Running">San Pedro Trail Running</option>
             <option value="SC Training La Plata">SC Training La Plata</option>
             <option value="Stímulo MdP">Stímulo MdP</option>
             <option value="Sumando KM">Sumando KM</option>
+            <option value="Team Physical Runners (Cosquín)">Team Physical Runners (Cosquín)</option>
             <option value="Team Pura Vida">Team Pura Vida</option>
             <option value="Trail Run Rosario">Trail Run Rosario</option>
             <option value="Treino ARG">Treino ARG</option>
+            <option value="Treinorun Running Team">Treinorun Running Team</option>
             <option value="VO2 Max Tandil">VO2 Max Tandil</option>
             <option value="__otro__">Otro...</option>
           </select>

@@ -12,6 +12,25 @@ el GAS es la versión más nueva.
 
 ---
 
+## 31/08/2026 09:35 — 9 grupos de running nuevos en el desplegable
+
+En `gas/index.html` (`<select id="reg-grupo">`, compartido con Mi
+Perfil), a pedido del fundador. Pasó un listado largo de cuentas de
+Instagram (nombre de usuario + nombre visible) y se filtró en dos
+pasos: primero separando grupos reales de cuentas de personas
+individuales (aunque mencionaran "running" en el nombre), después
+sacando duplicados y casos dudosos (cuentas de contenido/clips,
+servicios como venta de sujeta-dorsales, o cuentas que podían ser la
+personal de quien organiza un grupo en vez del grupo en sí — esos
+quedaron afuera por ahora, pendientes de que el fundador los
+confirme).
+
+Agregados: Conquistando KM Running Team, Cuerpos en Movimiento Team,
+Fenix Team, Kona Team, RG Running Team, Running Group General Pirán,
+San Pedro Trail Running, Team Physical Runners (Cosquín), Treinorun
+Running Team. ("Necochea Running" no se agregó de nuevo — ya estaba
+en la lista.)
+
 ## 30/08/2026 09:59 — Fix: km con ruido de coma flotante (ej. "77.86999999999999 km")
 
 BUG real. El fundador vio en una zapatilla real "77.86999999999999 km
