@@ -1,17 +1,14 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Admin.html
-  Última actualización: 29/08/2026 23:28 (hora Argentina)
+  Última actualización: 31/08/2026 12:11 (hora Argentina)
   Cambios en esta versión:
-    - Nuevo checkbox "✉️ También por email" en "Enviar notificación":
-      además de la notificación en la app, manda el mismo mensaje por
-      mail a cada destinatario. Se lo pasa a enviarNotificacion()
-      (codigo.gs, nuevo 7mo parámetro tambienEmail). A pedido del
-      fundador — el resto de la comunicación automática (cumpleaños,
-      zapas en alerta) sigue siendo solo por la app.
+    - Logo nuevo (imagen real, no más texto+CSS) en el encabezado del
+      panel — reemplaza ".adm-logo-text" (texto "Huella Runner" con
+      "Runner" en color neón), que quedó sin uso y se sacó del CSS.
   Cambios en versiones anteriores:
-    - Nuevo botón 👟 en "Usuarios registrados" para ver las zapatillas
-      de una persona sin ir al Sheet (ver HISTORIAL-CAMBIOS.md).
+    - Nuevo checkbox "✉️ También por email" en "Enviar notificación"
+      (ver HISTORIAL-CAMBIOS.md).
     - Nueva sección "🕵️ Actividad sospechosa — revisar": el anti-fraude
       viene marcando entrenamientos "Sospechosa" (superan el acumulado
       semanal) desde hace rato, pero se acreditaban igual sin que se
@@ -218,8 +215,6 @@
       background: var(--bg); position: sticky; top: 0; z-index: 100;
     }
     .adm-logo-wrap { display: flex; flex-direction: column; gap: 2px; }
-    .adm-logo-text { font-size: 0.72rem; font-weight: 900; color: var(--plata); text-transform: uppercase; letter-spacing: 4px; }
-    .adm-logo-text span { color: var(--neon); }
     .adm-tagline { font-size: 0.58rem; color: var(--metal); text-transform: uppercase; letter-spacing: 3px; }
     .adm-header-right { display: flex; align-items: center; gap: 10px; }
     .adm-badge { background: var(--neon); color: #000; font-size: 0.6rem; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; padding: 5px 12px; border-radius: 4px; }
@@ -539,7 +534,8 @@
   <!-- HEADER -->
   <div class="adm-header">
     <div class="adm-logo-wrap">
-      <div class="adm-logo-text">Huella Runner</div>
+      <img src="https://res.cloudinary.com/klxkj07e/image/upload/v1788188711/NEW_LOGO_2_imoll8.png" alt="Huella Runner"
+        style="height:22px;width:auto;display:block;">
       <div class="adm-tagline">Panel de administración</div>
     </div>
     <div class="adm-header-right">
