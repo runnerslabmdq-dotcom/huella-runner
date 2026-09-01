@@ -12,6 +12,27 @@ el GAS es la versión más nueva.
 
 ---
 
+## 01/09/2026 11:01 — Fix: atajos de Insights mandaban a "Todos" en vez del segmento
+
+BUG real, encontrado charlando con el fundador sobre qué mejorar del
+panel admin (a raíz de la pregunta "¿el desplegable de notificación no
+tiene inactivos?" — el segmento sí existe, el problema era otro).
+
+En `gas/admin.html`, la sección de Insights tiene cards con botones de
+acción rápida ("Ver y notificar", "Filtrar inactivos"). Dos de esos
+botones llamaban a `irANotificar('todos', mensaje)` — abrían la
+pestaña **Todos** con el mensaje ya escrito, en vez de la pestaña
+**Segmento** con el grupo correcto seleccionado. Si el admin no se
+daba cuenta y tocaba "Enviar", el mensaje pensado para "zapas en
+alerta" o "inactivos" le llegaba a **todos los usuarios registrados**.
+
+Arreglado con una función nueva, `irANotificarSegmento(segmento,
+mensaje)`, que abre la pestaña Segmento y deja el segmento correcto
+(`alerta` o `inactivos`) ya elegido — el admin ve el conteo real de
+destinatarios antes de mandar. El card de "usuarios sin zapatillas"
+sigue apuntando a "Todos" a propósito (no hay segmento para eso en el
+backend, y ya estaba bien rotulado "Notificar a todos").
+
 ## 31/08/2026 12:36 — Logo: cambio de color
 
 El fundador pasó dos imágenes nuevas (mismo logo, paleta de color

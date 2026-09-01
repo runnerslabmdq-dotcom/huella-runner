@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Admin.html
-  Última actualización: 31/08/2026 12:36 (hora Argentina)
+  Última actualización: 01/09/2026 11:01 (hora Argentina)
   Cambios en esta versión:
-    - Logo: cambio de color de la versión "1 línea" (mismo logo,
-      nueva paleta) — actualizada la URL de Cloudinary en el
-      encabezado del panel.
+    - Fix: los atajos "Ver y notificar" (🔥 zapas en alerta) y
+      "Filtrar inactivos" (💤) del bloque de Insights mandaban el
+      mensaje a la pestaña "Todos" en vez del segmento que el card
+      describe — quien tocara "Enviar" sin fijarse le llegaba a toda
+      la base, no solo al grupo puntual. Nuevo irANotificarSegmento()
+      que abre la pestaña Segmento con el segmento correcto ya
+      seleccionado (alerta / inactivos).
   Cambios en versiones anteriores:
-    - Logo nuevo (imagen real, no más texto+CSS) en el encabezado del
-      panel (ver HISTORIAL-CAMBIOS.md).
+    - Logo: cambio de color de la versión "1 línea" (ver
+      HISTORIAL-CAMBIOS.md).
     - Nueva sección "🕵️ Actividad sospechosa — revisar": el anti-fraude
       viene marcando entrenamientos "Sospechosa" (superan el acumulado
       semanal) desde hace rato, pero se acreditaban igual sin que se
@@ -2058,14 +2062,14 @@
         title: listosCambio + ' runners listos para renovar zapatillas',
         desc: 'Tienen zapatillas en zona crítica (>700 km). Momento ideal para una campaña de descuento en calzado running.',
         action: 'Ver y notificar',
-        onClick: "irANotificar('todos','¡Tus zapatillas ya cumplieron su ciclo! Es momento de renovarlas. Tenemos opciones especiales para vos. 🏃')"
+        onClick: "irANotificarSegmento('alerta','¡Tus zapatillas ya cumplieron su ciclo! Es momento de renovarlas. Tenemos opciones especiales para vos. 🏃')"
       },
       {
         icon: '💤', num: inactivosSemana,
         title: inactivosSemana + ' runners no entrenaron hoy',
         desc: 'Una notificación motivacional o una promo puede reactivarlos. El engagement es clave para fidelizar.',
         action: 'Filtrar inactivos',
-        onClick: "activarFiltro('inactivos'); irANotificar('todos','¡Extrañamos verte en la pista! Volvé a entrenar y seguí sumando kilómetros. 💪')"
+        onClick: "activarFiltro('inactivos'); irANotificarSegmento('inactivos','¡Extrañamos verte en la pista! Volvé a entrenar y seguí sumando kilómetros. 💪')"
       },
       {
         icon: '⭐', num: topRunners,
@@ -2115,6 +2119,19 @@
   ════════════════════════════════════════════════════ */
   function irANotificar(tab, mensaje) {
     setTab(tab || 'todos');
+    if (mensaje) document.getElementById('nf-mensaje').value = mensaje;
+    const panel = document.getElementById('panel-notificacion');
+    if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // Como irANotificar(), pero para las acciones rápidas de Insights que
+  // apuntan a un segmento puntual (alerta / inactivos / cumple) — evita
+  // que el atajo caiga en la pestaña "Todos" y termine mandando el
+  // mensaje a toda la base en vez de al grupo que el card describe.
+  function irANotificarSegmento(segmento, mensaje) {
+    setTab('segmento');
+    const sel = document.getElementById('nf-segmento-select');
+    if (sel) { sel.value = segmento; onSegmentoChange(); }
     if (mensaje) document.getElementById('nf-mensaje').value = mensaje;
     const panel = document.getElementById('panel-notificacion');
     if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
