@@ -12,6 +12,19 @@ el GAS es la versión más nueva.
 
 ---
 
+## 01/09/2026 11:47 — "Powered by" achicado al ancho del logo
+
+A pedido del fundador, viendo capturas del celu: en Login y Registro
+(`gas/index.html`) y en el splash de entrada (`pwa/index.html`), el
+texto "Powered by Huella Runner MDQ" se veía más ancho que el logo de
+abajo — quedaba raro visualmente, como si no fueran del mismo bloque.
+
+Arreglado poniéndole al texto el mismo ancho que ya usa el logo (70%
+del contenedor / 80% en la PWA, con el mismo máximo de 280px,
+centrado) y bajándole un poco el espacio entre letras para que entre
+cómodo en una sola línea. El "Powered by" del pie del dashboard (sin
+logo al lado) se dejó como estaba — no tenía con qué alinearse.
+
 ## 01/09/2026 11:01 — Fix: atajos de Insights mandaban a "Todos" en vez del segmento
 
 BUG real, encontrado charlando con el fundador sobre qué mejorar del
