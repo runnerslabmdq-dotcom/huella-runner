@@ -12,6 +12,14 @@ el GAS es la versión más nueva.
 
 ---
 
+## 02/09/2026 09:46 — PRUEBA (ajuste): "Powered by Open Sports" más chico
+
+El fundador probó en el celu desde Instagram (con
+`edragotto@hotmail.com`) y se veía grande, en Login y en el pie del
+dashboard. Bajado de 0.9rem a 0.72rem en `_pintarPoweredBy()`
+(`gas/index.html`) — afecta a los dos lugares porque comparten la
+misma función. Sigue dentro del mismo checkpoint de vuelta (`dcbc68f`).
+
 ## 02/09/2026 09:18 — Prueba Open Sports acotada solo al usuario demo
 
 El fundador notó que `pwa/index.html` está online para usuarios

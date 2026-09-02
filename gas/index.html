@@ -1,14 +1,11 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 02/09/2026 09:18 (hora Argentina)
+  Última actualización: 02/09/2026 09:46 (hora Argentina)
   Cambios en esta versión:
-    - PRUEBA acotada solo al usuario demo: "Powered by Open Sports"
-      (Login, Registro, pie del dashboard) ya no se ve para todos —
-      vuelven a Huella Runner por defecto, y se activa en vivo
-      únicamente para edragotto@hotmail.com (nueva
-      _pintarPoweredBy(), ver HISTORIAL-CAMBIOS.md).
+    - PRUEBA (ajuste): "Powered by Open Sports" (modo demo) más chico
+      — se veía grande desde Instagram en el celu (0.9rem → 0.72rem).
   Cambios en versiones anteriores:
-    - PRUEBA: sacado el justify feo de Login/Registro (ver
+    - PRUEBA acotada solo a edragotto@hotmail.com (ver
       HISTORIAL-CAMBIOS.md, checkpoint dcbc68f).
   (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
   en la raíz del repo — a partir de ahora este encabezado solo guarda
@@ -2127,7 +2124,7 @@
     var logoEl = document.getElementById(prefix + '-logo-img');
     var esDemo = (email || '').toString().trim().toLowerCase() === EMAIL_DEMO_OPEN_SPORTS;
     if (esDemo) {
-      poweredEl.style.fontSize = '0.9rem';
+      poweredEl.style.fontSize = '0.72rem';
       poweredEl.style.letterSpacing = '1.5px';
       poweredEl.style.width = '66%';
       poweredEl.style.maxWidth = '266px';
