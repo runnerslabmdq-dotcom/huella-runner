@@ -12,6 +12,13 @@ el GAS es la versión más nueva.
 
 ---
 
+## 02/09/2026 08:45 — PRUEBA (ajuste): "Powered by Open Sports" más grande en Login/Registro
+
+A pedido del fundador viendo la captura del celu — el texto se veía
+chico. Subido de 0.5rem a 0.62rem (mismo tamaño que ya usa el
+"Powered by" del pie del dashboard). Sigue dentro del mismo checkpoint
+de vuelta (`dcbc68f`).
+
 ## 02/09/2026 08:19 — PRUEBA (ajuste): splash con "Powered by" invisible + Login/Registro al ancho del logo
 
 Dos arreglos sobre la prueba de recién, todavía dentro del mismo
