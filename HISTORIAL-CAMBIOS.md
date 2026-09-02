@@ -12,6 +12,34 @@ el GAS es la versión más nueva.
 
 ---
 
+## 02/09/2026 09:18 — Prueba Open Sports acotada solo al usuario demo
+
+El fundador notó que `pwa/index.html` está online para usuarios
+reales (no es solo demo) y la prueba de "Powered by Open Sports" no
+puede quedar ahí para todo el mundo. Dos cambios:
+
+**`pwa/index.html`**: el splash vuelve a decir "Powered by Huella
+Runner MDQ" (letra amarilla en "Huella Runner", como siempre) para
+todos los usuarios. Se conserva la mejora que salió de la prueba: el
+texto entra con zoom-in a los 0.3s en vez de aparecer de golpe sin
+color.
+
+**`gas/index.html`**: Login, Registro y pie del dashboard vuelven a
+mostrar "Huella Runner MDQ" por defecto — "Powered by Open Sports"
+queda solo para `edragotto@hotmail.com`. Cómo se decide en cada
+pantalla:
+- Login y Registro son pre-login (no se sabe todavía quién es hasta
+  que se escribe el email) — nueva función `_pintarPoweredBy()`,
+  enganchada a `oninput`/`onblur` de `#log-email` y `#reg-email`:
+  si lo que se va escribiendo coincide con el email demo, cambia en
+  vivo a Open Sports (texto, colores y logo 5% más chico); cualquier
+  otro valor (o campo vacío) se queda en Huella Runner.
+- Pie del dashboard: ya logueado, se decide directo por
+  `currentUserEmail` al entrar (`loadDashboard()`).
+
+Sigue dentro del mismo checkpoint de vuelta (`dcbc68f`) para cuando se
+quiera sacar la prueba del todo.
+
 ## 02/09/2026 08:53 — PRUEBA (ajuste): sacado el justify feo, letra bien más grande
 
 El fundador mandó captura: el `text-align-last:justify` del cambio
