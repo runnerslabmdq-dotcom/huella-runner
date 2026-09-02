@@ -12,6 +12,15 @@ el GAS es la versión más nueva.
 
 ---
 
+## 02/09/2026 08:53 — PRUEBA (ajuste): sacado el justify feo, letra bien más grande
+
+El fundador mandó captura: el `text-align-last:justify` del cambio
+anterior quedaba mal — estiraba "POWERED", "BY", "OPEN" y "SPORTS"
+con espacios forzados entre sí para llenar el ancho, se veía raro.
+Sacado, y en cambio subida la letra en serio (0.62rem → 0.9rem) para
+que se acerque al ancho del logo de forma natural, sin estirar nada.
+Sigue dentro del mismo checkpoint de vuelta (`dcbc68f`).
+
 ## 02/09/2026 08:45 — PRUEBA (ajuste): "Powered by Open Sports" más grande en Login/Registro
 
 A pedido del fundador viendo la captura del celu — el texto se veía
