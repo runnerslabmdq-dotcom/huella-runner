@@ -12,6 +12,13 @@ el GAS es la versión más nueva.
 
 ---
 
+## 02/09/2026 12:50 — Skechers Max Cushioning Propulsion: foto propia + drop
+
+En `gas/index.html`: agregada la foto propia del modelo (`modelImages`,
+antes usaba la genérica de Skechers) y sus datos de drop (8mm / talón
+38mm / antepié 30mm) en `dropData`. Es zapatilla de calle, no se
+agregó a `modelosTrail`.
+
 ## 02/09/2026 09:46 — PRUEBA (ajuste): "Powered by Open Sports" más chico
 
 El fundador probó en el celu desde Instagram (con
