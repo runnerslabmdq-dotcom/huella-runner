@@ -179,7 +179,11 @@
   <div class="splash" id="splash">
     <div>
       <img src="https://res.cloudinary.com/klxkj07e/image/upload/v1788190309/NEW_LOGO_lynhg6.png" alt="Huella Runner"
-        style="width:80%;max-width:280px;height:auto;display:block;margin:0 auto;">
+        style="width:80%;max-width:280px;height:auto;display:block;margin:0 auto;"
+        onerror="this.style.display='none';document.getElementById('splash-logo-fallback').style.display='block';">
+      <div id="splash-logo-fallback" style="display:none;font-size:2rem;font-weight:900;letter-spacing:-1px;text-align:center;color:#E8E8E8;">
+        HUELLA <span style="color:#C5B358;">RUNNER</span>
+      </div>
       <div class="splash-sub">Powered by <span style="font-style:italic;color:#C5B358;">Huella Runner</span> MDQ</div>
     </div>
     <div class="loader"><div class="loader-bar"></div></div>

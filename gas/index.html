@@ -1,13 +1,17 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 02/09/2026 12:50 (hora Argentina)
+  Última actualización: 02/09/2026 17:30 (hora Argentina)
   Cambios en esta versión:
-    - Skechers Max Cushioning Propulsion: foto propia (modelImages) y
-      drop 8mm / talón 38mm / antepié 30mm (dropData). Es de calle,
-      no se agregó a modelosTrail.
+    - Respaldo si Cloudinary se cae: los 4 logos de imagen (Login,
+      Registro, encabezado, elegir contraseña) caen al texto/CSS de
+      siempre si la imagen no carga; las fotos de zapatillas (tarjeta,
+      Locker, preview de "Nueva zapatilla") tienen un último respaldo
+      armado en el HTML (SVG local, no pide nada a ningún servidor)
+      para el caso en que hasta IMG_NO_DISPONIBLE falle. Ver
+      _localImgFallback() y HISTORIAL-CAMBIOS.md.
   Cambios en versiones anteriores:
-    - PRUEBA (ajuste): "Powered by Open Sports" más chico (ver
-      HISTORIAL-CAMBIOS.md, checkpoint dcbc68f).
+    - Skechers Max Cushioning Propulsion: foto propia + drop (ver
+      HISTORIAL-CAMBIOS.md).
   (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
   en la raíz del repo — a partir de ahora este encabezado solo guarda
   los últimos 2 cambios, para no seguir creciendo sin límite.)
@@ -1378,7 +1382,12 @@
         Powered by <span style="font-style:italic;">Huella <span style="color:var(--amarillo);">Runner</span></span> MDQ
       </div>
       <img id="login-logo-img" src="https://res.cloudinary.com/klxkj07e/image/upload/v1788190309/NEW_LOGO_lynhg6.png" alt="Huella Runner"
-        style="width:70%;max-width:280px;height:auto;display:block;margin:0 auto;">
+        style="width:70%;max-width:280px;height:auto;display:block;margin:0 auto;"
+        onerror="this.style.display='none';document.getElementById('login-logo-fallback').style.display='block';">
+      <div id="login-logo-fallback" style="display:none;font-size:2.4rem;font-weight:900;letter-spacing:2px;line-height:1.05;font-family:'Bebas Neue',sans-serif;">
+        <span style="color:var(--plata);display:inline-block;transform:skewX(-8deg);">HUELLA</span>
+        <span style="color:var(--amarillo);display:inline-block;transform:skewX(-8deg);">RUNNER</span>
+      </div>
       <div style="font-size:0.85rem;font-weight:900;letter-spacing:4px;text-transform:uppercase;
         color:#CCFF00;margin-top:8px;text-shadow:0 0 8px rgba(204,255,0,0.6);">
         Demo
@@ -1449,7 +1458,12 @@
         Powered by <span style="font-style:italic;">Huella <span style="color:var(--amarillo);">Runner</span></span> MDQ
       </div>
       <img id="reg-logo-img" src="https://res.cloudinary.com/klxkj07e/image/upload/v1788190309/NEW_LOGO_lynhg6.png" alt="Huella Runner"
-        style="width:70%;max-width:280px;height:auto;display:block;margin:0 auto;">
+        style="width:70%;max-width:280px;height:auto;display:block;margin:0 auto;"
+        onerror="this.style.display='none';document.getElementById('reg-logo-fallback').style.display='block';">
+      <div id="reg-logo-fallback" style="display:none;font-size:2.4rem;font-weight:900;letter-spacing:2px;line-height:1.05;font-family:'Bebas Neue',sans-serif;">
+        <span style="color:var(--plata);display:inline-block;transform:skewX(-8deg);">HUELLA</span>
+        <span style="color:var(--amarillo);display:inline-block;transform:skewX(-8deg);">RUNNER</span>
+      </div>
     </div>
 
     <div class="card">
@@ -1636,8 +1650,13 @@
   <div id="view-dashboard" style="display: none;">
     <div class="top-bar">
       <a href="#" class="nav-logo-inline">
-        <img src="https://res.cloudinary.com/klxkj07e/image/upload/v1788190308/NEW_LOGO_2_xcoysy.png" alt="Huella Runner"
-          style="height:28px;width:auto;display:block;">
+        <img id="dash-logo-img" src="https://res.cloudinary.com/klxkj07e/image/upload/v1788190308/NEW_LOGO_2_xcoysy.png" alt="Huella Runner"
+          style="height:28px;width:auto;display:block;"
+          onerror="this.style.display='none';document.getElementById('dash-logo-fallback').style.display='inline-block';">
+        <span id="dash-logo-fallback" style="display:none;font-size:1.5rem;font-weight:900;letter-spacing:1px;line-height:1;font-family:'Bebas Neue',sans-serif;">
+          <span style="color:var(--plata);display:inline-block;transform:skewX(-8deg);">HUELLA</span>
+          <span style="color:var(--amarillo);display:inline-block;transform:skewX(-8deg);">RUNNER</span>
+        </span>
       </a>
       <div style="display:flex; align-items:center; gap:12px;">
         <div class="saludo-topbar" style="font-size: 0.75rem; color: var(--gris-texto); white-space:nowrap;">Hola, <span id="user-name" style="color: var(--amarillo); font-weight: 900;">Corredor</span></div>
@@ -1683,7 +1702,7 @@
     <div class="card">
       <h3 style="text-align:center; margin-bottom:16px; font-size:1rem; text-transform:uppercase;">Nueva Zapatilla</h3>
       <div id="shoe-preview-wrap" style="display:none; text-align:center; margin-bottom:18px;">
-        <img id="shoe-preview-img" src="" alt="" style="width:120px;height:120px;object-fit:contain;border-radius:16px;background:var(--bg-color);border:1px solid var(--borde);padding:8px;">
+        <img id="shoe-preview-img" src="" alt="" style="width:120px;height:120px;object-fit:contain;border-radius:16px;background:var(--bg-color);border:1px solid var(--borde);padding:8px;" onerror="_localImgFallback(this)">
       </div>
       <div class="form-group">
         <label>Marca</label>
@@ -1768,8 +1787,13 @@
   <!-- VISTA: ELEGIR CONTRASEÑA NUEVA (tras entrar con una temporal) -->
   <div id="view-set-password" style="display: none;">
     <div style="text-align:center;position:relative;z-index:1;margin-top:8px;margin-bottom:16px;">
-      <img src="https://res.cloudinary.com/klxkj07e/image/upload/v1788190309/NEW_LOGO_lynhg6.png" alt="Huella Runner"
-        style="width:70%;max-width:280px;height:auto;display:block;margin:0 auto;">
+      <img id="setpw-logo-img" src="https://res.cloudinary.com/klxkj07e/image/upload/v1788190309/NEW_LOGO_lynhg6.png" alt="Huella Runner"
+        style="width:70%;max-width:280px;height:auto;display:block;margin:0 auto;"
+        onerror="this.style.display='none';document.getElementById('setpw-logo-fallback').style.display='block';">
+      <div id="setpw-logo-fallback" style="display:none;font-size:2.4rem;font-weight:900;letter-spacing:2px;line-height:1.05;font-family:'Bebas Neue',sans-serif;">
+        <span style="color:var(--plata);display:inline-block;transform:skewX(-8deg);">HUELLA</span>
+        <span style="color:var(--amarillo);display:inline-block;transform:skewX(-8deg);">RUNNER</span>
+      </div>
     </div>
     <div class="card">
       <h3 style="text-align:center; margin-bottom:8px; font-size:1rem; text-transform:uppercase;">Elegí tu contraseña nueva</h3>
@@ -2197,6 +2221,28 @@
   // se desincronizan nunca.
   // ════════════════════════════════════════════════════════════
   const IMG_NO_DISPONIBLE = "https://res.cloudinary.com/dlayzh9ln/image/upload/v1781901282/IMAGEN_NO_DISPONIBLE_xhrjte.png";
+
+  // Último respaldo, armado en el propio HTML (no pide nada a ningún
+  // servidor) — si Cloudinary se cae del todo, hasta IMG_NO_DISPONIBLE
+  // de arriba deja de cargar. _localImgFallback() se engancha al
+  // onerror de cada <img> de zapatilla: si la foto real falla, prueba
+  // una vez con IMG_NO_DISPONIBLE: si ESA también falla, cae acá.
+  const LOCAL_IMG_FALLBACK = "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400">' +
+    '<rect width="100%" height="100%" fill="#141414"/>' +
+    '<text x="50%" y="50%" fill="#888" font-family="sans-serif" font-size="20" text-anchor="middle" dominant-baseline="middle">Imagen no disponible</text>' +
+    '</svg>'
+  );
+  function _localImgFallback(imgEl) {
+    if (!imgEl || imgEl.dataset.localFallback === '1') return; // ya está en el respaldo final, no reintentar
+    if (imgEl.src !== IMG_NO_DISPONIBLE) {
+      imgEl.src = IMG_NO_DISPONIBLE; // primer intento: la genérica de siempre
+      imgEl.onerror = function() { _localImgFallback(imgEl); };
+      return;
+    }
+    imgEl.dataset.localFallback = '1';
+    imgEl.src = LOCAL_IMG_FALLBACK;
+  }
 
   // Normaliza marca/modelo a una key estable: minúsculas, sin acentos, espacios→"_"
   function _normKey(str) {
@@ -3507,7 +3553,7 @@
 
             // ── Foto ──
             '<div class="cf-photo-wrap">' +
-              '<img src="' + shoeImg + '" alt="' + sModelo + '" loading="lazy">' +
+              '<img src="' + shoeImg + '" alt="' + sModelo + '" loading="lazy" onerror="_localImgFallback(this)">' +
               '<div class="cf-badge ' + badgeCls + '">' + sMarca.toUpperCase() + '</div>' +
               warnHtml +
               dropHtml +
