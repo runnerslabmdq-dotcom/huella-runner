@@ -12,6 +12,32 @@ el GAS es la versión más nueva.
 
 ---
 
+## 02/09/2026 08:19 — PRUEBA (ajuste): splash con "Powered by" invisible + Login/Registro al ancho del logo
+
+Dos arreglos sobre la prueba de recién, todavía dentro del mismo
+checkpoint de vuelta (`dcbc68f`).
+
+**Bug real en el splash de la PWA**: al sacarle el `color: #555` a
+`.splash-sub` para poder pintar "Open" de rojo y "Sports" de amarillo
+por separado, quedó sin color la palabra "Powered by" — se veía negra
+sobre el fondo casi negro, invisible. Además la animación (zoom-in con
+1s de espera + 0.5s de duración, terminaba a los 1.5s) no llegaba a
+mostrarse entera: el splash se tapa con la app a los 1.2s
+(`setTimeout(irALaApp, 1200)`), así que se cortaba a la mitad. Ahora:
+color gris visible (`#999`) para "Powered by", texto un poco más
+grande (0.65rem → 0.78rem), y la animación arranca a los 0.3s y dura
+0.6s (termina a los 0.9s) — se ve completa con margen antes de que
+entre la app.
+
+**Login y Registro**: el logo y el texto "Powered by" ya tenían el
+mismo ancho de *contenedor* (70%, máx. 280px), pero el logo (imagen)
+llena ese contenedor de punta a punta y el texto, al estar centrado,
+no — quedaba visiblemente más angosto que el logo. Arreglado con
+`text-align-last: justify` (estira el texto con los espacios entre
+palabras hasta ocupar el ancho completo), más el logo un 5% más chico
+(70%→66%, 280px→266px) para que las dos líneas queden mejor
+proporcionadas.
+
 ## 02/09/2026 08:00 — PRUEBA: "Powered by Open Sports" en Login, Registro, splash y pie del dashboard
 
 **Reversible** — ver el checkpoint justo abajo (commit `dcbc68f`) para
