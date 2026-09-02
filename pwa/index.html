@@ -27,15 +27,24 @@
       align-items: center;
       gap: 20px;
     }
+    /* PRUEBA (02/09/2026): "Powered by Open Sports" con zoom-in a 1s —
+       ver checkpoint en HISTORIAL-CAMBIOS.md (dcbc68f) para volver
+       atrás (esto incluye sacar la animación, no solo el texto). */
     .splash-sub {
       font-size: 0.65rem;
-      color: #555;
       text-transform: uppercase;
       letter-spacing: 1.5px;
       width: 80%;
       max-width: 280px;
       margin: 0 auto;
       text-align: center;
+      opacity: 0;
+      transform: scale(0.8);
+      animation: splashSubZoomIn 0.5s ease-out 1s forwards;
+    }
+    @keyframes splashSubZoomIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to   { opacity: 1; transform: scale(1); }
     }
     .loader {
       width: 36px;
@@ -166,7 +175,7 @@
     <div>
       <img src="https://res.cloudinary.com/klxkj07e/image/upload/v1788190309/NEW_LOGO_lynhg6.png" alt="Huella Runner"
         style="width:80%;max-width:280px;height:auto;display:block;margin:0 auto;">
-      <div class="splash-sub">Powered by Huella Runner MDQ</div>
+      <div class="splash-sub">Powered by <span style="font-style:italic;color:#D12127;">Open <span style="color:#FFE600;">Sports</span></span></div>
     </div>
     <div class="loader"><div class="loader-bar"></div></div>
   </div>
