@@ -27,9 +27,13 @@
       align-items: center;
       gap: 20px;
     }
-    /* PRUEBA (02/09/2026): "Powered by Open Sports" con zoom-in a 1s —
-       ver checkpoint en HISTORIAL-CAMBIOS.md (dcbc68f) para volver
-       atrás (esto incluye sacar la animación, no solo el texto). */
+    /* 02/09/2026: la prueba "Powered by Open Sports" (ver
+       HISTORIAL-CAMBIOS.md) se sacó de acá porque este splash es lo
+       primero que ve CUALQUIER usuario real de la PWA, no solo el
+       fundador en modo demo — vuelve a decir "Huella Runner MDQ".
+       Queda sí la mejora que salió de esa misma prueba: el texto
+       entra con zoom-in a los 0.3s (antes aparecía de golpe, sin
+       animación ni color visible propio). */
     .splash-sub {
       font-size: 0.78rem;
       color: #999;
@@ -176,7 +180,7 @@
     <div>
       <img src="https://res.cloudinary.com/klxkj07e/image/upload/v1788190309/NEW_LOGO_lynhg6.png" alt="Huella Runner"
         style="width:80%;max-width:280px;height:auto;display:block;margin:0 auto;">
-      <div class="splash-sub">Powered by <span style="font-style:italic;color:#D12127;">Open <span style="color:#FFE600;">Sports</span></span></div>
+      <div class="splash-sub">Powered by <span style="font-style:italic;color:#C5B358;">Huella Runner</span> MDQ</div>
     </div>
     <div class="loader"><div class="loader-bar"></div></div>
   </div>

@@ -1,15 +1,15 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 02/09/2026 08:53 (hora Argentina)
+  Última actualización: 02/09/2026 09:18 (hora Argentina)
   Cambios en esta versión:
-    - PRUEBA (reversible), ajuste sobre la de recién: sacado el
-      text-align-last:justify de "Powered by Open Sports" en Login y
-      Registro (quedaba con espacios forzados entre palabras, feo) —
-      en cambio, letra bien más grande (0.62rem → 0.9rem) para
-      acercarse al ancho del logo sin estirar el texto.
+    - PRUEBA acotada solo al usuario demo: "Powered by Open Sports"
+      (Login, Registro, pie del dashboard) ya no se ve para todos —
+      vuelven a Huella Runner por defecto, y se activa en vivo
+      únicamente para edragotto@hotmail.com (nueva
+      _pintarPoweredBy(), ver HISTORIAL-CAMBIOS.md).
   Cambios en versiones anteriores:
-    - PRUEBA: "Powered by Open Sports" más grande en Login/Registro
-      (ver HISTORIAL-CAMBIOS.md, checkpoint dcbc68f).
+    - PRUEBA: sacado el justify feo de Login/Registro (ver
+      HISTORIAL-CAMBIOS.md, checkpoint dcbc68f).
   (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
   en la raíz del repo — a partir de ahora este encabezado solo guarda
   los últimos 2 cambios, para no seguir creciendo sin límite.)
@@ -1369,15 +1369,18 @@
   <!-- VISTA: LOGIN -->
   <div id="view-login" style="display:block;">
     <!-- Header -->
-    <!-- PRUEBA (02/09/2026): "Powered by Open Sports" — ver checkpoint
-         en HISTORIAL-CAMBIOS.md (dcbc68f) para volver atrás. -->
+    <!-- 02/09/2026: "Powered by Open Sports" (ver HISTORIAL-CAMBIOS.md)
+         queda solo para el usuario demo edragotto@hotmail.com — se
+         activa en vivo al escribir ese email en el campo de abajo (ver
+         _pintarPoweredBy() / listener en #log-email). Cualquier otro
+         usuario ve Huella Runner de siempre. -->
     <div style="text-align:center;position:relative;z-index:1;margin-top:8px;margin-bottom:16px;">
-      <div style="font-family:'Montserrat',sans-serif;color:var(--gris-powered);font-size:0.9rem;text-transform:uppercase;letter-spacing:1.5px;
-        margin-bottom:6px;font-weight:700;line-height:1;width:66%;max-width:266px;margin-left:auto;margin-right:auto;">
-        Powered by <span style="font-style:italic;color:#D12127;">Open <span style="color:#FFE600;">Sports</span></span>
+      <div id="login-powered-by" style="font-family:'Montserrat',sans-serif;color:var(--gris-powered);font-size:0.5rem;text-transform:uppercase;letter-spacing:1px;
+        margin-bottom:6px;font-weight:700;line-height:1;width:70%;max-width:280px;margin-left:auto;margin-right:auto;">
+        Powered by <span style="font-style:italic;">Huella <span style="color:var(--amarillo);">Runner</span></span> MDQ
       </div>
-      <img src="https://res.cloudinary.com/klxkj07e/image/upload/v1788190309/NEW_LOGO_lynhg6.png" alt="Huella Runner"
-        style="width:66%;max-width:266px;height:auto;display:block;margin:0 auto;">
+      <img id="login-logo-img" src="https://res.cloudinary.com/klxkj07e/image/upload/v1788190309/NEW_LOGO_lynhg6.png" alt="Huella Runner"
+        style="width:70%;max-width:280px;height:auto;display:block;margin:0 auto;">
       <div style="font-size:0.85rem;font-weight:900;letter-spacing:4px;text-transform:uppercase;
         color:#CCFF00;margin-top:8px;text-shadow:0 0 8px rgba(204,255,0,0.6);">
         Demo
@@ -1392,7 +1395,8 @@
     <div class="card">
       <div class="form-group">
         <label>Email</label>
-        <input type="email" id="log-email" placeholder="tu@email.com">
+        <input type="email" id="log-email" placeholder="tu@email.com"
+          oninput="_pintarPoweredBy('login', this.value)" onblur="_pintarPoweredBy('login', this.value)">
       </div>
       <div class="form-group">
         <label>Contraseña</label>
@@ -1436,15 +1440,18 @@
   <!-- VISTA: REGISTRO -->
   <div id="view-register" style="display:none;">
     <!-- Header -->
-    <!-- PRUEBA (02/09/2026): "Powered by Open Sports" — ver checkpoint
-         en HISTORIAL-CAMBIOS.md (dcbc68f) para volver atrás. -->
+    <!-- 02/09/2026: "Powered by Open Sports" (ver HISTORIAL-CAMBIOS.md)
+         queda solo para el usuario demo edragotto@hotmail.com — se
+         activa en vivo al escribir ese email en el campo de abajo (ver
+         _pintarPoweredBy() / listener en #reg-email). Cualquier otro
+         usuario ve Huella Runner de siempre. -->
     <div style="text-align:center;position:relative;z-index:1;margin-top:8px;margin-bottom:16px;">
-      <div style="font-family:'Montserrat',sans-serif;color:var(--gris-powered);font-size:0.9rem;text-transform:uppercase;letter-spacing:1.5px;
-        margin-bottom:6px;font-weight:700;line-height:1;width:66%;max-width:266px;margin-left:auto;margin-right:auto;">
-        Powered by <span style="font-style:italic;color:#D12127;">Open <span style="color:#FFE600;">Sports</span></span>
+      <div id="reg-powered-by" style="font-family:'Montserrat',sans-serif;color:var(--gris-powered);font-size:0.5rem;text-transform:uppercase;letter-spacing:1px;
+        margin-bottom:6px;font-weight:700;line-height:1;width:70%;max-width:280px;margin-left:auto;margin-right:auto;">
+        Powered by <span style="font-style:italic;">Huella <span style="color:var(--amarillo);">Runner</span></span> MDQ
       </div>
-      <img src="https://res.cloudinary.com/klxkj07e/image/upload/v1788190309/NEW_LOGO_lynhg6.png" alt="Huella Runner"
-        style="width:66%;max-width:266px;height:auto;display:block;margin:0 auto;">
+      <img id="reg-logo-img" src="https://res.cloudinary.com/klxkj07e/image/upload/v1788190309/NEW_LOGO_lynhg6.png" alt="Huella Runner"
+        style="width:70%;max-width:280px;height:auto;display:block;margin:0 auto;">
     </div>
 
     <div class="card">
@@ -1460,7 +1467,8 @@
       </div>
       <div class="form-group">
         <label>Email</label>
-        <input type="email" id="reg-email" placeholder="tu@email.com">
+        <input type="email" id="reg-email" placeholder="tu@email.com"
+          oninput="_pintarPoweredBy('reg', this.value)" onblur="_pintarPoweredBy('reg', this.value)">
       </div>
       <div class="form-group">
         <label>Contraseña</label>
@@ -1658,10 +1666,12 @@
       </div>
     </div>
     <!-- POWERED BY — al fondo del dashboard -->
-    <!-- PRUEBA (02/09/2026): "Powered by Open Sports" — ver checkpoint
-         en HISTORIAL-CAMBIOS.md (dcbc68f) para volver atrás. -->
+    <!-- 02/09/2026: "Powered by Open Sports" (ver HISTORIAL-CAMBIOS.md)
+         queda solo para edragotto@hotmail.com — se decide por
+         currentUserEmail en loadDashboard() (ver _pintarPoweredBy()).
+         Cualquier otro usuario ve Huella Runner de siempre. -->
     <div style="text-align:center; padding: 8px 0 16px; margin-top: -10px;">
-      <span style="font-family:'Montserrat',sans-serif; font-size:0.62rem; font-weight:700; color:var(--gris-powered); text-transform:uppercase; letter-spacing:2px;">Powered by <span style="font-style:italic;color:#D12127;">Open <span style="color:#FFE600;">Sports</span></span></span>
+      <span id="dash-powered-by" style="font-family:'Montserrat',sans-serif; font-size:0.62rem; font-weight:700; color:var(--gris-powered); text-transform:uppercase; letter-spacing:2px;">Powered by <span style="font-style:italic;">Huella <span style="color:var(--amarillo);">Runner</span></span> MDQ</span>
     </div>
 
   </div>
@@ -2098,6 +2108,40 @@
   // sponsor mostrar en cada zapatilla. Ver DEV San Luis en renderArmario().
   let currentUserProvincia = '';
   const KM_LIMITE_DEFAULT = 850; // igual al umbral global de trail-points.gs (TP.KM_UMBRAL_CUPON)
+
+  // ── PRUEBA Open Sports (02/09/2026), solo para el usuario demo ──
+  // "Powered by Open Sports" en vez de "Powered by Huella Runner MDQ"
+  // — únicamente para edragotto@hotmail.com, en Login/Registro (se
+  // decide en vivo por el email que se va escribiendo, ver
+  // oninput/onblur en #log-email y #reg-email) y en el pie del
+  // dashboard (se decide por currentUserEmail, ver loadDashboard()).
+  // Cualquier otro usuario ve Huella Runner de siempre — ver
+  // HISTORIAL-CAMBIOS.md para el detalle completo de la prueba.
+  var EMAIL_DEMO_OPEN_SPORTS = 'edragotto@hotmail.com';
+  var HTML_POWERED_HUELLA = 'Powered by <span style="font-style:italic;">Huella <span style="color:var(--amarillo);">Runner</span></span> MDQ';
+  var HTML_POWERED_OPENSPORTS = 'Powered by <span style="font-style:italic;color:#D12127;">Open <span style="color:#FFE600;">Sports</span></span>';
+
+  function _pintarPoweredBy(prefix, email) {
+    var poweredEl = document.getElementById(prefix + '-powered-by');
+    if (!poweredEl) return;
+    var logoEl = document.getElementById(prefix + '-logo-img');
+    var esDemo = (email || '').toString().trim().toLowerCase() === EMAIL_DEMO_OPEN_SPORTS;
+    if (esDemo) {
+      poweredEl.style.fontSize = '0.9rem';
+      poweredEl.style.letterSpacing = '1.5px';
+      poweredEl.style.width = '66%';
+      poweredEl.style.maxWidth = '266px';
+      poweredEl.innerHTML = HTML_POWERED_OPENSPORTS;
+      if (logoEl) { logoEl.style.width = '66%'; logoEl.style.maxWidth = '266px'; }
+    } else {
+      poweredEl.style.fontSize = '0.5rem';
+      poweredEl.style.letterSpacing = '1px';
+      poweredEl.style.width = '70%';
+      poweredEl.style.maxWidth = '280px';
+      poweredEl.innerHTML = HTML_POWERED_HUELLA;
+      if (logoEl) { logoEl.style.width = '70%'; logoEl.style.maxWidth = '280px'; }
+    }
+  }
 
   // =====================================================
   // TEMA CLARO / OSCURO
@@ -3261,6 +3305,7 @@
 
   function loadDashboard() {
     _loadRetries = 0;
+    _pintarPoweredBy('dash', currentUserEmail);
     // Trae la Provincia antes de pintar las zapatillas, porque el botón
     // de tienda sponsor (DEV San Luis) depende de ese dato. No bloquea
     // mucho: getPerfilUsuario es liviano comparado con getUserShoes.
