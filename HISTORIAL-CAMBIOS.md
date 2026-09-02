@@ -12,6 +12,35 @@ el GAS es la versión más nueva.
 
 ---
 
+## 02/09/2026 17:30 — Respaldo si Cloudinary se cae
+
+El fundador preguntó por un respaldo de texto para el logo por si se
+cae el servicio, y de paso hizo notar algo más grande: **todas** las
+fotos de zapatillas, las genéricas por marca, y hasta la imagen de
+"Imagen no disponible" (`IMG_NO_DISPONIBLE`) están alojadas en
+Cloudinary — si el servicio tiene una caída completa, no se rompe solo
+el logo, se rompe toda la parte visual de la app a la vez, íconos
+rotos por todos lados.
+
+No se migró nada de lugar (sería un esfuerzo grande para un riesgo de
+baja probabilidad) — en cambio, se agregó un respaldo en dos frentes,
+usando el evento `onerror` de `<img>`:
+
+**Logos** (`gas/index.html` ×4: Login, Registro, encabezado del
+dashboard, "Elegí tu contraseña nueva"; `gas/admin.html` ×1;
+`pwa/index.html` ×1, el splash): si la imagen no carga, cae al mismo
+texto+CSS con el que arrancó el proyecto (skew, plata/amarillo) — ya
+no vive en el CSS compartido (se había limpiado al pasar al logo real,
+ver 31/08), así que quedó como bloque inline al lado de cada `<img>`,
+oculto hasta que haga falta.
+
+**Fotos de zapatillas** (`gas/index.html`, tarjeta activa, Locker, y
+preview de "Nueva zapatilla"): nueva `_localImgFallback()`. Si la foto
+real falla, primero prueba con `IMG_NO_DISPONIBLE` (la genérica de
+siempre); si ESA también falla (Cloudinary caído del todo), cae a un
+SVG armado directo en el HTML con `data:` URI — no pide nada a ningún
+servidor, así que no puede fallar por el mismo motivo que las demás.
+
 ## 02/09/2026 12:50 — Skechers Max Cushioning Propulsion: foto propia + drop
 
 En `gas/index.html`: agregada la foto propia del modelo (`modelImages`,
