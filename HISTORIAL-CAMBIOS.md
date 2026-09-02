@@ -12,6 +12,40 @@ el GAS es la versión más nueva.
 
 ---
 
+## 02/09/2026 08:00 — PRUEBA: "Powered by Open Sports" en Login, Registro, splash y pie del dashboard
+
+**Reversible** — ver el checkpoint justo abajo (commit `dcbc68f`) para
+volver a "Powered by Huella Runner MDQ" si la prueba no convence.
+
+Simulación para mostrarle a Open Sports en la reunión cómo se vería su
+marca integrada a la app, sin tocar el logo todavía (eso lo definimos
+después, a pedido del fundador). Cambiado el texto "Powered by Huella
+Runner MDQ" por "Powered by Open Sports", con los mismos colores de
+marca que ya usa el botón "Ver en tienda" (`.cf-btn-opensports` en
+`gas/index.html`): rojo `#D12127` para "Open", amarillo `#FFE600` para
+"Sports", misma tipografía (Montserrat, cursiva) que tenía "Huella
+Runner".
+
+4 lugares tocados:
+- `gas/index.html`: Login, Registro y pie del dashboard.
+- `pwa/index.html`: splash de entrada — de paso, el texto ahora
+  aparece con una animación de zoom-in (opacity + scale) 1 segundo
+  después de que se ve el logo, para que la marca de Open Sports entre
+  con un poco más de impacto en vez de aparecer de golpe.
+
+## 02/09/2026 08:00 — Checkpoint de respaldo antes de la prueba "Powered by Open Sports"
+
+Commit de referencia `dcbc68f`, punto "conocido bueno" confirmado por
+Esteban antes de tocar `gas/index.html` y `pwa/index.html` para
+simular cómo se vería la app con "Powered by Open Sports" en vez de
+"Powered by Huella Runner MDQ" — pensado para mostrarle a Open Sports
+en la reunión, no para quedar así en producción. Mismo mecanismo ya
+usado antes con esta misma idea (agosto, "PRUEBA v1/v2/v3 Naming
+Rights Open Sports") y con el experimento del iframe (12/08).
+
+Si la prueba no convence: volver al estado de `dcbc68f` en
+`gas/index.html` y `pwa/index.html`.
+
 ## 01/09/2026 11:47 — "Powered by" achicado al ancho del logo
 
 A pedido del fundador, viendo capturas del celu: en Login y Registro
