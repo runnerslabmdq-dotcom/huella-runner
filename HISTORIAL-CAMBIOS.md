@@ -12,6 +12,11 @@ el GAS es la versión más nueva.
 
 ---
 
+## 03/09/2026 12:21 — Puma Fast-R Nitro Elite 3
+
+Modelo nuevo en `catalogo{}` (`gas/index.html`), con foto propia y
+drop 8mm / talón 40mm / antepié 32mm.
+
 ## 03/09/2026 10:35 — 3 Adidas Terrex nuevos + grupo "En Carrera | Running MDQ"
 
 En `gas/index.html`:
