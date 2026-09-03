@@ -1,16 +1,12 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 02/09/2026 17:30 (hora Argentina)
+  Última actualización: 03/09/2026 10:35 (hora Argentina)
   Cambios en esta versión:
-    - Respaldo si Cloudinary se cae: los 4 logos de imagen (Login,
-      Registro, encabezado, elegir contraseña) caen al texto/CSS de
-      siempre si la imagen no carga; las fotos de zapatillas (tarjeta,
-      Locker, preview de "Nueva zapatilla") tienen un último respaldo
-      armado en el HTML (SVG local, no pide nada a ningún servidor)
-      para el caso en que hasta IMG_NO_DISPONIBLE falle. Ver
-      _localImgFallback() y HISTORIAL-CAMBIOS.md.
+    - 3 Adidas Terrex nuevos (Anylander, Freehiker 3, Skychaser Ax5):
+      foto propia, drop/talón/antepié, y agregados a modelosTrail.
+    - Grupo nuevo en el desplegable: "En Carrera | Running MDQ".
   Cambios en versiones anteriores:
-    - Skechers Max Cushioning Propulsion: foto propia + drop (ver
+    - Respaldo si Cloudinary se cae (logos + fotos de zapatillas, ver
       HISTORIAL-CAMBIOS.md).
   (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
   en la raíz del repo — a partir de ahora este encabezado solo guarda
@@ -1584,6 +1580,7 @@
             <option value="Cuerpos en Movimiento Team">Cuerpos en Movimiento Team</option>
             <option value="Deportes Mar del Plata">Deportes Mar del Plata</option>
             <option value="EmpoweRun">EmpoweRun</option>
+            <option value="En Carrera | Running MDQ">En Carrera | Running MDQ</option>
             <option value="Ezeiza Run">Ezeiza Run</option>
             <option value="FC Running Team (La Plata)">FC Running Team (La Plata)</option>
             <option value="Fenix Team">Fenix Team</option>
@@ -2322,6 +2319,9 @@
     "adidas_response_2":             "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784309378/Adidas_Response_2_ST_puheud.png",
     "adidas_terrex_agravic_3":       "https://res.cloudinary.com/klxkj07e/image/upload/v1787778227/Adidas_Terrex_Agravic_3_b01h2q.jpg",
     "adidas_terrex_agravic_4":       "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784776872/Adidas_Terrex_Agravic_4_TT_kcacj2.png",
+    "adidas_terrex_anylander":       "https://res.cloudinary.com/klxkj07e/image/upload/v1788441944/Adidas_Terrex_Anylander_TT_ffzfdi.jpg",
+    "adidas_terrex_freehiker_3":     "https://res.cloudinary.com/klxkj07e/image/upload/v1788441944/Adidas_Terrex_Freehiker_3_TT_mzuep9.jpg",
+    "adidas_terrex_skychaser_ax5":   "https://res.cloudinary.com/klxkj07e/image/upload/v1788441943/Adidas_Terrex_Skychaser_Ax5_TT_h3w9ou.jpg",
     "asics_gel_nimbus_26":           "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784516015/Asics_Gel_Nimbus_26_y9xxun.png",
     "asics_sonicblast":              "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784516014/Asics_Soniblast_ST_q6yctt.png",
     "asics_kayano_32":               "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784515590/Asics_Cayano_32_ST_t1micm.png",
@@ -2400,6 +2400,9 @@
     "adidas_supernova_rise_3":       { drop: 8,   talon: 37,   antepie: 29 },
     "adidas_terrex_agravic_3":       { drop: 8,   talon: 31,   antepie: 23 },
     "adidas_terrex_agravic_4":       { drop: 8,   talon: 36,   antepie: 28 },
+    "adidas_terrex_anylander":       { drop: 10,  talon: 27,   antepie: 17 },
+    "adidas_terrex_freehiker_3":     { drop: 9.5, talon: 42.5, antepie: 33 },
+    "adidas_terrex_skychaser_ax5":   { drop: 10,  talon: 32,   antepie: 22 },
     "adidas_ultrarun_5":             { drop: 10,  talon: 34.3, antepie: 24.8 },
 
     // — Nike (26/08/2026) —
@@ -2651,6 +2654,9 @@
       "Switch FWD",
       "Terrex Agravic 3",
       "Terrex Agravic 4",
+      "Terrex Anylander",
+      "Terrex Freehiker 3",
+      "Terrex Skychaser Ax5",
       "Ultraboost 5",
       "Ultrarun 5",
       "Zenboost"
@@ -2703,6 +2709,7 @@
     "salomon_ultra_flow_2", "salomon_ultra_glide_4_trail", "salomon_x_adventure",
     "saucony_peregrine_16_blanca", "saucony_peregrine_16_carbon", "saucony_xodus_4",
     "adidas_adizero_evo_sl_atr", "adidas_terrex_agravic_3", "adidas_terrex_agravic_4",
+    "adidas_terrex_anylander", "adidas_terrex_freehiker_3", "adidas_terrex_skychaser_ax5",
     "asics_gel_trebuco_13",
     "new_balance_fresh_foam_x_hierro_v9",
   ]);
