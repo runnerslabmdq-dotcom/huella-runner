@@ -12,6 +12,22 @@ el GAS es la versión más nueva.
 
 ---
 
+## 03/09/2026 10:35 — 3 Adidas Terrex nuevos + grupo "En Carrera | Running MDQ"
+
+En `gas/index.html`:
+
+- **Adidas Terrex Anylander**: 10mm drop / 27mm talón / 17mm antepié.
+- **Adidas Terrex Freehiker 3**: 9.5mm drop (rango 9-10mm) / 42.5mm
+  talón (rango 42-43mm) / 33mm antepié.
+- **Adidas Terrex Skychaser Ax5**: 10mm drop / 32mm talón / 22mm
+  antepié.
+
+Los 3 con foto propia y agregados a `modelosTrail` (línea Terrex, son
+de trail/hiking).
+
+Grupo nuevo en el desplegable de registro/perfil: "En Carrera |
+Running MDQ".
+
 ## 02/09/2026 17:30 — Respaldo si Cloudinary se cae
 
 El fundador preguntó por un respaldo de texto para el logo por si se
