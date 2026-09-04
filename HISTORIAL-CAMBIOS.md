@@ -12,6 +12,35 @@ el GAS es la versión más nueva.
 
 ---
 
+## 04/09/2026 12:48 — PRUEBA: "Plantillas Jump Box", solo edragotto@hotmail.com
+
+Producto demo — no es una marca de zapatillas real, es una prueba de
+si Huella Runner puede trackear otro tipo de producto (una plantilla
+de fibra de carbono). Visible únicamente para el usuario
+`edragotto@hotmail.com`; el resto de los usuarios no ve nada distinto.
+
+En `gas/index.html`:
+
+- **Desplegable de Marca** (pantalla "Nueva zapatilla"): nueva
+  `_agregarMarcaDemo()`, llamada desde `loadDashboard()` — agrega
+  "Plantillas Jump Box" al final de la lista (antes de "Otras...")
+  solo si el usuario logueado es el demo; si no lo es, la saca (por si
+  quedó de una sesión anterior en el mismo navegador).
+- **Catálogo**: `catalogo["Plantillas Jump Box"] = ["Fibra de
+  Carbono"]` — sin datos de Drop/Talón/Antepié (no es calzado, no
+  aplica) y sin la etiqueta "(Trail)/(Calle)" en el desplegable de
+  modelo (tampoco aplica).
+- **Foto**: propia, con un badge nuevo "FIBRA DE CARBONO" en la
+  esquina superior derecha de la tarjeta (`.cf-badge-carbono`) — al
+  lado del badge de marca de siempre, que queda a la izquierda.
+- **Talles**: al elegir esta "marca", el desplegable de talle cambia
+  de EU (35-48) a rango AR con la medida de la plantilla en cm (tabla
+  oficial de Jump Box, 33-34 a 47-48), y la etiqueta del campo pasa a
+  decir "Talle (AR)". Nuevas `_fillTalleEU()` / `_fillTalleAR()`.
+- **Todo lo demás sigue igual**: el límite de km por defecto (850) y
+  la carga de kilómetros usan exactamente el mismo mecanismo que
+  cualquier zapatilla — no se tocó nada ahí.
+
 ## 03/09/2026 12:21 — Puma Fast-R Nitro Elite 3
 
 Modelo nuevo en `catalogo{}` (`gas/index.html`), con foto propia y

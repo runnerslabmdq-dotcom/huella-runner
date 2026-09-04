@@ -1,12 +1,14 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 03/09/2026 12:21 (hora Argentina)
+  Última actualización: 04/09/2026 12:48 (hora Argentina)
   Cambios en esta versión:
-    - Puma Fast-R Nitro Elite 3: modelo nuevo, con foto propia y drop
-      8mm / talón 40mm / antepié 32mm.
+    - PRUEBA, solo edragotto@hotmail.com: "Plantillas Jump Box" —
+      producto demo (no es una marca de zapatillas), aparece al final
+      del desplegable de Marca, foto propia con badge "FIBRA DE
+      CARBONO", y talles en rango AR (con cm de plantilla) en vez de
+      EU. Ver HISTORIAL-CAMBIOS.md.
   Cambios en versiones anteriores:
-    - 3 Adidas Terrex nuevos + grupo "En Carrera | Running MDQ" (ver
-      HISTORIAL-CAMBIOS.md).
+    - Puma Fast-R Nitro Elite 3 (ver HISTORIAL-CAMBIOS.md).
   (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
   en la raíz del repo — a partir de ahora este encabezado solo guarda
   los últimos 2 cambios, para no seguir creciendo sin límite.)
@@ -313,6 +315,18 @@
       font-family: 'Bebas Neue', sans-serif;
       font-size: 0.65rem; letter-spacing: 1px;
       z-index: 2; backdrop-filter: blur(4px);
+    }
+    /* PRUEBA (03/09/2026), solo edragotto@hotmail.com: badge "Fibra de
+       Carbono" para el producto demo "Plantillas Jump Box" — misma
+       idea que .cf-badge pero en la esquina opuesta, para no pisar el
+       badge de marca. Ver HISTORIAL-CAMBIOS.md. */
+    .cf-badge-carbono {
+      position: absolute; top: 8px; right: 8px;
+      padding: 2px 8px; border-radius: 6px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.65rem; letter-spacing: 1px;
+      z-index: 2; backdrop-filter: blur(4px);
+      background: rgba(197,179,88,0.85); color: #080808;
     }
     /* Badge imagen genérica */
 .cf-badge-generica {
@@ -1738,7 +1752,7 @@
       </div>
       <div style="display: flex; gap: 10px;">
         <div class="form-group" style="flex: 1;">
-          <label>Talle (EU)</label>
+          <label id="shoe-talle-label">Talle (EU)</label>
           <select id="shoe-talle"></select>
         </div>
         <div class="form-group" style="flex: 1;">
@@ -2161,6 +2175,26 @@
     }
   }
 
+  // Agrega/saca la opción "Plantillas Jump Box" del desplegable de
+  // Marca — solo para el usuario demo, al final de la lista (antes de
+  // "Otras..."). Idempotente: no duplica si loadDashboard() se llama
+  // más de una vez.
+  function _agregarMarcaDemo(email) {
+    var sel = document.getElementById('shoe-marca');
+    if (!sel) return;
+    var esDemo = (email || '').toString().trim().toLowerCase() === EMAIL_DEMO_OPEN_SPORTS;
+    var yaEsta = sel.querySelector('option[value="Plantillas Jump Box"]');
+    if (esDemo && !yaEsta) {
+      var o = document.createElement('option');
+      o.value = 'Plantillas Jump Box';
+      o.text = 'Plantillas Jump Box';
+      var otras = sel.querySelector('option[value="__otras__"]');
+      if (otras) sel.insertBefore(o, otras); else sel.add(o);
+    } else if (!esDemo && yaEsta) {
+      yaEsta.remove();
+    }
+  }
+
   // =====================================================
   // TEMA CLARO / OSCURO
   // =====================================================
@@ -2350,6 +2384,7 @@
     "puma_foreverrun_nitro_2_w":     "https://res.cloudinary.com/klxkj07e/image/upload/v1788183345/Puma_ForeverRun_Nitro_2_M_lui1na.jpg",
     "puma_foreverrun_nitro":         "https://i.imgur.com/UOR1vDy.jpeg",
     "puma_fast-r_nitro_elite_3":     "https://res.cloudinary.com/klxkj07e/image/upload/v1788448710/Puma_Fast_R_Nitro_3_ST_s7ojxl.jpg",
+    "plantillas_jump_box_fibra_de_carbono": "https://res.cloudinary.com/klxkj07e/image/upload/v1788536399/Gemini_Generated_Image_jpue9djpue9djpue_hoqz0c.jpg",
     "puma_deviate_nitro_2":          "https://i.imgur.com/rqFpMSC.jpeg",
     "puma_deviate_nitro_3":          "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784774137/Puma_Deviate_Nitro_3_ST_kauopp.png",
     "puma_deviate_nitro_3_digitokyo":"https://i.imgur.com/xCEiK1S.jpeg",
@@ -2685,6 +2720,12 @@
     "Skechers":     ["Aero Burst", "Aero Spark", "Glide Step Altus", "Max Cushioning Propulsion"],
     "Topper":       ["Stance 3"],
     "Under Armour": ["Hovr Synergy", "Infinite Elite"],
+    // PRUEBA (03/09/2026), solo edragotto@hotmail.com: producto demo,
+    // no es una marca de zapatillas real — la opción en el
+    // desplegable de Marca se agrega en vivo desde loadDashboard()
+    // (_agregarMarcaDemo()), no queda visible para el resto. Ver
+    // HISTORIAL-CAMBIOS.md.
+    "Plantillas Jump Box": ["Fibra de Carbono"],
   };
 
   // ════════════════════════════════════════════════════════════
@@ -2730,16 +2771,52 @@
     return map[m] || 'badge-default';
   }
 
+  function _fillTalleEU(sel) {
+    sel.innerHTML = '';
+    for (let t = 35; t <= 48; t += 0.5) {
+      let o = document.createElement('option'); o.value = t; o.text = t; sel.add(o);
+    }
+  }
+
+  // PRUEBA (03/09/2026), solo edragotto@hotmail.com: talles de
+  // plantilla no van en EU, van en el rango AR con su medida en cm —
+  // tabla oficial de Jump Box. Ver HISTORIAL-CAMBIOS.md.
+  const TALLES_AR_PLANTILLA = [
+    ['33 - 34', '22,0 - 22,7 cm'],
+    ['35 - 36', '23,2 - 23,5 cm'],
+    ['37 - 38', '24,3 - 24,6 cm'],
+    ['39 - 40', '25,0 - 25,4 cm'],
+    ['41 - 42', '25,7 - 26,2 cm'],
+    ['43 - 44', '26,5 - 27,1 cm'],
+    ['45 - 46', '27,5 - 28,9 cm'],
+    ['47 - 48', '29,0 - 30,0 cm'],
+  ];
+  function _fillTalleAR(sel) {
+    sel.innerHTML = '';
+    TALLES_AR_PLANTILLA.forEach(function(par) {
+      let o = document.createElement('option');
+      o.value = 'AR ' + par[0]; o.text = 'AR ' + par[0] + ' (' + par[1] + ')';
+      sel.add(o);
+    });
+  }
+
   function initApp() {
     const ts = document.getElementById('shoe-talle');
-    for(let t = 35; t <= 48; t += 0.5) {
-      let o = document.createElement('option'); o.value = t; o.text = t; ts.add(o);
-    }
+    _fillTalleEU(ts);
   }
 
   function onMarcaChange() {
     const sel   = document.getElementById('shoe-marca');
     const marca = sel.value;
+    const talleSel = document.getElementById('shoe-talle');
+    const talleLbl = document.getElementById('shoe-talle-label');
+    if (marca === 'Plantillas Jump Box') {
+      _fillTalleAR(talleSel);
+      if (talleLbl) talleLbl.textContent = 'Talle (AR)';
+    } else {
+      _fillTalleEU(talleSel);
+      if (talleLbl) talleLbl.textContent = 'Talle (EU)';
+    }
     const wrapMarca = document.getElementById('wrap-marca-manual');
     if (marca === '__otras__') {
       wrapMarca.classList.add('visible');
@@ -2764,7 +2841,8 @@
       catalogo[marca].forEach(x => {
         let o = document.createElement('option');
         o.value = x; // lo que se guarda en el Sheet no cambia
-        o.text = x + (_esTrail(marca, x) ? ' (Trail)' : ' (Calle)'); // solo la etiqueta visible del desplegable
+        // etiqueta Trail/Calle no aplica a "Plantillas Jump Box" (no es calzado)
+        o.text = marca === 'Plantillas Jump Box' ? x : x + (_esTrail(marca, x) ? ' (Trail)' : ' (Calle)');
         s.add(o);
       });
       const oOtros = document.createElement('option');
@@ -3360,6 +3438,7 @@
   function loadDashboard() {
     _loadRetries = 0;
     _pintarPoweredBy('dash', currentUserEmail);
+    _agregarMarcaDemo(currentUserEmail);
     // Trae la Provincia antes de pintar las zapatillas, porque el botón
     // de tienda sponsor (DEV San Luis) depende de ese dato. No bloquea
     // mucho: getPerfilUsuario es liviano comparado con getUserShoes.
@@ -3543,6 +3622,12 @@
           '</div>'
         : '';
       var badgeCls  = getBrandBadgeClass(s.Marca);
+      // PRUEBA (03/09/2026), solo edragotto@hotmail.com: badge extra
+      // para el producto demo "Plantillas Jump Box" — ver
+      // HISTORIAL-CAMBIOS.md.
+      var carbonoHtml = (s.Marca === 'Plantillas Jump Box')
+        ? '<div class="cf-badge-carbono">FIBRA DE CARBONO</div>'
+        : '';
       // Foto real de ESTA zapatilla (columna Foto_URL en el Sheet, cargada a
       // mano por el admin) tiene prioridad sobre la genérica del modelo.
       var fotoReal  = (s.Foto_URL || '').toString().trim();
@@ -3563,6 +3648,7 @@
             '<div class="cf-photo-wrap">' +
               '<img src="' + shoeImg + '" alt="' + sModelo + '" loading="lazy" onerror="_localImgFallback(this)">' +
               '<div class="cf-badge ' + badgeCls + '">' + sMarca.toUpperCase() + '</div>' +
+              carbonoHtml +
               warnHtml +
               dropHtml +
               '<button class="cf-btn-delete" title="Eliminar zapatilla" ' +
