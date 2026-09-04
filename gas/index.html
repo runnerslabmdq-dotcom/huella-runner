@@ -1,14 +1,15 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 04/09/2026 12:48 (hora Argentina)
+  Última actualización: 04/09/2026 13:03 (hora Argentina)
   Cambios en esta versión:
-    - PRUEBA, solo edragotto@hotmail.com: "Plantillas Jump Box" —
-      producto demo (no es una marca de zapatillas), aparece al final
-      del desplegable de Marca, foto propia con badge "FIBRA DE
-      CARBONO", y talles en rango AR (con cm de plantilla) en vez de
-      EU. Ver HISTORIAL-CAMBIOS.md.
+    - PRUEBA (ajuste), solo edragotto@hotmail.com: botón "📷 JUMP BOX"
+      en la tarjeta de "Plantillas Jump Box" (negro + verde lima, como
+      su logo), enlaza a instagram.com/jumpbox.ar en vez del botón de
+      tienda de siempre. Fix de paso: la línea de talle no duplica más
+      "EU" delante de "AR..." para este producto.
   Cambios en versiones anteriores:
-    - Puma Fast-R Nitro Elite 3 (ver HISTORIAL-CAMBIOS.md).
+    - PRUEBA: producto demo "Plantillas Jump Box" (ver
+      HISTORIAL-CAMBIOS.md).
   (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
   en la raíz del repo — a partir de ahora este encabezado solo guarda
   los últimos 2 cambios, para no seguir creciendo sin límite.)
@@ -525,6 +526,27 @@
     }
     .cf-btn-opensports:active { transform: scale(0.96); opacity: 0.88; }
     .cf-btn-opensports-sports { color: #FFE600; }
+    /* PRUEBA (04/09/2026), solo edragotto@hotmail.com: botón "Ver
+       Instagram" para el producto demo "Plantillas Jump Box" — mismo
+       estilo/tipografía que .cf-btn-opensports, colores del logo de
+       Jump Box (negro casi puro + verde lima). Ver HISTORIAL-CAMBIOS.md. */
+    .cf-btn-jumpbox {
+      flex: 1;
+      background: linear-gradient(180deg, #1a1a1a 0%, #0a0a0a 100%);
+      color: #CCFF00; border: 1px solid rgba(204,255,0,0.35);
+      padding: 9px 6px; border-radius: 10px;
+      font-size: 0.6rem; font-weight: 900;
+      font-style: italic;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      font-family: 'Montserrat', sans-serif;
+      white-space: nowrap;
+      line-height: 1;
+      display: flex; align-items: center; justify-content: center; gap: 4px;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.2s;
+    }
+    .cf-btn-jumpbox:active { transform: scale(0.96); opacity: 0.88; }
     /* ── Apagado: mismo estilo (cursiva, layout, "OPEN"+"SPORTS")
        guardado arriba para cuando haya un sponsor confirmado — acá
        solo se pisa el color, a gris sobre negro, sin click, con
@@ -691,7 +713,7 @@
         font-size: 0.58rem;
         letter-spacing: 0;
       }
-      .cf-btn-todotrail, .cf-btn-opensports {
+      .cf-btn-todotrail, .cf-btn-opensports, .cf-btn-jumpbox {
         padding: 7px 4px;
         font-size: 0.54rem;
       }
@@ -3579,7 +3601,17 @@
       // excepción cuando haya un sponsor real confirmado. ──
       var esUsuarioDemoOpenSports = (currentUserEmail || '').toString().trim().toLowerCase() === 'edragotto@hotmail.com';
       var shopRowHtml;
-      if (currentUserProvincia === 'San Luis') {
+      if (s.Marca === 'Plantillas Jump Box') {
+        // PRUEBA (04/09/2026), solo edragotto@hotmail.com: no es una
+        // tienda con talle/género, es el Instagram de Jump Box. Ver
+        // HISTORIAL-CAMBIOS.md.
+        shopRowHtml =
+          '<div class="cf-btn-row-shop">' +
+            '<button class="cf-btn-jumpbox" ' +
+              'onclick="event.stopPropagation(); window.open(\'https://www.instagram.com/jumpbox.ar/\', \'_blank\');">' +
+              '📷 JUMP BOX</button>' +
+          '</div>';
+      } else if (currentUserProvincia === 'San Luis') {
         shopRowHtml =
           '<div class="cf-btn-row-shop">' +
             '<button class="cf-btn-opensports" ' +
@@ -3663,7 +3695,9 @@
             '<div class="cf-info">' +
               '<div class="cf-model">' + sModelo + '</div>' +
               aliasHtml +
-              '<div class="cf-size">' + sMarca.toUpperCase() + ' | EU ' + sTalle + ' | ' + sGenero + '</div>' +
+              '<div class="cf-size">' + sMarca.toUpperCase() + ' | ' +
+                (s.Marca === 'Plantillas Jump Box' ? sTalle : 'EU ' + sTalle) +
+                ' | ' + sGenero + '</div>' +
             '</div>' +
 
             // ── Barra km ──

@@ -12,6 +12,23 @@ el GAS es la versión más nueva.
 
 ---
 
+## 04/09/2026 13:03 — PRUEBA (ajuste): botón "Jump Box" con su Instagram
+
+Sobre la prueba de recién, dos cambios en `gas/index.html`, siempre
+acotados a `edragotto@hotmail.com`:
+
+- El botón de tienda de la tarjeta de "Plantillas Jump Box" ya no
+  muestra "OPEN SPORTS" (no tiene sentido para este producto) — nuevo
+  `.cf-btn-jumpbox`, negro casi puro con letra verde lima (mismos
+  colores del logo de Jump Box), texto "📷 JUMP BOX", que abre
+  `instagram.com/jumpbox.ar` en una pestaña nueva. No usa
+  `irATiendaSponsor()` (esa función filtra por talle/género en una
+  tienda online — acá no aplica, es un link directo al Instagram).
+- Fix chico de paso: la línea de info de la tarjeta ("MARCA | Talle |
+  Género") armaba "EU AR 33 - 34" para este producto — duplicaba el
+  prefijo porque el talle ya viene con "AR" adelante. Ahora, solo para
+  esta marca, no antepone "EU".
+
 ## 04/09/2026 12:48 — PRUEBA: "Plantillas Jump Box", solo edragotto@hotmail.com
 
 Producto demo — no es una marca de zapatillas real, es una prueba de
