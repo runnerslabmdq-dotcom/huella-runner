@@ -1,14 +1,14 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 30/08/2026 09:59 (hora Argentina)
+// Última actualización: 07/09/2026 09:16 (hora Argentina)
 // Cambios en esta versión:
-//   - BUG real: deleteTraining() y editarEntrenamiento() podían dejar
-//     KM_Actuales con ruido de coma flotante (ej. "77.86999999999999")
-//     al restar/ajustar km con decimales. Ahora pasan el resultado por
-//     _kmRedondeado() (trail-points.gs) antes de guardarlo — mismo fix
-//     que en _sumarKmYVerificarUmbral.
+//   - Nueva registrarVisita(): fila liviana en Log_Visitas cada vez
+//     que alguien abre la app (llamada desde initApp() en
+//     gas/index.html). Sirve para comparar tráfico vs. registros
+//     nuevos desde el panel admin (ver HISTORIAL-CAMBIOS.md).
 // Cambios en versiones anteriores:
-//   - enviarNotificacion() acepta tambienEmail (ver HISTORIAL-CAMBIOS.md).
+//   - Fix ruido de coma flotante en deleteTraining()/editarEntrenamiento()
+//     (ver HISTORIAL-CAMBIOS.md).
 // (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
 // en la raíz del repo — a partir de ahora este encabezado solo guarda
 // los últimos 2 cambios, para no seguir creciendo sin límite.)
@@ -148,6 +148,22 @@ function appendDataByHeader(sheetName, defaultHeaders, dataObj) {
   }
   sheet.appendRow(newRow);
   SpreadsheetApp.flush();
+}
+
+// Métrica simple: una fila liviana (solo fecha) cada vez que alguien
+// abre la app y ve la pantalla de Login (gas/index.html, initApp()).
+// Sirve para comparar "cuánta gente entra" vs. "cuánta gente se
+// registra" (Fecha_Registro en Usuarios) — hoy no había ninguna forma
+// de saber si el problema de conseguir usuarios está en el tráfico o
+// en el formulario. No cuenta visitantes únicos (alguien que entra
+// todos los días suma una fila cada vez), es una señal de tendencia,
+// no un número exacto. Ver getInsightsExtendidos() en admin.gs.
+function registrarVisita() {
+  try {
+    appendDataByHeader('Log_Visitas', ['Fecha'], { Fecha: new Date() });
+  } catch (e) {
+    Logger.log('registrarVisita ERROR (no crítico): ' + e.toString());
+  }
 }
 
 // --- USUARIOS ---
