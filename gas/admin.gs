@@ -1,18 +1,14 @@
 // ============================================================
 // HUELLA RUNNER — admin.gs
-// Última actualización: 27/08/2026 09:08 (hora Argentina)
+// Última actualización: 07/09/2026 09:16 (hora Argentina)
 // Cambios en esta versión:
-//   - BUG real: el historial de notificaciones (Ver historial completo)
-//     mostraba la fecha en inglés y larguísima ("Wed Aug 26 2026
-//     21:36:00 GMT-0300 (hora estándar de Argentina)") — getHistorialNotificaciones()
-//     hacía .toString() directo sobre la celda Fecha, que Sheets a
-//     veces guarda como Date real en vez de mantener el texto. Nuevo
-//     _formatFechaCortaConHora() (usa _celdaADate()) muestra "dd/MM/aa
-//     hh:mm" en su lugar.
+//   - getInsightsExtendidos() suma visitasVsRegistros: aperturas de la
+//     app vs. registros nuevos en los últimos 7 días, para saber si el
+//     problema de conseguir usuarios está en el tráfico o en el
+//     formulario. Nueva tarjeta en Insights (ver HISTORIAL-CAMBIOS.md).
 // Cambios en versiones anteriores:
-//   - Nueva getZapatillasDeUsuario(): backend del botón 👟 en
-//     "Usuarios registrados" del panel admin, para ver las zapatillas
-//     de una persona sin ir al Sheet (ver HISTORIAL-CAMBIOS.md).
+//   - Fix fecha en inglés en el historial de notificaciones (ver
+//     HISTORIAL-CAMBIOS.md).
 // (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
 // en la raíz del repo — a partir de ahora este encabezado solo guarda
 // los últimos 2 cambios, para no seguir creciendo sin límite.)
@@ -778,6 +774,7 @@ function getInsightsExtendidos(token) {
 
     const ahora  = new Date();
     const hace30 = new Date(ahora.getTime() - 30 * 86400000);
+    const hace7  = new Date(ahora.getTime() - 7  * 86400000);
 
     if (trainSheet && trainSheet.getLastRow() > 1) {
       const tData    = trainSheet.getDataRange().getValues();
@@ -895,6 +892,31 @@ function getInsightsExtendidos(token) {
       return b.diasSinEntrenar - a.diasSinEntrenar;
     });
 
+    // --- Visitas vs. registros nuevos (últimos 7 días) — para saber si
+    // el problema de "no consigo usuarios" está en el tráfico (poca
+    // gente entra) o en el formulario (entra pero no termina de
+    // registrarse). Log_Visitas se llena con registrarVisita()
+    // (codigo.gs) — no cuenta visitantes únicos, ver esa función. ---
+    let visitas7 = 0;
+    const visitasSheet = ss.getSheetByName('Log_Visitas');
+    if (visitasSheet && visitasSheet.getLastRow() > 1) {
+      const vData  = visitasSheet.getDataRange().getValues();
+      const vFecha = vData[0].indexOf('Fecha');
+      for (let i = 1; i < vData.length; i++) {
+        const f = vFecha !== -1 ? new Date(vData[i][vFecha]) : null;
+        if (f && f >= hace7) visitas7++;
+      }
+    }
+    let registros7 = 0;
+    if (usersSheet && usersSheet.getLastRow() > 1) {
+      const rData    = usersSheet.getDataRange().getValues();
+      const rFechaReg = rData[0].indexOf('Fecha_Registro');
+      for (let i = 1; i < rData.length; i++) {
+        const f = rFechaReg !== -1 ? new Date(rData[i][rFechaReg]) : null;
+        if (f && f >= hace7) registros7++;
+      }
+    }
+
     // --- Tasa de lectura de notificaciones (sin contar las que el usuario borró) ---
     let notifEnviadas = 0, notifLeidas = 0;
     const notifSheet = ss.getSheetByName('Notificaciones');
@@ -931,6 +953,11 @@ function getInsightsExtendidos(token) {
         enviadas: notifEnviadas,
         leidas:   notifLeidas,
         pct:      notifEnviadas > 0 ? Math.round(notifLeidas / notifEnviadas * 100) : 0
+      },
+      visitasVsRegistros: {
+        visitas7:      visitas7,
+        registros7:    registros7,
+        conversionPct: visitas7 > 0 ? Math.round(registros7 / visitas7 * 100) : null
       }
     };
   } catch(e) {

@@ -1,14 +1,12 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 04/09/2026 13:03 (hora Argentina)
+  Última actualización: 07/09/2026 09:16 (hora Argentina)
   Cambios en esta versión:
-    - PRUEBA (ajuste), solo edragotto@hotmail.com: botón "📷 JUMP BOX"
-      en la tarjeta de "Plantillas Jump Box" (negro + verde lima, como
-      su logo), enlaza a instagram.com/jumpbox.ar en vez del botón de
-      tienda de siempre. Fix de paso: la línea de talle no duplica más
-      "EU" delante de "AR..." para este producto.
+    - Nueva métrica de tráfico: initApp() llama a registrarVisita()
+      (codigo.gs) cada vez que se abre la app, para comparar contra
+      los registros nuevos desde el panel admin. Ver HISTORIAL-CAMBIOS.md.
   Cambios en versiones anteriores:
-    - PRUEBA: producto demo "Plantillas Jump Box" (ver
+    - PRUEBA (ajuste): botón Jump Box con su Instagram (ver
       HISTORIAL-CAMBIOS.md).
   (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
   en la raíz del repo — a partir de ahora este encabezado solo guarda
@@ -2825,6 +2823,10 @@
   function initApp() {
     const ts = document.getElementById('shoe-talle');
     _fillTalleEU(ts);
+    // Métrica simple: se registra que alguien abrió la app (ve el
+    // Login). No bloquea nada si falla — es solo para saber "cuánta
+    // gente entra" vs. "cuánta gente se registra" (ver admin.gs).
+    try { google.script.run.registrarVisita(); } catch (e) {}
   }
 
   function onMarcaChange() {

@@ -12,6 +12,38 @@ el GAS es la versión más nueva.
 
 ---
 
+## 07/09/2026 09:16 — Métrica: aperturas de la app vs. registros nuevos
+
+El fundador plantea un problema real: crecen los seguidores en
+Instagram pero no los usuarios de la app, y hoy no había ninguna
+forma de saber si el problema está en que poca gente entra a la app,
+o en que entra pero no termina de registrarse — se estaría
+adivinando a ciegas qué arreglar.
+
+**Cómo se mide, en 3 partes:**
+
+1. `registrarVisita()` (`codigo.gs`): una fila liviana (solo fecha) en
+   una hoja nueva `Log_Visitas`, cada vez que se abre la app y se ve
+   la pantalla de Login. Se llama desde `initApp()`
+   (`gas/index.html`), sin bloquear nada si falla — es solo una
+   métrica, no algo crítico.
+2. `getInsightsExtendidos()` (`admin.gs`) suma `visitasVsRegistros`:
+   cuenta filas de `Log_Visitas` de los últimos 7 días y las compara
+   contra usuarios con `Fecha_Registro` en esos mismos 7 días, con el
+   % de conversión.
+3. Nueva tarjeta en Insights del panel admin (`admin.html`): "X
+   aperturas de la app esta semana → Y registros nuevos (~Z%)", con
+   botón "Actualizar".
+
+**Ojo con la lectura de este dato** (dejado bien claro en la
+descripción de la tarjeta): "aperturas" cuenta cada vez que se abre
+la app, no gente distinta — alguien que entra todos los días suma
+varias filas. Sirve para ver la tendencia (¿el problema es que no
+entra gente, o que entra y no se registra?), no como un número exacto
+de visitantes únicos. Con esto ya se puede saber, la semana que
+viene, si conviene invertir esfuerzo en el contenido de Instagram o
+en simplificar el formulario de registro.
+
 ## 04/09/2026 13:03 — PRUEBA (ajuste): botón "Jump Box" con su Instagram
 
 Sobre la prueba de recién, dos cambios en `gas/index.html`, siempre
