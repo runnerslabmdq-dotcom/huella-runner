@@ -1,12 +1,14 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 08/09/2026 09:21 (hora Argentina)
+  Última actualización: 08/09/2026 10:43 (hora Argentina)
   Cambios en esta versión:
-    - 2 grupos nuevos en el desplegable: "Elite Running Team (La
-      Plata)" y "Le Group (MDP)".
+    - PRUEBA, solo edragotto@hotmail.com: "Powered by Open Sports"
+      pasa de rojo/amarillo a dorado/bronce (#D4AF37 / #B8923D) —
+      quedaba desentonado desde que el botón de Open Sports ya había
+      pasado a esa paleta. Sigue con dos tonos distintos para "Open" y
+      "Sports".
   Cambios en versiones anteriores:
-    - Rediseño Sumar Km/Historial + Open Sports dorado (demo) (ver
-      HISTORIAL-CAMBIOS.md).
+    - 2 grupos nuevos en el desplegable (ver HISTORIAL-CAMBIOS.md).
   (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
   en la raíz del repo — a partir de ahora este encabezado solo guarda
   los últimos 2 cambios, para no seguir creciendo sin límite.)
@@ -2197,7 +2199,7 @@
   // HISTORIAL-CAMBIOS.md para el detalle completo de la prueba.
   var EMAIL_DEMO_OPEN_SPORTS = 'edragotto@hotmail.com';
   var HTML_POWERED_HUELLA = 'Powered by <span style="font-style:italic;">Huella <span style="color:var(--amarillo);">Runner</span></span> MDQ';
-  var HTML_POWERED_OPENSPORTS = 'Powered by <span style="font-style:italic;color:#D12127;">Open <span style="color:#FFE600;">Sports</span></span>';
+  var HTML_POWERED_OPENSPORTS = 'Powered by <span style="font-style:italic;color:#D4AF37;">Open <span style="color:#B8923D;">Sports</span></span>';
 
   function _pintarPoweredBy(prefix, email) {
     var poweredEl = document.getElementById(prefix + '-powered-by');
