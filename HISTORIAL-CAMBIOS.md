@@ -12,6 +12,25 @@ el GAS es la versión más nueva.
 
 ---
 
+## 08/09/2026 10:43 — "Powered by Open Sports" pasa a dorado/bronce
+
+Charlamos sobre un rediseño general de la app hacia la paleta
+negro/dorado/bronce (25 usuarios, todavía en demo — buen momento para
+fijar identidad visual antes de escalar). Antes de decidir el alcance
+completo, se arregló la inconsistencia obvia: desde que el botón de
+Open Sports (solo `edragotto@hotmail.com`) pasó a dorado/bronce, la
+frase "Powered by Open Sports" de al lado había quedado en rojo/amarillo
+de siempre — desentonaba con su propio botón.
+
+Ahora `HTML_POWERED_OPENSPORTS` usa "Open" en dorado (#D4AF37) y
+"Sports" en bronce (#B8923D) — mismos dos tonos que ya usa el botón en
+sus estados normal/pressed, para no inventar colores nuevos.
+
+**Pendiente, a decidir después**: si conviene extender la paleta
+dorado/bronce a más elementos de la app. Ojo con no aplicarlo a los
+colores que informan algo real (la barra de desgaste verde→naranja→rojo,
+los íconos de alerta) — esos no son de marca, son funcionales.
+
 ## 08/09/2026 09:21 — 2 grupos nuevos en el desplegable
 
 En `gas/index.html`: "Elite Running Team (La Plata)" y "Le Group
