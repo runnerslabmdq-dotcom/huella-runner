@@ -12,6 +12,11 @@ el GAS es la versión más nueva.
 
 ---
 
+## 08/09/2026 09:21 — 2 grupos nuevos en el desplegable
+
+En `gas/index.html`: "Elite Running Team (La Plata)" y "Le Group
+(MDP)".
+
 ## 08/09/2026 08:40 — Rediseño Sumar Km/Historial + Open Sports dorado (demo)
 
 El fundador pasó varias fichas de diseño (colores hexadecimales,
