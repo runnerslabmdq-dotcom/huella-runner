@@ -12,6 +12,40 @@ el GAS es la versión más nueva.
 
 ---
 
+## 08/09/2026 08:40 — Rediseño Sumar Km/Historial + Open Sports dorado (demo)
+
+El fundador pasó varias fichas de diseño (colores hexadecimales,
+estados normal/hover/pressed) para unificar el estilo visual de los
+botones de la tarjeta — hoy Sumar Km era amarillo neón brillante,
+Historial gris plata frío, y Open Sports rojo bien saturado: tres
+temperaturas de color distintas en la misma fila. Se charló primero
+qué variante elegir (ver conversación) antes de tocar código.
+
+**Sumar Km + Historial (toda la app, `gas/index.html`)**: elegida la
+variante de fondo con degradado (no la de solo contorno), para que
+combine con Open Sports que también es relleno:
+- `.cf-btn-train` (Sumar Km): degradado bronce oscuro (#3B2E1E →
+  #2A2115), texto dorado champán (#E5C158), borde fino dorado
+  (#D4AF37). Antes era amarillo neón sólido con sombra rgba(240,255,0)
+  — un resto de un diseño neón viejo que ya no pegaba con el resto.
+- `.cf-btn-history`: fondo negro mate (#1A1A1A), texto/borde bronce
+  tenue (#A69482 / #5E5248). Antes era plata (#C0C0C0) — desentonaba
+  con el resto de la app, que es toda cálida.
+- Los dos bajan el radio de "pastilla" (50px) a 10px, igual que el
+  botón de Open Sports de abajo, para que la fila entera se vea como
+  un mismo conjunto.
+
+**Open Sports, solo `edragotto@hotmail.com`**: nueva clase modificadora
+`.cf-btn-opensports-gold` — mismo botón de siempre, pero con
+degradado negro/bronce (#2C251E → #1F170F) y dorado (#D4AF37) en vez
+de rojo. Se descartaron a propósito las otras dos variantes que pasó
+el fundador (una en tono bordó, otra de solo contorno): el bordó
+reintroducía un color que "llama la atención" —el mismo problema que
+tenía el rojo, más oscuro— y mezclar un botón de contorno con dos
+rellenos hubiera roto la unificación buscada. El resto de los
+usuarios (y la excepción de San Luis) siguen viendo el rojo de
+siempre, sin tocar nada.
+
 ## 07/09/2026 09:16 — Métrica: aperturas de la app vs. registros nuevos
 
 El fundador plantea un problema real: crecen los seguidores en
