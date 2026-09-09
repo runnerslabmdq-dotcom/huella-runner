@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Admin.html
-  Última actualización: 07/09/2026 09:16 (hora Argentina)
+  Última actualización: 09/09/2026 13:35 (hora Argentina)
   Cambios en esta versión:
-    - Nueva tarjeta en Insights: "aperturas de la app vs. registros
-      nuevos" (últimos 7 días) — usa visitasVsRegistros de
-      getInsightsExtendidos(). Botón "Actualizar" recarga el dato. Ver
-      HISTORIAL-CAMBIOS.md.
+    - Nueva plantilla rápida en "Enviar notificación": "🏃‍♂️ Recordá
+      cargar tus km" — recordatorio para registrar entrenamientos.
   Cambios en versiones anteriores:
-    - Respaldo si Cloudinary se cae (ver HISTORIAL-CAMBIOS.md).
+    - Nueva tarjeta en Insights: aperturas vs. registros (ver
+      HISTORIAL-CAMBIOS.md).
     - Nueva sección "🕵️ Actividad sospechosa — revisar": el anti-fraude
       viene marcando entrenamientos "Sospechosa" (superan el acumulado
       semanal) desde hace rato, pero se acreditaban igual sin que se
@@ -681,6 +680,7 @@
         <button type="button" class="plantilla-chip" onclick="usarPlantilla('combo')">🥤 Invitame lo que sea</button>
         <button type="button" class="plantilla-chip" onclick="usarPlantilla('sumate')">🙌 Sumate al proyecto</button>
         <button type="button" class="plantilla-chip" onclick="usarPlantilla('inactividad')">😴 Recordatorio de inactividad</button>
+        <button type="button" class="plantilla-chip" onclick="usarPlantilla('recordarKm')">🏃‍♂️ Recordá cargar tus km</button>
         <button type="button" class="plantilla-chip" onclick="usarPlantilla('rotacion')">🔄 Rotar zapatillas</button>
         <button type="button" class="plantilla-chip" onclick="usarPlantilla('catalogo')">👟 Catálogo nuevo</button>
         <button type="button" class="plantilla-chip" onclick="usarPlantilla('motivacion')">🔥 Motivación</button>
@@ -1614,6 +1614,7 @@
     combo:       'Bancá el proyecto con lo que quieras — un agua, una banana o un gel: [link]',
     sumate:      'Sumate a mantener esto gratis con una banana, un agua o un gel, lo que prefieras: [link]',
     inactividad: 'Hace un tiempo que no cargás un entrenamiento — ¿todo bien? Te esperamos para seguir sumando kilómetros.',
+    recordarKm:  '¡Hola, runner! 🏃‍♂️ Te recordamos registrar tus últimos entrenamientos en Huella Runner. Mantener tus kilómetros al día te ayuda a cuidar la vida útil de tus zapatillas. ¡A seguir sumando!',
     rotacion:    'Si tenés varias zapatillas activas, alternarlas ayuda a que duren más y reduce el riesgo de lesión. ¿Ya rotaste esta semana?',
     catalogo:    'Sumamos nuevos modelos al catálogo 👟 — fijate si ya está el tuyo.',
     motivacion:  '¡Seguís sumando kilómetros! Cada carga te acerca más a conocer el estado real de tus zapatillas. Seguí así 🔥',
