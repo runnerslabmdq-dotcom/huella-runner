@@ -12,6 +12,14 @@ el GAS es la versión más nueva.
 
 ---
 
+## 09/09/2026 13:35 — Nueva plantilla rápida: "Recordá cargar tus km"
+
+En `gas/admin.html`, sección "Enviar notificación": nueva plantilla
+`recordarKm` — "¡Hola, runner! 🏃‍♂️ Te recordamos registrar tus
+últimos entrenamientos en Huella Runner. Mantener tus kilómetros al
+día te ayuda a cuidar la vida útil de tus zapatillas. ¡A seguir
+sumando!".
+
 ## 08/09/2026 10:43 — "Powered by Open Sports" pasa a dorado/bronce
 
 Charlamos sobre un rediseño general de la app hacia la paleta
