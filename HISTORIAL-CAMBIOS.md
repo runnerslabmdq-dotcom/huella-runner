@@ -12,6 +12,15 @@ el GAS es la versión más nueva.
 
 ---
 
+## 10/09/2026 11:00 — Ajuste visual del botón "Valoración Runners"
+
+En `gas/index.html`: antes, una vez que la zapatilla ya tenía
+puntaje, el botón solo mostraba "★ 4.3" — la frase "Valoración
+Runners" desaparecía. Ahora queda siempre visible al lado del
+puntaje ("★ 4.3 Valoración Runners"), en letra más chica
+(`.cf-btn-puntuar-label`, 0.85em) que el puntaje, para que se lea
+como una etiqueta y no compita con el número.
+
 ## 10/09/2026 10:40 — "Valoración Runners" sale de prueba, para todos los usuarios
 
 El fundador decidió abrir la puntuación de zapatillas a toda la base,
