@@ -1,14 +1,15 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 08/09/2026 10:43 (hora Argentina)
+  Última actualización: 10/09/2026 07:35 (hora Argentina)
   Cambios en esta versión:
-    - PRUEBA, solo edragotto@hotmail.com: "Powered by Open Sports"
-      pasa de rojo/amarillo a dorado/bronce (#D4AF37 / #B8923D) —
-      quedaba desentonado desde que el botón de Open Sports ya había
-      pasado a esa paleta. Sigue con dos tonos distintos para "Open" y
-      "Sports".
+    - PRUEBA, solo edragotto@hotmail.com: puntuar cada zapatilla en 3
+      ítems (Comodidad, Durabilidad, Precio/Calidad, 1 a 5 estrellas)
+      desde un modal nuevo — botón "★ Puntuar" en la tarjeta, que
+      muestra el promedio combinado una vez puntuada. Se guarda en
+      Zapatillas (nuevas columnas Puntaje_*). Ver HISTORIAL-CAMBIOS.md.
   Cambios en versiones anteriores:
-    - 2 grupos nuevos en el desplegable (ver HISTORIAL-CAMBIOS.md).
+    - "Powered by Open Sports" a dorado/bronce (ver
+      HISTORIAL-CAMBIOS.md).
   (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
   en la raíz del repo — a partir de ahora este encabezado solo guarda
   los últimos 2 cambios, para no seguir creciendo sin límite.)
@@ -429,6 +430,30 @@
       font-weight: 700; text-transform: uppercase;
       letter-spacing: 0.5px; margin-top: 2px;
     }
+    /* PRUEBA (10/09/2026), solo edragotto@hotmail.com: botón de
+       puntuación en la tarjeta — ver HISTORIAL-CAMBIOS.md. */
+    .cf-btn-puntuar {
+      display: block; margin-top: 6px;
+      background: transparent; color: #D4AF37;
+      border: 1px solid #5E5248; border-radius: 8px;
+      padding: 3px 9px; font-size: 0.62rem; font-weight: 900;
+      font-family: 'Montserrat', sans-serif; letter-spacing: 0.3px;
+      cursor: pointer;
+    }
+    .cf-btn-puntuar:active { transform: scale(0.96); background: rgba(212,175,55,0.1); }
+    /* Modal de puntuación */
+    .puntuar-item { margin-bottom: 16px; }
+    .puntuar-item label {
+      display: block; font-size: 0.72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      color: var(--gris-texto); margin-bottom: 6px;
+    }
+    .puntuar-stars { display: flex; gap: 6px; }
+    .puntuar-stars .star {
+      font-size: 1.6rem; color: #444; cursor: pointer;
+      transition: color 0.15s;
+    }
+    .puntuar-stars .star.filled { color: #D4AF37; }
 
     /* ── Barra de km ── */
     .cf-bar-section { padding: 4px 12px 8px; }
@@ -1896,6 +1921,47 @@
     </div>
     <input type="hidden" id="train-shoe-id">
     <button class="btn-primary" id="btn-save-train" onclick="saveTraining()">Guardar Entrenamiento</button>
+  </div>
+</div>
+
+<!-- PRUEBA (10/09/2026), solo edragotto@hotmail.com: modal de
+     puntuación — ver HISTORIAL-CAMBIOS.md. -->
+<div class="modal-overlay" id="puntuar-modal">
+  <div class="modal-content">
+    <button class="close-modal" onclick="closePuntuarModal()">✕</button>
+    <h3 style="text-align:center; margin-bottom:20px; font-size:1rem;">PUNTUAR ZAPATILLA</h3>
+    <div class="puntuar-item">
+      <label>Comodidad</label>
+      <div class="puntuar-stars" data-item="comodidad">
+        <span class="star" data-val="1" onclick="elegirEstrella('comodidad',1)">★</span>
+        <span class="star" data-val="2" onclick="elegirEstrella('comodidad',2)">★</span>
+        <span class="star" data-val="3" onclick="elegirEstrella('comodidad',3)">★</span>
+        <span class="star" data-val="4" onclick="elegirEstrella('comodidad',4)">★</span>
+        <span class="star" data-val="5" onclick="elegirEstrella('comodidad',5)">★</span>
+      </div>
+    </div>
+    <div class="puntuar-item">
+      <label>Durabilidad</label>
+      <div class="puntuar-stars" data-item="durabilidad">
+        <span class="star" data-val="1" onclick="elegirEstrella('durabilidad',1)">★</span>
+        <span class="star" data-val="2" onclick="elegirEstrella('durabilidad',2)">★</span>
+        <span class="star" data-val="3" onclick="elegirEstrella('durabilidad',3)">★</span>
+        <span class="star" data-val="4" onclick="elegirEstrella('durabilidad',4)">★</span>
+        <span class="star" data-val="5" onclick="elegirEstrella('durabilidad',5)">★</span>
+      </div>
+    </div>
+    <div class="puntuar-item">
+      <label>Precio / Calidad</label>
+      <div class="puntuar-stars" data-item="precioCalidad">
+        <span class="star" data-val="1" onclick="elegirEstrella('precioCalidad',1)">★</span>
+        <span class="star" data-val="2" onclick="elegirEstrella('precioCalidad',2)">★</span>
+        <span class="star" data-val="3" onclick="elegirEstrella('precioCalidad',3)">★</span>
+        <span class="star" data-val="4" onclick="elegirEstrella('precioCalidad',4)">★</span>
+        <span class="star" data-val="5" onclick="elegirEstrella('precioCalidad',5)">★</span>
+      </div>
+    </div>
+    <input type="hidden" id="puntuar-shoe-id">
+    <button class="btn-primary" id="btn-save-puntuacion" onclick="guardarPuntuacion()">Guardar puntuación</button>
   </div>
 </div>
 
@@ -3690,6 +3756,19 @@
       var carbonoHtml = (s.Marca === 'Plantillas Jump Box')
         ? '<div class="cf-badge-carbono">FIBRA DE CARBONO</div>'
         : '';
+      // PRUEBA (10/09/2026), solo edragotto@hotmail.com: puntuación en
+      // 3 ítems (comodidad/durabilidad/precio-calidad), promedio
+      // combinado mostrado en la tarjeta. Ver HISTORIAL-CAMBIOS.md.
+      var puntuarHtml = '';
+      if (esUsuarioDemoOpenSports) {
+        var _valsPuntaje = [Number(s.Puntaje_Comodidad) || 0, Number(s.Puntaje_Durabilidad) || 0, Number(s.Puntaje_PrecioCalidad) || 0]
+          .filter(function(v) { return v > 0; });
+        var _promedioPuntaje = _valsPuntaje.length
+          ? (_valsPuntaje.reduce(function(a, b) { return a + b; }, 0) / _valsPuntaje.length)
+          : 0;
+        puntuarHtml = '<button class="cf-btn-puntuar" onclick="event.stopPropagation(); openPuntuarModal(\'' + rawId + '\');">' +
+          (_promedioPuntaje > 0 ? '★ ' + _promedioPuntaje.toFixed(1) : '★ Puntuar') + '</button>';
+      }
       // Foto real de ESTA zapatilla (columna Foto_URL en el Sheet, cargada a
       // mano por el admin) tiene prioridad sobre la genérica del modelo.
       var fotoReal  = (s.Foto_URL || '').toString().trim();
@@ -3728,6 +3807,7 @@
               '<div class="cf-size">' + sMarca.toUpperCase() + ' | ' +
                 (s.Marca === 'Plantillas Jump Box' ? sTalle : 'EU ' + sTalle) +
                 ' | ' + sGenero + '</div>' +
+              puntuarHtml +
             '</div>' +
 
             // ── Barra km ──
@@ -4106,6 +4186,65 @@
     document.getElementById('train-modal').style.display = 'flex';
   }
   function closeModal() { document.getElementById('train-modal').style.display = 'none'; }
+
+  // ── PRUEBA (10/09/2026), solo edragotto@hotmail.com: puntuación de
+  // zapatilla en 3 ítems. Ver HISTORIAL-CAMBIOS.md. ──
+  var _puntuacionActual = { comodidad: 0, durabilidad: 0, precioCalidad: 0 };
+
+  function openPuntuarModal(idZapa) {
+    document.getElementById('puntuar-shoe-id').value = idZapa;
+    var shoe = allUserShoes.find(function(x) { return x.ID_Zapa === idZapa; });
+    _puntuacionActual = {
+      comodidad:     shoe ? (Number(shoe.Puntaje_Comodidad) || 0)     : 0,
+      durabilidad:   shoe ? (Number(shoe.Puntaje_Durabilidad) || 0)   : 0,
+      precioCalidad: shoe ? (Number(shoe.Puntaje_PrecioCalidad) || 0) : 0
+    };
+    _pintarEstrellas();
+    document.getElementById('puntuar-modal').style.display = 'flex';
+  }
+  function closePuntuarModal() { document.getElementById('puntuar-modal').style.display = 'none'; }
+
+  function _pintarEstrellas() {
+    ['comodidad', 'durabilidad', 'precioCalidad'].forEach(function(item) {
+      var cont = document.querySelector('.puntuar-stars[data-item="' + item + '"]');
+      if (!cont) return;
+      var val = _puntuacionActual[item];
+      cont.querySelectorAll('.star').forEach(function(s) {
+        s.classList.toggle('filled', Number(s.dataset.val) <= val);
+      });
+    });
+  }
+
+  function elegirEstrella(item, val) {
+    _puntuacionActual[item] = val;
+    _pintarEstrellas();
+  }
+
+  function guardarPuntuacion() {
+    var id  = document.getElementById('puntuar-shoe-id').value;
+    var btn = document.getElementById('btn-save-puntuacion');
+    btn.innerText = 'Guardando...'; btn.disabled = true;
+    google.script.run
+      .withSuccessHandler(function(res) {
+        btn.innerText = 'Guardar puntuación'; btn.disabled = false;
+        if (!res.success) { alert(res.error); return; }
+        closePuntuarModal();
+        google.script.run
+          .withSuccessHandler(function(shoes) {
+            if (!shoes || !Array.isArray(shoes)) { loadDashboard(); return; }
+            allUserShoes = shoes;
+            _pendingActiveShoeIndex = _getCurrentSlideIndex();
+            renderArmario(shoes);
+          })
+          .withFailureHandler(function() { loadDashboard(); })
+          .getUserShoes(currentUserEmail);
+      })
+      .withFailureHandler(function(e) {
+        btn.innerText = 'Guardar puntuación'; btn.disabled = false;
+        alert('Error de conexión: ' + (e && e.message ? e.message : e));
+      })
+      .guardarPuntuacionZapatilla(currentUserEmail, id, _puntuacionActual.comodidad, _puntuacionActual.durabilidad, _puntuacionActual.precioCalidad);
+  }
 
   function setKmRapido(valor) {
     document.getElementById('train-km').value = valor;
