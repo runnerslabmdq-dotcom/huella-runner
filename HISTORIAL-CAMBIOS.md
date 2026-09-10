@@ -12,6 +12,18 @@ el GAS es la versión más nueva.
 
 ---
 
+## 10/09/2026 10:07 — Fotos y 2 modelos nuevos: Speedgoat 7, Hurricane 26, Paramount Max
+
+En `gas/index.html`:
+
+- **Hoka Speedgoat 7**: ya estaba cargada (drop 5mm / talón 40mm /
+  antepié 35mm, en `modelosTrail`) con una foto de Imgur de
+  placeholder — reemplazada por la foto propia en Cloudinary.
+- **Saucony Hurricane 26** (nueva, de calle): foto propia, drop 6mm /
+  talón 41mm / antepié 35mm.
+- **Saucony Paramount Max** (nueva, de calle): foto propia, drop 6mm /
+  talón 43mm / antepié 37mm.
+
 ## 10/09/2026 07:35 — PRUEBA: puntuar zapatillas (solo edragotto@hotmail.com)
 
 Charla larga sobre una idea nueva: dejar que el corredor puntúe cada
