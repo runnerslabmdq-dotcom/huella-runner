@@ -1,14 +1,14 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 07/09/2026 09:16 (hora Argentina)
+// Última actualización: 10/09/2026 07:35 (hora Argentina)
 // Cambios en esta versión:
-//   - Nueva registrarVisita(): fila liviana en Log_Visitas cada vez
-//     que alguien abre la app (llamada desde initApp() en
-//     gas/index.html). Sirve para comparar tráfico vs. registros
-//     nuevos desde el panel admin (ver HISTORIAL-CAMBIOS.md).
+//   - PRUEBA, solo edragotto@hotmail.com: nueva guardarPuntuacionZapatilla()
+//     — guarda 1 a 5 estrellas en 3 ítems (Comodidad, Durabilidad,
+//     Precio/Calidad) por zapatilla, en columnas Puntaje_* de
+//     Zapatillas (se crean solas). Gateo por usuario demo del lado
+//     del frontend (ver HISTORIAL-CAMBIOS.md).
 // Cambios en versiones anteriores:
-//   - Fix ruido de coma flotante en deleteTraining()/editarEntrenamiento()
-//     (ver HISTORIAL-CAMBIOS.md).
+//   - Nueva registrarVisita() (ver HISTORIAL-CAMBIOS.md).
 // (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
 // en la raíz del repo — a partir de ahora este encabezado solo guarda
 // los últimos 2 cambios, para no seguir creciendo sin límite.)
@@ -797,6 +797,54 @@ function archiveShoe(email, idZapatilla) {
     return { success: false, error: 'Zapatilla no encontrada.' };
   } catch(e) {
     Logger.log('archiveShoe ERROR: ' + e.toString());
+    return { success: false, error: e.toString() };
+  }
+}
+
+// ============================================================
+// PRUEBA (10/09/2026), solo edragotto@hotmail.com: puntuación de la
+// zapatilla en 3 ítems (Comodidad, Durabilidad, Precio/Calidad, 1 a
+// 5 estrellas cada uno). El gateo por usuario demo es del lado del
+// frontend (mismo criterio que el resto de las pruebas de esta
+// familia: Open Sports dorado, Plantillas Jump Box) — esta función no
+// vuelve a chequear el email, cualquiera que la llame puede puntuar.
+// Columnas Puntaje_* se crean solas la primera vez (_colEnsure). Ver
+// HISTORIAL-CAMBIOS.md.
+// ============================================================
+function guardarPuntuacionZapatilla(email, idZapatilla, comodidad, durabilidad, precioCalidad) {
+  try {
+    if (!email || !idZapatilla) return { success: false, error: 'Datos incompletos.' };
+    const emailClean = email.toString().trim().toLowerCase();
+    const ss    = SpreadsheetApp.openById(SHEET_ID);
+    const sheet = ss.getSheetByName('Zapatillas');
+    if (!sheet) return { success: false, error: 'Hoja Zapatillas no encontrada.' };
+
+    const data    = sheet.getDataRange().getValues();
+    const headers = data[0];
+    const idCol    = headers.indexOf('ID_Zapa');
+    const emailCol = headers.indexOf('Email_Usuario');
+    if (idCol === -1 || emailCol === -1) {
+      return { success: false, error: 'Estructura de Zapatillas incorrecta.' };
+    }
+
+    for (let i = 1; i < data.length; i++) {
+      const rowId    = data[i][idCol]    ? data[i][idCol].toString()                        : '';
+      const rowEmail = data[i][emailCol] ? data[i][emailCol].toString().trim().toLowerCase() : '';
+      if (rowId === idZapatilla.toString() && rowEmail === emailClean) {
+        const colComodidad     = _colEnsure(sheet, headers, 'Puntaje_Comodidad');
+        const colDurabilidad   = _colEnsure(sheet, headers, 'Puntaje_Durabilidad');
+        const colPrecioCalidad = _colEnsure(sheet, headers, 'Puntaje_PrecioCalidad');
+        sheet.getRange(i + 1, colComodidad + 1).setValue(Number(comodidad) || 0);
+        sheet.getRange(i + 1, colDurabilidad + 1).setValue(Number(durabilidad) || 0);
+        sheet.getRange(i + 1, colPrecioCalidad + 1).setValue(Number(precioCalidad) || 0);
+        SpreadsheetApp.flush();
+        Logger.log('guardarPuntuacionZapatilla OK: id=' + idZapatilla);
+        return { success: true };
+      }
+    }
+    return { success: false, error: 'Zapatilla no encontrada.' };
+  } catch(e) {
+    Logger.log('guardarPuntuacionZapatilla ERROR: ' + e.toString());
     return { success: false, error: e.toString() };
   }
 }

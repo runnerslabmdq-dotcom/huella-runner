@@ -12,6 +12,43 @@ el GAS es la versión más nueva.
 
 ---
 
+## 10/09/2026 07:35 — PRUEBA: puntuar zapatillas (solo edragotto@hotmail.com)
+
+Charla larga sobre una idea nueva: dejar que el corredor puntúe cada
+zapatilla, tipo Uber pero más chico y en dorado/bronce. Se decidió
+entre varias vueltas: 3 ítems por separado al cargar (Comodidad,
+Durabilidad, Precio/Calidad), pero en la tarjeta solo se ve **un**
+promedio combinado — mostrar las 3 estrellas separadas ahí saturaba
+la tarjeta, que ya tiene bastante info. Sin disparador automático por
+ahora (ni por km ni por % del límite) — se puntúa cuando el usuario
+quiere, eso queda para una vuelta futura si el mecanismo básico
+sirve. El ranking público / compartir en Instagram también queda
+para después, con el mismo cuidado de "mínimo de muestra" que ya se
+usa en otros datos de comunidad — no tiene sentido armar un ranking
+todavía con tan pocos usuarios.
+
+**Primera versión, acotada a `edragotto@hotmail.com`:**
+
+- **`gas/codigo.gs`**: nueva `guardarPuntuacionZapatilla(email,
+  idZapatilla, comodidad, durabilidad, precioCalidad)` — busca la
+  fila en Zapatillas por ID_Zapa, crea las columnas `Puntaje_Comodidad`,
+  `Puntaje_Durabilidad`, `Puntaje_PrecioCalidad` si no existen
+  (`_colEnsure()`, ya usado en `archiveShoe()`) y guarda los 3
+  valores. El gateo por usuario demo es del lado del frontend, mismo
+  criterio que el resto de las pruebas de esta familia (Open Sports
+  dorado, Plantillas Jump Box) — la función en sí no vuelve a chequear
+  el email.
+- **`gas/index.html`**:
+  - Botón "★ Puntuar" en la tarjeta (o "★ 4.3" si ya tiene puntaje),
+    visible solo para el usuario demo.
+  - Nuevo modal (`#puntuar-modal`) con 3 filas de 5 estrellas cada
+    una — vacías en gris (#444), se llenan en dorado (#D4AF37) al
+    tocar. Guarda con `guardarPuntuacionZapatilla()` y refresca la
+    tarjeta.
+  - `getUserShoes()` ya devolvía dinámicamente cualquier columna de
+    Zapatillas (`_filaZapaAObjeto()`), así que las columnas `Puntaje_*`
+    llegan solas al frontend sin tocar esa función.
+
 ## 09/09/2026 13:35 — Nueva plantilla rápida: "Recordá cargar tus km"
 
 En `gas/admin.html`, sección "Enviar notificación": nueva plantilla
