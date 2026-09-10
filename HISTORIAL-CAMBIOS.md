@@ -12,6 +12,29 @@ el GAS es la versión más nueva.
 
 ---
 
+## 10/09/2026 10:40 — "Valoración Runners" sale de prueba, para todos los usuarios
+
+El fundador decidió abrir la puntuación de zapatillas a toda la base,
+no solo al usuario demo — la prueba con `edragotto@hotmail.com` andaba
+bien y es un cambio de bajo riesgo (botón opcional, no interrumpe
+nada). De paso, la funcionalidad se renombra a **"Valoración
+Runners"** (antes "Puntuar zapatilla" / "★ Puntuar") para que hable el
+mismo idioma que el resto de la app ("runner", no "usuario").
+
+- **`gas/index.html`**: sacada la condición `if
+  (esUsuarioDemoOpenSports)` que limitaba el botón — ahora se pinta
+  siempre. Botón: "★ Valoración Runners" (o "★ 4.3" una vez puntuada).
+  Título del modal: "VALORACIÓN RUNNERS".
+- **`gas/codigo.gs`**: sin cambios funcionales en
+  `guardarPuntuacionZapatilla()` (nunca chequeó el email, el gateo
+  era solo del lado del frontend) — actualizado el comentario que
+  decía "solo edragotto@hotmail.com" para que no quede desactualizado.
+- Limpiados todos los comentarios de "PRUEBA, solo edragotto..." de
+  esta funcionalidad puntual (CSS, HTML del modal, JS) — el resto de
+  las pruebas activas (Open Sports dorado, Plantillas Jump Box,
+  "Powered by Open Sports") siguen acotadas al usuario demo, sin
+  cambios.
+
 ## 10/09/2026 10:22 — PRUEBA (ajuste): renombradas las 3 etiquetas de puntuación
 
 El fundador pasó una propuesta con nombres más descriptivos y
