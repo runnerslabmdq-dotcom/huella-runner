@@ -12,6 +12,22 @@ el GAS es la versión más nueva.
 
 ---
 
+## 10/09/2026 10:22 — PRUEBA (ajuste): renombradas las 3 etiquetas de puntuación
+
+El fundador pasó una propuesta con nombres más descriptivos y
+numerados para los 3 ítems del modal de puntuación (solo
+`edragotto@hotmail.com`), acompañando cada uno con el detalle de qué
+abarca (para uso interno, no se agregó ese detalle a la UI todavía):
+
+- "Comodidad" → **"1. Experiencia y Confort"**
+- "Durabilidad" → **"2. Rendimiento y Durabilidad"**
+- "Precio / Calidad" → **"3. Valor y Versatilidad"**
+
+Cambio solo de texto en `gas/index.html` — las columnas del Sheet
+(`Puntaje_Comodidad`, `Puntaje_Durabilidad`, `Puntaje_PrecioCalidad`)
+y las claves internas del JS no cambiaron, para no tener que migrar
+nada.
+
 ## 10/09/2026 10:07 — Fotos y 2 modelos nuevos: Speedgoat 7, Hurricane 26, Paramount Max
 
 En `gas/index.html`:
