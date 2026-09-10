@@ -1,13 +1,13 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 10/09/2026 10:40 (hora Argentina)
+  Última actualización: 10/09/2026 11:00 (hora Argentina)
   Cambios en esta versión:
-    - "Valoración Runners" (antes "Puntuar zapatilla") sale de prueba
-      y queda disponible para TODOS los usuarios, no solo
-      edragotto@hotmail.com. Botón y modal renombrados a "Valoración
-      Runners". Ver HISTORIAL-CAMBIOS.md.
+    - Botón "Valoración Runners": ahora la frase queda siempre al
+      lado del puntaje (antes, con puntaje cargado, solo se veía
+      "★ 4.3" sin texto) — y "Valoración Runners" en letra más chica
+      que el puntaje.
   Cambios en versiones anteriores:
-    - Renombradas las 3 etiquetas de puntuación (ver
+    - "Valoración Runners" para todos los usuarios (ver
       HISTORIAL-CAMBIOS.md).
   (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
   en la raíz del repo — a partir de ahora este encabezado solo guarda
@@ -440,6 +440,7 @@
       cursor: pointer;
     }
     .cf-btn-puntuar:active { transform: scale(0.96); background: rgba(212,175,55,0.1); }
+    .cf-btn-puntuar-label { font-size: 0.85em; font-weight: 700; }
     /* Modal de puntuación */
     .puntuar-item { margin-bottom: 16px; }
     .puntuar-item label {
@@ -3772,7 +3773,8 @@
         ? (_valsPuntaje.reduce(function(a, b) { return a + b; }, 0) / _valsPuntaje.length)
         : 0;
       var puntuarHtml = '<button class="cf-btn-puntuar" onclick="event.stopPropagation(); openPuntuarModal(\'' + rawId + '\');">' +
-        (_promedioPuntaje > 0 ? '★ ' + _promedioPuntaje.toFixed(1) : '★ Valoración Runners') + '</button>';
+        '★' + (_promedioPuntaje > 0 ? ' ' + _promedioPuntaje.toFixed(1) : '') +
+        ' <span class="cf-btn-puntuar-label">Valoración Runners</span></button>';
       // Foto real de ESTA zapatilla (columna Foto_URL en el Sheet, cargada a
       // mano por el admin) tiene prioridad sobre la genérica del modelo.
       var fotoReal  = (s.Foto_URL || '').toString().trim();
