@@ -1,14 +1,12 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 10/09/2026 07:35 (hora Argentina)
+// Última actualización: 10/09/2026 10:40 (hora Argentina)
 // Cambios en esta versión:
-//   - PRUEBA, solo edragotto@hotmail.com: nueva guardarPuntuacionZapatilla()
-//     — guarda 1 a 5 estrellas en 3 ítems (Comodidad, Durabilidad,
-//     Precio/Calidad) por zapatilla, en columnas Puntaje_* de
-//     Zapatillas (se crean solas). Gateo por usuario demo del lado
-//     del frontend (ver HISTORIAL-CAMBIOS.md).
+//   - "Valoración Runners" (guardarPuntuacionZapatilla) sale de
+//     prueba, queda disponible para todos los usuarios. Ver
+//     HISTORIAL-CAMBIOS.md.
 // Cambios en versiones anteriores:
-//   - Nueva registrarVisita() (ver HISTORIAL-CAMBIOS.md).
+//   - Nueva guardarPuntuacionZapatilla() (ver HISTORIAL-CAMBIOS.md).
 // (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
 // en la raíz del repo — a partir de ahora este encabezado solo guarda
 // los últimos 2 cambios, para no seguir creciendo sin límite.)
@@ -802,13 +800,11 @@ function archiveShoe(email, idZapatilla) {
 }
 
 // ============================================================
-// PRUEBA (10/09/2026), solo edragotto@hotmail.com: puntuación de la
-// zapatilla en 3 ítems (Comodidad, Durabilidad, Precio/Calidad, 1 a
-// 5 estrellas cada uno). El gateo por usuario demo es del lado del
-// frontend (mismo criterio que el resto de las pruebas de esta
-// familia: Open Sports dorado, Plantillas Jump Box) — esta función no
-// vuelve a chequear el email, cualquiera que la llame puede puntuar.
-// Columnas Puntaje_* se crean solas la primera vez (_colEnsure). Ver
+// Valoración Runners (10/09/2026), para todos los usuarios: puntuación
+// de la zapatilla en 3 ítems (Experiencia y Confort, Rendimiento y
+// Durabilidad, Valor y Versatilidad — guardados como Comodidad,
+// Durabilidad, PrecioCalidad, 1 a 5 estrellas cada uno). Columnas
+// Puntaje_* se crean solas la primera vez (_colEnsure). Ver
 // HISTORIAL-CAMBIOS.md.
 // ============================================================
 function guardarPuntuacionZapatilla(email, idZapatilla, comodidad, durabilidad, precioCalidad) {

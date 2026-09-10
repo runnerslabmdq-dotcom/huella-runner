@@ -1,15 +1,14 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 10/09/2026 10:22 (hora Argentina)
+  Última actualización: 10/09/2026 10:40 (hora Argentina)
   Cambios en esta versión:
-    - PRUEBA, solo edragotto@hotmail.com: renombradas las 3 etiquetas
-      del modal de puntuación — "Comodidad" → "1. Experiencia y
-      Confort", "Durabilidad" → "2. Rendimiento y Durabilidad",
-      "Precio / Calidad" → "3. Valor y Versatilidad". Solo texto, las
-      columnas del Sheet (Puntaje_Comodidad, etc.) no cambian.
+    - "Valoración Runners" (antes "Puntuar zapatilla") sale de prueba
+      y queda disponible para TODOS los usuarios, no solo
+      edragotto@hotmail.com. Botón y modal renombrados a "Valoración
+      Runners". Ver HISTORIAL-CAMBIOS.md.
   Cambios en versiones anteriores:
-    - Fotos y 2 modelos nuevos: Speedgoat 7, Hurricane 26, Paramount
-      Max (ver HISTORIAL-CAMBIOS.md).
+    - Renombradas las 3 etiquetas de puntuación (ver
+      HISTORIAL-CAMBIOS.md).
   (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
   en la raíz del repo — a partir de ahora este encabezado solo guarda
   los últimos 2 cambios, para no seguir creciendo sin límite.)
@@ -430,8 +429,8 @@
       font-weight: 700; text-transform: uppercase;
       letter-spacing: 0.5px; margin-top: 2px;
     }
-    /* PRUEBA (10/09/2026), solo edragotto@hotmail.com: botón de
-       puntuación en la tarjeta — ver HISTORIAL-CAMBIOS.md. */
+    /* Valoración Runners (10/09/2026): botón de puntuación en la
+       tarjeta, para todos los usuarios — ver HISTORIAL-CAMBIOS.md. */
     .cf-btn-puntuar {
       display: block; margin-top: 6px;
       background: transparent; color: #D4AF37;
@@ -1924,12 +1923,12 @@
   </div>
 </div>
 
-<!-- PRUEBA (10/09/2026), solo edragotto@hotmail.com: modal de
-     puntuación — ver HISTORIAL-CAMBIOS.md. -->
+<!-- Valoración Runners (10/09/2026): modal de puntuación, para todos
+     los usuarios — ver HISTORIAL-CAMBIOS.md. -->
 <div class="modal-overlay" id="puntuar-modal">
   <div class="modal-content">
     <button class="close-modal" onclick="closePuntuarModal()">✕</button>
-    <h3 style="text-align:center; margin-bottom:20px; font-size:1rem;">PUNTUAR ZAPATILLA</h3>
+    <h3 style="text-align:center; margin-bottom:20px; font-size:1rem;">VALORACIÓN RUNNERS</h3>
     <div class="puntuar-item">
       <label>1. Experiencia y Confort</label>
       <div class="puntuar-stars" data-item="comodidad">
@@ -3762,19 +3761,18 @@
       var carbonoHtml = (s.Marca === 'Plantillas Jump Box')
         ? '<div class="cf-badge-carbono">FIBRA DE CARBONO</div>'
         : '';
-      // PRUEBA (10/09/2026), solo edragotto@hotmail.com: puntuación en
-      // 3 ítems (comodidad/durabilidad/precio-calidad), promedio
-      // combinado mostrado en la tarjeta. Ver HISTORIAL-CAMBIOS.md.
-      var puntuarHtml = '';
-      if (esUsuarioDemoOpenSports) {
-        var _valsPuntaje = [Number(s.Puntaje_Comodidad) || 0, Number(s.Puntaje_Durabilidad) || 0, Number(s.Puntaje_PrecioCalidad) || 0]
-          .filter(function(v) { return v > 0; });
-        var _promedioPuntaje = _valsPuntaje.length
-          ? (_valsPuntaje.reduce(function(a, b) { return a + b; }, 0) / _valsPuntaje.length)
-          : 0;
-        puntuarHtml = '<button class="cf-btn-puntuar" onclick="event.stopPropagation(); openPuntuarModal(\'' + rawId + '\');">' +
-          (_promedioPuntaje > 0 ? '★ ' + _promedioPuntaje.toFixed(1) : '★ Puntuar') + '</button>';
-      }
+      // Valoración Runners (10/09/2026): puntuación en 3 ítems
+      // (Experiencia y Confort / Rendimiento y Durabilidad / Valor y
+      // Versatilidad), promedio combinado mostrado en la tarjeta.
+      // Para todos los usuarios desde el 10/09 — antes era solo
+      // edragotto@hotmail.com. Ver HISTORIAL-CAMBIOS.md.
+      var _valsPuntaje = [Number(s.Puntaje_Comodidad) || 0, Number(s.Puntaje_Durabilidad) || 0, Number(s.Puntaje_PrecioCalidad) || 0]
+        .filter(function(v) { return v > 0; });
+      var _promedioPuntaje = _valsPuntaje.length
+        ? (_valsPuntaje.reduce(function(a, b) { return a + b; }, 0) / _valsPuntaje.length)
+        : 0;
+      var puntuarHtml = '<button class="cf-btn-puntuar" onclick="event.stopPropagation(); openPuntuarModal(\'' + rawId + '\');">' +
+        (_promedioPuntaje > 0 ? '★ ' + _promedioPuntaje.toFixed(1) : '★ Valoración Runners') + '</button>';
       // Foto real de ESTA zapatilla (columna Foto_URL en el Sheet, cargada a
       // mano por el admin) tiene prioridad sobre la genérica del modelo.
       var fotoReal  = (s.Foto_URL || '').toString().trim();
@@ -4193,8 +4191,8 @@
   }
   function closeModal() { document.getElementById('train-modal').style.display = 'none'; }
 
-  // ── PRUEBA (10/09/2026), solo edragotto@hotmail.com: puntuación de
-  // zapatilla en 3 ítems. Ver HISTORIAL-CAMBIOS.md. ──
+  // ── Valoración Runners (10/09/2026): puntuación de zapatilla en 3
+  // ítems, para todos los usuarios. Ver HISTORIAL-CAMBIOS.md. ──
   var _puntuacionActual = { comodidad: 0, durabilidad: 0, precioCalidad: 0 };
 
   function openPuntuarModal(idZapa) {
