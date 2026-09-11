@@ -1,12 +1,13 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 10/09/2026 10:40 (hora Argentina)
+// Última actualización: 11/09/2026 09:50 (hora Argentina)
 // Cambios en esta versión:
-//   - "Valoración Runners" (guardarPuntuacionZapatilla) sale de
-//     prueba, queda disponible para todos los usuarios. Ver
-//     HISTORIAL-CAMBIOS.md.
+//   - doGet() (page=manifest): íconos actualizados a los nuevos de
+//     Cloudinary — apuntaban a pwa/icons/, que ya no existe (ver
+//     HISTORIAL-CAMBIOS.md).
 // Cambios en versiones anteriores:
-//   - Nueva guardarPuntuacionZapatilla() (ver HISTORIAL-CAMBIOS.md).
+//   - "Valoración Runners" para todos los usuarios (ver
+//     HISTORIAL-CAMBIOS.md).
 // (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
 // en la raíz del repo — a partir de ahora este encabezado solo guarda
 // los últimos 2 cambios, para no seguir creciendo sin límite.)
@@ -33,8 +34,8 @@ function doGet(e) {
       theme_color:      '#C5B358',
       lang:             'es',
       icons: [
-        { src: 'https://huella-runner.vercel.app/icons/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any maskable' },
-        { src: 'https://huella-runner.vercel.app/icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any maskable' }
+        { src: 'https://res.cloudinary.com/klxkj07e/image/upload/v1789127601/HR_192_PNG_xswoxt.png', sizes: '192x192', type: 'image/png', purpose: 'any maskable' },
+        { src: 'https://res.cloudinary.com/klxkj07e/image/upload/v1789127602/HR_512_PNG_lxfzqx.png', sizes: '512x512', type: 'image/png', purpose: 'any maskable' }
       ]
     };
     return ContentService

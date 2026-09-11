@@ -1,11 +1,11 @@
-const CACHE_NAME = 'huella-runner-v3';
+const CACHE_NAME = 'huella-runner-v4';
 
+// Los íconos ya no son archivos locales (ver manifest.json e
+// index.html) — pasaron a Cloudinary, así que se sacan de acá.
 const STATIC_ASSETS = [
   './',
   './index.html',
-  './manifest.json',
-  './icons/icon-192.png',
-  './icons/icon-512.png'
+  './manifest.json'
 ];
 
 self.addEventListener('install', event => {
