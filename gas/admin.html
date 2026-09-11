@@ -1,8 +1,15 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Admin.html
-  Última actualización: 11/09/2026 11:02 (hora Argentina)
+  Última actualización: 11/09/2026 12:29 (hora Argentina)
   Cambios en esta versión:
+    - Fix: "runners inactivos" mostraba "10" en dos lugares del panel
+      aunque hubiera más, porque usaba el largo de la lista recortada
+      en vez del total real (abandono.totalInactivos, nuevo en admin.gs).
+    - Si getInsightsExtendidos() falla, Constancia y Valoración
+      Runners ya no se quedan en "Cargando..." para siempre sin
+      aviso — ahora muestran el error. Ver HISTORIAL-CAMBIOS.md.
+  Cambios en versiones anteriores:
     - La barra de pestañas de Insights pasa de scroll horizontal a
       varias líneas (flex-wrap) — con 11 pestañas quedaban algunas
       escondidas al costado y no se notaba que había más para
@@ -941,7 +948,10 @@
   function cargarInsightsExtendidos() {
     google.script.run
       .withSuccessHandler(function(data) {
-        if (!data || !data.success) return;
+        if (!data || !data.success) {
+          _mostrarErrorInsightsExtendidos(data && data.error);
+          return;
+        }
         insightsExtData = data;
         actualizarFranjaAtencion();
         _renderConstancia();
@@ -951,8 +961,24 @@
         _renderInsightComercial(); // re-renderiza para sumar la tarjeta de abandono
         _renderValoracionModelos();
       })
-      .withFailureHandler(function() {})
+      .withFailureHandler(function(e) {
+        _mostrarErrorInsightsExtendidos(e && e.message);
+      })
       .getInsightsExtendidos(ADMIN_TOKEN);
+  }
+
+  // Antes, si esta llamada fallaba, las secciones que dependen de ella
+  // (Constancia, Valoración Runners) se quedaban con el "Cargando..."
+  // inicial para siempre, sin ningún aviso — parecía que la sección no
+  // existía. Ahora se ve el error en pantalla.
+  function _mostrarErrorInsightsExtendidos(detalle) {
+    const msg = '<div style="text-align:center;padding:24px;font-size:0.84rem;color:var(--rojo);">' +
+      'No se pudo cargar esta sección' + (detalle ? ': ' + sanitize(String(detalle)) : '') +
+      '. Probá recargar la página.</div>';
+    ['ins-constancia-list', 'ins-valoracion-list'].forEach(function(id) {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = msg;
+    });
   }
 
   function _renderConstancia() {
@@ -1810,7 +1836,7 @@
     _pintarAtencion('atencion-alertas', alertasFull.length, 'var(--naranja)');
     _pintarAtencion('atencion-sospechosos', sospechososFull.length, 'var(--amarillo)');
     if (insightsExtData && insightsExtData.abandono) {
-      _pintarAtencion('atencion-inactivos', insightsExtData.abandono.lista.length, 'var(--rojo)');
+      _pintarAtencion('atencion-inactivos', insightsExtData.abandono.totalInactivos, 'var(--rojo)');
     }
   }
   function _pintarAtencion(id, num, colorSiHay) {
@@ -2146,8 +2172,8 @@
     if (insightsExtData && insightsExtData.abandono) {
       const ab = insightsExtData.abandono;
       insights.push({
-        icon: '⚠️', num: ab.lista.length,
-        title: ab.lista.length + ' runners sin actividad hace 14+ días (o nunca entrenaron)',
+        icon: '⚠️', num: ab.totalInactivos,
+        title: ab.totalInactivos + ' runners sin actividad hace 14+ días (o nunca entrenaron)',
         desc: 'A diferencia de "no entrenó hoy", esto marca abandono real. Es el momento de un mensaje personal antes de perderlos del todo.',
         action: 'Ver lista y notificar',
         onClick: "toggleListaAbandono()"

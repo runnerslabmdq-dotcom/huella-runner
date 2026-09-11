@@ -12,6 +12,42 @@ el GAS es la versión más nueva.
 
 ---
 
+## 11/09/2026 12:29 — Fix login (contraseña con "$") + contador de inactivos que mentía + panel Insights que se quedaba mudo en error
+
+Revisión de bugs pedida por el fundador sobre todo `codigo.gs` y
+`admin.gs`. Se arreglaron los 2 más urgentes de la lista, más un
+tercero encontrado al investigar por qué "Valoración Runners" podía
+no mostrar nada.
+
+- **`gas/codigo.gs`** (`_verificarPassword`): las contraseñas viejas
+  (de antes del cambio a hasheo) se guardan en texto plano. La función
+  decidía si una contraseña ya estaba hasheada solo mirando si tenía
+  un "$" adentro — si la contraseña vieja en texto plano casualmente
+  tenía un "$" (ej. `abc$123`), se la trataba como si ya fuera el
+  formato nuevo `salt$hash`, la comparación nunca daba bien, y esa
+  persona quedaba sin poder entrar **nunca más**, ni cambiando la
+  clave arreglaba el problema de fondo. Ahora se valida el formato
+  exacto (`uuid$hash-sha256-de-64-caracteres`), no cualquier "$".
+
+- **`gas/admin.gs`** (`getInsightsExtendidos`): `abandono.lista` viene
+  recortada a los primeros 10 runners inactivos (para no mostrar una
+  lista gigante en pantalla), pero dos lugares del panel usaban
+  `lista.length` como si fuera el total real — si había 23 runners
+  sin actividad, en el chip de alerta y en la tarjeta de "Insight
+  Comercial" se veía "10" en vez de "23" (el botón de notificar sí le
+  llegaba a los 23, solo el número mostrado estaba mal). Se agregó
+  `abandono.totalInactivos` con la cantidad real, y `gas/admin.html`
+  ahora usa ese campo en los dos lugares.
+
+- **`gas/admin.html`** (`cargarInsightsExtendidos`): si la llamada al
+  servidor fallaba, el error se ignoraba en silencio y las secciones
+  "Constancia" y "Valoración Runners" se quedaban con el texto
+  "Cargando..." para siempre — parecía que la sección no existía,
+  cuando en realidad había un error que nadie veía. Ahora, si falla,
+  esas dos secciones muestran el motivo del error en pantalla.
+
+---
+
 ## 11/09/2026 11:02 — Barra de pestañas de Insights: de scroll a varias líneas
 
 El fundador avisó que en la PC le costaba mucho scrollear la barra de

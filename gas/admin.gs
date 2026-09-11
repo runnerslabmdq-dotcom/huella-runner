@@ -1,14 +1,17 @@
 // ============================================================
 // HUELLA RUNNER — admin.gs
-// Última actualización: 07/09/2026 09:16 (hora Argentina)
+// Última actualización: 11/09/2026 12:29 (hora Argentina)
 // Cambios en esta versión:
+//   - Fix: getInsightsExtendidos() → abandono.lista viene recortada a
+//     10 (solo para mostrar en pantalla), pero el panel usaba
+//     lista.length como si fuera el total real de runners inactivos —
+//     mostraba "10" aunque hubiera más. Ahora se agrega
+//     abandono.totalInactivos con la cantidad real. Ver HISTORIAL-CAMBIOS.md.
+// Cambios en versiones anteriores:
 //   - getInsightsExtendidos() suma visitasVsRegistros: aperturas de la
 //     app vs. registros nuevos en los últimos 7 días, para saber si el
 //     problema de conseguir usuarios está en el tráfico o en el
 //     formulario. Nueva tarjeta en Insights (ver HISTORIAL-CAMBIOS.md).
-// Cambios en versiones anteriores:
-//   - Fix fecha en inglés en el historial de notificaciones (ver
-//     HISTORIAL-CAMBIOS.md).
 // (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
 // en la raíz del repo — a partir de ahora este encabezado solo guarda
 // los últimos 2 cambios, para no seguir creciendo sin límite.)
@@ -1000,9 +1003,10 @@ function getInsightsExtendidos(token) {
       semanaAnteriorKm: semanaAnteriorKm,
       tendenciaMeses: meses,
       abandono: {
-        activos7:  activos7,
-        activos30: activos30,
-        total:     totalUsuarios,
+        activos7:      activos7,
+        activos30:     activos30,
+        total:         totalUsuarios,
+        totalInactivos: listaInactivos.length, // cantidad real, "lista" de abajo viene recortada solo para mostrar
         lista:       listaInactivos.slice(0, 10), // para mostrar en pantalla
         todosEmails: listaInactivos.map(function(u) { return u.email; }) // para notificar al segmento completo
       },

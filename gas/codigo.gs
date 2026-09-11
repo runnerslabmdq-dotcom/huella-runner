@@ -1,12 +1,14 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 11/09/2026 09:50 (hora Argentina)
+// Última actualización: 11/09/2026 12:29 (hora Argentina)
 // Cambios en esta versión:
+//   - Fix login: _verificarPassword() confundía una contraseña vieja
+//     en texto plano que tuviera un "$" adentro con el formato
+//     hasheado nuevo, y esa cuenta quedaba sin poder entrar nunca más.
+//     Ahora valida el formato exacto "uuid$hash". Ver HISTORIAL-CAMBIOS.md.
+// Cambios en versiones anteriores:
 //   - doGet() (page=manifest): íconos actualizados a los nuevos de
 //     Cloudinary — apuntaban a pwa/icons/, que ya no existe (ver
-//     HISTORIAL-CAMBIOS.md).
-// Cambios en versiones anteriores:
-//   - "Valoración Runners" para todos los usuarios (ver
 //     HISTORIAL-CAMBIOS.md).
 // (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
 // en la raíz del repo — a partir de ahora este encabezado solo guarda
@@ -185,7 +187,13 @@ function _hashPassword(password, salt) {
 // cambio, el formato viejo en texto plano — si coincide, la migra sola
 // al formato hasheado en ese mismo login, sin que el usuario note nada.
 function _verificarPassword(guardada, ingresada, sheet, filaIndex, colIndex) {
-  if (guardada.indexOf('$') !== -1) {
+  // Formato hasheado es siempre "uuid$hash-sha256" (ver _hashPassword). Se
+  // valida con esta forma exacta, no solo "tiene un $ adentro" — si no, una
+  // contraseña vieja en texto plano que casualmente tenga un "$" (ej.
+  // "abc$123") se confundía con el formato nuevo y esa persona quedaba sin
+  // poder entrar nunca más.
+  const ES_HASHEADA = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\$[0-9a-f]{64}$/i;
+  if (ES_HASHEADA.test(guardada)) {
     const partes = guardada.split('$');
     return _hashPassword(ingresada, partes[0]) === partes[1];
   }
