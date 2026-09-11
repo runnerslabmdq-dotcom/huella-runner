@@ -58,6 +58,27 @@ actualizar y volver a mergear `pwa/index.html` a mano. Ya pasó más de una
 vez (ver `HISTORIAL-CAMBIOS.md`, sección `pwa/`) y es la causa más común
 de "esto en la PC anda bien pero en el celu no".
 
+## Regla permanente: flujo fix → main → GAS
+
+Desde el 11/09/2026, cada vez que se arregla o cambia algo del código:
+
+1. Arreglar, actualizando el encabezado de fecha **y hora** del/los
+   archivo(s) tocado(s) (ver regla de arriba) y `HISTORIAL-CAMBIOS.md`.
+2. Commitear.
+3. Mergear directo a `main` (con Pull Request, para que quede el diff
+   registrado en GitHub), sin dejarlo esperando en una rama aparte ni
+   preguntar PR sí/PR no cada vez — es el paso por defecto.
+4. Avisarle al fundador que ya está en `main`, listo para copiar al GAS.
+
+El fundador no revisa código en GitHub antes de mergear — confía en que
+lo que está en `main` es lo último y correcto, y de ahí lo copia
+directo al editor de Apps Script. Por eso `main` tiene que reflejar
+siempre el estado real y probado del código, nunca un cambio a medias.
+
+Este flujo también necesita la palabra clave de confirmación (ver
+regla de abajo) antes de mergear — no reemplaza esa regla, se hace en
+el mismo paso.
+
 ## Regla permanente: confirmación antes de cambiar algo
 
 Desde el 20/07/2026, antes de hacer CUALQUIER cambio al proyecto (editar

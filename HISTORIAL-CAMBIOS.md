@@ -12,6 +12,73 @@ el GAS es la versión más nueva.
 
 ---
 
+## 11/09/2026 12:29 — Fix login (contraseña con "$") + contador de inactivos que mentía + panel Insights que se quedaba mudo en error
+
+Revisión de bugs pedida por el fundador sobre todo `codigo.gs` y
+`admin.gs`. Se arreglaron los 2 más urgentes de la lista, más un
+tercero encontrado al investigar por qué "Valoración Runners" podía
+no mostrar nada.
+
+- **`gas/codigo.gs`** (`_verificarPassword`): las contraseñas viejas
+  (de antes del cambio a hasheo) se guardan en texto plano. La función
+  decidía si una contraseña ya estaba hasheada solo mirando si tenía
+  un "$" adentro — si la contraseña vieja en texto plano casualmente
+  tenía un "$" (ej. `abc$123`), se la trataba como si ya fuera el
+  formato nuevo `salt$hash`, la comparación nunca daba bien, y esa
+  persona quedaba sin poder entrar **nunca más**, ni cambiando la
+  clave arreglaba el problema de fondo. Ahora se valida el formato
+  exacto (`uuid$hash-sha256-de-64-caracteres`), no cualquier "$".
+
+- **`gas/admin.gs`** (`getInsightsExtendidos`): `abandono.lista` viene
+  recortada a los primeros 10 runners inactivos (para no mostrar una
+  lista gigante en pantalla), pero dos lugares del panel usaban
+  `lista.length` como si fuera el total real — si había 23 runners
+  sin actividad, en el chip de alerta y en la tarjeta de "Insight
+  Comercial" se veía "10" en vez de "23" (el botón de notificar sí le
+  llegaba a los 23, solo el número mostrado estaba mal). Se agregó
+  `abandono.totalInactivos` con la cantidad real, y `gas/admin.html`
+  ahora usa ese campo en los dos lugares.
+
+- **`gas/admin.html`** (`cargarInsightsExtendidos`): si la llamada al
+  servidor fallaba, el error se ignoraba en silencio y las secciones
+  "Constancia" y "Valoración Runners" se quedaban con el texto
+  "Cargando..." para siempre — parecía que la sección no existía,
+  cuando en realidad había un error que nadie veía. Ahora, si falla,
+  esas dos secciones muestran el motivo del error en pantalla.
+
+---
+
+## 11/09/2026 11:02 — Barra de pestañas de Insights: de scroll a varias líneas
+
+El fundador avisó que en la PC le costaba mucho scrollear la barra de
+pestañas de Insights hacia el costado, y por eso ni se enteraba de que
+existía la pestaña "★ Valoración Runners" (quedaba fuera de la vista,
+sin ninguna flecha ni indicio de que había más pestañas para el lado).
+
+- **`gas/admin.html`**: `.ins-tabs` deja de tener `overflow-x: auto`
+  (scroll horizontal con barra oculta) y pasa a `flex-wrap: wrap` —
+  las pestañas que no entran en una línea bajan a la siguiente, todas
+  visibles de una sin tocar nada. Ocupa un poco más de alto en la
+  pantalla, pero no hay más pestañas escondidas.
+
+---
+
+## 11/09/2026 10:49 — Fix: pestaña "Valoración Runners" inaccesible en Insights
+
+La sección "★ Valoración Runners por modelo" se había agregado al panel
+en la versión anterior (dato privado, ver entrada de abajo), pero el
+botón de pestaña y la entrada correspondiente en el array de
+`setInsTab()` nunca se agregaron — el panel quedó armado en el HTML
+pero sin forma de abrirlo desde la UI.
+
+- **`gas/admin.html`**: agregado el `<div class="ins-tab">★ Valoración
+  Runners</div>` en la barra de pestañas de Insights, y `'valoracion'`
+  al array `tabs` de `setInsTab()` (tiene que estar en la misma
+  posición que el botón en el DOM, porque `setInsTab()` los empareja
+  por índice).
+
+---
+
 ## 11/09/2026 09:50 — Ícono de la PWA pasa a Cloudinary, se sacan los archivos locales
 
 Seguimiento del pendiente de la entrada anterior: el fundador no pudo

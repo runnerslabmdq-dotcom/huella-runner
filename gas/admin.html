@@ -1,8 +1,26 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Admin.html
-  Última actualización: 11/09/2026 00:04 (hora Argentina)
+  Última actualización: 11/09/2026 12:29 (hora Argentina)
   Cambios en esta versión:
+    - Fix: "runners inactivos" mostraba "10" en dos lugares del panel
+      aunque hubiera más, porque usaba el largo de la lista recortada
+      en vez del total real (abandono.totalInactivos, nuevo en admin.gs).
+    - Si getInsightsExtendidos() falla, Constancia y Valoración
+      Runners ya no se quedan en "Cargando..." para siempre sin
+      aviso — ahora muestran el error. Ver HISTORIAL-CAMBIOS.md.
+  Cambios en versiones anteriores:
+    - La barra de pestañas de Insights pasa de scroll horizontal a
+      varias líneas (flex-wrap) — con 11 pestañas quedaban algunas
+      escondidas al costado y no se notaba que había más para
+      deslizar. Ver HISTORIAL-CAMBIOS.md.
+  Cambios en versiones anteriores:
+    - Fix: la pestaña "★ Valoración Runners" del panel de Insights
+      (agregada en la versión anterior) no tenía botón de pestaña ni
+      entrada en el array de setInsTab(), así que el panel quedaba
+      armado pero inaccesible. Agregado el botón y la entrada que
+      faltaban. Ver HISTORIAL-CAMBIOS.md.
+  Cambios en versiones anteriores:
     - Nueva sección en Insights: "★ Valoración Runners por modelo" —
       dato privado, cuenta usuarios distintos (no filas) que puntuaron
       cada modelo, y marca "listo para publicar" con 5 o más. Ver
@@ -432,14 +450,12 @@
 
     /* Barra de pestañas */
     .ins-tabs {
-      display: flex; border-bottom: 1px solid var(--borde);
-      overflow-x: auto; scrollbar-width: none;
+      display: flex; flex-wrap: wrap; border-bottom: 1px solid var(--borde);
     }
-    .ins-tabs::-webkit-scrollbar { display: none; }
     .ins-tab {
       font-size: 0.62rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1.5px;
       padding: 14px 18px; cursor: pointer; color: var(--metal); white-space: nowrap;
-      border-bottom: 2px solid transparent; transition: all 0.15s; flex-shrink: 0;
+      border-bottom: 2px solid transparent; transition: all 0.15s;
       background: transparent; border-left: none; border-right: none; border-top: none;
     }
     .ins-tab:hover { color: var(--plata); }
@@ -721,6 +737,7 @@
         <div class="ins-tab"          onclick="setInsTab('comercial')">💡 Insight Comercial</div>
         <div class="ins-tab"          onclick="setInsTab('constancia')">📅 Constancia</div>
         <div class="ins-tab"          onclick="setInsTab('geografia')">🗺️ Geografía</div>
+        <div class="ins-tab"          onclick="setInsTab('valoracion')">★ Valoración Runners</div>
       </div>
 
       <!-- A: PERFIL COMUNIDAD -->
@@ -931,7 +948,10 @@
   function cargarInsightsExtendidos() {
     google.script.run
       .withSuccessHandler(function(data) {
-        if (!data || !data.success) return;
+        if (!data || !data.success) {
+          _mostrarErrorInsightsExtendidos(data && data.error);
+          return;
+        }
         insightsExtData = data;
         actualizarFranjaAtencion();
         _renderConstancia();
@@ -941,8 +961,24 @@
         _renderInsightComercial(); // re-renderiza para sumar la tarjeta de abandono
         _renderValoracionModelos();
       })
-      .withFailureHandler(function() {})
+      .withFailureHandler(function(e) {
+        _mostrarErrorInsightsExtendidos(e && e.message);
+      })
       .getInsightsExtendidos(ADMIN_TOKEN);
+  }
+
+  // Antes, si esta llamada fallaba, las secciones que dependen de ella
+  // (Constancia, Valoración Runners) se quedaban con el "Cargando..."
+  // inicial para siempre, sin ningún aviso — parecía que la sección no
+  // existía. Ahora se ve el error en pantalla.
+  function _mostrarErrorInsightsExtendidos(detalle) {
+    const msg = '<div style="text-align:center;padding:24px;font-size:0.84rem;color:var(--rojo);">' +
+      'No se pudo cargar esta sección' + (detalle ? ': ' + sanitize(String(detalle)) : '') +
+      '. Probá recargar la página.</div>';
+    ['ins-constancia-list', 'ins-valoracion-list'].forEach(function(id) {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = msg;
+    });
   }
 
   function _renderConstancia() {
@@ -1800,7 +1836,7 @@
     _pintarAtencion('atencion-alertas', alertasFull.length, 'var(--naranja)');
     _pintarAtencion('atencion-sospechosos', sospechososFull.length, 'var(--amarillo)');
     if (insightsExtData && insightsExtData.abandono) {
-      _pintarAtencion('atencion-inactivos', insightsExtData.abandono.lista.length, 'var(--rojo)');
+      _pintarAtencion('atencion-inactivos', insightsExtData.abandono.totalInactivos, 'var(--rojo)');
     }
   }
   function _pintarAtencion(id, num, colorSiHay) {
@@ -1813,7 +1849,7 @@
   function setInsTab(tab) {
     insTabActual = tab;
     document.querySelectorAll('.ins-tab').forEach(function(el, i) {
-      const tabs = ['comunidad','grupos','zapas','tendencia','vidautil','horario','modelos','comercial','constancia','geografia'];
+      const tabs = ['comunidad','grupos','zapas','tendencia','vidautil','horario','modelos','comercial','constancia','geografia','valoracion'];
       el.classList.toggle('active', tabs[i] === tab);
     });
     document.querySelectorAll('.ins-content').forEach(function(el) {
@@ -2136,8 +2172,8 @@
     if (insightsExtData && insightsExtData.abandono) {
       const ab = insightsExtData.abandono;
       insights.push({
-        icon: '⚠️', num: ab.lista.length,
-        title: ab.lista.length + ' runners sin actividad hace 14+ días (o nunca entrenaron)',
+        icon: '⚠️', num: ab.totalInactivos,
+        title: ab.totalInactivos + ' runners sin actividad hace 14+ días (o nunca entrenaron)',
         desc: 'A diferencia de "no entrenó hoy", esto marca abandono real. Es el momento de un mensaje personal antes de perderlos del todo.',
         action: 'Ver lista y notificar',
         onClick: "toggleListaAbandono()"
