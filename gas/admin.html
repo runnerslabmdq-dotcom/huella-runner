@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Admin.html
-  Última actualización: 09/09/2026 13:35 (hora Argentina)
+  Última actualización: 11/09/2026 00:04 (hora Argentina)
   Cambios en esta versión:
-    - Nueva plantilla rápida en "Enviar notificación": "🏃‍♂️ Recordá
-      cargar tus km" — recordatorio para registrar entrenamientos.
+    - Nueva sección en Insights: "★ Valoración Runners por modelo" —
+      dato privado, cuenta usuarios distintos (no filas) que puntuaron
+      cada modelo, y marca "listo para publicar" con 5 o más. Ver
+      HISTORIAL-CAMBIOS.md.
   Cambios en versiones anteriores:
-    - Nueva tarjeta en Insights: aperturas vs. registros (ver
+    - Nueva plantilla rápida "Recordá cargar tus km" (ver
       HISTORIAL-CAMBIOS.md).
     - Nueva sección "🕵️ Actividad sospechosa — revisar": el anti-fraude
       viene marcando entrenamientos "Sospechosa" (superan el acumulado
@@ -790,6 +792,14 @@
         <div id="ins-geografia-list"><div class="loading-row">Cargando...</div></div>
       </div>
 
+      <!-- K: VALORACIÓN RUNNERS POR MODELO (dato privado, no se publica
+           en la app hasta que un modelo tenga suficiente muestra real —
+           ver getInsightsExtendidos() en admin.gs) -->
+      <div class="ins-content" id="ins-valoracion">
+        <div class="panel-title">★ Valoración Runners por modelo — mínimo 5 usuarios distintos para publicar</div>
+        <div id="ins-valoracion-list"><div class="loading-row">Cargando...</div></div>
+      </div>
+
     </div><!-- /insights-panel -->
 
     <!-- 7. SALUD DEL SISTEMA -->
@@ -929,6 +939,7 @@
         _renderTendenciaExtendida();
         _renderNotifLectura();
         _renderInsightComercial(); // re-renderiza para sumar la tarjeta de abandono
+        _renderValoracionModelos();
       })
       .withFailureHandler(function() {})
       .getInsightsExtendidos(ADMIN_TOKEN);
@@ -960,6 +971,37 @@
             <div class="top-modelo-count">${u.diasActivos}<span>día${u.diasActivos!==1?'s':''}</span></div>
           </div>
           <div class="nivel-bar-track"><div class="nivel-bar-fill" style="width:${pct}%;background:var(--neon);"></div></div>
+        </div>`;
+      }).join('');
+  }
+
+  // Valoración Runners por modelo — dato privado del panel, para ver
+  // cuándo un modelo junta suficiente muestra REAL (usuarios distintos,
+  // no filas de zapatillas) antes de mostrar nada en la app. Ver
+  // getInsightsExtendidos() (admin.gs) y HISTORIAL-CAMBIOS.md.
+  function _renderValoracionModelos() {
+    const cont = document.getElementById('ins-valoracion-list');
+    if (!cont) return;
+    const lista = (insightsExtData && insightsExtData.valoracionPorModelo) || [];
+    if (!lista.length) {
+      cont.innerHTML = '<div style="text-align:center;padding:24px;font-size:0.84rem;color:var(--metal);">Todavía nadie puntuó ninguna zapatilla</div>';
+      return;
+    }
+    cont.innerHTML =
+      '<div style="font-size:0.66rem;color:var(--gris);margin-bottom:16px;padding:10px 12px;' +
+      'background:var(--bg2);border-radius:8px;border:1px solid var(--borde);line-height:1.6;">' +
+      '★ Se cuentan <strong style="color:var(--neon)">usuarios distintos</strong>, no zapatillas — si la misma persona ' +
+      'tiene 2 pares del mismo modelo, cuenta una sola vez. Un modelo está <strong style="color:var(--neon)">listo para ' +
+      'publicar</strong> recién con 5 usuarios distintos o más.</div>' +
+      lista.map(function(m, i) {
+        return `<div style="margin-bottom:14px;display:flex;align-items:center;gap:12px;">
+          <div class="top-modelo-pos ${i < 3 ? 't'+(i+1) : ''}">${i+1}</div>
+          <div class="top-modelo-info">
+            <div class="top-modelo-name">${sanitize(m.marca)} ${sanitize(m.modelo)}</div>
+            <div class="top-modelo-marca">${m.usuariosDistintos} usuario${m.usuariosDistintos!==1?'s':''} distinto${m.usuariosDistintos!==1?'s':''}
+              ${m.listoParaPublicar ? ' · <span style="color:var(--neon);">listo para publicar</span>' : ' · falta muestra'}</div>
+          </div>
+          <div class="top-modelo-count">★ ${m.promedio}</div>
         </div>`;
       }).join('');
   }
