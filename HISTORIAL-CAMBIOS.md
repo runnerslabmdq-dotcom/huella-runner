@@ -12,6 +12,21 @@ el GAS es la versión más nueva.
 
 ---
 
+## 11/09/2026 11:02 — Barra de pestañas de Insights: de scroll a varias líneas
+
+El fundador avisó que en la PC le costaba mucho scrollear la barra de
+pestañas de Insights hacia el costado, y por eso ni se enteraba de que
+existía la pestaña "★ Valoración Runners" (quedaba fuera de la vista,
+sin ninguna flecha ni indicio de que había más pestañas para el lado).
+
+- **`gas/admin.html`**: `.ins-tabs` deja de tener `overflow-x: auto`
+  (scroll horizontal con barra oculta) y pasa a `flex-wrap: wrap` —
+  las pestañas que no entran en una línea bajan a la siguiente, todas
+  visibles de una sin tocar nada. Ocupa un poco más de alto en la
+  pantalla, pero no hay más pestañas escondidas.
+
+---
+
 ## 11/09/2026 10:49 — Fix: pestaña "Valoración Runners" inaccesible en Insights
 
 La sección "★ Valoración Runners por modelo" se había agregado al panel

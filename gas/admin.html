@@ -1,8 +1,13 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Admin.html
-  Última actualización: 11/09/2026 10:49 (hora Argentina)
+  Última actualización: 11/09/2026 11:02 (hora Argentina)
   Cambios en esta versión:
+    - La barra de pestañas de Insights pasa de scroll horizontal a
+      varias líneas (flex-wrap) — con 11 pestañas quedaban algunas
+      escondidas al costado y no se notaba que había más para
+      deslizar. Ver HISTORIAL-CAMBIOS.md.
+  Cambios en versiones anteriores:
     - Fix: la pestaña "★ Valoración Runners" del panel de Insights
       (agregada en la versión anterior) no tenía botón de pestaña ni
       entrada en el array de setInsTab(), así que el panel quedaba
@@ -438,14 +443,12 @@
 
     /* Barra de pestañas */
     .ins-tabs {
-      display: flex; border-bottom: 1px solid var(--borde);
-      overflow-x: auto; scrollbar-width: none;
+      display: flex; flex-wrap: wrap; border-bottom: 1px solid var(--borde);
     }
-    .ins-tabs::-webkit-scrollbar { display: none; }
     .ins-tab {
       font-size: 0.62rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1.5px;
       padding: 14px 18px; cursor: pointer; color: var(--metal); white-space: nowrap;
-      border-bottom: 2px solid transparent; transition: all 0.15s; flex-shrink: 0;
+      border-bottom: 2px solid transparent; transition: all 0.15s;
       background: transparent; border-left: none; border-right: none; border-top: none;
     }
     .ins-tab:hover { color: var(--plata); }
