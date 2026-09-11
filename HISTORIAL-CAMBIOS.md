@@ -12,6 +12,34 @@ el GAS es la versión más nueva.
 
 ---
 
+## 11/09/2026 09:50 — Ícono de la PWA pasa a Cloudinary, se sacan los archivos locales
+
+Seguimiento del pendiente de la entrada anterior: el fundador no pudo
+adjuntar los 2 PNG como archivo (se pegaban como imagen, no como
+adjunto descargable), así que se optó por la opción 2 que se le
+planteó: usar los links de Cloudinary directo, aceptando que el
+ícono de instalación dependa de Cloudinary (igual que ya depende el
+resto de las fotos de la app).
+
+- **`pwa/manifest.json`**: los 2 `icons[].src` pasan de
+  `icons/icon-192.png` / `icons/icon-512.png` (archivos locales) a
+  las URLs de Cloudinary.
+- **`pwa/index.html`**: el `apple-touch-icon` apunta a la misma URL
+  de Cloudinary del ícono de 512px.
+- **`gas/codigo.gs`**: el manifest que arma `doGet()` para
+  `?page=manifest` (se usa al instalar desde la URL de Apps Script
+  directamente, no solo desde la PWA) también apuntaba a los archivos
+  locales de `pwa/icons/` vía `huella-runner.vercel.app` — actualizado
+  a las mismas URLs de Cloudinary para que no quede una tercera
+  versión desincronizada.
+- **`pwa/service-worker.js`**: sacadas las 2 líneas que precacheaban
+  los íconos locales (ya no existen) de `STATIC_ASSETS`, y subida la
+  versión de caché (`v3` → `v4`) para que el cambio llegue a quien ya
+  tenía la PWA instalada.
+- **Borrados** `pwa/icons/icon-192.png` y `icon-512.png` — dejaron de
+  usarse en cualquier lado del proyecto. `pwa/README.md` actualizado
+  para no seguir mencionando esa carpeta.
+
 ## 11/09/2026 09:02 — Ícono nuevo en gas/index.html + New Balance Propel V5
 
 **Ícono**: en `gas/index.html`, reemplazadas las 4 URLs del ícono

@@ -10,13 +10,13 @@
   "theme_color": "#C5B358",
   "icons": [
     {
-      "src": "icons/icon-192.png",
+      "src": "https://res.cloudinary.com/klxkj07e/image/upload/v1789127601/HR_192_PNG_xswoxt.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "icons/icon-512.png",
+      "src": "https://res.cloudinary.com/klxkj07e/image/upload/v1789127602/HR_512_PNG_lxfzqx.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"

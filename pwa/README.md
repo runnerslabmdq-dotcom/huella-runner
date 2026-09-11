@@ -13,7 +13,11 @@ Script (carpeta `../gas/` del repo).
   app (nombre, colores, íconos, pantalla completa).
 - `service-worker.js` — guarda una copia liviana en el celular para que
   abra más rápido.
-- `icons/` — los íconos que usa el manifest (192px y 512px).
+- Los íconos (192px y 512px) que usa `manifest.json` ya no son
+  archivos locales — están en Cloudinary (misma cuenta que el resto de
+  las imágenes de la app). Si hay que cambiarlos, alcanza con
+  actualizar las 2 URLs en `manifest.json` y el `apple-touch-icon` de
+  `index.html`.
 
 ## Deploy
 
