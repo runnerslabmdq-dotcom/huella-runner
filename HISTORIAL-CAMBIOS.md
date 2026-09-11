@@ -12,6 +12,35 @@ el GAS es la versión más nueva.
 
 ---
 
+## 11/09/2026 00:04 — Panel admin: "Valoración Runners por modelo" (dato privado)
+
+El fundador notó, viendo su propia zapatilla puntuada, el mismo
+problema que ya se había anotado antes: con 25 usuarios, varios de
+esos registros son él mismo probando (founder + admin + cuentas de
+prueba) — 5 puntuaciones de un modelo podrían ser en realidad 2 o 3
+personas reales. No tenía sentido armar el "Top zapatillas" público
+todavía sin resolver eso primero.
+
+**En `gas/admin.gs`**: `getInsightsExtendidos()` suma
+`valoracionPorModelo` — recorre `Zapatillas`, agrupa por Marca+Modelo,
+y por cada modelo cuenta **usuarios distintos** (por email), no filas.
+Si la misma persona tiene 2 pares del mismo modelo, primero se
+promedian sus propias filas — ese número es "su voto" para el modelo,
+cuenta una sola vez. Cada modelo queda marcado `listoParaPublicar:
+true` a partir de 5 usuarios distintos (mismo mínimo ya usado en otros
+datos de comunidad).
+
+**En `gas/admin.html`**: nueva sección en Insights, "★ Valoración
+Runners por modelo", con la lista ordenada por cantidad de usuarios
+distintos y el promedio de cada uno, aclarando cuáles ya están
+"listo para publicar" y cuáles todavía "falta muestra".
+
+**Importante**: esto es solo para que el fundador vea en el panel
+cuándo un modelo junta muestra real — no se muestra nada de esto en
+la app todavía. La decisión de sacarlo a la vista de los corredores
+(y dónde — se habló de la pantalla "Nueva zapatilla") queda pendiente
+para cuando haya modelos reales por encima del mínimo.
+
 ## 10/09/2026 11:00 — Ajuste visual del botón "Valoración Runners"
 
 En `gas/index.html`: antes, una vez que la zapatilla ya tenía
