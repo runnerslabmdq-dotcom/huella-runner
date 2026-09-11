@@ -12,6 +12,22 @@ el GAS es la versión más nueva.
 
 ---
 
+## 11/09/2026 10:49 — Fix: pestaña "Valoración Runners" inaccesible en Insights
+
+La sección "★ Valoración Runners por modelo" se había agregado al panel
+en la versión anterior (dato privado, ver entrada de abajo), pero el
+botón de pestaña y la entrada correspondiente en el array de
+`setInsTab()` nunca se agregaron — el panel quedó armado en el HTML
+pero sin forma de abrirlo desde la UI.
+
+- **`gas/admin.html`**: agregado el `<div class="ins-tab">★ Valoración
+  Runners</div>` en la barra de pestañas de Insights, y `'valoracion'`
+  al array `tabs` de `setInsTab()` (tiene que estar en la misma
+  posición que el botón en el DOM, porque `setInsTab()` los empareja
+  por índice).
+
+---
+
 ## 11/09/2026 09:50 — Ícono de la PWA pasa a Cloudinary, se sacan los archivos locales
 
 Seguimiento del pendiente de la entrada anterior: el fundador no pudo

@@ -1,8 +1,14 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Admin.html
-  Última actualización: 11/09/2026 00:04 (hora Argentina)
+  Última actualización: 11/09/2026 10:49 (hora Argentina)
   Cambios en esta versión:
+    - Fix: la pestaña "★ Valoración Runners" del panel de Insights
+      (agregada en la versión anterior) no tenía botón de pestaña ni
+      entrada en el array de setInsTab(), así que el panel quedaba
+      armado pero inaccesible. Agregado el botón y la entrada que
+      faltaban. Ver HISTORIAL-CAMBIOS.md.
+  Cambios en versiones anteriores:
     - Nueva sección en Insights: "★ Valoración Runners por modelo" —
       dato privado, cuenta usuarios distintos (no filas) que puntuaron
       cada modelo, y marca "listo para publicar" con 5 o más. Ver
@@ -721,6 +727,7 @@
         <div class="ins-tab"          onclick="setInsTab('comercial')">💡 Insight Comercial</div>
         <div class="ins-tab"          onclick="setInsTab('constancia')">📅 Constancia</div>
         <div class="ins-tab"          onclick="setInsTab('geografia')">🗺️ Geografía</div>
+        <div class="ins-tab"          onclick="setInsTab('valoracion')">★ Valoración Runners</div>
       </div>
 
       <!-- A: PERFIL COMUNIDAD -->
@@ -1813,7 +1820,7 @@
   function setInsTab(tab) {
     insTabActual = tab;
     document.querySelectorAll('.ins-tab').forEach(function(el, i) {
-      const tabs = ['comunidad','grupos','zapas','tendencia','vidautil','horario','modelos','comercial','constancia','geografia'];
+      const tabs = ['comunidad','grupos','zapas','tendencia','vidautil','horario','modelos','comercial','constancia','geografia','valoracion'];
       el.classList.toggle('active', tabs[i] === tab);
     });
     document.querySelectorAll('.ins-content').forEach(function(el) {
