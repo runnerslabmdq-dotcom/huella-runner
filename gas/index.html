@@ -1,13 +1,16 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 10/09/2026 11:00 (hora Argentina)
+  Última actualización: 11/09/2026 09:02 (hora Argentina)
   Cambios en esta versión:
-    - Botón "Valoración Runners": ahora la frase queda siempre al
-      lado del puntaje (antes, con puntaje cargado, solo se veía
-      "★ 4.3" sin texto) — y "Valoración Runners" en letra más chica
-      que el puntaje.
+    - Ícono nuevo (favicon + apple-touch-icon + manifest embebido):
+      reemplazadas las URLs viejas de Cloudinary (cuenta dlayzh9ln)
+      por las nuevas (cuenta klxkj07e). Ojo: esto es solo el ícono
+      dentro de gas/index.html — el de la PWA de Vercel (pwa/icons/)
+      es aparte, archivos locales, pendiente.
+    - New Balance Propel V5 (Calle): modelo nuevo, foto propia, drop
+      6mm / talón 35mm / antepié 29mm.
   Cambios en versiones anteriores:
-    - "Valoración Runners" para todos los usuarios (ver
+    - Ajuste visual del botón "Valoración Runners" (ver
       HISTORIAL-CAMBIOS.md).
   (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
   en la raíz del repo — a partir de ahora este encabezado solo guarda
@@ -27,10 +30,10 @@
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
   <!-- PWA INSTALL SUPPORT -->
-  <link rel="icon" href="https://res.cloudinary.com/dlayzh9ln/image/upload/v1784824681/icon192_unoplg.png" type="image/png">
-  <link rel="apple-touch-icon" href="https://res.cloudinary.com/dlayzh9ln/image/upload/v1784824681/icon512_lmy8mu.png">
+  <link rel="icon" href="https://res.cloudinary.com/klxkj07e/image/upload/v1789127601/HR_192_PNG_xswoxt.png" type="image/png">
+  <link rel="apple-touch-icon" href="https://res.cloudinary.com/klxkj07e/image/upload/v1789127602/HR_512_PNG_lxfzqx.png">
   <meta name="apple-mobile-web-app-title" content="Huella Runner">
-  <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Huella%20Runner%22,%22short_name%22:%22HR%22,%22display%22:%22standalone%22,%22background_color%22:%22%23080808%22,%22theme_color%22:%22%23C5B358%22,%22icons%22:[{%22src%22:%22https://res.cloudinary.com/dlayzh9ln/image/upload/v1784824681/icon192_unoplg.png%22,%22sizes%22:%22192x192%22,%22type%22:%22image/png%22},{%22src%22:%22https://res.cloudinary.com/dlayzh9ln/image/upload/v1784824681/icon512_lmy8mu.png%22,%22sizes%22:%22512x512%22,%22type%22:%22image/png%22}]}">
+  <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Huella%20Runner%22,%22short_name%22:%22HR%22,%22display%22:%22standalone%22,%22background_color%22:%22%23080808%22,%22theme_color%22:%22%23C5B358%22,%22icons%22:[{%22src%22:%22https://res.cloudinary.com/klxkj07e/image/upload/v1789127601/HR_192_PNG_xswoxt.png%22,%22sizes%22:%22192x192%22,%22type%22:%22image/png%22},{%22src%22:%22https://res.cloudinary.com/klxkj07e/image/upload/v1789127602/HR_512_PNG_lxfzqx.png%22,%22sizes%22:%22512x512%22,%22type%22:%22image/png%22}]}">
   <!-- FIN PWA INSTALL SUPPORT -->
 
   <style>
@@ -2511,6 +2514,7 @@
     "brooks_levitate_5":             "https://i.imgur.com/fogvrsm.jpeg",
     "new_balance_fuelcell_rebel_v3": "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784776859/New_Balance_FuelCell_Rebel_v3_raocwy.png",
     "new_balance_fresh_foam_x_hierro_v9": "https://res.cloudinary.com/klxkj07e/image/upload/v1787932497/New_Balance_Hiero_V9_cabmro.jpg",
+    "new_balance_propel_v5":              "https://res.cloudinary.com/klxkj07e/image/upload/v1789127847/New_Balance_Propel_V5_fl0yuy.jpg",
     "new_balance_fresh_foam_x_vongo_v6": "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784776856/New_Balance_Fresh_Foam_X_Vongo_v6_ST_ravak2.png",
     "nike_pegasus_39":               "https://res.cloudinary.com/dlayzh9ln/image/upload/v1784776839/Nike_Pegasus_39_ST_iueltt.png",
     "nike_pegasus_42":               "https://res.cloudinary.com/dlayzh9ln/image/upload/v1785413720/Nike_Pegasus_42_ST_afhci8.png",
@@ -2629,6 +2633,7 @@
     // — New Balance (26/08/2026) —
     "new_balance_fresh_foam_x_vongo_v6": { drop: 6, talon: 38,   antepie: 32 },
     "new_balance_fuelcell_rebel_v3":     { drop: 6, talon: 27.5, antepie: 21.5 },
+    "new_balance_propel_v5":             { drop: 6, talon: 35,   antepie: 29 },
 
     // — Salomon (26/08/2026) —
     "salomon_aero_glide_4":          { drop: 10, talon: 37.4, antepie: 27.4 },
@@ -2833,7 +2838,7 @@
     ],
     "Brooks":       ["Levitate 5"],
     "Fila":         ["Float Maxxi 2 Pro", "Racer Carbon 2", "Racer Carbon 3"],
-    "New Balance":  ["Fresh Foam X 1080 v13", "Fresh Foam X 1080 v14", "Fresh Foam X Evoz v3", "Fresh Foam X Hierro v9", "Fresh Foam X Vongo v6", "FuelCell Rebel v3", "FuelCell Rebel v5", "FuelCell Supercomp Trainer v4"],
+    "New Balance":  ["Fresh Foam X 1080 v13", "Fresh Foam X 1080 v14", "Fresh Foam X Evoz v3", "Fresh Foam X Hierro v9", "Fresh Foam X Vongo v6", "FuelCell Rebel v3", "FuelCell Rebel v5", "FuelCell Supercomp Trainer v4", "Propel V5"],
     "Nike":         ["Alphafly 3 Blueprint", "Downshifter 13", "Infinity RN 4 Blueprint", "Invincible 3", "LunarSpider", "Pegasus 39", "Pegasus 40", "Pegasus 41", "Pegasus 42", "Pegasus Plus", "Pegasus Premium", "Pegasus Premium QS", "Quest 5", "Renew Run 3", "Revolution 7", "Revolution 8", "Run Defy", "Structure 25", "Vaporfly 4", "Vomero 17", "Vomero Plus", "Winflo 9", "Winflo 11"],
     "On":           ["Cloudmonster 3"],
     "Puma":         ["Deviate Nitro 2", "Deviate Nitro 3", "Deviate Nitro 3 Digitokyo", "Deviate Nitro 3 Wtr+", "Deviate Nitro 4", "Deviate Nitro Elite 3", "Electrify Nitro 3", "Fast-R Nitro Elite 3", "Foreverrun Nitro", "Foreverrun Nitro 2", "Foreverrun Nitro 2 W", "Magnify Nitro 3", "Scend Pro 2", "Velocity Nitro 4", "Velocity Nitro 4 Digitokyo"],

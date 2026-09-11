@@ -12,6 +12,25 @@ el GAS es la versión más nueva.
 
 ---
 
+## 11/09/2026 09:02 — Ícono nuevo en gas/index.html + New Balance Propel V5
+
+**Ícono**: en `gas/index.html`, reemplazadas las 4 URLs del ícono
+viejo (favicon, apple-touch-icon, y las 2 copias dentro del manifest
+embebido) — pasaron de la cuenta vieja de Cloudinary (`dlayzh9ln`) a
+la cuenta actual (`klxkj07e`), con el diseño nuevo "HR" dorado sobre
+negro que pasó el fundador.
+
+**Pendiente, aparte**: el ícono de la PWA (`pwa/icons/icon-192.png` y
+`icon-512.png`) son archivos locales guardados en el repo (a
+propósito, para no depender de Cloudinary — ver la prueba de
+resiliencia del 02/09) — no se pudieron actualizar en esta vuelta
+porque este entorno de trabajo tiene bloqueado el acceso a Cloudinary
+para bajar la imagen. Falta que el fundador adjunte los 2 archivos
+PNG directamente (no como link) para poder guardarlos en el repo.
+
+**New Balance Propel V5** (de calle): modelo nuevo en `catalogo{}`,
+con foto propia y drop 6mm / talón 35mm / antepié 29mm.
+
 ## 11/09/2026 00:04 — Panel admin: "Valoración Runners por modelo" (dato privado)
 
 El fundador notó, viendo su propia zapatilla puntuada, el mismo
