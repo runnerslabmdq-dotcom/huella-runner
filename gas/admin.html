@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <!--
   HUELLA RUNNER — Admin.html
-  Última actualización: 11/09/2026 12:29 (hora Argentina)
+  Última actualización: 12/09/2026 23:09 (hora Argentina)
   Cambios en esta versión:
+    - Tarjeta de "aperturas vs. registros" (Insight Comercial) ahora
+      suma el desglose por origen (instagram, whatsapp, directo, etc.).
+      Ver HISTORIAL-CAMBIOS.md.
+  Cambios en versiones anteriores:
     - Fix: "runners inactivos" mostraba "10" en dos lugares del panel
       aunque hubiera más, porque usaba el largo de la lista recortada
       en vez del total real (abandono.totalInactivos, nuevo en admin.gs).
     - Si getInsightsExtendidos() falla, Constancia y Valoración
       Runners ya no se quedan en "Cargando..." para siempre sin
-      aviso — ahora muestran el error. Ver HISTORIAL-CAMBIOS.md.
+      aviso — ahora muestran el error.
   Cambios en versiones anteriores:
     - La barra de pestañas de Insights pasa de scroll horizontal a
       varias líneas (flex-wrap) — con 11 pestañas quedaban algunas
@@ -2185,11 +2189,23 @@
     // formulario. Ver getInsightsExtendidos() (admin.gs).
     if (insightsExtData && insightsExtData.visitasVsRegistros) {
       const vr = insightsExtData.visitasVsRegistros;
+      // Los valores de "origen" vienen del parámetro ?src= del link que
+      // haya usado quien entró — es texto libre de afuera, por eso se
+      // pasa por sanitize() antes de mostrarlo (si no, alguien podría
+      // mandar un link con ?src=<script> y ejecutarlo acá).
+      const origenesOrdenados = Object.keys(vr.origenes || {}).sort(function(a, b) {
+        return vr.origenes[b] - vr.origenes[a];
+      });
+      const origenesTxt = origenesOrdenados.length
+        ? ' Por origen: ' + origenesOrdenados.map(function(k) {
+            return sanitize(k) + ' (' + vr.origenes[k] + ')';
+          }).join(', ') + '.'
+        : '';
       insights.push({
         icon: '📊', num: vr.visitas7,
         title: vr.visitas7 + ' aperturas de la app esta semana → ' + vr.registros7 + ' registros nuevos' +
           (vr.conversionPct !== null ? ' (~' + vr.conversionPct + '%)' : ''),
-        desc: 'Ojo: "aperturas" cuenta cada vez que se abre la app, no gente distinta — alguien que entra todos los días suma varias veces. Sirve para ver la tendencia (¿el problema es que no entra gente, o que entra y no se registra?), no como número exacto de visitantes.',
+        desc: 'Ojo: "aperturas" cuenta cada vez que se abre la app, no gente distinta — alguien que entra todos los días suma varias veces. Sirve para ver la tendencia (¿el problema es que no entra gente, o que entra y no se registra?), no como número exacto de visitantes.' + origenesTxt,
         action: 'Actualizar',
         onClick: "cargarInsightsExtendidos()"
       });

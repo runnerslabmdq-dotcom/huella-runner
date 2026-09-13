@@ -1,13 +1,17 @@
 // ============================================================
 // HUELLA RUNNER — admin.gs
-// Última actualización: 11/09/2026 12:29 (hora Argentina)
+// Última actualización: 12/09/2026 23:09 (hora Argentina)
 // Cambios en esta versión:
+//   - getInsightsExtendidos() → visitasVsRegistros.origenes: desglose de
+//     las aperturas de la semana por origen (instagram, whatsapp,
+//     directo, etc.), a partir del nuevo campo Origen de Log_Visitas.
+//     Ver HISTORIAL-CAMBIOS.md.
+// Cambios en versiones anteriores:
 //   - Fix: getInsightsExtendidos() → abandono.lista viene recortada a
 //     10 (solo para mostrar en pantalla), pero el panel usaba
 //     lista.length como si fuera el total real de runners inactivos —
 //     mostraba "10" aunque hubiera más. Ahora se agrega
-//     abandono.totalInactivos con la cantidad real. Ver HISTORIAL-CAMBIOS.md.
-// Cambios en versiones anteriores:
+//     abandono.totalInactivos con la cantidad real.
 //   - getInsightsExtendidos() suma visitasVsRegistros: aperturas de la
 //     app vs. registros nuevos en los últimos 7 días, para saber si el
 //     problema de conseguir usuarios está en el tráfico o en el
@@ -901,13 +905,19 @@ function getInsightsExtendidos(token) {
     // registrarse). Log_Visitas se llena con registrarVisita()
     // (codigo.gs) — no cuenta visitantes únicos, ver esa función. ---
     let visitas7 = 0;
+    const origenesTally = {}; // "instagram" -> 5, "directo" -> 30, etc. (ver ?src= en index.html)
     const visitasSheet = ss.getSheetByName('Log_Visitas');
     if (visitasSheet && visitasSheet.getLastRow() > 1) {
-      const vData  = visitasSheet.getDataRange().getValues();
-      const vFecha = vData[0].indexOf('Fecha');
+      const vData   = visitasSheet.getDataRange().getValues();
+      const vFecha  = vData[0].indexOf('Fecha');
+      const vOrigen = vData[0].indexOf('Origen');
       for (let i = 1; i < vData.length; i++) {
         const f = vFecha !== -1 ? new Date(vData[i][vFecha]) : null;
-        if (f && f >= hace7) visitas7++;
+        if (f && f >= hace7) {
+          visitas7++;
+          const origen = (vOrigen !== -1 ? (vData[i][vOrigen] || '').toString().trim() : '') || 'directo';
+          origenesTally[origen] = (origenesTally[origen] || 0) + 1;
+        }
       }
     }
     let registros7 = 0;
@@ -1018,7 +1028,8 @@ function getInsightsExtendidos(token) {
       visitasVsRegistros: {
         visitas7:      visitas7,
         registros7:    registros7,
-        conversionPct: visitas7 > 0 ? Math.round(registros7 / visitas7 * 100) : null
+        conversionPct: visitas7 > 0 ? Math.round(registros7 / visitas7 * 100) : null,
+        origenes:      origenesTally
       },
       valoracionPorModelo: valoracionPorModelo
     };

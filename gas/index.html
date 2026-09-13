@@ -1,13 +1,15 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 11/09/2026 09:02 (hora Argentina)
+  Última actualización: 12/09/2026 23:09 (hora Argentina)
   Cambios en esta versión:
+    - initApp(): las aperturas desde un dispositivo marcado como
+      "de prueba" (?admin_device=1, una vez por dispositivo) ya no se
+      cuentan en las métricas del panel. Si el link tenía ?src=..., ese
+      origen viaja junto con la visita. Ver HISTORIAL-CAMBIOS.md.
+  Cambios en versiones anteriores:
     - Ícono nuevo (favicon + apple-touch-icon + manifest embebido):
       reemplazadas las URLs viejas de Cloudinary (cuenta dlayzh9ln)
       por las nuevas (cuenta klxkj07e).
-    - New Balance Propel V5 (Calle): modelo nuevo, foto propia, drop
-      6mm / talón 35mm / antepié 29mm.
-  Cambios en versiones anteriores:
     - Ajuste visual del botón "Valoración Runners" (ver
       HISTORIAL-CAMBIOS.md).
   (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
@@ -2929,7 +2931,20 @@
     // Métrica simple: se registra que alguien abrió la app (ve el
     // Login). No bloquea nada si falla — es solo para saber "cuánta
     // gente entra" vs. "cuánta gente se registra" (ver admin.gs).
-    try { google.script.run.registrarVisita(); } catch (e) {}
+    // Los dispositivos de prueba del fundador se marcan una sola vez
+    // abriendo el link con ?admin_device=1 — después queda guardado en
+    // este navegador (localStorage) y esas aperturas dejan de contar.
+    // Si el link tenía ?src=instagram/whatsapp/etc., ese origen viaja
+    // junto con la visita para saber de dónde viene la gente.
+    try {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('admin_device') === '1') {
+        localStorage.setItem('hr_dispositivo_prueba', '1');
+      }
+      if (localStorage.getItem('hr_dispositivo_prueba') !== '1') {
+        google.script.run.registrarVisita(params.get('src') || '');
+      }
+    } catch (e) {}
   }
 
   function onMarcaChange() {

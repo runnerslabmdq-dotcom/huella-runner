@@ -12,6 +12,34 @@ el GAS es la versión más nueva.
 
 ---
 
+## 12/09/2026 23:09 — Aperturas: excluir dispositivos de prueba + saber de dónde vienen
+
+El fundador miró el número real de "aperturas de la app esta semana"
+(48) y sospechó que la mayoría era él mismo probando. Dos cambios para
+que ese número sirva de verdad:
+
+- **`gas/index.html`** (`initApp`): un dispositivo se marca "de
+  prueba" abriendo la app una vez con `?admin_device=1` al final del
+  link — queda guardado en ese navegador (localStorage) para siempre,
+  y desde ahí las aperturas dejan de registrarse. Es por dispositivo,
+  no por cuenta (la visita se cuenta antes de que exista un login), así
+  que hay que hacerlo una vez en cada celu/PC que use el fundador para
+  probar.
+
+- **Atribución de origen**: si el link que se comparte termina en
+  `?src=instagram` (o `whatsapp`, etc.), ese origen viaja junto con la
+  visita. Nuevo campo `Origen` en `Log_Visitas` (`gas/codigo.gs`,
+  `registrarVisita`), desglose por origen en `gas/admin.gs`
+  (`getInsightsExtendidos` → `visitasVsRegistros.origenes`), y se
+  muestra en la tarjeta de "aperturas vs. registros" del panel
+  (`gas/admin.html`). **Ojo**: esto es de ahora en adelante — no hay
+  forma de saber retroactivamente de dónde vinieron las aperturas de
+  antes de este cambio, porque ese dato nunca se guardó. Para que
+  sirva, hay que empezar a agregar `?src=...` a los links que se
+  comparten en cada lugar (Instagram, WhatsApp, etc.).
+
+---
+
 ## 11/09/2026 12:29 — Fix login (contraseña con "$") + contador de inactivos que mentía + panel Insights que se quedaba mudo en error
 
 Revisión de bugs pedida por el fundador sobre todo `codigo.gs` y
