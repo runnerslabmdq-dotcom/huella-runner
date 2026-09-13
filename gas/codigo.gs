@@ -1,15 +1,15 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 11/09/2026 12:29 (hora Argentina)
+// Última actualización: 12/09/2026 23:09 (hora Argentina)
 // Cambios en esta versión:
+//   - registrarVisita(origen): ahora guarda también el "Origen" de la
+//     visita (?src=... del link, ver index.html) para saber de dónde
+//     viene la gente. Ver HISTORIAL-CAMBIOS.md.
+// Cambios en versiones anteriores:
 //   - Fix login: _verificarPassword() confundía una contraseña vieja
 //     en texto plano que tuviera un "$" adentro con el formato
 //     hasheado nuevo, y esa cuenta quedaba sin poder entrar nunca más.
 //     Ahora valida el formato exacto "uuid$hash". Ver HISTORIAL-CAMBIOS.md.
-// Cambios en versiones anteriores:
-//   - doGet() (page=manifest): íconos actualizados a los nuevos de
-//     Cloudinary — apuntaban a pwa/icons/, que ya no existe (ver
-//     HISTORIAL-CAMBIOS.md).
 // (Historial completo de versiones anteriores: ver HISTORIAL-CAMBIOS.md
 // en la raíz del repo — a partir de ahora este encabezado solo guarda
 // los últimos 2 cambios, para no seguir creciendo sin límite.)
@@ -151,17 +151,23 @@ function appendDataByHeader(sheetName, defaultHeaders, dataObj) {
   SpreadsheetApp.flush();
 }
 
-// Métrica simple: una fila liviana (solo fecha) cada vez que alguien
+// Métrica simple: una fila liviana (fecha + origen) cada vez que alguien
 // abre la app y ve la pantalla de Login (gas/index.html, initApp()).
 // Sirve para comparar "cuánta gente entra" vs. "cuánta gente se
 // registra" (Fecha_Registro en Usuarios) — hoy no había ninguna forma
 // de saber si el problema de conseguir usuarios está en el tráfico o
 // en el formulario. No cuenta visitantes únicos (alguien que entra
 // todos los días suma una fila cada vez), es una señal de tendencia,
-// no un número exacto. Ver getInsightsExtendidos() en admin.gs.
-function registrarVisita() {
+// no un número exacto. Los dispositivos de prueba del fundador no
+// llegan a llamar esta función (initApp() los filtra antes, con un
+// flag guardado en el propio navegador). "origen" viene del parámetro
+// ?src=... del link compartido (instagram, whatsapp, etc.) — si no
+// viene ninguno, queda vacío ("directo"). Ver getInsightsExtendidos()
+// en admin.gs.
+function registrarVisita(origen) {
   try {
-    appendDataByHeader('Log_Visitas', ['Fecha'], { Fecha: new Date() });
+    const origenLimpio = (origen || '').toString().trim().slice(0, 40);
+    appendDataByHeader('Log_Visitas', ['Fecha'], { Fecha: new Date(), Origen: origenLimpio });
   } catch (e) {
     Logger.log('registrarVisita ERROR (no crítico): ' + e.toString());
   }
