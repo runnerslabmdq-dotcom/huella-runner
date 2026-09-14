@@ -1,11 +1,14 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 14/09/2026 09:32 (hora Argentina)
+// Última actualización: 14/09/2026 18:48 (hora Argentina)
 // Cambios en esta versión:
-//   - guardarChequeoDesgaste(): PRUEBA, solo edragotto@hotmail.com —
-//     guarda las 3 respuestas sí/no del "Chequeo de desgaste" (piernas
-//     cansadas, reactividad, roturas/suela lisa). Ver HISTORIAL-CAMBIOS.md.
+//   - PRUEBA, solo edragotto@hotmail.com: getValoracionPublica() — data
+//     del "Panel de Valoración" (ranking público de zapatillas). Nueva
+//     _calcularValoracionPorModelo(), compartida con admin.gs para no
+//     duplicar el cálculo. Ver HISTORIAL-CAMBIOS.md.
 // Cambios en versiones anteriores:
+//   - guardarChequeoDesgaste(): PRUEBA, solo edragotto@hotmail.com —
+//     guarda las 3 respuestas sí/no del "Chequeo de desgaste".
 //   - getPerfilUsuario() / actualizarPerfilUsuario(): nuevo campo Peso
 //     (kg, opcional) en Mi Perfil.
 //   - registrarVisita(origen): ahora guarda también el "Origen" de la
@@ -640,6 +643,123 @@ function addShoe(email, formData) {
   } catch(_) {}
 
   return { success: true, socialProof: socialProof };
+}
+
+// ============================================================
+// VALORACIÓN RUNNERS POR MODELO — cálculo compartido (14/09/2026).
+// Antes vivía duplicado adentro de getInsightsExtendidos() (admin.gs);
+// se separó acá para que también lo use getValoracionPublica() sin
+// repetir la lógica dos veces (evita el tipo de bug de "el mismo
+// número sale distinto en dos pantallas" que ya pasó una vez, ver
+// HISTORIAL-CAMBIOS.md 11/09).
+//
+// Se cuentan USUARIOS DISTINTOS que puntuaron cada modelo, no filas de
+// Zapatillas — si la misma persona tiene 2 pares del mismo modelo,
+// primero se promedian sus propias filas (por ítem y combinado), y ESE
+// número es "el voto" de esa persona. Un modelo está "listo para
+// publicar" con MIN_USUARIOS_VALORACION usuarios distintos o más.
+// ============================================================
+const MIN_USUARIOS_VALORACION = 5;
+
+function _calcularValoracionPorModelo(ss) {
+  const mapa = {}; // "Marca|Modelo" -> { email -> { comodidad:[], durabilidad:[], precioCalidad:[] } }
+  const zapSheet = ss.getSheetByName('Zapatillas');
+  if (!zapSheet || zapSheet.getLastRow() <= 1) return [];
+
+  const zData    = zapSheet.getDataRange().getValues();
+  const zHeaders = zData[0];
+  const zMarca  = zHeaders.indexOf('Marca');
+  const zModelo = zHeaders.indexOf('Modelo');
+  const zEmail  = zHeaders.indexOf('Email_Usuario');
+  const zCom    = zHeaders.indexOf('Puntaje_Comodidad');
+  const zDur    = zHeaders.indexOf('Puntaje_Durabilidad');
+  const zPC     = zHeaders.indexOf('Puntaje_PrecioCalidad');
+  if (zMarca === -1 || zModelo === -1 || zEmail === -1 || zCom === -1 || zDur === -1 || zPC === -1) return [];
+
+  for (let i = 1; i < zData.length; i++) {
+    const marca  = (zData[i][zMarca]  || '').toString().trim();
+    const modelo = (zData[i][zModelo] || '').toString().trim();
+    const email  = (zData[i][zEmail]  || '').toString().trim().toLowerCase();
+    if (!marca || !modelo || !email) continue;
+    const com = Number(zData[i][zCom]) || 0;
+    const dur = Number(zData[i][zDur]) || 0;
+    const pc  = Number(zData[i][zPC])  || 0;
+    if (!com && !dur && !pc) continue; // esta fila todavía no tiene ninguna puntuación
+
+    const key = marca + '|' + modelo;
+    if (!mapa[key]) mapa[key] = {};
+    if (!mapa[key][email]) mapa[key][email] = { comodidad: [], durabilidad: [], precioCalidad: [] };
+    if (com) mapa[key][email].comodidad.push(com);
+    if (dur) mapa[key][email].durabilidad.push(dur);
+    if (pc)  mapa[key][email].precioCalidad.push(pc);
+  }
+
+  function promedio(arr) { return arr.length ? arr.reduce(function(a, b) { return a + b; }, 0) / arr.length : null; }
+
+  return Object.keys(mapa).map(function(key) {
+    const porEmail = mapa[key];
+    const emails   = Object.keys(porEmail);
+
+    const votosCom = [], votosDur = [], votosPC = [], votosCombinado = [];
+    emails.forEach(function(em) {
+      const c = promedio(porEmail[em].comodidad);
+      const d = promedio(porEmail[em].durabilidad);
+      const p = promedio(porEmail[em].precioCalidad);
+      if (c !== null) votosCom.push(c);
+      if (d !== null) votosDur.push(d);
+      if (p !== null) votosPC.push(p);
+      const combinado = [c, d, p].filter(function(v) { return v !== null; });
+      if (combinado.length) votosCombinado.push(combinado.reduce(function(a, b) { return a + b; }, 0) / combinado.length);
+    });
+
+    const partes = key.split('|');
+    return {
+      marca:  partes[0],
+      modelo: partes[1],
+      usuariosDistintos: emails.length,
+      promedio:      Math.round((promedio(votosCombinado) || 0) * 10) / 10,
+      comodidad:     Math.round((promedio(votosCom) || 0) * 10) / 10,
+      durabilidad:   Math.round((promedio(votosDur) || 0) * 10) / 10,
+      precioCalidad: Math.round((promedio(votosPC)  || 0) * 10) / 10,
+      listoParaPublicar: emails.length >= MIN_USUARIOS_VALORACION
+    };
+  }).sort(function(a, b) {
+    return b.usuariosDistintos - a.usuariosDistintos || b.promedio - a.promedio;
+  });
+}
+
+// PRUEBA (14/09/2026), solo edragotto@hotmail.com: "Panel de
+// Valoración" público — ranking de modelos con muestra real (5+
+// usuarios distintos) y promedio por marca. Los modelos que todavía no
+// llegan a la muestra mínima se devuelven aparte ("enCamino"), para
+// invitar a completarlos en vez de esconderlos. Sin gate de servidor
+// a propósito: el dato no es sensible (es justamente el que algún día
+// va a ser público), el botón de acceso es lo que está gateado en
+// index.html.
+function getValoracionPublica() {
+  try {
+    const ss = SpreadsheetApp.openById(SHEET_ID);
+    const todos = _calcularValoracionPorModelo(ss);
+
+    const ranking  = todos.filter(function(m) { return m.listoParaPublicar; });
+    const enCamino = todos.filter(function(m) { return !m.listoParaPublicar; })
+      .sort(function(a, b) { return b.usuariosDistintos - a.usuariosDistintos; });
+
+    const porMarcaMap = {};
+    ranking.forEach(function(m) {
+      if (!porMarcaMap[m.marca]) porMarcaMap[m.marca] = { suma: 0, pesos: 0 };
+      porMarcaMap[m.marca].suma  += m.promedio * m.usuariosDistintos;
+      porMarcaMap[m.marca].pesos += m.usuariosDistintos;
+    });
+    const porMarca = Object.keys(porMarcaMap).map(function(marca) {
+      return { marca: marca, promedio: Math.round((porMarcaMap[marca].suma / porMarcaMap[marca].pesos) * 10) / 10 };
+    }).sort(function(a, b) { return b.promedio - a.promedio; });
+
+    return { success: true, ranking: ranking, enCamino: enCamino, porMarca: porMarca, minUsuarios: MIN_USUARIOS_VALORACION };
+  } catch(e) {
+    Logger.log('getValoracionPublica ERROR: ' + e.toString());
+    return { success: false, error: e.toString() };
+  }
 }
 
 function getUserShoes(email) {

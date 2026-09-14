@@ -12,6 +12,55 @@ el GAS es la versión más nueva.
 
 ---
 
+## 14/09/2026 18:48 — PRUEBA (solo edragotto@hotmail.com): "Panel de Valoración" real + explicación de ítems
+
+Primera versión real (no mockup) del ranking público de zapatillas que
+veníamos diseñando. Gateado solo a `edragotto@hotmail.com` para
+probarlo con datos reales cargados a mano (2 cuentas puntuando las
+mismas zapatillas) antes de mostrárselo a nadie más.
+
+- **`gas/index.html`**:
+  - Botón ⭐ nuevo en el header (antes del 👤 de Mi Perfil), visible
+    solo para `edragotto@hotmail.com` — abre la vista "Panel de
+    Valoración" (`view-valoracion`).
+  - Esa vista muestra: promedio por marca, filtro Rodadora / Voladora
+    / Mixta, ranking de modelos con 5+ usuarios distintos, y una
+    sección "Juntando opiniones" (con barra de progreso) para los que
+    todavía no llegan al mínimo — mismo diseño que se probó primero en
+    un mockup aparte.
+  - Tocar un modelo abre el detalle: desglose de Confort / Durabilidad
+    / Valor con una ⓘ que explica cada ítem (sin lista de opiniones
+    individuales — el sistema real sigue siendo solo estrellas, sin
+    texto libre).
+  - Nueva `modelosTipoUso`: 97 de los 165 modelos del catálogo ya
+    clasificados como Rodadora/Voladora/Mixta (investigación manual de
+    las últimas semanas). Los que faltan (Salomon entera + sueltos)
+    simplemente no muestran la etiqueta de tipo todavía.
+  - El modal real de "Valoración Runners" (`puntuar-modal`, el que ya
+    usan todos los usuarios para puntuar) ahora también tiene una ⓘ en
+    cada uno de los 3 ítems, con la misma explicación.
+
+- **`gas/codigo.gs`**: nueva `_calcularValoracionPorModelo()` — el
+  cálculo de promedio/usuarios distintos por modelo que antes vivía
+  duplicado adentro de `getInsightsExtendidos()` (admin.gs) ahora está
+  en un solo lugar, y lo usan tanto el panel admin como
+  `getValoracionPublica()` (nueva, sin token — el dato no es sensible,
+  lo que está gateado es el botón de acceso en `index.html`). También
+  devuelve el desglose por ítem (Confort/Durabilidad/Valor), no solo
+  el promedio combinado.
+
+- **`gas/admin.gs`**: `getInsightsExtendidos()` usa la función
+  compartida en vez de la lógica duplicada — mismo resultado, menos
+  código.
+
+**Ojo al probarlo**: con solo 2 cuentas cargando datos, ningún modelo
+va a llegar al mínimo de 5 usuarios distintos — todo va a aparecer en
+"Juntando opiniones", no en el ranking principal. Es lo esperado, no
+un bug: confirma que ese estado funciona bien. Para ver el ranking de
+verdad hace falta que 5 cuentas distintas puntúen el mismo modelo.
+
+---
+
 ## 14/09/2026 09:32 — PRUEBA (solo edragotto@hotmail.com): "Chequeo de desgaste"
 
 Idea que surgió de un video sobre cuándo cambiar las zapatillas: el
