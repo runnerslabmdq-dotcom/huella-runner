@@ -1,11 +1,15 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 13/09/2026 23:22 (hora Argentina)
+  Última actualización: 14/09/2026 09:32 (hora Argentina)
   Cambios en esta versión:
-    - Mi Perfil: nuevo campo "Peso" (kg, opcional). Se guarda y se
-      recupera, pero todavía no ajusta nada del cálculo de desgaste —
-      eso es el próximo paso, aparte. Ver HISTORIAL-CAMBIOS.md.
+    - PRUEBA, solo edragotto@hotmail.com: "Chequeo de desgaste" — botón
+      "¿Cómo la sentís?" en la tarjeta, modal con 3 preguntas sí/no
+      (piernas cansadas, pérdida de reactividad, roturas/suela lisa).
+      Con 2 o más "sí", aviso en la tarjeta aparte del % de km. Ver
+      HISTORIAL-CAMBIOS.md.
   Cambios en versiones anteriores:
+    - Mi Perfil: nuevo campo "Peso" (kg, opcional). Se guarda y se
+      recupera, pero todavía no ajusta nada del cálculo de desgaste.
     - initApp(): las aperturas desde un dispositivo marcado como
       "de prueba" (?admin_device=1, una vez por dispositivo) ya no se
       cuentan en las métricas del panel. Si el link tenía ?src=..., ese
@@ -460,6 +464,38 @@
       transition: color 0.15s;
     }
     .puntuar-stars .star.filled { color: #D4AF37; }
+
+    /* PRUEBA (13/09/2026), solo edragotto@hotmail.com: "Chequeo de
+       desgaste" — botón en la tarjeta, aviso, y modal de 3 preguntas
+       sí/no. Ver HISTORIAL-CAMBIOS.md. */
+    .cf-btn-chequeo {
+      display: block; margin-top: 6px;
+      background: transparent; color: var(--gris-texto);
+      border: 1px solid #444; border-radius: 8px;
+      padding: 3px 9px; font-size: 0.62rem; font-weight: 900;
+      font-family: 'Montserrat', sans-serif; letter-spacing: 0.3px;
+      cursor: pointer;
+    }
+    .cf-btn-chequeo:active { transform: scale(0.96); }
+    .cf-chequeo-alerta {
+      font-size: 0.62rem; font-weight: 700; color: #ff6b6b;
+      margin-top: 6px;
+    }
+    .chequeo-item { margin-bottom: 18px; }
+    .chequeo-item label {
+      display: block; font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.3px; color: var(--gris-texto);
+      margin-bottom: 8px; line-height: 1.4; text-transform: none;
+    }
+    .chequeo-toggle { display: flex; gap: 8px; }
+    .chequeo-btn {
+      flex: 1; padding: 8px 0; border-radius: 8px;
+      border: 1px solid #444; background: transparent;
+      color: var(--gris-texto); font-weight: 900; font-size: 0.72rem;
+      font-family: 'Montserrat', sans-serif; cursor: pointer;
+      transition: all 0.15s;
+    }
+    .chequeo-btn.selected { border-color: #D4AF37; color: #D4AF37; background: rgba(212,175,55,0.1); }
 
     /* ── Barra de km ── */
     .cf-bar-section { padding: 4px 12px 8px; }
@@ -1968,6 +2004,41 @@
     </div>
     <input type="hidden" id="puntuar-shoe-id">
     <button class="btn-primary" id="btn-save-puntuacion" onclick="guardarPuntuacion()">Guardar puntuación</button>
+  </div>
+</div>
+
+<!-- PRUEBA (13/09/2026), solo edragotto@hotmail.com: "Chequeo de
+     desgaste" — ver HISTORIAL-CAMBIOS.md. -->
+<div class="modal-overlay" id="chequeo-modal">
+  <div class="modal-content">
+    <button class="close-modal" onclick="closeChequeoModal()">✕</button>
+    <h3 style="text-align:center; margin-bottom:8px; font-size:1rem;">¿CÓMO LA SENTÍS?</h3>
+    <p style="text-align:center; font-size:0.68rem; color:var(--gris-texto); margin-bottom:20px; line-height:1.5;">
+      A veces la zapatilla ya no da más, aunque el kilometraje todavía no lo diga.
+    </p>
+    <div class="chequeo-item">
+      <label>¿Notás las piernas más cansadas después de correr con esta zapatilla?</label>
+      <div class="chequeo-toggle" data-item="piernas">
+        <button class="chequeo-btn" data-val="0" onclick="elegirChequeo('piernas',0)">No</button>
+        <button class="chequeo-btn" data-val="1" onclick="elegirChequeo('piernas',1)">Sí</button>
+      </div>
+    </div>
+    <div class="chequeo-item">
+      <label>¿Sentís que perdió esa reactividad de cuando era nueva?</label>
+      <div class="chequeo-toggle" data-item="reactividad">
+        <button class="chequeo-btn" data-val="0" onclick="elegirChequeo('reactividad',0)">No</button>
+        <button class="chequeo-btn" data-val="1" onclick="elegirChequeo('reactividad',1)">Sí</button>
+      </div>
+    </div>
+    <div class="chequeo-item">
+      <label>¿La suela ya está lisa o la tela tiene roturas?</label>
+      <div class="chequeo-toggle" data-item="visual">
+        <button class="chequeo-btn" data-val="0" onclick="elegirChequeo('visual',0)">No</button>
+        <button class="chequeo-btn" data-val="1" onclick="elegirChequeo('visual',1)">Sí</button>
+      </div>
+    </div>
+    <input type="hidden" id="chequeo-shoe-id">
+    <button class="btn-primary" id="btn-save-chequeo" onclick="guardarChequeo()">Guardar</button>
   </div>
 </div>
 
@@ -3804,6 +3875,20 @@
       var puntuarHtml = '<button class="cf-btn-puntuar" onclick="event.stopPropagation(); openPuntuarModal(\'' + rawId + '\');">' +
         '★' + (_promedioPuntaje > 0 ? ' ' + _promedioPuntaje.toFixed(1) : '') +
         ' <span class="cf-btn-puntuar-label">Valoración Runners</span></button>';
+      // PRUEBA (13/09/2026), solo edragotto@hotmail.com: "Chequeo de
+      // desgaste" — 3 preguntas sí/no independientes del km. Si 2 o
+      // más son "sí", se avisa en la tarjeta. Ver HISTORIAL-CAMBIOS.md.
+      var esUsuarioPruebaChequeo = (currentUserEmail || '').toString().trim().toLowerCase() === 'edragotto@hotmail.com';
+      var chequeoBtnHtml = '';
+      var chequeoAlertaHtml = '';
+      if (esUsuarioPruebaChequeo) {
+        chequeoBtnHtml = '<button class="cf-btn-chequeo" onclick="event.stopPropagation(); openChequeoModal(\'' + rawId + '\');">¿Cómo la sentís?</button>';
+        var _chequeoCount = ['Chequeo_Piernas', 'Chequeo_Reactividad', 'Chequeo_Visual']
+          .filter(function(campo) { return Number(s[campo]) === 1; }).length;
+        if (_chequeoCount >= 2) {
+          chequeoAlertaHtml = '<div class="cf-chequeo-alerta">⚠️ Señales de desgaste real</div>';
+        }
+      }
       // Foto real de ESTA zapatilla (columna Foto_URL en el Sheet, cargada a
       // mano por el admin) tiene prioridad sobre la genérica del modelo.
       var fotoReal  = (s.Foto_URL || '').toString().trim();
@@ -3843,6 +3928,8 @@
                 (s.Marca === 'Plantillas Jump Box' ? sTalle : 'EU ' + sTalle) +
                 ' | ' + sGenero + '</div>' +
               puntuarHtml +
+              chequeoBtnHtml +
+              chequeoAlertaHtml +
             '</div>' +
 
             // ── Barra km ──
@@ -4279,6 +4366,78 @@
         alert('Error de conexión: ' + (e && e.message ? e.message : e));
       })
       .guardarPuntuacionZapatilla(currentUserEmail, id, _puntuacionActual.comodidad, _puntuacionActual.durabilidad, _puntuacionActual.precioCalidad);
+  }
+
+  // ── PRUEBA (13/09/2026), solo edragotto@hotmail.com: "Chequeo de
+  // desgaste" — 3 preguntas sí/no. Ver HISTORIAL-CAMBIOS.md. ──
+  var _chequeoActual = { piernas: null, reactividad: null, visual: null };
+
+  // Sin chequeo guardado, la celda puede venir vacía, undefined, o ni
+  // siquiera existir en el objeto (si la columna se creó recién por
+  // otro usuario) — solo se toma como respuesta real un 0/1 explícito.
+  function _leerChequeoVal(shoe, campo) {
+    if (!shoe) return null;
+    var v = shoe[campo];
+    if (v === 0 || v === 1 || v === '0' || v === '1') return Number(v);
+    return null;
+  }
+
+  function openChequeoModal(idZapa) {
+    document.getElementById('chequeo-shoe-id').value = idZapa;
+    var shoe = allUserShoes.find(function(x) { return x.ID_Zapa === idZapa; });
+    _chequeoActual = {
+      piernas:     _leerChequeoVal(shoe, 'Chequeo_Piernas'),
+      reactividad: _leerChequeoVal(shoe, 'Chequeo_Reactividad'),
+      visual:      _leerChequeoVal(shoe, 'Chequeo_Visual')
+    };
+    _pintarChequeo();
+    document.getElementById('chequeo-modal').style.display = 'flex';
+  }
+  function closeChequeoModal() { document.getElementById('chequeo-modal').style.display = 'none'; }
+
+  function _pintarChequeo() {
+    ['piernas', 'reactividad', 'visual'].forEach(function(item) {
+      var cont = document.querySelector('.chequeo-toggle[data-item="' + item + '"]');
+      if (!cont) return;
+      var val = _chequeoActual[item];
+      cont.querySelectorAll('.chequeo-btn').forEach(function(b) {
+        b.classList.toggle('selected', val !== null && Number(b.dataset.val) === val);
+      });
+    });
+  }
+
+  function elegirChequeo(item, val) {
+    _chequeoActual[item] = val;
+    _pintarChequeo();
+  }
+
+  function guardarChequeo() {
+    if (_chequeoActual.piernas === null || _chequeoActual.reactividad === null || _chequeoActual.visual === null) {
+      return alert('Respondé las 3 preguntas para guardar.');
+    }
+    var id  = document.getElementById('chequeo-shoe-id').value;
+    var btn = document.getElementById('btn-save-chequeo');
+    btn.innerText = 'Guardando...'; btn.disabled = true;
+    google.script.run
+      .withSuccessHandler(function(res) {
+        btn.innerText = 'Guardar'; btn.disabled = false;
+        if (!res.success) { alert(res.error); return; }
+        closeChequeoModal();
+        google.script.run
+          .withSuccessHandler(function(shoes) {
+            if (!shoes || !Array.isArray(shoes)) { loadDashboard(); return; }
+            allUserShoes = shoes;
+            _pendingActiveShoeIndex = _getCurrentSlideIndex();
+            renderArmario(shoes);
+          })
+          .withFailureHandler(function() { loadDashboard(); })
+          .getUserShoes(currentUserEmail);
+      })
+      .withFailureHandler(function(e) {
+        btn.innerText = 'Guardar'; btn.disabled = false;
+        alert('Error de conexión: ' + (e && e.message ? e.message : e));
+      })
+      .guardarChequeoDesgaste(currentUserEmail, id, _chequeoActual.piernas, _chequeoActual.reactividad, _chequeoActual.visual);
   }
 
   function setKmRapido(valor) {
