@@ -12,6 +12,31 @@ el GAS es la versión más nueva.
 
 ---
 
+## 14/09/2026 09:32 — PRUEBA (solo edragotto@hotmail.com): "Chequeo de desgaste"
+
+Idea que surgió de un video sobre cuándo cambiar las zapatillas: el
+kilometraje solo no alcanza — hay señales reales (piernas cansadas,
+pérdida de reactividad, roturas visibles) que avisan antes o después
+que el número de km. Se prueba primero con un solo usuario antes de
+sacarla a todos.
+
+- **`gas/index.html`**: nuevo botón "¿Cómo la sentís?" en la tarjeta
+  de cada zapatilla (solo para `edragotto@hotmail.com`), que abre un
+  modal con 3 preguntas sí/no: piernas más cansadas después de correr,
+  pérdida de reactividad, y roturas/suela lisa. Con 2 o más "sí", la
+  tarjeta muestra "⚠️ Señales de desgaste real" — **independiente del
+  % de km**, no toca para nada el cálculo de `KM_Limite`.
+- **`gas/codigo.gs`**: nueva `guardarChequeoDesgaste()`, mismo patrón
+  que `guardarPuntuacionZapatilla()` — guarda las 3 respuestas y la
+  fecha en columnas nuevas de `Zapatillas` (`Chequeo_Piernas`,
+  `Chequeo_Reactividad`, `Chequeo_Visual`, `Chequeo_Fecha`, se crean
+  solas).
+
+Si funciona bien con el uso real, el siguiente paso es sacarla de
+"PRUEBA" y dejarla disponible para todos los usuarios.
+
+---
+
 ## 13/09/2026 23:22 — Peso del runner en "Mi Perfil" (paso 1 de 2)
 
 Primer paso hacia ajustar el tope de km de cada zapatilla según el peso

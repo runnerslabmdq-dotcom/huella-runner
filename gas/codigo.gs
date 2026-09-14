@@ -1,12 +1,13 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 13/09/2026 23:22 (hora Argentina)
+// Última actualización: 14/09/2026 09:32 (hora Argentina)
 // Cambios en esta versión:
-//   - getPerfilUsuario() / actualizarPerfilUsuario(): nuevo campo Peso
-//     (kg, opcional) en Mi Perfil. Todavía no se usa para nada más —
-//     es el primer paso antes de ajustar el tope de km por zapatilla
-//     según el peso del runner. Ver HISTORIAL-CAMBIOS.md.
+//   - guardarChequeoDesgaste(): PRUEBA, solo edragotto@hotmail.com —
+//     guarda las 3 respuestas sí/no del "Chequeo de desgaste" (piernas
+//     cansadas, reactividad, roturas/suela lisa). Ver HISTORIAL-CAMBIOS.md.
 // Cambios en versiones anteriores:
+//   - getPerfilUsuario() / actualizarPerfilUsuario(): nuevo campo Peso
+//     (kg, opcional) en Mi Perfil.
 //   - registrarVisita(origen): ahora guarda también el "Origen" de la
 //     visita (?src=... del link, ver index.html) para saber de dónde
 //     viene la gente.
@@ -863,6 +864,55 @@ function guardarPuntuacionZapatilla(email, idZapatilla, comodidad, durabilidad, 
     return { success: false, error: 'Zapatilla no encontrada.' };
   } catch(e) {
     Logger.log('guardarPuntuacionZapatilla ERROR: ' + e.toString());
+    return { success: false, error: e.toString() };
+  }
+}
+
+// ============================================================
+// PRUEBA (13/09/2026), solo edragotto@hotmail.com: "Chequeo de
+// desgaste" — 3 preguntas sí/no sobre señales reales de desgaste
+// (piernas cansadas, pérdida de reactividad, roturas/suela lisa),
+// independientes del kilometraje. Si 2 o más son "sí", la tarjeta
+// avisa aunque la zapatilla todavía no haya llegado a su límite de
+// km. Columnas Chequeo_* se crean solas (_colEnsure). Ver
+// HISTORIAL-CAMBIOS.md.
+// ============================================================
+function guardarChequeoDesgaste(email, idZapatilla, piernas, reactividad, visual) {
+  try {
+    if (!email || !idZapatilla) return { success: false, error: 'Datos incompletos.' };
+    const emailClean = email.toString().trim().toLowerCase();
+    const ss    = SpreadsheetApp.openById(SHEET_ID);
+    const sheet = ss.getSheetByName('Zapatillas');
+    if (!sheet) return { success: false, error: 'Hoja Zapatillas no encontrada.' };
+
+    const data    = sheet.getDataRange().getValues();
+    const headers = data[0];
+    const idCol    = headers.indexOf('ID_Zapa');
+    const emailCol = headers.indexOf('Email_Usuario');
+    if (idCol === -1 || emailCol === -1) {
+      return { success: false, error: 'Estructura de Zapatillas incorrecta.' };
+    }
+
+    for (let i = 1; i < data.length; i++) {
+      const rowId    = data[i][idCol]    ? data[i][idCol].toString()                        : '';
+      const rowEmail = data[i][emailCol] ? data[i][emailCol].toString().trim().toLowerCase() : '';
+      if (rowId === idZapatilla.toString() && rowEmail === emailClean) {
+        const colPiernas     = _colEnsure(sheet, headers, 'Chequeo_Piernas');
+        const colReactividad = _colEnsure(sheet, headers, 'Chequeo_Reactividad');
+        const colVisual      = _colEnsure(sheet, headers, 'Chequeo_Visual');
+        const colFecha       = _colEnsure(sheet, headers, 'Chequeo_Fecha');
+        sheet.getRange(i + 1, colPiernas     + 1).setValue(piernas     ? 1 : 0);
+        sheet.getRange(i + 1, colReactividad + 1).setValue(reactividad ? 1 : 0);
+        sheet.getRange(i + 1, colVisual      + 1).setValue(visual      ? 1 : 0);
+        sheet.getRange(i + 1, colFecha       + 1).setValue(Utilities.formatDate(new Date(), TZ_AR, 'dd/MM/yyyy'));
+        SpreadsheetApp.flush();
+        Logger.log('guardarChequeoDesgaste OK: id=' + idZapatilla);
+        return { success: true };
+      }
+    }
+    return { success: false, error: 'Zapatilla no encontrada.' };
+  } catch(e) {
+    Logger.log('guardarChequeoDesgaste ERROR: ' + e.toString());
     return { success: false, error: e.toString() };
   }
 }
