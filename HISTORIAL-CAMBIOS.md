@@ -12,6 +12,32 @@ el GAS es la versión más nueva.
 
 ---
 
+## 13/09/2026 23:22 — Peso del runner en "Mi Perfil" (paso 1 de 2)
+
+Primer paso hacia ajustar el tope de km de cada zapatilla según el peso
+del corredor (a más peso, más impacto, la zapatilla se gasta más
+rápido — ver charla con el fundador). Por ahora **solo se agrega y se
+guarda el dato**, no cambia ningún cálculo todavía.
+
+- **`gas/index.html`**: nuevo campo "Peso (kg · opcional)" en el modal
+  de Mi Perfil, junto a Celular. Se precarga al abrir el modal y se
+  guarda al tocar "Guardar", igual que los demás campos del perfil.
+- **`gas/codigo.gs`**: `getPerfilUsuario()` devuelve el peso guardado,
+  `actualizarPerfilUsuario()` lo persiste (columna `Peso`, se crea sola
+  la primera vez que alguien lo carga).
+
+**Paso 2, pendiente y aparte a propósito**: usar este peso para ajustar
+`KM_Limite` de cada zapatilla. Se dejó para otro cambio porque el
+límite de km se lee y se recalcula en **8 lugares distintos** del
+código (`trail-points.gs`, `codigo.gs` en 4 funciones, `admin.gs`,
+`index.html` en 2 lugares) — meter el ajuste por peso a mano en cada
+uno, en el mismo cambio que esto, es la forma más fácil de terminar con
+el mismo tipo de bug que se arregló el 11/09 (un número que no
+coincide entre pantallas). Hace falta una función central única que
+todos esos lugares usen, y eso merece su propio cambio prolijo.
+
+---
+
 ## 12/09/2026 23:09 — Aperturas: excluir dispositivos de prueba + saber de dónde vienen
 
 El fundador miró el número real de "aperturas de la app esta semana"

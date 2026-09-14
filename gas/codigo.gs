@@ -1,11 +1,15 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 12/09/2026 23:09 (hora Argentina)
+// Última actualización: 13/09/2026 23:22 (hora Argentina)
 // Cambios en esta versión:
+//   - getPerfilUsuario() / actualizarPerfilUsuario(): nuevo campo Peso
+//     (kg, opcional) en Mi Perfil. Todavía no se usa para nada más —
+//     es el primer paso antes de ajustar el tope de km por zapatilla
+//     según el peso del runner. Ver HISTORIAL-CAMBIOS.md.
+// Cambios en versiones anteriores:
 //   - registrarVisita(origen): ahora guarda también el "Origen" de la
 //     visita (?src=... del link, ver index.html) para saber de dónde
-//     viene la gente. Ver HISTORIAL-CAMBIOS.md.
-// Cambios en versiones anteriores:
+//     viene la gente.
 //   - Fix login: _verificarPassword() confundía una contraseña vieja
 //     en texto plano que tuviera un "$" adentro con el formato
 //     hasheado nuevo, y esa cuenta quedaba sin poder entrar nunca más.
@@ -457,6 +461,7 @@ function getPerfilUsuario(email) {
     const ciudadCol     = headers.indexOf('Ciudad');
     const celularCol    = headers.indexOf('Celular');
     const grupoCol      = headers.indexOf('Grupo');
+    const pesoCol       = headers.indexOf('Peso');
     if (emailCol === -1) return { success: false, error: 'Estructura de Usuarios incorrecta.' };
 
     for (let i = 1; i < data.length; i++) {
@@ -481,7 +486,8 @@ function getPerfilUsuario(email) {
         provincia:       provinciaCol !== -1 ? (data[i][provinciaCol] || '').toString() : '',
         ciudad:          ciudadCol    !== -1 ? (data[i][ciudadCol]    || '').toString() : '',
         celular:         celularCol   !== -1 ? (data[i][celularCol]   || '').toString() : '',
-        grupo:           grupoCol     !== -1 ? (data[i][grupoCol]     || '').toString() : ''
+        grupo:           grupoCol     !== -1 ? (data[i][grupoCol]     || '').toString() : '',
+        peso:            pesoCol      !== -1 ? (Number(data[i][pesoCol]) || '') : ''
       };
     }
     return { success: false, error: 'Usuario no encontrado.' };
@@ -509,7 +515,8 @@ function actualizarPerfilUsuario(email, datos) {
         'Provincia':       datos.provincia,
         'Ciudad':          datos.ciudad,
         'Celular':         datos.celular,
-        'Grupo':           datos.grupo
+        'Grupo':           datos.grupo,
+        'Peso':            (datos.peso && Number(datos.peso) > 0) ? Number(datos.peso) : ''
       };
       for (const nombreCampo in campos) {
         const col = _colEnsure(sheet, headers, nombreCampo);
