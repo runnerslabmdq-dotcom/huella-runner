@@ -1,12 +1,15 @@
 // ============================================================
 // HUELLA RUNNER — admin.gs
-// Última actualización: 12/09/2026 23:09 (hora Argentina)
+// Última actualización: 14/09/2026 18:48 (hora Argentina)
 // Cambios en esta versión:
+//   - getInsightsExtendidos(): el cálculo de "Valoración Runners por
+//     modelo" ahora usa _calcularValoracionPorModelo() (codigo.gs),
+//     compartido con el nuevo Panel de Valoración — antes estaba
+//     duplicado acá. Ver HISTORIAL-CAMBIOS.md.
+// Cambios en versiones anteriores:
 //   - getInsightsExtendidos() → visitasVsRegistros.origenes: desglose de
 //     las aperturas de la semana por origen (instagram, whatsapp,
-//     directo, etc.), a partir del nuevo campo Origen de Log_Visitas.
-//     Ver HISTORIAL-CAMBIOS.md.
-// Cambios en versiones anteriores:
+//     directo, etc.).
 //   - Fix: getInsightsExtendidos() → abandono.lista viene recortada a
 //     10 (solo para mostrar en pantalla), pero el panel usaba
 //     lista.length como si fuera el total real de runners inactivos —
@@ -947,62 +950,12 @@ function getInsightsExtendidos(token) {
       }
     }
 
-    // --- Valoración Runners por modelo (10/09/2026) — dato privado del
+    // Valoración Runners por modelo (10/09/2026) — dato privado del
     // panel, para saber cuándo un modelo junta muestra real antes de
-    // mostrar algo en la app. Se cuentan USUARIOS DISTINTOS que
-    // puntuaron ese modelo, no filas de Zapatillas — si la misma
-    // persona tiene 2 pares del mismo modelo (frecuente todavía con
-    // pocos usuarios reales, ver charla con el fundador), cuenta una
-    // sola vez: primero se promedian sus propias filas, y ESE número
-    // es "el voto" de esa persona para el modelo. ---
-    const valoracionModeloMap = {}; // "Marca|Modelo" -> { email -> [promedios de fila] }
-    const zapSheetVal = ss.getSheetByName('Zapatillas');
-    if (zapSheetVal && zapSheetVal.getLastRow() > 1) {
-      const zData    = zapSheetVal.getDataRange().getValues();
-      const zHeaders = zData[0];
-      const zMarca  = zHeaders.indexOf('Marca');
-      const zModelo = zHeaders.indexOf('Modelo');
-      const zEmail  = zHeaders.indexOf('Email_Usuario');
-      const zCom    = zHeaders.indexOf('Puntaje_Comodidad');
-      const zDur    = zHeaders.indexOf('Puntaje_Durabilidad');
-      const zPC     = zHeaders.indexOf('Puntaje_PrecioCalidad');
-      if (zMarca !== -1 && zModelo !== -1 && zEmail !== -1 && zCom !== -1 && zDur !== -1 && zPC !== -1) {
-        for (let i = 1; i < zData.length; i++) {
-          const valsFila = [Number(zData[i][zCom]) || 0, Number(zData[i][zDur]) || 0, Number(zData[i][zPC]) || 0]
-            .filter(function(v) { return v > 0; });
-          if (!valsFila.length) continue; // esta zapatilla todavía no tiene ninguna puntuación
-          const promedioFila = valsFila.reduce(function(a, b) { return a + b; }, 0) / valsFila.length;
-          const marca  = (zData[i][zMarca]  || '').toString().trim();
-          const modelo = (zData[i][zModelo] || '').toString().trim();
-          const email  = (zData[i][zEmail]  || '').toString().trim().toLowerCase();
-          if (!marca || !modelo || !email) continue;
-          const key = marca + '|' + modelo;
-          if (!valoracionModeloMap[key]) valoracionModeloMap[key] = {};
-          if (!valoracionModeloMap[key][email]) valoracionModeloMap[key][email] = [];
-          valoracionModeloMap[key][email].push(promedioFila);
-        }
-      }
-    }
-    const MIN_USUARIOS_VALORACION = 5;
-    const valoracionPorModelo = Object.keys(valoracionModeloMap).map(function(key) {
-      const porEmail = valoracionModeloMap[key];
-      const emails   = Object.keys(porEmail);
-      const votoPorUsuario = emails.map(function(em) {
-        const arr = porEmail[em];
-        return arr.reduce(function(a, b) { return a + b; }, 0) / arr.length;
-      });
-      const promedioModelo = votoPorUsuario.reduce(function(a, b) { return a + b; }, 0) / votoPorUsuario.length;
-      const partes = key.split('|');
-      return {
-        marca: partes[0],
-        modelo: partes[1],
-        usuariosDistintos: emails.length,
-        promedio: Math.round(promedioModelo * 10) / 10,
-        listoParaPublicar: emails.length >= MIN_USUARIOS_VALORACION
-      };
-    }).sort(function(a, b) {
-      return b.usuariosDistintos - a.usuariosDistintos || b.promedio - a.promedio;
-    });
+    // mostrar algo en la app. Cálculo compartido con
+    // getValoracionPublica() (codigo.gs) — ver _calcularValoracionPorModelo(),
+    // así los dos lugares muestran siempre el mismo número.
+    const valoracionPorModelo = _calcularValoracionPorModelo(ss);
 
     return {
       success: true,

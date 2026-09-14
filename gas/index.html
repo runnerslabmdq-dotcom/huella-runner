@@ -1,13 +1,16 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 14/09/2026 09:32 (hora Argentina)
+  Última actualización: 14/09/2026 18:48 (hora Argentina)
   Cambios en esta versión:
-    - PRUEBA, solo edragotto@hotmail.com: "Chequeo de desgaste" — botón
-      "¿Cómo la sentís?" en la tarjeta, modal con 3 preguntas sí/no
-      (piernas cansadas, pérdida de reactividad, roturas/suela lisa).
-      Con 2 o más "sí", aviso en la tarjeta aparte del % de km. Ver
-      HISTORIAL-CAMBIOS.md.
+    - PRUEBA, solo edragotto@hotmail.com: "Panel de Valoración" — nueva
+      vista (botón ⭐ en el header) con ranking de zapatillas, promedio
+      por marca, y filtro Rodadora/Voladora/Mixta. Nueva clasificación
+      modelosTipoUso (97 modelos investigados). Ver HISTORIAL-CAMBIOS.md.
+    - Modal "Valoración Runners" (puntuar-modal): cada ítem suma una ⓘ
+      con la explicación de qué significa (Confort/Durabilidad/Valor).
   Cambios en versiones anteriores:
+    - "Chequeo de desgaste" (PRUEBA, solo edragotto@hotmail.com): botón
+      "¿Cómo la sentís?" en la tarjeta, modal con 3 preguntas sí/no.
     - Mi Perfil: nuevo campo "Peso" (kg, opcional). Se guarda y se
       recupera, pero todavía no ajusta nada del cálculo de desgaste.
     - initApp(): las aperturas desde un dispositivo marcado como
@@ -454,9 +457,24 @@
     /* Modal de puntuación */
     .puntuar-item { margin-bottom: 16px; }
     .puntuar-item label {
-      display: block; font-size: 0.72rem; font-weight: 700;
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.72rem; font-weight: 700;
       text-transform: uppercase; letter-spacing: 0.5px;
       color: var(--gris-texto); margin-bottom: 6px;
+    }
+    .puntuar-info-btn {
+      width: 15px; height: 15px; border-radius: 50%;
+      border: 1px solid #444; color: #666; background: transparent;
+      font-size: 0.56rem; font-weight: 700; text-transform: none;
+      letter-spacing: 0; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; flex: 0 0 15px; line-height: 1; padding: 0;
+      font-family: 'Montserrat', sans-serif;
+    }
+    .puntuar-info-btn.activo { border-color: var(--amarillo); color: var(--amarillo); }
+    .puntuar-info-txt {
+      font-size: 0.66rem; color: var(--gris-texto); line-height: 1.5;
+      background: rgba(255,255,255,0.03); border: 1px solid var(--borde);
+      border-radius: 8px; padding: 8px 10px; margin: -2px 0 10px;
     }
     .puntuar-stars { display: flex; gap: 6px; }
     .puntuar-stars .star {
@@ -496,6 +514,64 @@
       transition: all 0.15s;
     }
     .chequeo-btn.selected { border-color: #D4AF37; color: #D4AF37; background: rgba(212,175,55,0.1); }
+
+    /* PRUEBA (14/09/2026), solo edragotto@hotmail.com: Panel de
+       Valoración. Ver HISTORIAL-CAMBIOS.md. */
+    .vp-marcas { display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 6px; scrollbar-width: none; }
+    .vp-marcas::-webkit-scrollbar { display: none; }
+    .vp-marca-card {
+      flex: 0 0 auto; min-width: 82px; text-align: center;
+      background: var(--card-bg); border: 1px solid var(--borde);
+      border-radius: 14px; padding: 8px 10px;
+    }
+    .vp-marca-card .vp-marca-nombre { font-size: 0.56rem; font-weight: 900; text-transform: uppercase; color: var(--gris-texto); white-space: nowrap; }
+    .vp-marca-card .vp-marca-num { font-family: 'Bebas Neue', sans-serif; font-size: 1.25rem; color: var(--amarillo); line-height: 1; margin-top: 2px; }
+
+    .vp-filtros { display: flex; gap: 8px; overflow-x: auto; padding: 6px 2px 10px; scrollbar-width: none; }
+    .vp-filtros::-webkit-scrollbar { display: none; }
+    .vp-chip {
+      flex: 0 0 auto; font-size: 0.62rem; font-weight: 900; text-transform: uppercase;
+      letter-spacing: 0.4px; padding: 8px 14px; border-radius: 999px;
+      border: 1px solid var(--borde); background: var(--card-bg); color: var(--gris-texto);
+      cursor: pointer; white-space: nowrap; font-family: 'Montserrat', sans-serif;
+    }
+    .vp-chip-activo { border-color: var(--amarillo); color: var(--amarillo); background: rgba(197,179,88,0.08); }
+
+    .vp-ranking { display: flex; flex-direction: column; gap: 9px; }
+    .vp-fila {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--card-bg); border: 1px solid var(--borde);
+      border-radius: 16px; padding: 10px 12px; cursor: pointer;
+    }
+    .vp-fila-oro { border-color: rgba(197,179,88,0.4); }
+    .vp-rank { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; width: 22px; flex: 0 0 22px; text-align: center; color: #555; }
+    .vp-fila-oro .vp-rank { color: var(--amarillo); }
+    .vp-info { flex: 1; min-width: 0; }
+    .vp-marca-modelo { font-weight: 800; font-size: 0.78rem; color: var(--plata); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .vp-marca-modelo .vp-marca-tag { color: var(--amarillo); }
+    .vp-meta-row { display: flex; align-items: center; gap: 6px; margin-top: 2px; }
+    .vp-tipo-chip { font-size: 0.52rem; font-weight: 900; text-transform: uppercase; padding: 1px 6px; border-radius: 5px; border: 1px solid var(--borde); color: var(--gris-texto); }
+    .vp-n { font-size: 0.58rem; color: #555; }
+    .vp-score { flex: 0 0 auto; text-align: right; }
+    .vp-score-num { font-family: 'Bebas Neue', sans-serif; font-size: 1.15rem; color: var(--plata); line-height: 1; }
+    .vp-stars { font-size: 0.56rem; color: var(--amarillo); }
+
+    .vp-teaser { opacity: 0.85; border-style: dashed; cursor: default; }
+    .vp-progreso-track { height: 4px; background: #000; border: 1px solid var(--borde); border-radius: 3px; overflow: hidden; margin-top: 5px; }
+    .vp-progreso-fill { height: 100%; background: #A89440; }
+    .vp-progreso-txt { font-size: 0.56rem; color: #666; margin-top: 3px; font-weight: 700; }
+    .vp-seccion-titulo { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 0.5px; color: var(--gris-texto); margin: 26px 0 2px; }
+
+    .vp-desglose-item { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+    .vp-desglose-label { font-size: 0.66rem; color: var(--gris-texto); width: 100px; flex: 0 0 100px; display: flex; align-items: center; gap: 4px; }
+    .vp-desglose-track { flex: 1; height: 5px; background: #000; border: 1px solid var(--borde); border-radius: 3px; overflow: hidden; }
+    .vp-desglose-fill { height: 100%; background: var(--amarillo); }
+    .vp-desglose-val { font-size: 0.66rem; color: var(--amarillo); font-weight: 800; width: 24px; text-align: right; }
+    .vp-desglose-explicacion {
+      font-size: 0.62rem; color: var(--gris-texto); line-height: 1.5;
+      background: rgba(255,255,255,0.03); border: 1px solid var(--borde);
+      border-radius: 8px; padding: 8px 10px; margin: 2px 0 10px;
+    }
 
     /* ── Barra de km ── */
     .cf-bar-section { padding: 4px 12px 8px; }
@@ -988,6 +1064,7 @@
     .modal-content { background: var(--card-bg); width: 90%; max-width: 350px; padding: 25px; border-radius: 20px; border: 1px solid var(--borde); position: relative; }
     /* "Mi Perfil" tiene 5 campos — en un celu chico no entra entero sin scroll */
     #perfil-modal .modal-content { max-height: 85vh; overflow-y: auto; }
+    #vp-detalle-modal .modal-content { max-height: 85vh; overflow-y: auto; }
     .close-modal { position: absolute; top: 15px; right: 15px; background: none; border: none; color: var(--gris-texto); font-size: 1.2rem; cursor: pointer; }
 
     .modal-historial-content {
@@ -1785,6 +1862,10 @@
       </a>
       <div style="display:flex; align-items:center; gap:12px;">
         <div class="saludo-topbar" style="font-size: 0.75rem; color: var(--gris-texto); white-space:nowrap;">Hola, <span id="user-name" style="color: var(--amarillo); font-weight: 900;">Corredor</span></div>
+        <!-- PRUEBA (14/09/2026), solo edragotto@hotmail.com: Panel de
+             Valoración (ranking público de zapatillas). Se muestra/oculta
+             en loadDashboard(). Ver HISTORIAL-CAMBIOS.md. -->
+        <button class="btn-notif" id="btn-valoracion" style="display:none;" onclick="abrirValoracionPublica()" title="Valoración Runners">⭐</button>
         <!-- MI PERFIL -->
         <button class="btn-notif" id="btn-perfil" onclick="abrirPerfilModal()" title="Mi perfil">👤</button>
         <!-- CAMPANITA NOTIFICACIONES -->
@@ -1909,6 +1990,35 @@
     </div>
   </div>
 
+  <!-- PRUEBA (14/09/2026), solo edragotto@hotmail.com: Panel de
+       Valoración — ranking público de zapatillas (Valoración Runners).
+       Ver HISTORIAL-CAMBIOS.md. -->
+  <div id="view-valoracion" style="display: none;">
+    <div class="top-bar">
+      <button onclick="switchView('view-dashboard')" style="background:none; border:none; color:var(--gris-texto); cursor:pointer; font-weight:700; font-size:0.9rem;">← Volver</button>
+      <div style="font-size: 0.7rem; color: var(--gris-texto); text-transform: uppercase; letter-spacing: 1px;">★ Valoración Runners</div>
+      <div style="width:60px;"></div>
+    </div>
+    <div style="padding: 4px 16px 90px;">
+      <p style="font-size:0.72rem; color:var(--gris-texto); text-align:center; line-height:1.5; margin: 8px 0 16px;">
+        Lo que opinan corredores reales, con kilómetros reales.
+      </p>
+      <div class="vp-marcas" id="vp-marcas"></div>
+      <div class="vp-filtros" id="vp-filtros">
+        <button class="vp-chip vp-chip-activo" data-tipo="todas">Todas</button>
+        <button class="vp-chip" data-tipo="voladora">🪽 Voladoras</button>
+        <button class="vp-chip" data-tipo="rodadora">👟 Rodadoras</button>
+        <button class="vp-chip" data-tipo="mixta">⚖️ Mixtas</button>
+      </div>
+      <div class="vp-ranking" id="vp-ranking"></div>
+      <div id="vp-en-camino-wrap" hidden>
+        <div class="vp-seccion-titulo">Juntando opiniones</div>
+        <p style="font-size:0.64rem; color:#666; margin-bottom:10px; line-height:1.5;">Todavía no llegan a las opiniones necesarias para entrar al ranking.</p>
+        <div class="vp-ranking" id="vp-en-camino"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- VISTA: ELEGIR CONTRASEÑA NUEVA (tras entrar con una temporal) -->
   <div id="view-set-password" style="display: none;">
     <div style="text-align:center;position:relative;z-index:1;margin-top:8px;margin-bottom:16px;">
@@ -1973,7 +2083,10 @@
     <button class="close-modal" onclick="closePuntuarModal()">✕</button>
     <h3 style="text-align:center; margin-bottom:20px; font-size:1rem;">VALORACIÓN RUNNERS</h3>
     <div class="puntuar-item">
-      <label>1. Experiencia y Confort</label>
+      <label>1. Experiencia y Confort
+        <button type="button" class="puntuar-info-btn" onclick="togglePuntuarInfo('comodidad', this)">i</button>
+      </label>
+      <div class="puntuar-info-txt" id="puntuar-info-comodidad" hidden>¿Cómoda todo el entrenamiento, sin rozaduras ni molestias?</div>
       <div class="puntuar-stars" data-item="comodidad">
         <span class="star" data-val="1" onclick="elegirEstrella('comodidad',1)">★</span>
         <span class="star" data-val="2" onclick="elegirEstrella('comodidad',2)">★</span>
@@ -1983,7 +2096,10 @@
       </div>
     </div>
     <div class="puntuar-item">
-      <label>2. Rendimiento y Durabilidad</label>
+      <label>2. Rendimiento y Durabilidad
+        <button type="button" class="puntuar-info-btn" onclick="togglePuntuarInfo('durabilidad', this)">i</button>
+      </label>
+      <div class="puntuar-info-txt" id="puntuar-info-durabilidad" hidden>¿Sigue respondiendo igual después de varios cientos de km, o se sintió "muerta" antes de tiempo?</div>
       <div class="puntuar-stars" data-item="durabilidad">
         <span class="star" data-val="1" onclick="elegirEstrella('durabilidad',1)">★</span>
         <span class="star" data-val="2" onclick="elegirEstrella('durabilidad',2)">★</span>
@@ -1993,7 +2109,10 @@
       </div>
     </div>
     <div class="puntuar-item">
-      <label>3. Valor y Versatilidad</label>
+      <label>3. Valor y Versatilidad
+        <button type="button" class="puntuar-info-btn" onclick="togglePuntuarInfo('precioCalidad', this)">i</button>
+      </label>
+      <div class="puntuar-info-txt" id="puntuar-info-precioCalidad" hidden>¿Vale lo que cuesta, y sirve para más de un tipo de entrenamiento?</div>
       <div class="puntuar-stars" data-item="precioCalidad">
         <span class="star" data-val="1" onclick="elegirEstrella('precioCalidad',1)">★</span>
         <span class="star" data-val="2" onclick="elegirEstrella('precioCalidad',2)">★</span>
@@ -2039,6 +2158,18 @@
     </div>
     <input type="hidden" id="chequeo-shoe-id">
     <button class="btn-primary" id="btn-save-chequeo" onclick="guardarChequeo()">Guardar</button>
+  </div>
+</div>
+
+<!-- PRUEBA (14/09/2026), solo edragotto@hotmail.com: detalle de un
+     modelo dentro del Panel de Valoración. Ver HISTORIAL-CAMBIOS.md. -->
+<div class="modal-overlay" id="vp-detalle-modal">
+  <div class="modal-content">
+    <button class="close-modal" onclick="cerrarVpDetalle()">✕</button>
+    <h3 style="text-align:center; margin-bottom:4px; font-size:0.95rem;" id="vp-detalle-nombre"></h3>
+    <p style="text-align:center; font-size:0.85rem; color:var(--amarillo); font-weight:900; margin-bottom:4px;" id="vp-detalle-score"></p>
+    <p style="text-align:center; font-size:0.62rem; color:var(--gris-texto); margin-bottom:18px;" id="vp-detalle-n"></p>
+    <div id="vp-detalle-desglose"></div>
   </div>
 </div>
 
@@ -2819,7 +2950,7 @@
 
   let currentDetailShoe = null;
   let allUserShoes = [];
-  const ALL_VIEWS = ['view-login','view-register','view-dashboard','view-add-shoe','view-notificaciones','view-set-password'];
+  const ALL_VIEWS = ['view-login','view-register','view-dashboard','view-add-shoe','view-notificaciones','view-set-password','view-valoracion'];
 
   function switchView(viewId) {
     ALL_VIEWS.forEach(id => { document.getElementById(id).style.display = 'none'; });
@@ -2960,6 +3091,125 @@
   ]);
   function _esTrail(marca, modelo) {
     return modelosTrail.has(_normKey(marca) + "_" + _normKey(modelo));
+  }
+
+  // ════════════════════════════════════════════════════════════
+  // RODADORA / VOLADORA / MIXTA — clasificación por modelo, mismo
+  // criterio que modelosTrail (clave "marca_modelo" normalizada). Se
+  // va completando de a tandas por marca (investigación manual del
+  // fundador + fuentes públicas) — si un modelo no está acá, el Panel
+  // de Valoración no le muestra ninguna etiqueta de tipo, no rompe
+  // nada. PRUEBA (14/09/2026), solo edragotto@hotmail.com.
+  // ════════════════════════════════════════════════════════════
+  const modelosTipoUso = {
+    // — Adidas (32/32, completa) —
+    "adidas_adistar_byd":              "rodadora",
+    "adidas_adizero_adios_pro_4":      "voladora",
+    "adidas_adizero_boston_12":        "voladora",
+    "adidas_adizero_boston_13":        "voladora",
+    "adidas_adizero_drive":            "voladora",
+    "adidas_adizero_evo":              "voladora",
+    "adidas_adizero_evo_sl":           "voladora",
+    "adidas_adizero_evo_sl_atr":       "voladora",
+    "adidas_adizero_evo_sl_exo":       "voladora",
+    "adidas_adizero_pro_4":            "voladora",
+    "adidas_adizero_sl2":              "voladora",
+    "adidas_boost_run":                "rodadora",
+    "adidas_duramo_sl2":               "rodadora",
+    "adidas_duramo_speed":             "voladora",
+    "adidas_hyperboost":               "rodadora",
+    "adidas_hyperboost_edge":          "rodadora",
+    "adidas_pureboost_5":              "rodadora",
+    "adidas_questar_3":                "rodadora",
+    "adidas_response_2":               "rodadora",
+    "adidas_supernova_2":              "rodadora",
+    "adidas_supernova_ease_2":         "rodadora",
+    "adidas_supernova_glide":          "rodadora",
+    "adidas_supernova_prima":          "rodadora",
+    "adidas_supernova_rise_3":         "rodadora",
+    "adidas_switch_fwd":               "rodadora",
+    "adidas_terrex_agravic_3":         "rodadora",
+    "adidas_terrex_agravic_4":         "rodadora",
+    "adidas_terrex_anylander":         "rodadora",
+    "adidas_terrex_freehiker_3":       "rodadora",
+    "adidas_terrex_skychaser_ax5":     "rodadora",
+    "adidas_ultraboost_5":             "rodadora",
+    "adidas_ultrarun_5":               "rodadora",
+    "adidas_zenboost":                 "rodadora",
+    // — Nike (14/23) —
+    "nike_alphafly_3_blueprint":       "voladora",
+    "nike_vaporfly_4":                 "voladora",
+    "nike_pegasus_plus":               "voladora",
+    "nike_pegasus_39":                 "rodadora",
+    "nike_pegasus_40":                 "rodadora",
+    "nike_pegasus_41":                 "rodadora",
+    "nike_pegasus_42":                 "rodadora",
+    "nike_structure_25":               "rodadora",
+    "nike_vomero_17":                  "rodadora",
+    "nike_vomero_plus":                "rodadora",
+    "nike_winflo_9":                   "rodadora",
+    "nike_winflo_11":                  "rodadora",
+    "nike_invincible_3":               "rodadora",
+    "nike_infinity_rn_4_blueprint":    "rodadora",
+    // — Asics (9/12) —
+    "asics_kayano_32":                 "rodadora",
+    "asics_cayano_32_w":               "rodadora",
+    "asics_gel_cumulus_27":            "rodadora",
+    "asics_gel_nimbus_26":             "rodadora",
+    "asics_gel_trebuco_13":            "rodadora",
+    "asics_novablast":                 "rodadora",
+    "asics_novablast_5_lite":          "rodadora",
+    "asics_novablast_5_tokyo":         "rodadora",
+    "asics_superblast_2":              "rodadora",
+    // — Saucony (11/18) —
+    "saucony_endorphin_pro_4":         "voladora",
+    "saucony_endorphin_pro_5":         "voladora",
+    "saucony_endorphin_speed_4":       "voladora",
+    "saucony_endorphin_speed_5":       "voladora",
+    "saucony_kinvara_14":              "voladora",
+    "saucony_peregrine_16_blanca":     "mixta",
+    "saucony_peregrine_16_carbon":     "mixta",
+    "saucony_ride_16":                 "rodadora",
+    "saucony_triumph_21":              "rodadora",
+    "saucony_triumph_22":              "rodadora",
+    "saucony_triumph_23":              "rodadora",
+    // — New Balance (7/9) —
+    "new_balance_fresh_foam_x_1080_v13": "rodadora",
+    "new_balance_fresh_foam_x_1080_v14": "rodadora",
+    "new_balance_fresh_foam_x_hierro_v9": "rodadora",
+    "new_balance_fuelcell_rebel_v3":    "voladora",
+    "new_balance_fuelcell_rebel_v5":    "voladora",
+    "new_balance_fuelcell_supercomp_trainer_v4": "voladora",
+    "new_balance_propel_v5":            "voladora",
+    // — Hoka (11/19) —
+    "hoka_cielo_x1_2.0":                "voladora",
+    "hoka_mach_6":                      "voladora",
+    "hoka_rocket_x2":                   "voladora",
+    "hoka_arahi_7":                     "rodadora",
+    "hoka_bondi_9":                     "rodadora",
+    "hoka_bondi_9_w":                   "rodadora",
+    "hoka_clifton_8":                   "rodadora",
+    "hoka_clifton_10":                  "rodadora",
+    "hoka_speedgoat_6":                 "rodadora",
+    "hoka_speedgoat_6_mid_gore":        "rodadora",
+    "hoka_speedgoat_7":                 "rodadora",
+    // — Puma (13/15) —
+    "puma_deviate_nitro_2":             "voladora",
+    "puma_deviate_nitro_3":             "voladora",
+    "puma_deviate_nitro_3_digitokyo":   "voladora",
+    "puma_deviate_nitro_3_wtr+":        "voladora",
+    "puma_deviate_nitro_4":             "voladora",
+    "puma_deviate_nitro_elite_3":       "voladora",
+    "puma_fast-r_nitro_elite_3":        "voladora",
+    "puma_foreverrun_nitro":            "rodadora",
+    "puma_foreverrun_nitro_2":          "rodadora",
+    "puma_foreverrun_nitro_2_w":        "rodadora",
+    "puma_magnify_nitro_3":             "rodadora",
+    "puma_velocity_nitro_4":            "rodadora",
+    "puma_velocity_nitro_4_digitokyo":  "rodadora"
+  };
+  function _tipoUso(marca, modelo) {
+    return modelosTipoUso[_normKey(marca) + "_" + _normKey(modelo)] || null;
   }
 
   function getBrandBadgeClass(marca) {
@@ -3663,6 +3913,10 @@
     _loadRetries = 0;
     _pintarPoweredBy('dash', currentUserEmail);
     _agregarMarcaDemo(currentUserEmail);
+    // PRUEBA (14/09/2026), solo edragotto@hotmail.com: botón del Panel
+    // de Valoración en el header. Ver HISTORIAL-CAMBIOS.md.
+    var esUsuarioPruebaValoracion = (currentUserEmail || '').toString().trim().toLowerCase() === 'edragotto@hotmail.com';
+    document.getElementById('btn-valoracion').style.display = esUsuarioPruebaValoracion ? '' : 'none';
     // Trae la Provincia antes de pintar las zapatillas, porque el botón
     // de tienda sponsor (DEV San Luis) depende de ese dato. No bloquea
     // mucho: getPerfilUsuario es liviano comparado con getUserShoes.
@@ -4342,6 +4596,12 @@
     _pintarEstrellas();
   }
 
+  function togglePuntuarInfo(item, btn) {
+    var el = document.getElementById('puntuar-info-' + item);
+    el.hidden = !el.hidden;
+    btn.classList.toggle('activo', !el.hidden);
+  }
+
   function guardarPuntuacion() {
     var id  = document.getElementById('puntuar-shoe-id').value;
     var btn = document.getElementById('btn-save-puntuacion');
@@ -4438,6 +4698,138 @@
         alert('Error de conexión: ' + (e && e.message ? e.message : e));
       })
       .guardarChequeoDesgaste(currentUserEmail, id, _chequeoActual.piernas, _chequeoActual.reactividad, _chequeoActual.visual);
+  }
+
+  // ── PRUEBA (14/09/2026), solo edragotto@hotmail.com: Panel de
+  // Valoración — ranking público de zapatillas. Ver HISTORIAL-CAMBIOS.md. ──
+  var _vpData = { ranking: [], enCamino: [], porMarca: [] };
+  var VP_TIPO_LABEL = { voladora: '🪽 Voladora', rodadora: '👟 Rodadora', mixta: '⚖️ Mixta' };
+  var VP_ITEMS = [
+    { key: 'comodidad',     label: 'Confort',     info: 'Experiencia y Confort: ¿cómoda todo el entrenamiento, sin rozaduras ni molestias?' },
+    { key: 'durabilidad',   label: 'Durabilidad', info: 'Rendimiento y Durabilidad: ¿sigue respondiendo igual después de varios cientos de km, o se sintió "muerta" antes de tiempo?' },
+    { key: 'precioCalidad', label: 'Valor',       info: 'Valor y Versatilidad: ¿vale lo que cuesta, y sirve para más de un tipo de entrenamiento?' }
+  ];
+
+  function abrirValoracionPublica() {
+    switchView('view-valoracion');
+    document.getElementById('vp-marcas').innerHTML   = '<div style="font-size:0.68rem;color:#666;padding:8px 2px;">Cargando...</div>';
+    document.getElementById('vp-ranking').innerHTML   = '';
+    document.getElementById('vp-en-camino-wrap').hidden = true;
+    google.script.run
+      .withSuccessHandler(function(res) {
+        if (!res || !res.success) {
+          document.getElementById('vp-marcas').innerHTML = '<div style="font-size:0.68rem;color:#ef4444;padding:8px 2px;">No se pudo cargar.</div>';
+          return;
+        }
+        _vpData = res;
+        _vpRenderMarcas();
+        _vpRenderRanking('todas');
+        _vpRenderEnCamino();
+      })
+      .withFailureHandler(function() {
+        document.getElementById('vp-marcas').innerHTML = '<div style="font-size:0.68rem;color:#ef4444;padding:8px 2px;">Error de conexión.</div>';
+      })
+      .getValoracionPublica();
+  }
+
+  function _vpEstrellas(score) {
+    var llenas = Math.round(score);
+    var out = '';
+    for (var i = 1; i <= 5; i++) out += (i <= llenas ? '★' : '☆');
+    return out;
+  }
+
+  function _vpRenderMarcas() {
+    var cont = document.getElementById('vp-marcas');
+    if (!_vpData.porMarca.length) {
+      cont.innerHTML = '<div style="font-size:0.64rem;color:#666;padding:6px 2px;">Todavía no hay marcas con muestra suficiente.</div>';
+      return;
+    }
+    cont.innerHTML = _vpData.porMarca.map(function(m) {
+      return '<div class="vp-marca-card"><div class="vp-marca-nombre">' + sanitize(m.marca) + '</div><div class="vp-marca-num">' + m.promedio.toFixed(1) + '</div></div>';
+    }).join('');
+  }
+
+  function _vpRenderRanking(filtro) {
+    var cont = document.getElementById('vp-ranking');
+    var lista = _vpData.ranking.filter(function(m) {
+      return filtro === 'todas' || _tipoUso(m.marca, m.modelo) === filtro;
+    });
+    if (!lista.length) {
+      cont.innerHTML = '<div style="font-size:0.68rem;color:#666;text-align:center;padding:20px 0;">Todavía no hay modelos con muestra suficiente en esta categoría.</div>';
+      return;
+    }
+    cont.innerHTML = lista.map(function(m, i) {
+      var rank = i + 1;
+      var tipo = _tipoUso(m.marca, m.modelo);
+      var tipoHtml = tipo ? '<span class="vp-tipo-chip">' + VP_TIPO_LABEL[tipo] + '</span>' : '';
+      var clave = escInlineJs(m.marca + '|' + m.modelo);
+      return '<div class="vp-fila' + (rank === 1 ? ' vp-fila-oro' : '') + '" onclick="abrirVpDetalle(\'' + clave + '\')">' +
+        '<div class="vp-rank">' + rank + '</div>' +
+        '<div class="vp-info">' +
+          '<div class="vp-marca-modelo"><span class="vp-marca-tag">' + sanitize(m.marca) + '</span> ' + sanitize(m.modelo) + '</div>' +
+          '<div class="vp-meta-row">' + tipoHtml + '<span class="vp-n">· ' + m.usuariosDistintos + ' corredores</span></div>' +
+        '</div>' +
+        '<div class="vp-score">' +
+          '<div class="vp-score-num">' + m.promedio.toFixed(1) + '</div>' +
+          '<div class="vp-stars">' + _vpEstrellas(m.promedio) + '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function _vpRenderEnCamino() {
+    var wrap = document.getElementById('vp-en-camino-wrap');
+    if (!_vpData.enCamino.length) { wrap.hidden = true; return; }
+    wrap.hidden = false;
+    document.getElementById('vp-en-camino').innerHTML = _vpData.enCamino.map(function(m) {
+      var pct = Math.round((m.usuariosDistintos / _vpData.minUsuarios) * 100);
+      var tipo = _tipoUso(m.marca, m.modelo);
+      var tipoHtml = tipo ? '<span class="vp-tipo-chip">' + VP_TIPO_LABEL[tipo] + '</span>' : '';
+      return '<div class="vp-fila vp-teaser">' +
+        '<div class="vp-info">' +
+          '<div class="vp-marca-modelo"><span class="vp-marca-tag">' + sanitize(m.marca) + '</span> ' + sanitize(m.modelo) + '</div>' +
+          '<div class="vp-meta-row">' + tipoHtml + '</div>' +
+          '<div class="vp-progreso-track"><div class="vp-progreso-fill" style="width:' + pct + '%;"></div></div>' +
+          '<div class="vp-progreso-txt">' + m.usuariosDistintos + ' de ' + _vpData.minUsuarios + ' opiniones</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  document.getElementById('vp-filtros').addEventListener('click', function(e) {
+    var btn = e.target.closest('.vp-chip');
+    if (!btn) return;
+    document.querySelectorAll('.vp-chip').forEach(function(c) { c.classList.remove('vp-chip-activo'); });
+    btn.classList.add('vp-chip-activo');
+    _vpRenderRanking(btn.dataset.tipo);
+  });
+
+  function abrirVpDetalle(clave) {
+    var partes = clave.split('|');
+    var m = _vpData.ranking.concat(_vpData.enCamino).find(function(x) { return x.marca === partes[0] && x.modelo === partes[1]; });
+    if (!m) return;
+    document.getElementById('vp-detalle-nombre').textContent = m.marca + ' ' + m.modelo;
+    document.getElementById('vp-detalle-score').textContent = m.promedio.toFixed(1) + ' / 5 · ' + _vpEstrellas(m.promedio);
+    document.getElementById('vp-detalle-n').textContent = m.usuariosDistintos + ' corredores distintos';
+    document.getElementById('vp-detalle-desglose').innerHTML = VP_ITEMS.map(function(item, i) {
+      var val = m[item.key] || 0;
+      return '<div class="vp-desglose-item">' +
+        '<div class="vp-desglose-label">' + item.label +
+          '<button type="button" class="puntuar-info-btn" onclick="toggleVpInfo(' + i + ', this)">i</button>' +
+        '</div>' +
+        '<div class="vp-desglose-track"><div class="vp-desglose-fill" style="width:' + (val / 5 * 100) + '%;"></div></div>' +
+        '<div class="vp-desglose-val">' + val.toFixed(1) + '</div>' +
+      '</div>' +
+      '<div class="vp-desglose-explicacion" id="vp-info-' + i + '" hidden>' + item.info + '</div>';
+    }).join('');
+    document.getElementById('vp-detalle-modal').style.display = 'flex';
+  }
+  function cerrarVpDetalle() { document.getElementById('vp-detalle-modal').style.display = 'none'; }
+  function toggleVpInfo(i, btn) {
+    var el = document.getElementById('vp-info-' + i);
+    el.hidden = !el.hidden;
+    btn.classList.toggle('activo', !el.hidden);
   }
 
   function setKmRapido(valor) {
