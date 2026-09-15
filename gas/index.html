@@ -1,13 +1,14 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 15/09/2026 08:43 (hora Argentina)
+  Última actualización: 15/09/2026 10:54 (hora Argentina)
   Cambios en esta versión:
-    - PRUEBA, solo edragotto@hotmail.com: modal "Valoración Runners"
-      suma un comentario corto opcional (máx. 150 caracteres, con
-      contador) debajo de las 3 estrellas. Se muestra en el detalle del
-      Panel de Valoración, con el nombre del corredor abreviado
-      ("Nombre I."). Ver HISTORIAL-CAMBIOS.md.
+    - PRUEBA, solo edragotto@hotmail.com: fotos chicas (misma imagen
+      que las tarjetas de "Mis Zapas", getShoeImage()) en el ranking y
+      en "Juntando opiniones" del Panel de Valoración, y una más grande
+      arriba del modal de detalle. Ver HISTORIAL-CAMBIOS.md.
   Cambios en versiones anteriores:
+    - Modal "Valoración Runners": comentario corto opcional (máx. 150
+      caracteres) debajo de las 3 estrellas.
     - "Panel de Valoración" (PRUEBA, solo edragotto@hotmail.com): botón
       ⭐ en el header, ranking por marca/modelo, filtro
       Rodadora/Voladora/Mixta.
@@ -548,6 +549,11 @@
     .vp-fila-oro { border-color: rgba(197,179,88,0.4); }
     .vp-rank { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; width: 22px; flex: 0 0 22px; text-align: center; color: #555; }
     .vp-fila-oro .vp-rank { color: var(--amarillo); }
+    .vp-foto {
+      width: 38px; height: 38px; flex: 0 0 38px;
+      border-radius: 10px; object-fit: cover;
+      background: #1a1a1a; border: 1px solid var(--borde);
+    }
     .vp-info { flex: 1; min-width: 0; }
     .vp-marca-modelo { font-weight: 800; font-size: 0.78rem; color: var(--plata); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .vp-marca-modelo .vp-marca-tag { color: var(--amarillo); }
@@ -2182,6 +2188,7 @@
 <div class="modal-overlay" id="vp-detalle-modal">
   <div class="modal-content">
     <button class="close-modal" onclick="cerrarVpDetalle()">✕</button>
+    <img id="vp-detalle-foto" src="" alt="" style="display:block; width:96px; height:96px; object-fit:cover; border-radius:14px; background:#1a1a1a; border:1px solid var(--borde); margin:0 auto 10px;">
     <h3 style="text-align:center; margin-bottom:4px; font-size:0.95rem;" id="vp-detalle-nombre"></h3>
     <p style="text-align:center; font-size:0.85rem; color:var(--amarillo); font-weight:900; margin-bottom:4px;" id="vp-detalle-score"></p>
     <p style="text-align:center; font-size:0.62rem; color:var(--gris-texto); margin-bottom:18px;" id="vp-detalle-n"></p>
@@ -4793,8 +4800,10 @@
       var tipo = _tipoUso(m.marca, m.modelo);
       var tipoHtml = tipo ? '<span class="vp-tipo-chip">' + VP_TIPO_LABEL[tipo] + '</span>' : '';
       var clave = escInlineJs(m.marca + '|' + m.modelo);
+      var foto = _cloudinaryChica(getShoeImage(m.marca, m.modelo), 80);
       return '<div class="vp-fila' + (rank === 1 ? ' vp-fila-oro' : '') + '" onclick="abrirVpDetalle(\'' + clave + '\')">' +
         '<div class="vp-rank">' + rank + '</div>' +
+        '<img class="vp-foto" src="' + foto + '" alt="" loading="lazy" onerror="_localImgFallback(this)">' +
         '<div class="vp-info">' +
           '<div class="vp-marca-modelo"><span class="vp-marca-tag">' + sanitize(m.marca) + '</span> ' + sanitize(m.modelo) + '</div>' +
           '<div class="vp-meta-row">' + tipoHtml + '<span class="vp-n">· ' + m.usuariosDistintos + ' corredores</span></div>' +
@@ -4815,7 +4824,9 @@
       var pct = Math.round((m.usuariosDistintos / _vpData.minUsuarios) * 100);
       var tipo = _tipoUso(m.marca, m.modelo);
       var tipoHtml = tipo ? '<span class="vp-tipo-chip">' + VP_TIPO_LABEL[tipo] + '</span>' : '';
+      var foto = _cloudinaryChica(getShoeImage(m.marca, m.modelo), 80);
       return '<div class="vp-fila vp-teaser">' +
+        '<img class="vp-foto" src="' + foto + '" alt="" loading="lazy" onerror="_localImgFallback(this)">' +
         '<div class="vp-info">' +
           '<div class="vp-marca-modelo"><span class="vp-marca-tag">' + sanitize(m.marca) + '</span> ' + sanitize(m.modelo) + '</div>' +
           '<div class="vp-meta-row">' + tipoHtml + '</div>' +
@@ -4838,6 +4849,7 @@
     var partes = clave.split('|');
     var m = _vpData.ranking.concat(_vpData.enCamino).find(function(x) { return x.marca === partes[0] && x.modelo === partes[1]; });
     if (!m) return;
+    document.getElementById('vp-detalle-foto').src = _cloudinaryChica(getShoeImage(m.marca, m.modelo), 200);
     document.getElementById('vp-detalle-nombre').textContent = m.marca + ' ' + m.modelo;
     document.getElementById('vp-detalle-score').textContent = m.promedio.toFixed(1) + ' / 5 · ' + _vpEstrellas(m.promedio);
     document.getElementById('vp-detalle-n').textContent = m.usuariosDistintos + ' corredores distintos';

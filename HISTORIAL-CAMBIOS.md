@@ -12,6 +12,17 @@ el GAS es la versión más nueva.
 
 ---
 
+## 15/09/2026 10:54 — PRUEBA (solo edragotto@hotmail.com): fotos en el Panel de Valoración
+
+- **`gas/index.html`**: el ranking, la sección "Juntando opiniones" y
+  el modal de detalle del Panel de Valoración ahora muestran una foto
+  de la zapatilla — la misma que ya usan las tarjetas de "Mis Zapas"
+  (`getShoeImage()` + `_cloudinaryChica()`, foto propia si el modelo la
+  tiene cargada, si no la genérica de la marca). Chica en el ranking
+  (38×38), más grande arriba del detalle.
+
+---
+
 ## 15/09/2026 08:43 — PRUEBA (solo edragotto@hotmail.com): comentario corto en Valoración Runners
 
 Seguimiento de lo hablado sobre el texto libre: como todo esto sigue
