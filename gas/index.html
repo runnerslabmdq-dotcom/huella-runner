@@ -1,14 +1,16 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 14/09/2026 18:48 (hora Argentina)
+  Última actualización: 15/09/2026 08:43 (hora Argentina)
   Cambios en esta versión:
-    - PRUEBA, solo edragotto@hotmail.com: "Panel de Valoración" — nueva
-      vista (botón ⭐ en el header) con ranking de zapatillas, promedio
-      por marca, y filtro Rodadora/Voladora/Mixta. Nueva clasificación
-      modelosTipoUso (97 modelos investigados). Ver HISTORIAL-CAMBIOS.md.
-    - Modal "Valoración Runners" (puntuar-modal): cada ítem suma una ⓘ
-      con la explicación de qué significa (Confort/Durabilidad/Valor).
+    - PRUEBA, solo edragotto@hotmail.com: modal "Valoración Runners"
+      suma un comentario corto opcional (máx. 150 caracteres, con
+      contador) debajo de las 3 estrellas. Se muestra en el detalle del
+      Panel de Valoración, con el nombre del corredor abreviado
+      ("Nombre I."). Ver HISTORIAL-CAMBIOS.md.
   Cambios en versiones anteriores:
+    - "Panel de Valoración" (PRUEBA, solo edragotto@hotmail.com): botón
+      ⭐ en el header, ranking por marca/modelo, filtro
+      Rodadora/Voladora/Mixta.
     - "Chequeo de desgaste" (PRUEBA, solo edragotto@hotmail.com): botón
       "¿Cómo la sentís?" en la tarjeta, modal con 3 preguntas sí/no.
     - Mi Perfil: nuevo campo "Peso" (kg, opcional). Se guarda y se
@@ -572,6 +574,10 @@
       background: rgba(255,255,255,0.03); border: 1px solid var(--borde);
       border-radius: 8px; padding: 8px 10px; margin: 2px 0 10px;
     }
+    .vp-comentario { padding: 10px 0; border-top: 1px solid var(--borde); }
+    .vp-comentario:first-child { border-top: none; }
+    .vp-comentario-nombre { font-size: 0.72rem; font-weight: 800; color: var(--plata); }
+    .vp-comentario-texto { font-size: 0.7rem; color: var(--gris-texto); line-height: 1.5; margin-top: 3px; }
 
     /* ── Barra de km ── */
     .cf-bar-section { padding: 4px 12px 8px; }
@@ -2121,6 +2127,16 @@
         <span class="star" data-val="5" onclick="elegirEstrella('precioCalidad',5)">★</span>
       </div>
     </div>
+    <!-- PRUEBA (15/09/2026), solo edragotto@hotmail.com: comentario
+         corto opcional. Ver HISTORIAL-CAMBIOS.md. -->
+    <div class="puntuar-item">
+      <label>Comentario <span style="text-transform:none;font-weight:400;color:#555;">(opcional)</span></label>
+      <textarea id="puntuar-opinion-texto" maxlength="150" rows="3"
+        placeholder="Ej: la usé para 10k, muy cómoda pero a los 300km ya no responde igual."
+        oninput="_actualizarContadorOpinion()"
+        style="width:100%; background:#1a1a1a; border:1px solid var(--borde); border-radius:8px; color:var(--plata); font-family:'Montserrat',sans-serif; font-size:0.78rem; padding:10px; resize:none; box-sizing:border-box;"></textarea>
+      <div id="puntuar-opinion-contador" style="text-align:right; font-size:0.6rem; color:#555; margin-top:3px;">0 / 150</div>
+    </div>
     <input type="hidden" id="puntuar-shoe-id">
     <button class="btn-primary" id="btn-save-puntuacion" onclick="guardarPuntuacion()">Guardar puntuación</button>
   </div>
@@ -2170,6 +2186,10 @@
     <p style="text-align:center; font-size:0.85rem; color:var(--amarillo); font-weight:900; margin-bottom:4px;" id="vp-detalle-score"></p>
     <p style="text-align:center; font-size:0.62rem; color:var(--gris-texto); margin-bottom:18px;" id="vp-detalle-n"></p>
     <div id="vp-detalle-desglose"></div>
+    <div id="vp-detalle-comentarios-wrap" hidden>
+      <div class="vp-seccion-titulo" style="margin:20px 0 8px; font-size:0.85rem;">Comentarios</div>
+      <div id="vp-detalle-comentarios"></div>
+    </div>
   </div>
 </div>
 
@@ -4576,7 +4596,15 @@
       precioCalidad: shoe ? (Number(shoe.Puntaje_PrecioCalidad) || 0) : 0
     };
     _pintarEstrellas();
+    var textoEl = document.getElementById('puntuar-opinion-texto');
+    textoEl.value = shoe ? (shoe.Opinion_Texto || '') : '';
+    _actualizarContadorOpinion();
     document.getElementById('puntuar-modal').style.display = 'flex';
+  }
+
+  function _actualizarContadorOpinion() {
+    var len = document.getElementById('puntuar-opinion-texto').value.length;
+    document.getElementById('puntuar-opinion-contador').textContent = len + ' / 150';
   }
   function closePuntuarModal() { document.getElementById('puntuar-modal').style.display = 'none'; }
 
@@ -4603,7 +4631,8 @@
   }
 
   function guardarPuntuacion() {
-    var id  = document.getElementById('puntuar-shoe-id').value;
+    var id     = document.getElementById('puntuar-shoe-id').value;
+    var texto  = document.getElementById('puntuar-opinion-texto').value.trim().slice(0, 150);
     var btn = document.getElementById('btn-save-puntuacion');
     btn.innerText = 'Guardando...'; btn.disabled = true;
     google.script.run
@@ -4625,7 +4654,7 @@
         btn.innerText = 'Guardar puntuación'; btn.disabled = false;
         alert('Error de conexión: ' + (e && e.message ? e.message : e));
       })
-      .guardarPuntuacionZapatilla(currentUserEmail, id, _puntuacionActual.comodidad, _puntuacionActual.durabilidad, _puntuacionActual.precioCalidad);
+      .guardarPuntuacionZapatilla(currentUserEmail, id, _puntuacionActual.comodidad, _puntuacionActual.durabilidad, _puntuacionActual.precioCalidad, texto);
   }
 
   // ── PRUEBA (13/09/2026), solo edragotto@hotmail.com: "Chequeo de
@@ -4823,6 +4852,21 @@
       '</div>' +
       '<div class="vp-desglose-explicacion" id="vp-info-' + i + '" hidden>' + item.info + '</div>';
     }).join('');
+
+    var wrapComentarios = document.getElementById('vp-detalle-comentarios-wrap');
+    var comentarios = m.comentarios || [];
+    if (comentarios.length) {
+      wrapComentarios.hidden = false;
+      document.getElementById('vp-detalle-comentarios').innerHTML = comentarios.map(function(c) {
+        return '<div class="vp-comentario">' +
+          '<div class="vp-comentario-nombre">' + sanitize(c.nombre) + '</div>' +
+          '<div class="vp-comentario-texto">' + sanitize(c.texto) + '</div>' +
+        '</div>';
+      }).join('');
+    } else {
+      wrapComentarios.hidden = true;
+    }
+
     document.getElementById('vp-detalle-modal').style.display = 'flex';
   }
   function cerrarVpDetalle() { document.getElementById('vp-detalle-modal').style.display = 'none'; }
