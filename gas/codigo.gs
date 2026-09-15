@@ -1,14 +1,17 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 15/09/2026 08:43 (hora Argentina)
+// Última actualización: 15/09/2026 19:06 (hora Argentina)
 // Cambios en esta versión:
-//   - PRUEBA, solo edragotto@hotmail.com: guardarPuntuacionZapatilla()
-//     suma un comentario corto opcional (Opinion_Texto, máx. 150
-//     caracteres). _calcularValoracionPorModelo() ahora también arma
-//     la lista de comentarios por modelo (con "Nombre I." en vez del
-//     nombre completo). Todavía sin filtro de palabras — se agrega
-//     antes de sacar esto de "solo prueba". Ver HISTORIAL-CAMBIOS.md.
+//   - PRUEBA, solo edragotto@hotmail.com: _calcularValoracionPorModelo()
+//     separa el ranking (5+ usuarios, con promedio combinado) de las
+//     opiniones sueltas — ahora CUALQUIER modelo con 1 o más
+//     puntuaciones devuelve su lista de "opiniones" (nombre, estrella
+//     propia de esa persona, comentario si tiene), no solo los que
+//     llegan al mínimo. Antes, una zapatilla con pocas opiniones
+//     quedaba sin mostrar nada. Ver HISTORIAL-CAMBIOS.md.
 // Cambios en versiones anteriores:
+//   - guardarPuntuacionZapatilla() suma comentario corto opcional
+//     (Opinion_Texto, máx. 150 caracteres).
 //   - getValoracionPublica() — data del "Panel de Valoración" (ranking
 //     público de zapatillas), _calcularValoracionPorModelo() compartida
 //     con admin.gs.
@@ -729,7 +732,7 @@ function _calcularValoracionPorModelo(ss) {
     const porEmail = mapa[key];
     const emails   = Object.keys(porEmail);
 
-    const votosCom = [], votosDur = [], votosPC = [], votosCombinado = [], comentarios = [];
+    const votosCom = [], votosDur = [], votosPC = [], votosCombinado = [], opiniones = [];
     emails.forEach(function(em) {
       const c = promedio(porEmail[em].comodidad);
       const d = promedio(porEmail[em].durabilidad);
@@ -738,8 +741,20 @@ function _calcularValoracionPorModelo(ss) {
       if (d !== null) votosDur.push(d);
       if (p !== null) votosPC.push(p);
       const combinado = [c, d, p].filter(function(v) { return v !== null; });
-      if (combinado.length) votosCombinado.push(combinado.reduce(function(a, b) { return a + b; }, 0) / combinado.length);
-      if (porEmail[em].texto) comentarios.push({ nombre: nombrePorEmail[em] || 'Runner', texto: porEmail[em].texto });
+      const promedioPersona = combinado.length ? combinado.reduce(function(a, b) { return a + b; }, 0) / combinado.length : null;
+      if (promedioPersona !== null) votosCombinado.push(promedioPersona);
+      // Cada persona que puntuó entra acá con SU propia estrella — no
+      // solo quien dejó comentario. Así una zapatilla con 1 sola
+      // opinión igual la muestra (no hace falta llegar a
+      // MIN_USUARIOS_VALORACION para que se vea lo que dijo esa
+      // persona), aunque recién con 5+ entra al ranking comparativo.
+      if (promedioPersona !== null) {
+        opiniones.push({
+          nombre:   nombrePorEmail[em] || 'Runner',
+          promedio: Math.round(promedioPersona * 10) / 10,
+          texto:    porEmail[em].texto || ''
+        });
+      }
     });
 
     const partes = key.split('|');
@@ -751,7 +766,7 @@ function _calcularValoracionPorModelo(ss) {
       comodidad:     Math.round((promedio(votosCom) || 0) * 10) / 10,
       durabilidad:   Math.round((promedio(votosDur) || 0) * 10) / 10,
       precioCalidad: Math.round((promedio(votosPC)  || 0) * 10) / 10,
-      comentarios: comentarios,
+      opiniones: opiniones,
       listoParaPublicar: emails.length >= MIN_USUARIOS_VALORACION
     };
   }).sort(function(a, b) {

@@ -12,6 +12,39 @@ el GAS es la versión más nueva.
 
 ---
 
+## 15/09/2026 19:06 — PRUEBA (solo edragotto@hotmail.com): separar el ranking de las opiniones sueltas
+
+El fundador planteó un problema real: aunque Huella Runner llegue a
+200-300 usuarios, va a haber zapatillas que solo una persona haya
+puntuado (modelos de nicho) — y con la regla de "mínimo 5 para
+mostrar", esa opinión nunca se vería en ningún lado. Se charlaron 3
+alternativas (separar ranking de opiniones sueltas / un puntaje
+ajustado por cantidad tipo IMDb / aprobación manual por modelo desde
+el panel admin) y se eligió la primera.
+
+- **`gas/codigo.gs`** (`_calcularValoracionPorModelo`): ahora arma una
+  lista de `opiniones` (nombre abreviado, la estrella propia de esa
+  persona, comentario si escribió uno) para **cualquier** modelo con 1
+  o más puntuaciones — antes esto solo pasaba con comentario de texto,
+  y solo importaba para el ranking. El campo `listoParaPublicar` (5+
+  usuarios distintos) sigue existiendo tal cual, para separar "esto ya
+  se puede comparar contra otras" de "esto ya se puede mostrar".
+
+- **`gas/index.html`**: las filas de "Juntando opiniones" ahora se
+  pueden tocar y abren el mismo modal de detalle que las del ranking,
+  pero **sin promedio combinado ni desglose por ítem** — mostrar un
+  número único con 1 a 4 personas detrás daría una falsa sensación de
+  "esto ya está probado". En su lugar, se lista la opinión de cada
+  persona tal cual la dejó, con su propia puntuación. Al llegar a 5
+  usuarios distintos, el modelo pasa solo al ranking y ahí sí aparece
+  el promedio combinado de siempre.
+
+Con esto, ninguna opinión queda invisible para siempre por falta de
+muestra — solo el **ranking comparativo** (que si necesita muestra
+real para ser justo) sigue esperando el mínimo.
+
+---
+
 ## 15/09/2026 10:54 — PRUEBA (solo edragotto@hotmail.com): fotos en el Panel de Valoración
 
 - **`gas/index.html`**: el ranking, la sección "Juntando opiniones" y

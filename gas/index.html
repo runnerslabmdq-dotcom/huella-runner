@@ -1,12 +1,17 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 15/09/2026 10:54 (hora Argentina)
+  Última actualización: 15/09/2026 19:06 (hora Argentina)
   Cambios en esta versión:
-    - PRUEBA, solo edragotto@hotmail.com: fotos chicas (misma imagen
-      que las tarjetas de "Mis Zapas", getShoeImage()) en el ranking y
-      en "Juntando opiniones" del Panel de Valoración, y una más grande
-      arriba del modal de detalle. Ver HISTORIAL-CAMBIOS.md.
+    - PRUEBA, solo edragotto@hotmail.com: "Juntando opiniones" ahora se
+      puede tocar — abre el mismo detalle que las del ranking, pero sin
+      promedio único ni desglose (con 1-4 opiniones no alcanza para un
+      número confiable). En cambio lista cada opinión con la estrella
+      propia de esa persona y su comentario si escribió uno. El
+      ranking (5+) sigue mostrando el promedio combinado como antes.
+      Ver HISTORIAL-CAMBIOS.md.
   Cambios en versiones anteriores:
+    - Fotos chicas (misma imagen que las tarjetas de "Mis Zapas") en el
+      Panel de Valoración.
     - Modal "Valoración Runners": comentario corto opcional (máx. 150
       caracteres) debajo de las 3 estrellas.
     - "Panel de Valoración" (PRUEBA, solo edragotto@hotmail.com): botón
@@ -564,7 +569,7 @@
     .vp-score-num { font-family: 'Bebas Neue', sans-serif; font-size: 1.15rem; color: var(--plata); line-height: 1; }
     .vp-stars { font-size: 0.56rem; color: var(--amarillo); }
 
-    .vp-teaser { opacity: 0.85; border-style: dashed; cursor: default; }
+    .vp-teaser { opacity: 0.85; border-style: dashed; }
     .vp-progreso-track { height: 4px; background: #000; border: 1px solid var(--borde); border-radius: 3px; overflow: hidden; margin-top: 5px; }
     .vp-progreso-fill { height: 100%; background: #A89440; }
     .vp-progreso-txt { font-size: 0.56rem; color: #666; margin-top: 3px; font-weight: 700; }
@@ -4825,7 +4830,8 @@
       var tipo = _tipoUso(m.marca, m.modelo);
       var tipoHtml = tipo ? '<span class="vp-tipo-chip">' + VP_TIPO_LABEL[tipo] + '</span>' : '';
       var foto = _cloudinaryChica(getShoeImage(m.marca, m.modelo), 80);
-      return '<div class="vp-fila vp-teaser">' +
+      var clave = escInlineJs(m.marca + '|' + m.modelo);
+      return '<div class="vp-fila vp-teaser" onclick="abrirVpDetalle(\'' + clave + '\')">' +
         '<img class="vp-foto" src="' + foto + '" alt="" loading="lazy" onerror="_localImgFallback(this)">' +
         '<div class="vp-info">' +
           '<div class="vp-marca-modelo"><span class="vp-marca-tag">' + sanitize(m.marca) + '</span> ' + sanitize(m.modelo) + '</div>' +
@@ -4851,32 +4857,54 @@
     if (!m) return;
     document.getElementById('vp-detalle-foto').src = _cloudinaryChica(getShoeImage(m.marca, m.modelo), 200);
     document.getElementById('vp-detalle-nombre').textContent = m.marca + ' ' + m.modelo;
-    document.getElementById('vp-detalle-score').textContent = m.promedio.toFixed(1) + ' / 5 · ' + _vpEstrellas(m.promedio);
-    document.getElementById('vp-detalle-n').textContent = m.usuariosDistintos + ' corredores distintos';
-    document.getElementById('vp-detalle-desglose').innerHTML = VP_ITEMS.map(function(item, i) {
-      var val = m[item.key] || 0;
-      return '<div class="vp-desglose-item">' +
-        '<div class="vp-desglose-label">' + item.label +
-          '<button type="button" class="puntuar-info-btn" onclick="toggleVpInfo(' + i + ', this)">i</button>' +
-        '</div>' +
-        '<div class="vp-desglose-track"><div class="vp-desglose-fill" style="width:' + (val / 5 * 100) + '%;"></div></div>' +
-        '<div class="vp-desglose-val">' + val.toFixed(1) + '</div>' +
-      '</div>' +
-      '<div class="vp-desglose-explicacion" id="vp-info-' + i + '" hidden>' + item.info + '</div>';
-    }).join('');
 
-    var wrapComentarios = document.getElementById('vp-detalle-comentarios-wrap');
-    var comentarios = m.comentarios || [];
-    if (comentarios.length) {
-      wrapComentarios.hidden = false;
-      document.getElementById('vp-detalle-comentarios').innerHTML = comentarios.map(function(c) {
+    var scoreEl    = document.getElementById('vp-detalle-score');
+    var desgloseEl = document.getElementById('vp-detalle-desglose');
+    if (m.listoParaPublicar) {
+      // 5+ opiniones: ya hay muestra suficiente para un promedio confiable.
+      scoreEl.hidden = false;
+      scoreEl.textContent = m.promedio.toFixed(1) + ' / 5 · ' + _vpEstrellas(m.promedio);
+      document.getElementById('vp-detalle-n').textContent = m.usuariosDistintos + ' corredores distintos';
+      desgloseEl.hidden = false;
+      desgloseEl.innerHTML = VP_ITEMS.map(function(item, i) {
+        var val = m[item.key] || 0;
+        return '<div class="vp-desglose-item">' +
+          '<div class="vp-desglose-label">' + item.label +
+            '<button type="button" class="puntuar-info-btn" onclick="toggleVpInfo(' + i + ', this)">i</button>' +
+          '</div>' +
+          '<div class="vp-desglose-track"><div class="vp-desglose-fill" style="width:' + (val / 5 * 100) + '%;"></div></div>' +
+          '<div class="vp-desglose-val">' + val.toFixed(1) + '</div>' +
+        '</div>' +
+        '<div class="vp-desglose-explicacion" id="vp-info-' + i + '" hidden>' + item.info + '</div>';
+      }).join('');
+    } else {
+      // Todavía no llega al mínimo del ranking: nada de promedio único
+      // ni desglose combinado — mostrar un número con 1-4 personas
+      // detrás daría una falsa sensación de "esto ya está probado".
+      // Se listan las opiniones de cada persona, tal cual, más abajo.
+      scoreEl.hidden = true;
+      desgloseEl.hidden = true;
+      desgloseEl.innerHTML = '';
+      document.getElementById('vp-detalle-n').textContent =
+        m.usuariosDistintos + ' corredor' + (m.usuariosDistintos !== 1 ? 'es' : '') + ' distinto' + (m.usuariosDistintos !== 1 ? 's' : '') +
+        ' — todavía no llega a las ' + _vpData.minUsuarios + ' necesarias para un promedio del ranking';
+    }
+
+    // Cada persona que puntuó aparece con SU propia estrella, tenga
+    // comentario escrito o no — así una zapatilla con 1 sola opinión
+    // igual se ve, sin esperar al mínimo del ranking.
+    var wrapOpiniones = document.getElementById('vp-detalle-comentarios-wrap');
+    var opiniones = m.opiniones || [];
+    if (opiniones.length) {
+      wrapOpiniones.hidden = false;
+      document.getElementById('vp-detalle-comentarios').innerHTML = opiniones.map(function(o) {
         return '<div class="vp-comentario">' +
-          '<div class="vp-comentario-nombre">' + sanitize(c.nombre) + '</div>' +
-          '<div class="vp-comentario-texto">' + sanitize(c.texto) + '</div>' +
+          '<div class="vp-comentario-nombre">' + sanitize(o.nombre) + ' <span class="vp-stars">' + _vpEstrellas(o.promedio) + '</span></div>' +
+          (o.texto ? '<div class="vp-comentario-texto">' + sanitize(o.texto) + '</div>' : '') +
         '</div>';
       }).join('');
     } else {
-      wrapComentarios.hidden = true;
+      wrapOpiniones.hidden = true;
     }
 
     document.getElementById('vp-detalle-modal').style.display = 'flex';
