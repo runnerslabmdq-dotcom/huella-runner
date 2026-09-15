@@ -12,6 +12,34 @@ el GAS es la versión más nueva.
 
 ---
 
+## 15/09/2026 08:43 — PRUEBA (solo edragotto@hotmail.com): comentario corto en Valoración Runners
+
+Seguimiento de lo hablado sobre el texto libre: como todo esto sigue
+100% gateado a una sola cuenta (nadie más lo ve todavía), se cargó el
+campo de comentario ahora y el filtro de palabras se deja para más
+adelante, para cuando se decida sacarlo de "solo prueba" — no mezclar
+las dos cosas en el mismo cambio.
+
+- **`gas/index.html`**: el modal real de "Valoración Runners"
+  (`puntuar-modal`) suma un `<textarea>` opcional debajo de las 3
+  estrellas, con tope de 150 caracteres y contador en vivo. Se
+  precarga si la zapatilla ya tenía un comentario guardado.
+- **`gas/codigo.gs`**: `guardarPuntuacionZapatilla()` ahora recibe y
+  guarda el texto (columna `Opinion_Texto`, recortada a 150 caracteres
+  también del lado del servidor, no solo en el `<textarea>`).
+  `_calcularValoracionPorModelo()` arma además la lista de comentarios
+  por modelo, con el nombre del corredor abreviado ("Nombre I.", nunca
+  el apellido completo ni el email) — un comentario por persona y
+  modelo, aunque tenga 2 pares del mismo.
+- El detalle de cada modelo en el **Panel de Valoración** ahora
+  muestra esos comentarios debajo del desglose de ítems.
+
+**Pendiente antes de abrir esto a más gente**: el filtro de palabras +
+un botón para ocultar un comentario puntual desde el panel admin, tal
+como se charló. Sin eso, no sacar el gate de `edragotto@hotmail.com`.
+
+---
+
 ## 14/09/2026 18:48 — PRUEBA (solo edragotto@hotmail.com): "Panel de Valoración" real + explicación de ítems
 
 Primera versión real (no mockup) del ranking público de zapatillas que

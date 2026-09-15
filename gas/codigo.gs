@@ -1,12 +1,17 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 14/09/2026 18:48 (hora Argentina)
+// Última actualización: 15/09/2026 08:43 (hora Argentina)
 // Cambios en esta versión:
-//   - PRUEBA, solo edragotto@hotmail.com: getValoracionPublica() — data
-//     del "Panel de Valoración" (ranking público de zapatillas). Nueva
-//     _calcularValoracionPorModelo(), compartida con admin.gs para no
-//     duplicar el cálculo. Ver HISTORIAL-CAMBIOS.md.
+//   - PRUEBA, solo edragotto@hotmail.com: guardarPuntuacionZapatilla()
+//     suma un comentario corto opcional (Opinion_Texto, máx. 150
+//     caracteres). _calcularValoracionPorModelo() ahora también arma
+//     la lista de comentarios por modelo (con "Nombre I." en vez del
+//     nombre completo). Todavía sin filtro de palabras — se agrega
+//     antes de sacar esto de "solo prueba". Ver HISTORIAL-CAMBIOS.md.
 // Cambios en versiones anteriores:
+//   - getValoracionPublica() — data del "Panel de Valoración" (ranking
+//     público de zapatillas), _calcularValoracionPorModelo() compartida
+//     con admin.gs.
 //   - guardarChequeoDesgaste(): PRUEBA, solo edragotto@hotmail.com —
 //     guarda las 3 respuestas sí/no del "Chequeo de desgaste".
 //   - getPerfilUsuario() / actualizarPerfilUsuario(): nuevo campo Peso
@@ -662,7 +667,7 @@ function addShoe(email, formData) {
 const MIN_USUARIOS_VALORACION = 5;
 
 function _calcularValoracionPorModelo(ss) {
-  const mapa = {}; // "Marca|Modelo" -> { email -> { comodidad:[], durabilidad:[], precioCalidad:[] } }
+  const mapa = {}; // "Marca|Modelo" -> { email -> { comodidad:[], durabilidad:[], precioCalidad:[], texto } }
   const zapSheet = ss.getSheetByName('Zapatillas');
   if (!zapSheet || zapSheet.getLastRow() <= 1) return [];
 
@@ -674,6 +679,7 @@ function _calcularValoracionPorModelo(ss) {
   const zCom    = zHeaders.indexOf('Puntaje_Comodidad');
   const zDur    = zHeaders.indexOf('Puntaje_Durabilidad');
   const zPC     = zHeaders.indexOf('Puntaje_PrecioCalidad');
+  const zTexto  = zHeaders.indexOf('Opinion_Texto'); // puede no existir todavía (_colEnsure la crea al primer uso)
   if (zMarca === -1 || zModelo === -1 || zEmail === -1 || zCom === -1 || zDur === -1 || zPC === -1) return [];
 
   for (let i = 1; i < zData.length; i++) {
@@ -684,14 +690,37 @@ function _calcularValoracionPorModelo(ss) {
     const com = Number(zData[i][zCom]) || 0;
     const dur = Number(zData[i][zDur]) || 0;
     const pc  = Number(zData[i][zPC])  || 0;
-    if (!com && !dur && !pc) continue; // esta fila todavía no tiene ninguna puntuación
+    const texto = zTexto !== -1 ? (zData[i][zTexto] || '').toString().trim() : '';
+    if (!com && !dur && !pc && !texto) continue; // esta fila todavía no tiene ninguna puntuación
 
     const key = marca + '|' + modelo;
     if (!mapa[key]) mapa[key] = {};
-    if (!mapa[key][email]) mapa[key][email] = { comodidad: [], durabilidad: [], precioCalidad: [] };
+    if (!mapa[key][email]) mapa[key][email] = { comodidad: [], durabilidad: [], precioCalidad: [], texto: '' };
     if (com) mapa[key][email].comodidad.push(com);
     if (dur) mapa[key][email].durabilidad.push(dur);
     if (pc)  mapa[key][email].precioCalidad.push(pc);
+    if (texto && !mapa[key][email].texto) mapa[key][email].texto = texto; // 1 comentario por persona y modelo
+  }
+
+  // Email -> "Nombre I." para mostrar junto al comentario, sin exponer
+  // el apellido completo ni el email de nadie.
+  const nombrePorEmail = {};
+  const usersSheet = ss.getSheetByName('Usuarios');
+  if (usersSheet && usersSheet.getLastRow() > 1) {
+    const uData    = usersSheet.getDataRange().getValues();
+    const uHeaders = uData[0];
+    const uEmail   = uHeaders.indexOf('Email');
+    const uNombre  = uHeaders.indexOf('Nombre');
+    const uApellido= uHeaders.indexOf('Apellido');
+    if (uEmail !== -1) {
+      for (let i = 1; i < uData.length; i++) {
+        const em = (uData[i][uEmail] || '').toString().trim().toLowerCase();
+        if (!em) continue;
+        const nombre   = uNombre   !== -1 ? (uData[i][uNombre]   || '').toString().trim() : '';
+        const apellido = uApellido !== -1 ? (uData[i][uApellido] || '').toString().trim() : '';
+        nombrePorEmail[em] = nombre ? (nombre + (apellido ? ' ' + apellido.charAt(0).toUpperCase() + '.' : '')) : 'Runner';
+      }
+    }
   }
 
   function promedio(arr) { return arr.length ? arr.reduce(function(a, b) { return a + b; }, 0) / arr.length : null; }
@@ -700,7 +729,7 @@ function _calcularValoracionPorModelo(ss) {
     const porEmail = mapa[key];
     const emails   = Object.keys(porEmail);
 
-    const votosCom = [], votosDur = [], votosPC = [], votosCombinado = [];
+    const votosCom = [], votosDur = [], votosPC = [], votosCombinado = [], comentarios = [];
     emails.forEach(function(em) {
       const c = promedio(porEmail[em].comodidad);
       const d = promedio(porEmail[em].durabilidad);
@@ -710,6 +739,7 @@ function _calcularValoracionPorModelo(ss) {
       if (p !== null) votosPC.push(p);
       const combinado = [c, d, p].filter(function(v) { return v !== null; });
       if (combinado.length) votosCombinado.push(combinado.reduce(function(a, b) { return a + b; }, 0) / combinado.length);
+      if (porEmail[em].texto) comentarios.push({ nombre: nombrePorEmail[em] || 'Runner', texto: porEmail[em].texto });
     });
 
     const partes = key.split('|');
@@ -721,6 +751,7 @@ function _calcularValoracionPorModelo(ss) {
       comodidad:     Math.round((promedio(votosCom) || 0) * 10) / 10,
       durabilidad:   Math.round((promedio(votosDur) || 0) * 10) / 10,
       precioCalidad: Math.round((promedio(votosPC)  || 0) * 10) / 10,
+      comentarios: comentarios,
       listoParaPublicar: emails.length >= MIN_USUARIOS_VALORACION
     };
   }).sort(function(a, b) {
@@ -947,10 +978,15 @@ function archiveShoe(email, idZapatilla) {
 // de la zapatilla en 3 ítems (Experiencia y Confort, Rendimiento y
 // Durabilidad, Valor y Versatilidad — guardados como Comodidad,
 // Durabilidad, PrecioCalidad, 1 a 5 estrellas cada uno). Columnas
-// Puntaje_* se crean solas la primera vez (_colEnsure). Ver
-// HISTORIAL-CAMBIOS.md.
+// Puntaje_* se crean solas la primera vez (_colEnsure).
+//
+// PRUEBA (15/09/2026), solo edragotto@hotmail.com: opinionTexto — un
+// comentario corto opcional (máx. 150 caracteres, recortado también acá
+// por las dudas y no solo en el <textarea>). Todavía sin filtro de
+// palabras — se agrega antes de sacar esto de "solo prueba" (ver
+// charla con el fundador, HISTORIAL-CAMBIOS.md).
 // ============================================================
-function guardarPuntuacionZapatilla(email, idZapatilla, comodidad, durabilidad, precioCalidad) {
+function guardarPuntuacionZapatilla(email, idZapatilla, comodidad, durabilidad, precioCalidad, opinionTexto) {
   try {
     if (!email || !idZapatilla) return { success: false, error: 'Datos incompletos.' };
     const emailClean = email.toString().trim().toLowerCase();
@@ -973,9 +1009,11 @@ function guardarPuntuacionZapatilla(email, idZapatilla, comodidad, durabilidad, 
         const colComodidad     = _colEnsure(sheet, headers, 'Puntaje_Comodidad');
         const colDurabilidad   = _colEnsure(sheet, headers, 'Puntaje_Durabilidad');
         const colPrecioCalidad = _colEnsure(sheet, headers, 'Puntaje_PrecioCalidad');
+        const colTexto         = _colEnsure(sheet, headers, 'Opinion_Texto');
         sheet.getRange(i + 1, colComodidad + 1).setValue(Number(comodidad) || 0);
         sheet.getRange(i + 1, colDurabilidad + 1).setValue(Number(durabilidad) || 0);
         sheet.getRange(i + 1, colPrecioCalidad + 1).setValue(Number(precioCalidad) || 0);
+        sheet.getRange(i + 1, colTexto + 1).setValue((opinionTexto || '').toString().trim().slice(0, 150));
         SpreadsheetApp.flush();
         Logger.log('guardarPuntuacionZapatilla OK: id=' + idZapatilla);
         return { success: true };
