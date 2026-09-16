@@ -1,15 +1,13 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 16/09/2026 08:19 (hora Argentina)
+  Última actualización: 16/09/2026 08:24 (hora Argentina)
   Cambios en esta versión:
-    - Panel de Valoración: sale de "solo prueba" y queda disponible
-      para TODOS los usuarios (botón ⭐ en el header, ya no gateado a
-      edragotto@hotmail.com). Decisión del fundador: la app está en
-      open beta, sin auspiciantes, prefiere iterar en vivo. El botón
-      suma una animación suave (se apaga y prende) para que se note
-      que hay algo nuevo — se puede sacar más adelante. Ver
-      HISTORIAL-CAMBIOS.md.
+    - "Chequeo de desgaste" (el botón "¿Cómo la sentís?" en cada
+      tarjeta) sale de "solo prueba" — disponible para TODOS los
+      usuarios. Ver HISTORIAL-CAMBIOS.md.
   Cambios en versiones anteriores:
+    - Panel de Valoración: sale de "solo prueba", disponible para
+      todos (botón ⭐ en el header con animación suave).
     - "Juntando opiniones" se puede tocar — muestra cada opinión con la
       estrella propia de esa persona, sin promedio único.
     - Fotos chicas (misma imagen que las tarjetas de "Mis Zapas") en el
@@ -493,9 +491,9 @@
     }
     .puntuar-stars .star.filled { color: #D4AF37; }
 
-    /* PRUEBA (13/09/2026), solo edragotto@hotmail.com: "Chequeo de
-       desgaste" — botón en la tarjeta, aviso, y modal de 3 preguntas
-       sí/no. Ver HISTORIAL-CAMBIOS.md. */
+    /* "Chequeo de desgaste" (13/09/2026) — botón en la tarjeta, aviso,
+       y modal de 3 preguntas sí/no. Para todos los usuarios desde el
+       16/09/2026. Ver HISTORIAL-CAMBIOS.md. */
     .cf-btn-chequeo {
       display: block; margin-top: 6px;
       background: transparent; color: var(--gris-texto);
@@ -2166,8 +2164,7 @@
   </div>
 </div>
 
-<!-- PRUEBA (13/09/2026), solo edragotto@hotmail.com: "Chequeo de
-     desgaste" — ver HISTORIAL-CAMBIOS.md. -->
+<!-- "Chequeo de desgaste" — ver HISTORIAL-CAMBIOS.md. -->
 <div class="modal-overlay" id="chequeo-modal">
   <div class="modal-content">
     <button class="close-modal" onclick="closeChequeoModal()">✕</button>
@@ -4171,19 +4168,16 @@
       var puntuarHtml = '<button class="cf-btn-puntuar" onclick="event.stopPropagation(); openPuntuarModal(\'' + rawId + '\');">' +
         '★' + (_promedioPuntaje > 0 ? ' ' + _promedioPuntaje.toFixed(1) : '') +
         ' <span class="cf-btn-puntuar-label">Valoración Runners</span></button>';
-      // PRUEBA (13/09/2026), solo edragotto@hotmail.com: "Chequeo de
-      // desgaste" — 3 preguntas sí/no independientes del km. Si 2 o
-      // más son "sí", se avisa en la tarjeta. Ver HISTORIAL-CAMBIOS.md.
-      var esUsuarioPruebaChequeo = (currentUserEmail || '').toString().trim().toLowerCase() === 'edragotto@hotmail.com';
-      var chequeoBtnHtml = '';
+      // "Chequeo de desgaste" — 3 preguntas sí/no independientes del
+      // km. Si 2 o más son "sí", se avisa en la tarjeta. Para todos
+      // los usuarios desde el 16/09/2026 (antes era PRUEBA solo
+      // edragotto@hotmail.com). Ver HISTORIAL-CAMBIOS.md.
+      var chequeoBtnHtml = '<button class="cf-btn-chequeo" onclick="event.stopPropagation(); openChequeoModal(\'' + rawId + '\');">¿Cómo la sentís?</button>';
       var chequeoAlertaHtml = '';
-      if (esUsuarioPruebaChequeo) {
-        chequeoBtnHtml = '<button class="cf-btn-chequeo" onclick="event.stopPropagation(); openChequeoModal(\'' + rawId + '\');">¿Cómo la sentís?</button>';
-        var _chequeoCount = ['Chequeo_Piernas', 'Chequeo_Reactividad', 'Chequeo_Visual']
-          .filter(function(campo) { return Number(s[campo]) === 1; }).length;
-        if (_chequeoCount >= 2) {
-          chequeoAlertaHtml = '<div class="cf-chequeo-alerta">⚠️ Señales de desgaste real</div>';
-        }
+      var _chequeoCount = ['Chequeo_Piernas', 'Chequeo_Reactividad', 'Chequeo_Visual']
+        .filter(function(campo) { return Number(s[campo]) === 1; }).length;
+      if (_chequeoCount >= 2) {
+        chequeoAlertaHtml = '<div class="cf-chequeo-alerta">⚠️ Señales de desgaste real</div>';
       }
       // Foto real de ESTA zapatilla (columna Foto_URL en el Sheet, cargada a
       // mano por el admin) tiene prioridad sobre la genérica del modelo.
@@ -4679,8 +4673,8 @@
       .guardarPuntuacionZapatilla(currentUserEmail, id, _puntuacionActual.comodidad, _puntuacionActual.durabilidad, _puntuacionActual.precioCalidad, texto);
   }
 
-  // ── PRUEBA (13/09/2026), solo edragotto@hotmail.com: "Chequeo de
-  // desgaste" — 3 preguntas sí/no. Ver HISTORIAL-CAMBIOS.md. ──
+  // ── "Chequeo de desgaste" — 3 preguntas sí/no, para todos los
+  // usuarios desde el 16/09/2026. Ver HISTORIAL-CAMBIOS.md. ──
   var _chequeoActual = { piernas: null, reactividad: null, visual: null };
 
   // Sin chequeo guardado, la celda puede venir vacía, undefined, o ni
