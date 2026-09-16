@@ -12,6 +12,15 @@ el GAS es la versión más nueva.
 
 ---
 
+## 16/09/2026 10:11 — Modelo nuevo: New Balance Ellipse V1
+
+- **`gas/index.html`**: se agregó a los 4 lugares de siempre —
+  catálogo (desplegable de "Nueva zapatilla"), foto propia, ficha
+  técnica (drop 8mm, talón 37.9mm, antepié 29.9mm) y clasificación
+  (rodadora, "running diario / uso diario").
+
+---
+
 ## 16/09/2026 08:24 — "Chequeo de desgaste" también sale de "solo prueba"
 
 Mismo criterio que hace un rato con Valoración Runners: el fundador
