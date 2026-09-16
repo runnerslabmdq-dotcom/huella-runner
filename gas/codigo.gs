@@ -1,13 +1,13 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 16/09/2026 08:19 (hora Argentina)
+// Última actualización: 16/09/2026 08:24 (hora Argentina)
 // Cambios en esta versión:
-//   - Panel de Valoración y comentario en Valoración Runners salen de
-//     "solo prueba" — disponibles para todos los usuarios. Sin filtro
-//     de palabras todavía (decisión del fundador, app en open beta);
-//     si hace falta, se borra a mano en la columna Opinion_Texto de la
-//     hoja Zapatillas. Ver HISTORIAL-CAMBIOS.md.
+//   - Comentario de guardarChequeoDesgaste() actualizado: "Chequeo de
+//     desgaste" sale de "solo prueba" (el gate era del lado del
+//     frontend, index.html). Ver HISTORIAL-CAMBIOS.md.
 // Cambios en versiones anteriores:
+//   - Panel de Valoración y comentario en Valoración Runners salen de
+//     "solo prueba" — disponibles para todos los usuarios.
 //   - _calcularValoracionPorModelo() separa el ranking (5+) de las
 //     opiniones sueltas (cualquier modelo con 1+).
 //   - guardarPuntuacionZapatilla() suma comentario corto opcional
@@ -1044,12 +1044,12 @@ function guardarPuntuacionZapatilla(email, idZapatilla, comodidad, durabilidad, 
 }
 
 // ============================================================
-// PRUEBA (13/09/2026), solo edragotto@hotmail.com: "Chequeo de
-// desgaste" — 3 preguntas sí/no sobre señales reales de desgaste
-// (piernas cansadas, pérdida de reactividad, roturas/suela lisa),
-// independientes del kilometraje. Si 2 o más son "sí", la tarjeta
-// avisa aunque la zapatilla todavía no haya llegado a su límite de
-// km. Columnas Chequeo_* se crean solas (_colEnsure). Ver
+// "Chequeo de desgaste" (13/09/2026) — 3 preguntas sí/no sobre señales
+// reales de desgaste (piernas cansadas, pérdida de reactividad,
+// roturas/suela lisa), independientes del kilometraje. Si 2 o más son
+// "sí", la tarjeta avisa aunque la zapatilla todavía no haya llegado a
+// su límite de km. Para todos los usuarios desde el 16/09/2026.
+// Columnas Chequeo_* se crean solas (_colEnsure). Ver
 // HISTORIAL-CAMBIOS.md.
 // ============================================================
 function guardarChequeoDesgaste(email, idZapatilla, piernas, reactividad, visual) {

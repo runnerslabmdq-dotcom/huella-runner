@@ -12,6 +12,20 @@ el GAS es la versión más nueva.
 
 ---
 
+## 16/09/2026 08:24 — "Chequeo de desgaste" también sale de "solo prueba"
+
+Mismo criterio que hace un rato con Valoración Runners: el fundador
+pidió abrirlo a todos los usuarios ya, sin esperar más pruebas
+privadas.
+
+- **`gas/index.html`**: el botón "¿Cómo la sentís?" (con las 3
+  preguntas sí/no sobre señales reales de desgaste) ya no está gateado
+  a `edragotto@hotmail.com` — aparece en la tarjeta de cualquier
+  usuario. `guardarChequeoDesgaste()` (codigo.gs) nunca tuvo gate del
+  lado del servidor, así que ahí solo se actualizó el comentario.
+
+---
+
 ## 16/09/2026 08:19 — Valoración Runners y Panel de Valoración: ya no son "solo prueba"
 
 Decisión del fundador: la app está en open beta, sin auspiciantes, sin
