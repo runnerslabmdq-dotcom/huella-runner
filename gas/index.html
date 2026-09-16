@@ -1,15 +1,17 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 15/09/2026 19:06 (hora Argentina)
+  Última actualización: 16/09/2026 08:19 (hora Argentina)
   Cambios en esta versión:
-    - PRUEBA, solo edragotto@hotmail.com: "Juntando opiniones" ahora se
-      puede tocar — abre el mismo detalle que las del ranking, pero sin
-      promedio único ni desglose (con 1-4 opiniones no alcanza para un
-      número confiable). En cambio lista cada opinión con la estrella
-      propia de esa persona y su comentario si escribió uno. El
-      ranking (5+) sigue mostrando el promedio combinado como antes.
-      Ver HISTORIAL-CAMBIOS.md.
+    - Panel de Valoración: sale de "solo prueba" y queda disponible
+      para TODOS los usuarios (botón ⭐ en el header, ya no gateado a
+      edragotto@hotmail.com). Decisión del fundador: la app está en
+      open beta, sin auspiciantes, prefiere iterar en vivo. El botón
+      suma una animación suave (se apaga y prende) para que se note
+      que hay algo nuevo — se puede sacar más adelante. Ver
+      HISTORIAL-CAMBIOS.md.
   Cambios en versiones anteriores:
+    - "Juntando opiniones" se puede tocar — muestra cada opinión con la
+      estrella propia de esa persona, sin promedio único.
     - Fotos chicas (misma imagen que las tarjetas de "Mis Zapas") en el
       Panel de Valoración.
     - Modal "Valoración Runners": comentario corto opcional (máx. 150
@@ -523,8 +525,8 @@
     }
     .chequeo-btn.selected { border-color: #D4AF37; color: #D4AF37; background: rgba(212,175,55,0.1); }
 
-    /* PRUEBA (14/09/2026), solo edragotto@hotmail.com: Panel de
-       Valoración. Ver HISTORIAL-CAMBIOS.md. */
+    /* Panel de Valoración — para todos los usuarios desde el
+       16/09/2026. Ver HISTORIAL-CAMBIOS.md. */
     .vp-marcas { display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 6px; scrollbar-width: none; }
     .vp-marcas::-webkit-scrollbar { display: none; }
     .vp-marca-card {
@@ -1468,6 +1470,16 @@
       align-items: center;
     }
     .btn-notif:hover { color: var(--amarillo); }
+    /* Llama la atención hacia el Panel de Valoración mientras es
+       nuevo — un apagado/prendido suave, no un parpadeo brusco. */
+    @keyframes btnValoracionBrillo {
+      0%, 100% { filter: brightness(0.65) drop-shadow(0 0 0 rgba(197,179,88,0)); }
+      50%      { filter: brightness(1.35) drop-shadow(0 0 6px rgba(197,179,88,0.85)); }
+    }
+    .btn-valoracion-brillo { animation: btnValoracionBrillo 2.6s ease-in-out infinite; }
+    @media (prefers-reduced-motion: reduce) {
+      .btn-valoracion-brillo { animation: none; }
+    }
     .btn-notif.activa {
       color: var(--amarillo);
       filter: drop-shadow(0 0 5px rgba(240,255,0,0.55));
@@ -1879,10 +1891,12 @@
       </a>
       <div style="display:flex; align-items:center; gap:12px;">
         <div class="saludo-topbar" style="font-size: 0.75rem; color: var(--gris-texto); white-space:nowrap;">Hola, <span id="user-name" style="color: var(--amarillo); font-weight: 900;">Corredor</span></div>
-        <!-- PRUEBA (14/09/2026), solo edragotto@hotmail.com: Panel de
-             Valoración (ranking público de zapatillas). Se muestra/oculta
-             en loadDashboard(). Ver HISTORIAL-CAMBIOS.md. -->
-        <button class="btn-notif" id="btn-valoracion" style="display:none;" onclick="abrirValoracionPublica()" title="Valoración Runners">⭐</button>
+        <!-- Panel de Valoración (ranking público de zapatillas). Para
+             todos los usuarios desde el 16/09/2026 — antes era PRUEBA
+             solo edragotto@hotmail.com. La animación "btn-valoracion-brillo"
+             llama la atención mientras la sección es nueva; se puede
+             sacar más adelante sin tocar nada más. Ver HISTORIAL-CAMBIOS.md. -->
+        <button class="btn-notif btn-valoracion-brillo" id="btn-valoracion" onclick="abrirValoracionPublica()" title="Valoración Runners">⭐</button>
         <!-- MI PERFIL -->
         <button class="btn-notif" id="btn-perfil" onclick="abrirPerfilModal()" title="Mi perfil">👤</button>
         <!-- CAMPANITA NOTIFICACIONES -->
@@ -2007,9 +2021,9 @@
     </div>
   </div>
 
-  <!-- PRUEBA (14/09/2026), solo edragotto@hotmail.com: Panel de
-       Valoración — ranking público de zapatillas (Valoración Runners).
-       Ver HISTORIAL-CAMBIOS.md. -->
+  <!-- Panel de Valoración — ranking público de zapatillas (Valoración
+       Runners). Para todos los usuarios desde el 16/09/2026. Ver
+       HISTORIAL-CAMBIOS.md. -->
   <div id="view-valoracion" style="display: none;">
     <div class="top-bar">
       <button onclick="switchView('view-dashboard')" style="background:none; border:none; color:var(--gris-texto); cursor:pointer; font-weight:700; font-size:0.9rem;">← Volver</button>
@@ -2138,8 +2152,7 @@
         <span class="star" data-val="5" onclick="elegirEstrella('precioCalidad',5)">★</span>
       </div>
     </div>
-    <!-- PRUEBA (15/09/2026), solo edragotto@hotmail.com: comentario
-         corto opcional. Ver HISTORIAL-CAMBIOS.md. -->
+    <!-- Comentario corto opcional (15/09/2026). Ver HISTORIAL-CAMBIOS.md. -->
     <div class="puntuar-item">
       <label>Comentario <span style="text-transform:none;font-weight:400;color:#555;">(opcional)</span></label>
       <textarea id="puntuar-opinion-texto" maxlength="150" rows="3"
@@ -2188,8 +2201,7 @@
   </div>
 </div>
 
-<!-- PRUEBA (14/09/2026), solo edragotto@hotmail.com: detalle de un
-     modelo dentro del Panel de Valoración. Ver HISTORIAL-CAMBIOS.md. -->
+<!-- Detalle de un modelo dentro del Panel de Valoración. Ver HISTORIAL-CAMBIOS.md. -->
 <div class="modal-overlay" id="vp-detalle-modal">
   <div class="modal-content">
     <button class="close-modal" onclick="cerrarVpDetalle()">✕</button>
@@ -3131,7 +3143,7 @@
   // va completando de a tandas por marca (investigación manual del
   // fundador + fuentes públicas) — si un modelo no está acá, el Panel
   // de Valoración no le muestra ninguna etiqueta de tipo, no rompe
-  // nada. PRUEBA (14/09/2026), solo edragotto@hotmail.com.
+  // nada.
   // ════════════════════════════════════════════════════════════
   const modelosTipoUso = {
     // — Adidas (32/32, completa) —
@@ -3945,10 +3957,8 @@
     _loadRetries = 0;
     _pintarPoweredBy('dash', currentUserEmail);
     _agregarMarcaDemo(currentUserEmail);
-    // PRUEBA (14/09/2026), solo edragotto@hotmail.com: botón del Panel
-    // de Valoración en el header. Ver HISTORIAL-CAMBIOS.md.
-    var esUsuarioPruebaValoracion = (currentUserEmail || '').toString().trim().toLowerCase() === 'edragotto@hotmail.com';
-    document.getElementById('btn-valoracion').style.display = esUsuarioPruebaValoracion ? '' : 'none';
+    // Panel de Valoración: para todos los usuarios desde el 16/09/2026
+    // (antes era PRUEBA solo edragotto@hotmail.com). Ver HISTORIAL-CAMBIOS.md.
     // Trae la Provincia antes de pintar las zapatillas, porque el botón
     // de tienda sponsor (DEV San Luis) depende de ese dato. No bloquea
     // mucho: getPerfilUsuario es liviano comparado con getUserShoes.
@@ -4741,8 +4751,8 @@
       .guardarChequeoDesgaste(currentUserEmail, id, _chequeoActual.piernas, _chequeoActual.reactividad, _chequeoActual.visual);
   }
 
-  // ── PRUEBA (14/09/2026), solo edragotto@hotmail.com: Panel de
-  // Valoración — ranking público de zapatillas. Ver HISTORIAL-CAMBIOS.md. ──
+  // ── Panel de Valoración — ranking público de zapatillas. Para
+  // todos los usuarios desde el 16/09/2026. Ver HISTORIAL-CAMBIOS.md. ──
   var _vpData = { ranking: [], enCamino: [], porMarca: [] };
   var VP_TIPO_LABEL = { voladora: '🪽 Voladora', rodadora: '👟 Rodadora', mixta: '⚖️ Mixta' };
   var VP_ITEMS = [
