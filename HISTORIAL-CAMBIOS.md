@@ -12,6 +12,31 @@ el GAS es la versión más nueva.
 
 ---
 
+## 16/09/2026 08:19 — Valoración Runners y Panel de Valoración: ya no son "solo prueba"
+
+Decisión del fundador: la app está en open beta, sin auspiciantes, sin
+depender de nadie — prefiere abrir esto a todos los usuarios ya y ver
+cómo se comporta con poca gente, en vez de seguir puliendo en privado.
+
+- **`gas/index.html`**: el botón ⭐ del Panel de Valoración deja de
+  estar gateado a `edragotto@hotmail.com` — visible para todos. Se le
+  agregó una animación suave (se apaga y se prende de a poco) para que
+  los usuarios noten que hay algo nuevo; se puede sacar más adelante
+  sin tocar nada más (clase CSS `btn-valoracion-brillo`, respeta
+  `prefers-reduced-motion`).
+- El comentario corto en el modal de "Valoración Runners" (que ya
+  estaba disponible para todos desde que se agregó, solo la *vista*
+  del Panel estaba gateada) queda igual, documentado como definitivo.
+- **Sin filtro de palabras todavía**, a propósito — es una decisión
+  consciente del fundador dado el tamaño actual de la app. Si aparece
+  algún comentario inapropiado, se puede borrar a mano directo en la
+  columna `Opinion_Texto` de la hoja `Zapatillas`, sin necesidad de
+  ninguna pantalla nueva. El filtro (y un botón para ocultar
+  comentarios desde el panel admin) sigue en la lista de pendientes
+  para cuando la base de usuarios crezca.
+
+---
+
 ## 15/09/2026 19:06 — PRUEBA (solo edragotto@hotmail.com): separar el ranking de las opiniones sueltas
 
 El fundador planteó un problema real: aunque Huella Runner llegue a

@@ -1,15 +1,15 @@
 // ============================================
 // HUELLA RUNNER — codigo.gs
-// Última actualización: 15/09/2026 19:06 (hora Argentina)
+// Última actualización: 16/09/2026 08:19 (hora Argentina)
 // Cambios en esta versión:
-//   - PRUEBA, solo edragotto@hotmail.com: _calcularValoracionPorModelo()
-//     separa el ranking (5+ usuarios, con promedio combinado) de las
-//     opiniones sueltas — ahora CUALQUIER modelo con 1 o más
-//     puntuaciones devuelve su lista de "opiniones" (nombre, estrella
-//     propia de esa persona, comentario si tiene), no solo los que
-//     llegan al mínimo. Antes, una zapatilla con pocas opiniones
-//     quedaba sin mostrar nada. Ver HISTORIAL-CAMBIOS.md.
+//   - Panel de Valoración y comentario en Valoración Runners salen de
+//     "solo prueba" — disponibles para todos los usuarios. Sin filtro
+//     de palabras todavía (decisión del fundador, app en open beta);
+//     si hace falta, se borra a mano en la columna Opinion_Texto de la
+//     hoja Zapatillas. Ver HISTORIAL-CAMBIOS.md.
 // Cambios en versiones anteriores:
+//   - _calcularValoracionPorModelo() separa el ranking (5+) de las
+//     opiniones sueltas (cualquier modelo con 1+).
 //   - guardarPuntuacionZapatilla() suma comentario corto opcional
 //     (Opinion_Texto, máx. 150 caracteres).
 //   - getValoracionPublica() — data del "Panel de Valoración" (ranking
@@ -774,14 +774,13 @@ function _calcularValoracionPorModelo(ss) {
   });
 }
 
-// PRUEBA (14/09/2026), solo edragotto@hotmail.com: "Panel de
-// Valoración" público — ranking de modelos con muestra real (5+
-// usuarios distintos) y promedio por marca. Los modelos que todavía no
-// llegan a la muestra mínima se devuelven aparte ("enCamino"), para
+// "Panel de Valoración" público — para todos los usuarios desde el
+// 16/09/2026 (antes era PRUEBA solo edragotto@hotmail.com). Ranking de
+// modelos con muestra real (5+ usuarios distintos) y promedio por
+// marca. Los modelos que todavía no llegan a la muestra mínima se
+// devuelven aparte ("enCamino"), con sus opiniones sueltas, para
 // invitar a completarlos en vez de esconderlos. Sin gate de servidor
-// a propósito: el dato no es sensible (es justamente el que algún día
-// va a ser público), el botón de acceso es lo que está gateado en
-// index.html.
+// a propósito: el dato no es sensible.
 function getValoracionPublica() {
   try {
     const ss = SpreadsheetApp.openById(SHEET_ID);
@@ -995,11 +994,14 @@ function archiveShoe(email, idZapatilla) {
 // Durabilidad, PrecioCalidad, 1 a 5 estrellas cada uno). Columnas
 // Puntaje_* se crean solas la primera vez (_colEnsure).
 //
-// PRUEBA (15/09/2026), solo edragotto@hotmail.com: opinionTexto — un
-// comentario corto opcional (máx. 150 caracteres, recortado también acá
-// por las dudas y no solo en el <textarea>). Todavía sin filtro de
-// palabras — se agrega antes de sacar esto de "solo prueba" (ver
-// charla con el fundador, HISTORIAL-CAMBIOS.md).
+// opinionTexto (15/09/2026) — un comentario corto opcional (máx. 150
+// caracteres, recortado también acá por las dudas y no solo en el
+// <textarea>). Para todos los usuarios desde el 16/09/2026, sin filtro
+// de palabras todavía (decisión del fundador: la app está en open
+// beta, sin auspiciantes, y prefiere iterar en vivo con pocos
+// usuarios). Si aparece algo inapropiado, se puede borrar a mano
+// directo en la columna Opinion_Texto de la hoja Zapatillas — no hace
+// falta ninguna pantalla para eso. Ver HISTORIAL-CAMBIOS.md.
 // ============================================================
 function guardarPuntuacionZapatilla(email, idZapatilla, comodidad, durabilidad, precioCalidad, opinionTexto) {
   try {
