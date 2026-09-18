@@ -12,6 +12,37 @@ el GAS es la versión más nueva.
 
 ---
 
+## 18/09/2026 09:58 — PRUEBA Run & Bike: retoques de detalle (verde lima, estrellas, botón)
+
+El fundador mandó capturas puntuales con feedback fino después de
+probar de nuevo en el celu, más un color de referencia (`#CFC60B`,
+"verde lima") tomado de la identidad real de Run & Bike.
+
+- **`gas/index.html`**, todo scoped a `estebandragotto@gmail.com`
+  (no toca el amarillo general del tema, solo estos 3 lugares
+  puntuales que pidió el fundador):
+  - La palabra "zapatillas" (arriba del Dashboard) pasa de amarillo a
+    verde lima (`#CFC60B`).
+  - En el modal "Valoración Runners": las estrellas ya elegidas y el
+    botón "Guardar puntuación" pasan a verde lima.
+  - "Powered by Run & Bike": antes "& Bike" completo iba en amarillo —
+    ahora "Run" y "Bike" van del mismo color (el gris normal del pie
+    de página) y solo el símbolo "&" en verde lima, más negrita, para
+    acercarse más a la tipografía del logo real.
+  - Botón "Ver en tienda": antes usaba la versión "apagada" (gris
+    sobre negro, sin brillo, en 2-3 líneas) — ahora tiene colores
+    "encendidos" (dorado sobre negro, como el resto de los botones del
+    tema) y "RUN & BIKE" entra en un solo renglón, con "Próximamente"
+    como segunda línea más chica debajo. Sigue sin link real (no hay
+    tienda online de Run & Bike todavía), por eso sigue sin click.
+  - De paso, en cualquier tema claro (Run & Bike, Todo Trail) las
+    estrellas sin valorar del modal de Valoración Runners pasan de
+    "estrella gris rellena" a "solo el contorno" (☆) — se notaba
+    demasiado sólida sobre fondo claro. El tema oscuro de siempre
+    sigue exactamente igual (estrella gris rellena, sin cambios).
+
+---
+
 ## 18/09/2026 09:36 — PRUEBA Todo Trail (Provincia = "San Luis")
 
 Segunda demo de sponsor, mismo mecanismo que Run & Bike pero gateada
