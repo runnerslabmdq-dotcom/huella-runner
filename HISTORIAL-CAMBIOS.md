@@ -12,6 +12,20 @@ el GAS es la versión más nueva.
 
 ---
 
+## 18/09/2026 11:10 — PRUEBA Todo Trail: color real de "Trail" en el pie de página
+
+El fundador probó Todo Trail en el celu (primera prueba real de ese
+tema) y mandó el logo real: "todo" en gris oscuro, "trail" en naranja.
+
+- **`gas/index.html`**: "Powered by Todo Trail" tenía la palabra
+  "Trail" en `var(--amarillo)` (el celeste del tema, pensado para
+  botones) — ahora es naranja fijo (`#F28500`, el mismo de la
+  identidad real de Todo Trail, ya lo había pasado el fundador en el
+  manual de estilo). "Todo" no se tocó — ya sale en el gris ambiente
+  de esa línea, que es lo que pedía el fundador.
+
+---
+
 ## 18/09/2026 10:18 — PRUEBA Run & Bike: botón "Ver en tienda" con link real
 
 El fundador pasó capturas de la estructura real de filtrado de
