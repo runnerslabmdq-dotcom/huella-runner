@@ -12,6 +12,17 @@ el GAS es la versión más nueva.
 
 ---
 
+## 18/09/2026 08:17 — Ficha técnica de Salomon Speedcross Peak
+
+- **`gas/index.html`**: la Speedcross Peak ya estaba en el desplegable
+  de Salomon y marcada como trail, pero le faltaban la foto y la ficha
+  técnica. Se agregó la foto (Cloudinary) y drop 10mm / talón 35mm /
+  antepié 25mm. No se agregó a la clasificación rodadora/voladora
+  porque ninguna otra Salomon la tiene (esa clasificación es solo para
+  calle, no para trail).
+
+---
+
 ## 18/09/2026 08:08 — Primera copia reskin: "Run & Bike"
 
 Arranca el plan de mostrarle demos funcionando a posibles auspiciantes:
