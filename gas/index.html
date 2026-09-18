@@ -1,14 +1,14 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 18/09/2026 10:18 (hora Argentina)
+  Última actualización: 18/09/2026 11:10 (hora Argentina)
   Cambios en esta versión:
+    - PRUEBA Todo Trail: "Powered by Todo Trail" tenía "Trail" en
+      celeste (el color de los botones) — ahora es naranja (#F28500),
+      el color real de esa palabra en el logo. Ver HISTORIAL-CAMBIOS.md.
+  Cambios en versiones anteriores:
     - PRUEBA Run & Bike: el botón "Ver en tienda" ya tiene link real a
       runandbike.com.ar, filtrado por rubro (calle/trail), talle y
-      género — deja de decir "Próximamente". Ver irARunAndBike() y
-      HISTORIAL-CAMBIOS.md.
-  Cambios en versiones anteriores:
-    - PRUEBA Run & Bike, retoques de detalle (verde lima, estrellas,
-      botón "Ver en tienda" en una sola línea).
+      género — deja de decir "Próximamente". Ver irARunAndBike().
     - "Chequeo de desgaste" sale de "solo prueba" — disponible para
       TODOS los usuarios.
     - Panel de Valoración: sale de "solo prueba", disponible para
@@ -4190,7 +4190,7 @@
   // vuelve getPerfilUsuario(). Pinta la paleta clara "Todo Trail" (ver
   // <style>, clase .tema-todotrail) y "Powered by Todo Trail" en el
   // pie del Dashboard. Ver HISTORIAL-CAMBIOS.md.
-  var HTML_POWERED_TODOTRAIL = 'Powered by <span style="font-style:italic;">Todo <span style="color:var(--amarillo);">Trail</span></span>';
+  var HTML_POWERED_TODOTRAIL = 'Powered by <span style="font-style:italic;">Todo <span style="color:#F28500;">Trail</span></span>';
   function _aplicarTemaProvincia(provincia) {
     var esTodoTrail = (provincia || '').toString().trim() === 'San Luis';
     document.documentElement.classList.toggle('tema-todotrail', esTodoTrail);
