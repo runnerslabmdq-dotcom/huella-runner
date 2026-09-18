@@ -12,6 +12,41 @@ el GAS es la versión más nueva.
 
 ---
 
+## 18/09/2026 12:18 — Run & Bike y Todo Trail: de tema claro a tema oscuro
+
+Al fundador no le convenció el fondo blanco de ninguna de las dos
+demos, después de probarlas en el celu. Pidió pasarlas a oscuro,
+manteniendo el resto (colores de marca, botones, "Powered by") — para
+todos los demás usuarios, Huella Runner sigue exactamente igual.
+
+- **`gas/index.html`**: como casi todo el diseño de Huella Runner ya
+  está pensado para fondo negro (inputs, tarjetas, el logo con
+  "HUELLA" en blanco), pasar las dos demos a oscuro fue más simple que
+  el tema claro — no hay que "parchar" nada, solo cambiar el color de
+  acento:
+  - `:root.tema-runandbike` y `:root.tema-todotrail` dejan de
+    redefinir `--bg-color`, `--card-bg`, `--plata`, `--gris-texto`,
+    `--gris-powered` y `--borde` (quedan en el negro de siempre) — solo
+    redefinen `--amarillo`/`--amarillo-top`/`--amarillo-dark` (amarillo
+    vivo para Run & Bike, celeste para Todo Trail).
+  - Se borraron ~110 líneas de CSS que existían solo para arreglar
+    cajas/inputs/modales con color fijo sobre fondo claro — ya no hacen
+    falta en oscuro.
+  - Se sacaron las reglas que ocultaban el logo con imagen (el
+    problema era "HUELLA" en blanco sobre fondo BLANCO — en fondo
+    negro esa misma imagen se ve perfecta, como siempre).
+  - `_pintarEstrellas()` vuelve a su versión de siempre (estrella
+    rellena, sin el contorno ☆ que se había agregado para los temas
+    claros — ya no hace falta, no hay ningún tema claro).
+  - Se mantienen los toques puntuales por marca que no dependían del
+    fondo: verde lima en Run & Bike (zapatillas, estrellas, botón),
+    naranja en "Trail" del pie de página de Todo Trail, y el botón "Ver
+    en tienda" de cada una (ya con link real).
+  - Verificado con capturas: Run & Bike oscuro, Todo Trail oscuro, y
+    un usuario normal sin ningún cambio.
+
+---
+
 ## 18/09/2026 11:10 — PRUEBA Todo Trail: color real de "Trail" en el pie de página
 
 El fundador probó Todo Trail en el celu (primera prueba real de ese

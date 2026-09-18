@@ -1,14 +1,16 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 18/09/2026 11:10 (hora Argentina)
+  Última actualización: 18/09/2026 12:18 (hora Argentina)
   Cambios en esta versión:
-    - PRUEBA Todo Trail: "Powered by Todo Trail" tenía "Trail" en
-      celeste (el color de los botones) — ahora es naranja (#F28500),
-      el color real de esa palabra en el logo. Ver HISTORIAL-CAMBIOS.md.
+    - PRUEBA Run & Bike y Todo Trail pasan de tema CLARO a tema
+      OSCURO: al fundador no le convencía el fondo blanco. Ahora
+      mantienen el fondo negro de Huella Runner de siempre y solo
+      cambia el color de acento (amarillo vivo para Run & Bike,
+      celeste para Todo Trail) — de paso se pudo sacar casi todo el
+      CSS que "parchaba" cajas e imágenes pensadas para fondo oscuro.
+      Ver HISTORIAL-CAMBIOS.md.
   Cambios en versiones anteriores:
-    - PRUEBA Run & Bike: el botón "Ver en tienda" ya tiene link real a
-      runandbike.com.ar, filtrado por rubro (calle/trail), talle y
-      género — deja de decir "Próximamente". Ver irARunAndBike().
+    - PRUEBA Todo Trail: "Trail" en naranja real (#F28500) en Powered by.
     - "Chequeo de desgaste" sale de "solo prueba" — disponible para
       TODOS los usuarios.
     - Panel de Valoración: sale de "solo prueba", disponible para
@@ -80,99 +82,30 @@
       --gris-powered: #555555;
       --borde: #ddd;
     }
-    /* PRUEBA (18/09/2026), solo estebandragotto@gmail.com: paleta
-       "Run & Bike" (fondo claro, amarillo vivo) para mostrarle una
-       demo funcionando a ese negocio, sin tocar nada para el resto de
-       los usuarios. Se activa/desactiva sola según el email escrito
-       en Login/Registro o el email logueado — ver _pintarPoweredBy()
-       y el resto de los usos de EMAIL_DEMO_RUNANDBIKE. El resto de
-       las reglas de esta sección (más abajo, con seudo-selector
-       ".tema-runandbike") tapan las cajas que en el tema oscuro
-       tenían un color fijo (no una variable) — mismo criterio que se
-       usó en gas-demo-runandbike/index.html. Ver HISTORIAL-CAMBIOS.md. */
+    /* PRUEBA (18/09/2026, pasada a tema OSCURO), solo
+       estebandragotto@gmail.com: mismo fondo negro de Huella Runner
+       de siempre, cambia solo el color de acento (--amarillo) al
+       amarillo vivo de Run & Bike. Al quedarse en oscuro, todo lo que
+       antes había que "parchar" (inputs, tarjetas, el logo con
+       "HUELLA" en blanco) ya funciona solo, sin overrides — se activa
+       igual que antes, ver _pintarPoweredBy() y EMAIL_DEMO_RUNANDBIKE.
+       Ver HISTORIAL-CAMBIOS.md. */
     :root.tema-runandbike {
-      --bg-color: #ffffff;
-      --card-bg: #f7f7f2;
       --amarillo: #FFD200;
       --amarillo-top: #FFDE47;
       --amarillo-dark: #E0B400;
-      --plata: #171717;
-      --gris-texto: #6b6b6b;
-      --gris-powered: #6b6b6b;
-      --borde: #e2e2dc;
     }
-    :root.tema-runandbike input, :root.tema-runandbike select {
-      background: #f2f2ec !important; border-color: #d8d8d0 !important; color: var(--plata) !important;
-    }
-    :root.tema-runandbike select option { background: #f2f2ec !important; color: var(--plata) !important; }
-    :root.tema-runandbike .cf-neon-wrap { background: #f2f2ec !important; }
-    :root.tema-runandbike .cf-photo-wrap { background: #f2f2ec !important; }
-    :root.tema-runandbike .vp-foto { background: #f2f2ec !important; }
-    :root.tema-runandbike .cf-add-locker-label { color: var(--gris-texto) !important; }
-    :root.tema-runandbike .modal-locker-content { border-color: #e2e2dc !important; }
-    :root.tema-runandbike .locker-modal-header { border-bottom-color: #e2e2dc !important; }
-    :root.tema-runandbike .locker-modal-scroll::-webkit-scrollbar-track { background: #eee !important; }
-    :root.tema-runandbike .locker-modal-scroll::-webkit-scrollbar-thumb { background: #cfcfc7 !important; }
-    :root.tema-runandbike .shoe-photo-wrap { background: #f2f2ec !important; }
-    :root.tema-runandbike .thumb-bar-wrap { background: #e5e5e0 !important; }
-    :root.tema-runandbike .detail-photo-wrap { background: #f2f2ec !important; }
-    :root.tema-runandbike .battery-wrap { background: #e5e5e0 !important; border-color: #d8d8d0 !important; }
-    :root.tema-runandbike .stat-box { background: #f2f2ec !important; }
-    :root.tema-runandbike .historial-scroll::-webkit-scrollbar-track { background: #eee !important; }
-    :root.tema-runandbike .historial-scroll::-webkit-scrollbar-thumb { background: #cfcfc7 !important; }
-    :root.tema-runandbike .btn-delete-training { border-color: #d8d8d0 !important; }
-    :root.tema-runandbike .btn-confirm-cancel { border-color: #d8d8d0 !important; }
-    :root.tema-runandbike .btn-confirm-delete { background: #f2f2ec !important; }
-    :root.tema-runandbike .locker-card { background: #f2f2ec !important; border-color: #e2e2dc !important; }
-    :root.tema-runandbike .locker-card-photo { background: #f2f2ec !important; }
-    :root.tema-runandbike .btn-reactivate { border-color: #d8d8d0 !important; }
-    :root.tema-runandbike .shoe-thumb-placeholder { background: #f2f2ec !important; border-color: #d8d8d0 !important; }
-    :root.tema-runandbike .shoe-thumb-placeholder:hover { background: #e6e6de !important; }
-    :root.tema-runandbike .input-manual-wrap input { background: #f2f2ec !important; color: var(--plata) !important; }
-    :root.tema-runandbike .voice-input-field { background: #f2f2ec !important; border-color: #d8d8d0 !important; color: var(--plata) !important; }
-    :root.tema-runandbike .voice-confirm-shoe { background: #f2f2ec !important; }
-    :root.tema-runandbike .btn-voice-cancel { border-color: #d8d8d0 !important; }
-    :root.tema-runandbike .voice-shoe-option { background: #f2f2ec !important; border-color: #d8d8d0 !important; }
-    :root.tema-runandbike .voice-shoe-option:hover { background: #fff6cf !important; }
-    :root.tema-runandbike .voice-shoe-option.selected { background: #fff2b8 !important; }
-    :root.tema-runandbike #wrap-grupo-manual input { background: #f2f2ec !important; color: var(--plata) !important; }
-    :root.tema-runandbike .km-info-tooltip { background: #ffffff !important; border-color: #e2e2dc !important; color: var(--gris-texto) !important; }
-    :root.tema-runandbike .km-info-tooltip::after { border-top-color: #ffffff !important; }
-    :root.tema-runandbike .intro-divider { background: linear-gradient(90deg, transparent 0%, #e2e2dc 50%, transparent 100%) !important; }
-    :root.tema-runandbike .intro-section { background: var(--card-bg) !important; border-color: var(--borde) !important; }
-    :root.tema-runandbike .intro-section::before { background: linear-gradient(90deg, transparent 0%, var(--amarillo) 40%, var(--amarillo-dark) 60%, transparent 100%) !important; }
-    :root.tema-runandbike .intro-badge-demo { background: var(--amarillo) !important; }
-    :root.tema-runandbike .intro-highlight { color: var(--amarillo-dark) !important; }
-    :root.tema-runandbike .intro-dot { background: var(--amarillo) !important; }
-    :root.tema-runandbike #legales-acordeon-login { background: #f7f7f2 !important; border-color: #e2e2dc !important; }
-    :root.tema-runandbike #legales-acordeon-login p { color: #555 !important; }
-    :root.tema-runandbike #legales-acordeon-login strong { color: #333 !important; }
-    :root.tema-runandbike #puntuar-opinion-texto,
-    :root.tema-runandbike #vp-detalle-foto { background: #f2f2ec !important; }
-    /* Los logos son imágenes con "HUELLA" en blanco (pensadas para el
-       fondo negro de siempre) — en fondo claro quedan invisibles. Se
-       ocultan y se usa el texto de respaldo (ya usa las variables de
-       color, se adapta solo al tema). */
-    :root.tema-runandbike #login-logo-img,
-    :root.tema-runandbike #reg-logo-img,
-    :root.tema-runandbike #dash-logo-img { display: none !important; }
-    :root.tema-runandbike #login-logo-fallback,
-    :root.tema-runandbike #reg-logo-fallback { display: block !important; }
-    :root.tema-runandbike #dash-logo-fallback { display: inline-block !important; }
-    /* Ajustes (18/09/2026) tras la segunda prueba real en el celu:
-       toques de "verde lima" (#CFC60B, aprox. tomado por el fundador
-       de la identidad real de Run & Bike) en puntos puntuales — no es
-       un cambio del amarillo general del tema, sino de estos 3
-       lugares nomás. Ver HISTORIAL-CAMBIOS.md. */
+    /* Toques de "verde lima" (#CFC60B, tomado por el fundador de la
+       identidad real de Run & Bike) en 3 lugares puntuales — no es un
+       cambio del amarillo general del tema. */
     :root.tema-runandbike .armario-subtitle span { color: #CFC60B !important; }
     :root.tema-runandbike .puntuar-stars .star.filled { color: #CFC60B !important; }
     :root.tema-runandbike #btn-save-puntuacion {
       background: linear-gradient(180deg, #E2DB55 0%, #CFC60B 45%, #A69C09 100%) !important;
     }
-    /* Botón "Ver en tienda" para este usuario (18/09/2026): ya tiene
-       link real a runandbike.com.ar filtrado por talle/género/rubro
-       (ver irARunAndBike()) — pasa de "apagado, sin click" a activo,
-       mismo estilo que la variante dorada de Open Sports. */
+    /* Botón "Ver en tienda" para este usuario: link real a
+       runandbike.com.ar filtrado por talle/género/rubro (ver
+       irARunAndBike()). */
     .cf-btn-opensports.cf-btn-opensports-runandbike {
       background: linear-gradient(180deg, #2a2a2a 0%, #141414 100%);
       color: var(--amarillo); border: 1px solid var(--amarillo);
@@ -182,82 +115,17 @@
       background: linear-gradient(180deg, #141414 0%, #0a0a0a 100%);
     }
 
-    /* PRUEBA (18/09/2026), solo usuarios con Provincia = "San Luis":
-       paleta "Todo Trail" (fondo gris clarito, celeste como color
-       principal, texto gris oscuro) — mismo mecanismo que
-       tema-runandbike, pero la provincia recién se sabe después de
-       loguearse (getPerfilUsuario), así que esto solo se aplica en el
-       Dashboard, no en Login/Registro. Ver _aplicarTemaProvincia() y
-       HISTORIAL-CAMBIOS.md. */
+    /* PRUEBA (18/09/2026, pasada a tema OSCURO), solo usuarios con
+       Provincia = "San Luis": mismo criterio que tema-runandbike —
+       fondo negro de siempre, cambia solo el acento a celeste. La
+       provincia recién se sabe después de loguearse, así que esto
+       solo se aplica en el Dashboard (ver _aplicarTemaProvincia()).
+       Ver HISTORIAL-CAMBIOS.md. */
     :root.tema-todotrail {
-      --bg-color: #F8F9FA;
-      --card-bg: #ffffff;
       --amarillo: #00A3E0;
       --amarillo-top: #33B7E8;
       --amarillo-dark: #008ECB;
-      --plata: #222222;
-      --gris-texto: #6b6b6b;
-      --gris-powered: #6b6b6b;
-      --borde: #e3e7ea;
     }
-    :root.tema-todotrail input, :root.tema-todotrail select {
-      background: #eef2f5 !important; border-color: #d7dde2 !important; color: var(--plata) !important;
-    }
-    :root.tema-todotrail select option { background: #eef2f5 !important; color: var(--plata) !important; }
-    :root.tema-todotrail .cf-neon-wrap { background: #eef2f5 !important; }
-    :root.tema-todotrail .cf-photo-wrap { background: #eef2f5 !important; }
-    :root.tema-todotrail .vp-foto { background: #eef2f5 !important; }
-    :root.tema-todotrail .cf-add-locker-label { color: var(--gris-texto) !important; }
-    :root.tema-todotrail .modal-locker-content { border-color: #e3e7ea !important; }
-    :root.tema-todotrail .locker-modal-header { border-bottom-color: #e3e7ea !important; }
-    :root.tema-todotrail .locker-modal-scroll::-webkit-scrollbar-track { background: #eef2f5 !important; }
-    :root.tema-todotrail .locker-modal-scroll::-webkit-scrollbar-thumb { background: #c7ced3 !important; }
-    :root.tema-todotrail .shoe-photo-wrap { background: #eef2f5 !important; }
-    :root.tema-todotrail .thumb-bar-wrap { background: #e3e7ea !important; }
-    :root.tema-todotrail .detail-photo-wrap { background: #eef2f5 !important; }
-    :root.tema-todotrail .battery-wrap { background: #e3e7ea !important; border-color: #d7dde2 !important; }
-    :root.tema-todotrail .stat-box { background: #eef2f5 !important; }
-    :root.tema-todotrail .historial-scroll::-webkit-scrollbar-track { background: #eef2f5 !important; }
-    :root.tema-todotrail .historial-scroll::-webkit-scrollbar-thumb { background: #c7ced3 !important; }
-    :root.tema-todotrail .btn-delete-training { border-color: #d7dde2 !important; }
-    :root.tema-todotrail .btn-confirm-cancel { border-color: #d7dde2 !important; }
-    :root.tema-todotrail .btn-confirm-delete { background: #eef2f5 !important; }
-    :root.tema-todotrail .locker-card { background: #eef2f5 !important; border-color: #e3e7ea !important; }
-    :root.tema-todotrail .locker-card-photo { background: #eef2f5 !important; }
-    :root.tema-todotrail .btn-reactivate { border-color: #d7dde2 !important; }
-    :root.tema-todotrail .shoe-thumb-placeholder { background: #eef2f5 !important; border-color: #d7dde2 !important; }
-    :root.tema-todotrail .shoe-thumb-placeholder:hover { background: #e6eaed !important; }
-    :root.tema-todotrail .input-manual-wrap input { background: #eef2f5 !important; color: var(--plata) !important; }
-    :root.tema-todotrail .voice-input-field { background: #eef2f5 !important; border-color: #d7dde2 !important; color: var(--plata) !important; }
-    :root.tema-todotrail .voice-confirm-shoe { background: #eef2f5 !important; }
-    :root.tema-todotrail .btn-voice-cancel { border-color: #d7dde2 !important; }
-    :root.tema-todotrail .voice-shoe-option { background: #eef2f5 !important; border-color: #d7dde2 !important; }
-    :root.tema-todotrail .voice-shoe-option:hover { background: #e3f3fb !important; }
-    :root.tema-todotrail .voice-shoe-option.selected { background: #d3ecf9 !important; }
-    :root.tema-todotrail #wrap-grupo-manual input { background: #eef2f5 !important; color: var(--plata) !important; }
-    :root.tema-todotrail .km-info-tooltip { background: #ffffff !important; border-color: #e3e7ea !important; color: var(--gris-texto) !important; }
-    :root.tema-todotrail .km-info-tooltip::after { border-top-color: #ffffff !important; }
-    :root.tema-todotrail .intro-divider { background: linear-gradient(90deg, transparent 0%, #e3e7ea 50%, transparent 100%) !important; }
-    :root.tema-todotrail .intro-section { background: var(--card-bg) !important; border-color: var(--borde) !important; }
-    :root.tema-todotrail .intro-section::before { background: linear-gradient(90deg, transparent 0%, var(--amarillo) 40%, var(--amarillo-dark) 60%, transparent 100%) !important; }
-    :root.tema-todotrail .intro-badge-demo { background: var(--amarillo) !important; }
-    :root.tema-todotrail .intro-highlight { color: var(--amarillo-dark) !important; }
-    :root.tema-todotrail .intro-dot { background: var(--amarillo) !important; }
-    :root.tema-todotrail #legales-acordeon-login { background: #f8f9fa !important; border-color: #e3e7ea !important; }
-    :root.tema-todotrail #legales-acordeon-login p { color: #555 !important; }
-    :root.tema-todotrail #legales-acordeon-login strong { color: #333 !important; }
-    :root.tema-todotrail #puntuar-opinion-texto,
-    :root.tema-todotrail #vp-detalle-foto { background: #eef2f5 !important; }
-    /* Los logos son imágenes con "HUELLA" en blanco (pensadas para el
-       fondo negro de siempre) — en fondo claro quedan invisibles. Se
-       ocultan y se usa el texto de respaldo (ya usa las variables de
-       color, se adapta solo al tema). */
-    :root.tema-todotrail #login-logo-img,
-    :root.tema-todotrail #reg-logo-img,
-    :root.tema-todotrail #dash-logo-img { display: none !important; }
-    :root.tema-todotrail #login-logo-fallback,
-    :root.tema-todotrail #reg-logo-fallback { display: block !important; }
-    :root.tema-todotrail #dash-logo-fallback { display: inline-block !important; }
 
     @keyframes zapaPulso {
       0%   { transform: scale(1);    opacity: 1; }
@@ -4868,20 +4736,12 @@
   function closePuntuarModal() { document.getElementById('puntuar-modal').style.display = 'none'; }
 
   function _pintarEstrellas() {
-    // Solo en los temas claros (Run & Bike, Todo Trail) la estrella sin
-    // valorar pasa a ser un contorno (☆) — en el tema oscuro de
-    // siempre, la estrella gris rellena de toda la vida se ve bien, no
-    // hacía falta tocar nada ahí.
-    var temaClaro = document.documentElement.classList.contains('tema-runandbike') ||
-      document.documentElement.classList.contains('tema-todotrail');
     ['comodidad', 'durabilidad', 'precioCalidad'].forEach(function(item) {
       var cont = document.querySelector('.puntuar-stars[data-item="' + item + '"]');
       if (!cont) return;
       var val = _puntuacionActual[item];
       cont.querySelectorAll('.star').forEach(function(s) {
-        var llena = Number(s.dataset.val) <= val;
-        s.classList.toggle('filled', llena);
-        s.textContent = llena ? '★' : (temaClaro ? '☆' : '★');
+        s.classList.toggle('filled', Number(s.dataset.val) <= val);
       });
     });
   }
