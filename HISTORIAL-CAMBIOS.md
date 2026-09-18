@@ -12,6 +12,39 @@ el GAS es la versión más nueva.
 
 ---
 
+## 18/09/2026 08:08 — Primera copia reskin: "Run & Bike"
+
+Arranca el plan de mostrarle demos funcionando a posibles auspiciantes:
+en vez de meter lógica condicional dentro de la app real (como se hizo
+en su momento con Open Sports), se arma una **copia aparte** del
+proyecto, solo con la imagen cambiada. El producto sigue llamándose
+"Huella Runner" y apunta al mismo Sheet de siempre — no hace falta
+tocar `codigo.gs` ni ningún otro archivo `.gs` para esto, porque
+`ScriptApp.getService().getUrl()` ya resuelve solo a la URL de cada
+copia.
+
+- **`gas-demo-runandbike/index.html`** (archivo nuevo): copia de
+  `gas/index.html` con el fondo pasado a blanco/crema, el amarillo
+  bronce de siempre reemplazado por un amarillo vivo, el texto
+  principal en gris casi negro (en vez de plata sobre negro), y todas
+  las cajas que antes eran fondos oscuros fijos (inputs, tarjetas de
+  zapatilla, modales, tooltips, scrollbars) pasadas a un gris muy claro
+  para que no quede ninguna "caja negra" perdida sobre el fondo claro.
+  El pie de página pasa de "Powered by Huella Runner MDQ" a
+  "Powered by Run & Bike". Quedaron sin tocar, a propósito, los
+  chips de sponsor que ya eran de otro color fijo (Open Sports,
+  Plantillas Jump Box, Todo Trail) — son casos aparte, de otra prueba,
+  y no afectan a este reskin.
+  El amarillo exacto es una aproximación a partir de las capturas que
+  mandó el fundador (no del hex real del logo) — se ajusta rápido si
+  hace falta.
+  Para publicarlo: en el editor de Apps Script, "Hacer una copia" del
+  proyecto completo (así se traen todos los `.gs` sin tocarlos) y
+  pegar SOLO este `index.html` en la copia. Ahí sí corresponde
+  "Nueva implementación" (es un proyecto nuevo, no el de producción).
+
+---
+
 ## 16/09/2026 10:11 — Modelo nuevo: New Balance Ellipse V1
 
 - **`gas/index.html`**: se agregó a los 4 lugares de siempre —
