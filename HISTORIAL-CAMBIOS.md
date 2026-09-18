@@ -12,6 +12,29 @@ el GAS es la versión más nueva.
 
 ---
 
+## 18/09/2026 10:18 — PRUEBA Run & Bike: botón "Ver en tienda" con link real
+
+El fundador pasó capturas de la estructura real de filtrado de
+runandbike.com.ar (por talle y género) y confirmó que también venden
+trail.
+
+- **`gas/index.html`**: nueva función `irARunAndBike(genero, talleEU,
+  esTrail)`, mismo criterio que `irATiendaSponsor()` (Open Sports) e
+  `irATodoTrail()` ya existentes. Arma la URL:
+  `https://www.runandbike.com.ar/run/zapatillas/{calle|trail}/talle-calzado-{talle}/género-{genero}.html`
+  — el talle se pasa con **coma** (42,5), no punto, como usa Run & Bike
+  en su URL real. El botón del Dashboard para
+  `estebandragotto@gmail.com` deja de decir "Próximamente" y ahora
+  abre esa tienda filtrada, en una pestaña nueva.
+  Ojo: el nombre exacto de la categoría "trail" (`.../zapatillas/trail/...`)
+  se asumió por simetría con "calle" — no se pudo confirmar
+  navegando el sitio en vivo (sin acceso a internet desde este
+  entorno). Si el link de una zapatilla de trail no cae en la página
+  correcta, se ajusta en una sola línea de código (la función
+  `irARunAndBike`).
+
+---
+
 ## 18/09/2026 09:58 — PRUEBA Run & Bike: retoques de detalle (verde lima, estrellas, botón)
 
 El fundador mandó capturas puntuales con feedback fino después de
