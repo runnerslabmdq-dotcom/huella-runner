@@ -1,11 +1,15 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 18/09/2026 08:17 (hora Argentina)
+  Última actualización: 18/09/2026 09:15 (hora Argentina)
   Cambios en esta versión:
+    - PRUEBA (solo estebandragotto@gmail.com): paleta clara "Run &
+      Bike" + "Powered by Run & Bike" — demo para mostrarle la app a
+      ese negocio, sin tocar nada para el resto de los usuarios. Ver
+      HISTORIAL-CAMBIOS.md.
+  Cambios en versiones anteriores:
     - Salomon Speedcross Peak: le faltaba foto y ficha técnica (drop
       10mm / talón 35mm / antepié 25mm) — ya estaba en el catálogo y
-      marcada como trail. Ver HISTORIAL-CAMBIOS.md.
-  Cambios en versiones anteriores:
+      marcada como trail.
     - Modelo nuevo: New Balance Ellipse V1 (foto propia, drop 8mm /
       talón 37.9mm / antepié 29.9mm, rodadora).
     - "Chequeo de desgaste" sale de "solo prueba" — disponible para
@@ -79,6 +83,75 @@
       --gris-powered: #555555;
       --borde: #ddd;
     }
+    /* PRUEBA (18/09/2026), solo estebandragotto@gmail.com: paleta
+       "Run & Bike" (fondo claro, amarillo vivo) para mostrarle una
+       demo funcionando a ese negocio, sin tocar nada para el resto de
+       los usuarios. Se activa/desactiva sola según el email escrito
+       en Login/Registro o el email logueado — ver _pintarPoweredBy()
+       y el resto de los usos de EMAIL_DEMO_RUNANDBIKE. El resto de
+       las reglas de esta sección (más abajo, con seudo-selector
+       ".tema-runandbike") tapan las cajas que en el tema oscuro
+       tenían un color fijo (no una variable) — mismo criterio que se
+       usó en gas-demo-runandbike/index.html. Ver HISTORIAL-CAMBIOS.md. */
+    :root.tema-runandbike {
+      --bg-color: #ffffff;
+      --card-bg: #f7f7f2;
+      --amarillo: #FFD200;
+      --amarillo-top: #FFDE47;
+      --amarillo-dark: #E0B400;
+      --plata: #171717;
+      --gris-texto: #6b6b6b;
+      --gris-powered: #6b6b6b;
+      --borde: #e2e2dc;
+    }
+    :root.tema-runandbike input, :root.tema-runandbike select {
+      background: #f2f2ec !important; border-color: #d8d8d0 !important; color: var(--plata) !important;
+    }
+    :root.tema-runandbike select option { background: #f2f2ec !important; color: var(--plata) !important; }
+    :root.tema-runandbike .cf-neon-wrap { background: #f2f2ec !important; }
+    :root.tema-runandbike .cf-photo-wrap { background: #f2f2ec !important; }
+    :root.tema-runandbike .vp-foto { background: #f2f2ec !important; }
+    :root.tema-runandbike .cf-add-locker-label { color: var(--gris-texto) !important; }
+    :root.tema-runandbike .modal-locker-content { border-color: #e2e2dc !important; }
+    :root.tema-runandbike .locker-modal-header { border-bottom-color: #e2e2dc !important; }
+    :root.tema-runandbike .locker-modal-scroll::-webkit-scrollbar-track { background: #eee !important; }
+    :root.tema-runandbike .locker-modal-scroll::-webkit-scrollbar-thumb { background: #cfcfc7 !important; }
+    :root.tema-runandbike .shoe-photo-wrap { background: #f2f2ec !important; }
+    :root.tema-runandbike .thumb-bar-wrap { background: #e5e5e0 !important; }
+    :root.tema-runandbike .detail-photo-wrap { background: #f2f2ec !important; }
+    :root.tema-runandbike .battery-wrap { background: #e5e5e0 !important; border-color: #d8d8d0 !important; }
+    :root.tema-runandbike .stat-box { background: #f2f2ec !important; }
+    :root.tema-runandbike .historial-scroll::-webkit-scrollbar-track { background: #eee !important; }
+    :root.tema-runandbike .historial-scroll::-webkit-scrollbar-thumb { background: #cfcfc7 !important; }
+    :root.tema-runandbike .btn-delete-training { border-color: #d8d8d0 !important; }
+    :root.tema-runandbike .btn-confirm-cancel { border-color: #d8d8d0 !important; }
+    :root.tema-runandbike .btn-confirm-delete { background: #f2f2ec !important; }
+    :root.tema-runandbike .locker-card { background: #f2f2ec !important; border-color: #e2e2dc !important; }
+    :root.tema-runandbike .locker-card-photo { background: #f2f2ec !important; }
+    :root.tema-runandbike .btn-reactivate { border-color: #d8d8d0 !important; }
+    :root.tema-runandbike .shoe-thumb-placeholder { background: #f2f2ec !important; border-color: #d8d8d0 !important; }
+    :root.tema-runandbike .shoe-thumb-placeholder:hover { background: #e6e6de !important; }
+    :root.tema-runandbike .input-manual-wrap input { background: #f2f2ec !important; color: var(--plata) !important; }
+    :root.tema-runandbike .voice-input-field { background: #f2f2ec !important; border-color: #d8d8d0 !important; color: var(--plata) !important; }
+    :root.tema-runandbike .voice-confirm-shoe { background: #f2f2ec !important; }
+    :root.tema-runandbike .btn-voice-cancel { border-color: #d8d8d0 !important; }
+    :root.tema-runandbike .voice-shoe-option { background: #f2f2ec !important; border-color: #d8d8d0 !important; }
+    :root.tema-runandbike .voice-shoe-option:hover { background: #fff6cf !important; }
+    :root.tema-runandbike .voice-shoe-option.selected { background: #fff2b8 !important; }
+    :root.tema-runandbike #wrap-grupo-manual input { background: #f2f2ec !important; color: var(--plata) !important; }
+    :root.tema-runandbike .km-info-tooltip { background: #ffffff !important; border-color: #e2e2dc !important; color: var(--gris-texto) !important; }
+    :root.tema-runandbike .km-info-tooltip::after { border-top-color: #ffffff !important; }
+    :root.tema-runandbike .intro-divider { background: linear-gradient(90deg, transparent 0%, #e2e2dc 50%, transparent 100%) !important; }
+    :root.tema-runandbike .intro-section { background: var(--card-bg) !important; border-color: var(--borde) !important; }
+    :root.tema-runandbike .intro-section::before { background: linear-gradient(90deg, transparent 0%, var(--amarillo) 40%, var(--amarillo-dark) 60%, transparent 100%) !important; }
+    :root.tema-runandbike .intro-badge-demo { background: var(--amarillo) !important; }
+    :root.tema-runandbike .intro-highlight { color: var(--amarillo-dark) !important; }
+    :root.tema-runandbike .intro-dot { background: var(--amarillo) !important; }
+    :root.tema-runandbike #legales-acordeon-login { background: #f7f7f2 !important; border-color: #e2e2dc !important; }
+    :root.tema-runandbike #legales-acordeon-login p { color: #555 !important; }
+    :root.tema-runandbike #legales-acordeon-login strong { color: #333 !important; }
+    :root.tema-runandbike #puntuar-opinion-texto,
+    :root.tema-runandbike #vp-detalle-foto { background: #f2f2ec !important; }
 
     @keyframes zapaPulso {
       0%   { transform: scale(1);    opacity: 1; }
@@ -2524,18 +2597,37 @@
   var HTML_POWERED_HUELLA = 'Powered by <span style="font-style:italic;">Huella <span style="color:var(--amarillo);">Runner</span></span> MDQ';
   var HTML_POWERED_OPENSPORTS = 'Powered by <span style="font-style:italic;color:#D4AF37;">Open <span style="color:#B8923D;">Sports</span></span>';
 
+  // ── PRUEBA Run & Bike (18/09/2026), solo para el usuario de prueba ──
+  // Mismo mecanismo que Open Sports arriba: "Powered by Run & Bike" +
+  // paleta clara (.tema-runandbike, ver <style> más arriba) solo para
+  // estebandragotto@gmail.com. Cualquier otro usuario no ve ningún
+  // cambio. Pensado como demo temporal para mostrarle la app a ese
+  // negocio — ver HISTORIAL-CAMBIOS.md.
+  var EMAIL_DEMO_RUNANDBIKE = 'estebandragotto@gmail.com';
+  var HTML_POWERED_RUNANDBIKE = 'Powered by <span style="font-style:italic;">Run <span style="color:var(--amarillo);">&amp; Bike</span></span>';
+
   function _pintarPoweredBy(prefix, email) {
     var poweredEl = document.getElementById(prefix + '-powered-by');
     if (!poweredEl) return;
     var logoEl = document.getElementById(prefix + '-logo-img');
-    var esDemo = (email || '').toString().trim().toLowerCase() === EMAIL_DEMO_OPEN_SPORTS;
-    if (esDemo) {
+    var emailLimpio = (email || '').toString().trim().toLowerCase();
+    var esOpenSports = emailLimpio === EMAIL_DEMO_OPEN_SPORTS;
+    var esRunAndBike = emailLimpio === EMAIL_DEMO_RUNANDBIKE;
+    document.documentElement.classList.toggle('tema-runandbike', esRunAndBike);
+    if (esOpenSports) {
       poweredEl.style.fontSize = '0.72rem';
       poweredEl.style.letterSpacing = '1.5px';
       poweredEl.style.width = '66%';
       poweredEl.style.maxWidth = '266px';
       poweredEl.innerHTML = HTML_POWERED_OPENSPORTS;
       if (logoEl) { logoEl.style.width = '66%'; logoEl.style.maxWidth = '266px'; }
+    } else if (esRunAndBike) {
+      poweredEl.style.fontSize = '0.5rem';
+      poweredEl.style.letterSpacing = '1px';
+      poweredEl.style.width = '70%';
+      poweredEl.style.maxWidth = '280px';
+      poweredEl.innerHTML = HTML_POWERED_RUNANDBIKE;
+      if (logoEl) { logoEl.style.width = '70%'; logoEl.style.maxWidth = '280px'; }
     } else {
       poweredEl.style.fontSize = '0.5rem';
       poweredEl.style.letterSpacing = '1px';
@@ -3680,6 +3772,7 @@
     currentDetailShoe = null;
     document.getElementById('log-email').value = '';
     document.getElementById('log-pass').value  = '';
+    _pintarPoweredBy('login', '');
     // Limpiar badge
     var badge = document.getElementById('notif-badge');
     if (badge) { badge.innerText = ''; badge.classList.remove('visible'); }

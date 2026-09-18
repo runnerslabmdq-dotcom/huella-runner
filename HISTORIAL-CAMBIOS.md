@@ -12,6 +12,46 @@ el GAS es la versión más nueva.
 
 ---
 
+## 18/09/2026 09:15 — PRUEBA (solo estebandragotto@gmail.com): "Run & Bike" adentro de la app real
+
+Se intentó primero el plan de hacer una copia aparte del proyecto de
+Apps Script (`gas-demo-runandbike/index.html`, ver más abajo), pero el
+fundador tuvo problemas para encontrar "Hacer una copia" en el editor
+nuevo de Apps Script. Para no quedarse trabado antes de mostrarle la
+demo a Run & Bike, se optó por el mismo mecanismo que ya se usa hace
+semanas para la prueba de Open Sports: un gate por email, **adentro de
+la app real**, reversible y sin ningún efecto para el resto de los
+usuarios.
+
+- **`gas/index.html`**:
+  - Nueva clase CSS `:root.tema-runandbike` con la misma paleta clara
+    (fondo blanco, amarillo vivo, texto casi negro) de
+    `gas-demo-runandbike/index.html`, más las reglas puntuales
+    (`!important`) para las cajas que tenían un color fijo en vez de
+    variable (inputs, tarjetas, modales, tooltips, etc.) — mismo
+    trabajo de fondo ya hecho para la copia aparte, reaplicado acá.
+  - `_pintarPoweredBy()` ahora reconoce un tercer caso además de
+    Huella/Open Sports: `EMAIL_DEMO_RUNANDBIKE =
+    'estebandragotto@gmail.com'`. Cuando ese email se escribe en
+    Login/Registro o es el que está logueado, pinta "Powered by Run &
+    Bike" y agrega la clase `tema-runandbike` al `<html>`; para
+    cualquier otro email, todo sigue exactamente igual que siempre.
+  - `doLogout()`: ahora llama a `_pintarPoweredBy('login', '')` al
+    cerrar sesión, para que la paleta vuelva a la normal antes de que
+    entre el próximo usuario en el mismo dispositivo (este mismo
+    detalle le faltaba también a la prueba de Open Sports, quedó
+    arreglado de paso).
+  - Verificado con capturas: usuario normal ve la app de siempre sin
+    ningún cambio; con `estebandragotto@gmail.com` se ve la paleta de
+    Run & Bike en Login, Registro y Dashboard.
+
+Sigue en pie el plan de la copia aparte del proyecto (más prolijo a
+futuro, para cuando haya más de un sponsor a la vez) — este gate es la
+solución rápida para esta primera demo, se puede sacar sin drama el
+día que se resuelva el tema de "Hacer una copia" en Apps Script.
+
+---
+
 ## 18/09/2026 08:17 — Ficha técnica de Salomon Speedcross Peak
 
 - **`gas/index.html`**: la Speedcross Peak ya estaba en el desplegable
