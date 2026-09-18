@@ -1,17 +1,14 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 18/09/2026 09:58 (hora Argentina)
+  Última actualización: 18/09/2026 10:18 (hora Argentina)
   Cambios en esta versión:
-    - PRUEBA Run & Bike, retoques de detalle (verde lima en "zapatillas",
-      estrellas y botón de Valoración Runners; "&" de "Powered by";
-      botón "Ver en tienda" activo-visual, ya no apagado, en una sola
-      línea). De paso, en los temas claros las estrellas sin valorar
-      pasan a ser solo el contorno (☆) — el tema oscuro de siempre no
-      se tocó. Ver HISTORIAL-CAMBIOS.md.
+    - PRUEBA Run & Bike: el botón "Ver en tienda" ya tiene link real a
+      runandbike.com.ar, filtrado por rubro (calle/trail), talle y
+      género — deja de decir "Próximamente". Ver irARunAndBike() y
+      HISTORIAL-CAMBIOS.md.
   Cambios en versiones anteriores:
-    - PRUEBA Todo Trail (Provincia = "San Luis"): paleta celeste/gris
-      clarito + "Powered by Todo Trail" en el Dashboard, botón "Ver en
-      tienda" muestra solo Todo Trail.
+    - PRUEBA Run & Bike, retoques de detalle (verde lima, estrellas,
+      botón "Ver en tienda" en una sola línea).
     - "Chequeo de desgaste" sale de "solo prueba" — disponible para
       TODOS los usuarios.
     - Panel de Valoración: sale de "solo prueba", disponible para
@@ -172,24 +169,18 @@
     :root.tema-runandbike #btn-save-puntuacion {
       background: linear-gradient(180deg, #E2DB55 0%, #CFC60B 45%, #A69C09 100%) !important;
     }
-    /* Botón "Ver en tienda" para este usuario: antes usaba la versión
-       apagada/gris (misma que ve cualquier usuario sin sponsor
-       confirmado). Ahora tiene colores propios (dorado sobre negro,
-       en línea con el resto de los botones del tema) y el texto
-       "RUN & BIKE" en un solo renglón — sigue sin link real todavía
-       (no hay tienda online de Run & Bike para apuntar), por eso
-       sigue diciendo "Próximamente" y sin click. */
+    /* Botón "Ver en tienda" para este usuario (18/09/2026): ya tiene
+       link real a runandbike.com.ar filtrado por talle/género/rubro
+       (ver irARunAndBike()) — pasa de "apagado, sin click" a activo,
+       mismo estilo que la variante dorada de Open Sports. */
     .cf-btn-opensports.cf-btn-opensports-runandbike {
-      flex-direction: column;
-      gap: 1px;
       background: linear-gradient(180deg, #2a2a2a 0%, #141414 100%);
-      color: var(--amarillo);
-      cursor: default;
-      padding: 8px 6px 6px;
+      color: var(--amarillo); border: 1px solid var(--amarillo);
     }
     .cf-btn-opensports.cf-btn-opensports-runandbike .cf-btn-opensports-sports { color: var(--amarillo); }
-    .cf-btn-opensports.cf-btn-opensports-runandbike .cf-btn-opensports-off-tag { color: #999; }
-    .cf-btn-opensports-line { white-space: nowrap; }
+    .cf-btn-opensports.cf-btn-opensports-runandbike:active {
+      background: linear-gradient(180deg, #141414 0%, #0a0a0a 100%);
+    }
 
     /* PRUEBA (18/09/2026), solo usuarios con Provincia = "San Luis":
        paleta "Todo Trail" (fondo gris clarito, celeste como color
@@ -4368,11 +4359,12 @@
               '🛒 OPEN <span class="cf-btn-opensports-sports">SPORTS</span></button>' +
           '</div>';
       } else if (esUsuarioDemoRunAndBike) {
+        var esTrailShoe = _esTrail(s.Marca, s.Modelo);
         shopRowHtml =
           '<div class="cf-btn-row-shop">' +
-            '<button class="cf-btn-opensports cf-btn-opensports-runandbike" disabled>' +
-              '<span class="cf-btn-opensports-line">🛒 RUN <span class="cf-btn-opensports-sports">&amp; BIKE</span></span>' +
-              '<span class="cf-btn-opensports-off-tag">Próximamente</span></button>' +
+            '<button class="cf-btn-opensports cf-btn-opensports-runandbike" ' +
+              'onclick="event.stopPropagation(); irARunAndBike(\'' + rawGenero + '\', \'' + rawTalle + '\', ' + esTrailShoe + ');">' +
+              '🛒 RUN <span class="cf-btn-opensports-sports">&amp; BIKE</span></button>' +
           '</div>';
       } else {
         shopRowHtml =
@@ -5580,6 +5572,22 @@
     var talle = (talleEU || '').toString().trim();
     var url = 'https://www.opensports.com.ar/' + generoUrl +
       '/zapatillas/running/talle-calzado-' + talle + '.html';
+    window.open(url, '_blank');
+  }
+
+  // ── Botón "Ver en tienda" — Run & Bike (18/09/2026), solo
+  // estebandragotto@gmail.com. Filtra por rubro (calle/trail), talle
+  // (con COMA, no punto — así lo usa Run & Bike en su URL) y género —
+  // estructura de URL real, pasada por el fundador. El nombre exacto
+  // de la categoría "trail" no se pudo confirmar en vivo (sin acceso
+  // a internet desde acá) — si el link de trail no cae bien, se ajusta
+  // en una línea, acá mismo. Ver HISTORIAL-CAMBIOS.md.
+  function irARunAndBike(genero, talleEU, esTrail) {
+    var rubro = esTrail ? 'trail' : 'calle';
+    var generoUrl = (genero || '').toString().trim().toLowerCase() === 'mujer' ? 'mujer' : 'hombre';
+    var talle = (talleEU || '').toString().trim().replace('.', ',');
+    var url = 'https://www.runandbike.com.ar/run/zapatillas/' + rubro +
+      '/talle-calzado-' + talle + '/g%C3%A9nero-' + generoUrl + '.html';
     window.open(url, '_blank');
   }
 
