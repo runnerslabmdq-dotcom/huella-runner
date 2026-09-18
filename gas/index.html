@@ -1,16 +1,17 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 18/09/2026 09:36 (hora Argentina)
+  Última actualización: 18/09/2026 09:58 (hora Argentina)
   Cambios en esta versión:
-    - PRUEBA Todo Trail (Provincia = "San Luis"): paleta celeste/gris
-      clarito + "Powered by Todo Trail" en el Dashboard (la provincia
-      recién se sabe después de loguearse). El botón "Ver en tienda"
-      para esa provincia ahora muestra solo Todo Trail (se sacó el de
-      Open Sports). Ver HISTORIAL-CAMBIOS.md.
+    - PRUEBA Run & Bike, retoques de detalle (verde lima en "zapatillas",
+      estrellas y botón de Valoración Runners; "&" de "Powered by";
+      botón "Ver en tienda" activo-visual, ya no apagado, en una sola
+      línea). De paso, en los temas claros las estrellas sin valorar
+      pasan a ser solo el contorno (☆) — el tema oscuro de siempre no
+      se tocó. Ver HISTORIAL-CAMBIOS.md.
   Cambios en versiones anteriores:
-    - PRUEBA Run & Bike, 2 ajustes tras la primera prueba real en el
-      celu: logo invisible en fondo claro arreglado, botón "Ver en
-      tienda" ahora dice "Run & Bike" para ese usuario.
+    - PRUEBA Todo Trail (Provincia = "San Luis"): paleta celeste/gris
+      clarito + "Powered by Todo Trail" en el Dashboard, botón "Ver en
+      tienda" muestra solo Todo Trail.
     - "Chequeo de desgaste" sale de "solo prueba" — disponible para
       TODOS los usuarios.
     - Panel de Valoración: sale de "solo prueba", disponible para
@@ -161,6 +162,34 @@
     :root.tema-runandbike #login-logo-fallback,
     :root.tema-runandbike #reg-logo-fallback { display: block !important; }
     :root.tema-runandbike #dash-logo-fallback { display: inline-block !important; }
+    /* Ajustes (18/09/2026) tras la segunda prueba real en el celu:
+       toques de "verde lima" (#CFC60B, aprox. tomado por el fundador
+       de la identidad real de Run & Bike) en puntos puntuales — no es
+       un cambio del amarillo general del tema, sino de estos 3
+       lugares nomás. Ver HISTORIAL-CAMBIOS.md. */
+    :root.tema-runandbike .armario-subtitle span { color: #CFC60B !important; }
+    :root.tema-runandbike .puntuar-stars .star.filled { color: #CFC60B !important; }
+    :root.tema-runandbike #btn-save-puntuacion {
+      background: linear-gradient(180deg, #E2DB55 0%, #CFC60B 45%, #A69C09 100%) !important;
+    }
+    /* Botón "Ver en tienda" para este usuario: antes usaba la versión
+       apagada/gris (misma que ve cualquier usuario sin sponsor
+       confirmado). Ahora tiene colores propios (dorado sobre negro,
+       en línea con el resto de los botones del tema) y el texto
+       "RUN & BIKE" en un solo renglón — sigue sin link real todavía
+       (no hay tienda online de Run & Bike para apuntar), por eso
+       sigue diciendo "Próximamente" y sin click. */
+    .cf-btn-opensports.cf-btn-opensports-runandbike {
+      flex-direction: column;
+      gap: 1px;
+      background: linear-gradient(180deg, #2a2a2a 0%, #141414 100%);
+      color: var(--amarillo);
+      cursor: default;
+      padding: 8px 6px 6px;
+    }
+    .cf-btn-opensports.cf-btn-opensports-runandbike .cf-btn-opensports-sports { color: var(--amarillo); }
+    .cf-btn-opensports.cf-btn-opensports-runandbike .cf-btn-opensports-off-tag { color: #999; }
+    .cf-btn-opensports-line { white-space: nowrap; }
 
     /* PRUEBA (18/09/2026), solo usuarios con Provincia = "San Luis":
        paleta "Todo Trail" (fondo gris clarito, celeste como color
@@ -2690,7 +2719,7 @@
   // cambio. Pensado como demo temporal para mostrarle la app a ese
   // negocio — ver HISTORIAL-CAMBIOS.md.
   var EMAIL_DEMO_RUNANDBIKE = 'estebandragotto@gmail.com';
-  var HTML_POWERED_RUNANDBIKE = 'Powered by <span style="font-style:italic;">Run <span style="color:var(--amarillo);">&amp; Bike</span></span>';
+  var HTML_POWERED_RUNANDBIKE = 'Powered by <span style="font-style:italic;font-weight:700;">Run <span style="color:#CFC60B;">&amp;</span> Bike</span>';
 
   function _pintarPoweredBy(prefix, email) {
     var poweredEl = document.getElementById(prefix + '-powered-by');
@@ -4341,8 +4370,8 @@
       } else if (esUsuarioDemoRunAndBike) {
         shopRowHtml =
           '<div class="cf-btn-row-shop">' +
-            '<button class="cf-btn-opensports cf-btn-opensports-off" disabled>' +
-              '🛒 RUN <span class="cf-btn-opensports-sports">&amp; BIKE</span>' +
+            '<button class="cf-btn-opensports cf-btn-opensports-runandbike" disabled>' +
+              '<span class="cf-btn-opensports-line">🛒 RUN <span class="cf-btn-opensports-sports">&amp; BIKE</span></span>' +
               '<span class="cf-btn-opensports-off-tag">Próximamente</span></button>' +
           '</div>';
       } else {
@@ -4847,12 +4876,20 @@
   function closePuntuarModal() { document.getElementById('puntuar-modal').style.display = 'none'; }
 
   function _pintarEstrellas() {
+    // Solo en los temas claros (Run & Bike, Todo Trail) la estrella sin
+    // valorar pasa a ser un contorno (☆) — en el tema oscuro de
+    // siempre, la estrella gris rellena de toda la vida se ve bien, no
+    // hacía falta tocar nada ahí.
+    var temaClaro = document.documentElement.classList.contains('tema-runandbike') ||
+      document.documentElement.classList.contains('tema-todotrail');
     ['comodidad', 'durabilidad', 'precioCalidad'].forEach(function(item) {
       var cont = document.querySelector('.puntuar-stars[data-item="' + item + '"]');
       if (!cont) return;
       var val = _puntuacionActual[item];
       cont.querySelectorAll('.star').forEach(function(s) {
-        s.classList.toggle('filled', Number(s.dataset.val) <= val);
+        var llena = Number(s.dataset.val) <= val;
+        s.classList.toggle('filled', llena);
+        s.textContent = llena ? '★' : (temaClaro ? '☆' : '★');
       });
     });
   }
