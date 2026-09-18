@@ -1,16 +1,16 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 18/09/2026 09:28 (hora Argentina)
+  Última actualización: 18/09/2026 09:36 (hora Argentina)
   Cambios en esta versión:
-    - PRUEBA Run & Bike, 2 ajustes tras la primera prueba real en el
-      celu: el logo grande (imagen con "HUELLA" en blanco) quedaba
-      invisible en fondo claro — ahora se oculta y se usa el texto de
-      respaldo. El botón "Ver en tienda" decía "Open Sports" — ahora
-      dice "Run & Bike" para este usuario. Ver HISTORIAL-CAMBIOS.md.
+    - PRUEBA Todo Trail (Provincia = "San Luis"): paleta celeste/gris
+      clarito + "Powered by Todo Trail" en el Dashboard (la provincia
+      recién se sabe después de loguearse). El botón "Ver en tienda"
+      para esa provincia ahora muestra solo Todo Trail (se sacó el de
+      Open Sports). Ver HISTORIAL-CAMBIOS.md.
   Cambios en versiones anteriores:
-    - PRUEBA (solo estebandragotto@gmail.com): paleta clara "Run &
-      Bike" + "Powered by Run & Bike" — demo para mostrarle la app a
-      ese negocio, sin tocar nada para el resto de los usuarios.
+    - PRUEBA Run & Bike, 2 ajustes tras la primera prueba real en el
+      celu: logo invisible en fondo claro arreglado, botón "Ver en
+      tienda" ahora dice "Run & Bike" para ese usuario.
     - "Chequeo de desgaste" sale de "solo prueba" — disponible para
       TODOS los usuarios.
     - Panel de Valoración: sale de "solo prueba", disponible para
@@ -161,6 +161,83 @@
     :root.tema-runandbike #login-logo-fallback,
     :root.tema-runandbike #reg-logo-fallback { display: block !important; }
     :root.tema-runandbike #dash-logo-fallback { display: inline-block !important; }
+
+    /* PRUEBA (18/09/2026), solo usuarios con Provincia = "San Luis":
+       paleta "Todo Trail" (fondo gris clarito, celeste como color
+       principal, texto gris oscuro) — mismo mecanismo que
+       tema-runandbike, pero la provincia recién se sabe después de
+       loguearse (getPerfilUsuario), así que esto solo se aplica en el
+       Dashboard, no en Login/Registro. Ver _aplicarTemaProvincia() y
+       HISTORIAL-CAMBIOS.md. */
+    :root.tema-todotrail {
+      --bg-color: #F8F9FA;
+      --card-bg: #ffffff;
+      --amarillo: #00A3E0;
+      --amarillo-top: #33B7E8;
+      --amarillo-dark: #008ECB;
+      --plata: #222222;
+      --gris-texto: #6b6b6b;
+      --gris-powered: #6b6b6b;
+      --borde: #e3e7ea;
+    }
+    :root.tema-todotrail input, :root.tema-todotrail select {
+      background: #eef2f5 !important; border-color: #d7dde2 !important; color: var(--plata) !important;
+    }
+    :root.tema-todotrail select option { background: #eef2f5 !important; color: var(--plata) !important; }
+    :root.tema-todotrail .cf-neon-wrap { background: #eef2f5 !important; }
+    :root.tema-todotrail .cf-photo-wrap { background: #eef2f5 !important; }
+    :root.tema-todotrail .vp-foto { background: #eef2f5 !important; }
+    :root.tema-todotrail .cf-add-locker-label { color: var(--gris-texto) !important; }
+    :root.tema-todotrail .modal-locker-content { border-color: #e3e7ea !important; }
+    :root.tema-todotrail .locker-modal-header { border-bottom-color: #e3e7ea !important; }
+    :root.tema-todotrail .locker-modal-scroll::-webkit-scrollbar-track { background: #eef2f5 !important; }
+    :root.tema-todotrail .locker-modal-scroll::-webkit-scrollbar-thumb { background: #c7ced3 !important; }
+    :root.tema-todotrail .shoe-photo-wrap { background: #eef2f5 !important; }
+    :root.tema-todotrail .thumb-bar-wrap { background: #e3e7ea !important; }
+    :root.tema-todotrail .detail-photo-wrap { background: #eef2f5 !important; }
+    :root.tema-todotrail .battery-wrap { background: #e3e7ea !important; border-color: #d7dde2 !important; }
+    :root.tema-todotrail .stat-box { background: #eef2f5 !important; }
+    :root.tema-todotrail .historial-scroll::-webkit-scrollbar-track { background: #eef2f5 !important; }
+    :root.tema-todotrail .historial-scroll::-webkit-scrollbar-thumb { background: #c7ced3 !important; }
+    :root.tema-todotrail .btn-delete-training { border-color: #d7dde2 !important; }
+    :root.tema-todotrail .btn-confirm-cancel { border-color: #d7dde2 !important; }
+    :root.tema-todotrail .btn-confirm-delete { background: #eef2f5 !important; }
+    :root.tema-todotrail .locker-card { background: #eef2f5 !important; border-color: #e3e7ea !important; }
+    :root.tema-todotrail .locker-card-photo { background: #eef2f5 !important; }
+    :root.tema-todotrail .btn-reactivate { border-color: #d7dde2 !important; }
+    :root.tema-todotrail .shoe-thumb-placeholder { background: #eef2f5 !important; border-color: #d7dde2 !important; }
+    :root.tema-todotrail .shoe-thumb-placeholder:hover { background: #e6eaed !important; }
+    :root.tema-todotrail .input-manual-wrap input { background: #eef2f5 !important; color: var(--plata) !important; }
+    :root.tema-todotrail .voice-input-field { background: #eef2f5 !important; border-color: #d7dde2 !important; color: var(--plata) !important; }
+    :root.tema-todotrail .voice-confirm-shoe { background: #eef2f5 !important; }
+    :root.tema-todotrail .btn-voice-cancel { border-color: #d7dde2 !important; }
+    :root.tema-todotrail .voice-shoe-option { background: #eef2f5 !important; border-color: #d7dde2 !important; }
+    :root.tema-todotrail .voice-shoe-option:hover { background: #e3f3fb !important; }
+    :root.tema-todotrail .voice-shoe-option.selected { background: #d3ecf9 !important; }
+    :root.tema-todotrail #wrap-grupo-manual input { background: #eef2f5 !important; color: var(--plata) !important; }
+    :root.tema-todotrail .km-info-tooltip { background: #ffffff !important; border-color: #e3e7ea !important; color: var(--gris-texto) !important; }
+    :root.tema-todotrail .km-info-tooltip::after { border-top-color: #ffffff !important; }
+    :root.tema-todotrail .intro-divider { background: linear-gradient(90deg, transparent 0%, #e3e7ea 50%, transparent 100%) !important; }
+    :root.tema-todotrail .intro-section { background: var(--card-bg) !important; border-color: var(--borde) !important; }
+    :root.tema-todotrail .intro-section::before { background: linear-gradient(90deg, transparent 0%, var(--amarillo) 40%, var(--amarillo-dark) 60%, transparent 100%) !important; }
+    :root.tema-todotrail .intro-badge-demo { background: var(--amarillo) !important; }
+    :root.tema-todotrail .intro-highlight { color: var(--amarillo-dark) !important; }
+    :root.tema-todotrail .intro-dot { background: var(--amarillo) !important; }
+    :root.tema-todotrail #legales-acordeon-login { background: #f8f9fa !important; border-color: #e3e7ea !important; }
+    :root.tema-todotrail #legales-acordeon-login p { color: #555 !important; }
+    :root.tema-todotrail #legales-acordeon-login strong { color: #333 !important; }
+    :root.tema-todotrail #puntuar-opinion-texto,
+    :root.tema-todotrail #vp-detalle-foto { background: #eef2f5 !important; }
+    /* Los logos son imágenes con "HUELLA" en blanco (pensadas para el
+       fondo negro de siempre) — en fondo claro quedan invisibles. Se
+       ocultan y se usa el texto de respaldo (ya usa las variables de
+       color, se adapta solo al tema). */
+    :root.tema-todotrail #login-logo-img,
+    :root.tema-todotrail #reg-logo-img,
+    :root.tema-todotrail #dash-logo-img { display: none !important; }
+    :root.tema-todotrail #login-logo-fallback,
+    :root.tema-todotrail #reg-logo-fallback { display: block !important; }
+    :root.tema-todotrail #dash-logo-fallback { display: inline-block !important; }
 
     @keyframes zapaPulso {
       0%   { transform: scale(1);    opacity: 1; }
@@ -3776,12 +3853,14 @@
   }
 
   function doLogout() {
-    currentUserEmail  = '';
+    currentUserEmail    = '';
+    currentUserProvincia = '';
     allUserShoes      = [];
     currentDetailShoe = null;
     document.getElementById('log-email').value = '';
     document.getElementById('log-pass').value  = '';
     _pintarPoweredBy('login', '');
+    _aplicarTemaProvincia('');
     // Limpiar badge
     var badge = document.getElementById('notif-badge');
     if (badge) { badge.innerText = ''; badge.classList.remove('visible'); }
@@ -4073,13 +4152,32 @@
     google.script.run
       .withSuccessHandler(function(res) {
         currentUserProvincia = (res && res.provincia) || '';
+        _aplicarTemaProvincia(currentUserProvincia);
         _intentarCargar();
       })
       .withFailureHandler(function() {
         currentUserProvincia = '';
+        _aplicarTemaProvincia(currentUserProvincia);
         _intentarCargar();
       })
       .getPerfilUsuario((currentUserEmail || '').trim().toLowerCase());
+  }
+
+  // ── PRUEBA Todo Trail (18/09/2026), solo Provincia = "San Luis" ──
+  // La provincia recién se sabe después de loguearse, así que a
+  // diferencia de Open Sports / Run & Bike (que se deciden por email,
+  // en vivo desde Login), esto solo puede aplicarse acá, una vez que
+  // vuelve getPerfilUsuario(). Pinta la paleta clara "Todo Trail" (ver
+  // <style>, clase .tema-todotrail) y "Powered by Todo Trail" en el
+  // pie del Dashboard. Ver HISTORIAL-CAMBIOS.md.
+  var HTML_POWERED_TODOTRAIL = 'Powered by <span style="font-style:italic;">Todo <span style="color:var(--amarillo);">Trail</span></span>';
+  function _aplicarTemaProvincia(provincia) {
+    var esTodoTrail = (provincia || '').toString().trim() === 'San Luis';
+    document.documentElement.classList.toggle('tema-todotrail', esTodoTrail);
+    if (esTodoTrail) {
+      var poweredEl = document.getElementById('dash-powered-by');
+      if (poweredEl) poweredEl.innerHTML = HTML_POWERED_TODOTRAIL;
+    }
   }
 
   function _intentarCargar() {
@@ -4221,11 +4319,14 @@
               '📷 JUMP BOX</button>' +
           '</div>';
       } else if (currentUserProvincia === 'San Luis') {
+        // PRUEBA Todo Trail (18/09/2026): antes acá se mostraban los
+        // dos botones (Open Sports + Todo Trail). A pedido del
+        // fundador, ahora que toda la app se pinta con la imagen de
+        // Todo Trail para esta provincia, se saca el de Open Sports
+        // para no mezclar dos marcas en la misma demo. Ver
+        // HISTORIAL-CAMBIOS.md.
         shopRowHtml =
           '<div class="cf-btn-row-shop">' +
-            '<button class="cf-btn-opensports" ' +
-              'onclick="event.stopPropagation(); irATiendaSponsor(\'' + rawGenero + '\', \'' + rawTalle + '\');">' +
-              '🛒 OPEN <span class="cf-btn-opensports-sports">SPORTS</span></button>' +
             '<button class="cf-btn-todotrail cf-btn-todotrail-on" ' +
               'onclick="event.stopPropagation(); irATodoTrail(\'' + rawGenero + '\', \'' + rawTalle + '\');">' +
               '🛒 <span class="cf-btn-todotrail-todo">TODO</span><span class="cf-btn-todotrail-trail">TRAIL</span></button>' +

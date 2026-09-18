@@ -12,6 +12,40 @@ el GAS es la versión más nueva.
 
 ---
 
+## 18/09/2026 09:36 — PRUEBA Todo Trail (Provincia = "San Luis")
+
+Segunda demo de sponsor, mismo mecanismo que Run & Bike pero gateada
+por **provincia** en vez de email — reusa el campo `Provincia` del
+perfil que ya existía (hoy solo se usaba para decidir qué botón de
+"Ver en tienda" mostrar). El fundador mandó capturas y un manual de
+estilo real de todotrail.com.ar con la paleta exacta.
+
+- **`gas/index.html`**:
+  - Nueva clase `:root.tema-todotrail`, mismo patrón que
+    `tema-runandbike`: fondo gris clarito (`#F8F9FA`), celeste
+    (`#00A3E0`) como color principal en vez del amarillo/bronce de
+    siempre, texto gris oscuro (`#222222`). Mismas reglas puntuales
+    para las cajas de color fijo (inputs, tarjetas, modales, etc.).
+  - A diferencia de Open Sports/Run & Bike (que se deciden por email,
+    en vivo desde Login), la Provincia recién se sabe **después** de
+    loguearse (`getPerfilUsuario`), así que el tema Todo Trail solo se
+    aplica en el Dashboard — nueva función `_aplicarTemaProvincia()`,
+    llamada al final de `loadDashboard()`. Login/Registro no cambian
+    para estos usuarios.
+  - `dash-powered-by` pasa a "Powered by Todo Trail" para Provincia =
+    "San Luis".
+  - El botón "Ver en tienda" para esa provincia mostraba antes Open
+    Sports y Todo Trail juntos — a pedido del fundador, ahora que toda
+    la app tiene la imagen de Todo Trail para esos usuarios, se sacó
+    el botón de Open Sports para no mezclar dos marcas en la misma
+    demo. Queda solo el botón "TODO TRAIL" (blanco/naranja, ya
+    existía, no se tocó su estilo).
+  - `doLogout()`: también resetea `currentUserProvincia` y saca la
+    clase `tema-todotrail`, mismo motivo que el reset que ya se había
+    agregado para Run & Bike.
+
+---
+
 ## 18/09/2026 09:28 — PRUEBA Run & Bike: 2 ajustes tras la primera prueba real en el celu
 
 El fundador probó la demo en su celu (con `estebandragotto@gmail.com`)
