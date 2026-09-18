@@ -12,6 +12,29 @@ el GAS es la versión más nueva.
 
 ---
 
+## 18/09/2026 09:28 — PRUEBA Run & Bike: 2 ajustes tras la primera prueba real en el celu
+
+El fundador probó la demo en su celu (con `estebandragotto@gmail.com`)
+y encontró 2 cosas para corregir:
+
+- **`gas/index.html`**:
+  - El logo grande de Login/Registro y el del header del Dashboard son
+    imágenes (no texto), pensadas para el fondo negro de siempre — la
+    palabra "HUELLA" está en blanco adentro de esas imágenes, así que
+    en el fondo claro de Run & Bike quedaba invisible (solo se veía
+    "RUNNER", en dorado). Se ocultan esas imágenes y se usa el texto
+    de respaldo que ya existía (`login-logo-fallback`,
+    `reg-logo-fallback`, `dash-logo-fallback`) — ese texto sí usa las
+    variables de color, así que se adapta solo al tema.
+  - El botón "Ver en tienda" de cada zapatilla decía "OPEN SPORTS
+    PRÓXIMAMENTE" también para este usuario (es el cartel genérico que
+    ve cualquier usuario mientras no haya un sponsor de tienda
+    confirmado). Ahora, solo para `estebandragotto@gmail.com`, dice
+    "RUN & BIKE PRÓXIMAMENTE" en su lugar — mismo estilo, ningún link
+    real todavía (no tenemos tienda online de Run & Bike para apuntar).
+
+---
+
 ## 18/09/2026 09:15 — PRUEBA (solo estebandragotto@gmail.com): "Run & Bike" adentro de la app real
 
 Se intentó primero el plan de hacer una copia aparte del proyecto de

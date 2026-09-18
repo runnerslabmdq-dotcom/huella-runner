@@ -1,17 +1,16 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 18/09/2026 09:15 (hora Argentina)
+  Última actualización: 18/09/2026 09:28 (hora Argentina)
   Cambios en esta versión:
+    - PRUEBA Run & Bike, 2 ajustes tras la primera prueba real en el
+      celu: el logo grande (imagen con "HUELLA" en blanco) quedaba
+      invisible en fondo claro — ahora se oculta y se usa el texto de
+      respaldo. El botón "Ver en tienda" decía "Open Sports" — ahora
+      dice "Run & Bike" para este usuario. Ver HISTORIAL-CAMBIOS.md.
+  Cambios en versiones anteriores:
     - PRUEBA (solo estebandragotto@gmail.com): paleta clara "Run &
       Bike" + "Powered by Run & Bike" — demo para mostrarle la app a
-      ese negocio, sin tocar nada para el resto de los usuarios. Ver
-      HISTORIAL-CAMBIOS.md.
-  Cambios en versiones anteriores:
-    - Salomon Speedcross Peak: le faltaba foto y ficha técnica (drop
-      10mm / talón 35mm / antepié 25mm) — ya estaba en el catálogo y
-      marcada como trail.
-    - Modelo nuevo: New Balance Ellipse V1 (foto propia, drop 8mm /
-      talón 37.9mm / antepié 29.9mm, rodadora).
+      ese negocio, sin tocar nada para el resto de los usuarios.
     - "Chequeo de desgaste" sale de "solo prueba" — disponible para
       TODOS los usuarios.
     - Panel de Valoración: sale de "solo prueba", disponible para
@@ -152,6 +151,16 @@
     :root.tema-runandbike #legales-acordeon-login strong { color: #333 !important; }
     :root.tema-runandbike #puntuar-opinion-texto,
     :root.tema-runandbike #vp-detalle-foto { background: #f2f2ec !important; }
+    /* Los logos son imágenes con "HUELLA" en blanco (pensadas para el
+       fondo negro de siempre) — en fondo claro quedan invisibles. Se
+       ocultan y se usa el texto de respaldo (ya usa las variables de
+       color, se adapta solo al tema). */
+    :root.tema-runandbike #login-logo-img,
+    :root.tema-runandbike #reg-logo-img,
+    :root.tema-runandbike #dash-logo-img { display: none !important; }
+    :root.tema-runandbike #login-logo-fallback,
+    :root.tema-runandbike #reg-logo-fallback { display: block !important; }
+    :root.tema-runandbike #dash-logo-fallback { display: inline-block !important; }
 
     @keyframes zapaPulso {
       0%   { transform: scale(1);    opacity: 1; }
@@ -4197,6 +4206,9 @@
       // demo lista de cara a la reunión con Open Sports. Sacar esta
       // excepción cuando haya un sponsor real confirmado. ──
       var esUsuarioDemoOpenSports = (currentUserEmail || '').toString().trim().toLowerCase() === 'edragotto@hotmail.com';
+      // PRUEBA (18/09/2026): mismo criterio, para no mostrarle "Open
+      // Sports" a alguien que está viendo la demo de Run & Bike.
+      var esUsuarioDemoRunAndBike = (currentUserEmail || '').toString().trim().toLowerCase() === EMAIL_DEMO_RUNANDBIKE;
       var shopRowHtml;
       if (s.Marca === 'Plantillas Jump Box') {
         // PRUEBA (04/09/2026), solo edragotto@hotmail.com: no es una
@@ -4224,6 +4236,13 @@
             '<button class="cf-btn-opensports cf-btn-opensports-gold" ' +
               'onclick="event.stopPropagation(); irATiendaSponsor(\'' + rawGenero + '\', \'' + rawTalle + '\');">' +
               '🛒 OPEN <span class="cf-btn-opensports-sports">SPORTS</span></button>' +
+          '</div>';
+      } else if (esUsuarioDemoRunAndBike) {
+        shopRowHtml =
+          '<div class="cf-btn-row-shop">' +
+            '<button class="cf-btn-opensports cf-btn-opensports-off" disabled>' +
+              '🛒 RUN <span class="cf-btn-opensports-sports">&amp; BIKE</span>' +
+              '<span class="cf-btn-opensports-off-tag">Próximamente</span></button>' +
           '</div>';
       } else {
         shopRowHtml =
