@@ -12,6 +12,21 @@ el GAS es la versión más nueva.
 
 ---
 
+## 21/09/2026 08:01 — 3 modelos nuevos de New Balance
+
+- **`gas/index.html`**: agregados al catálogo, con foto propia y
+  clasificación rodadora/voladora:
+  - **Fresh Foam X 880v15** — drop 6mm, talón 40.5mm, antepié 34.5mm,
+    rodadora (línea 1080/880, entrenamiento diario amortiguado).
+  - **Fresh Foam X 860 v15** — modelo de estabilidad, rodadora. El
+    fundador todavía no pasó drop/talón/antepié para esta — queda con
+    foto y clasificación, sin ficha técnica hasta que llegue ese dato.
+  - **FuelCell SuperComp Trainer v3** — drop 6mm, talón 40mm, antepié
+    34mm, voladora (misma familia que la v4 ya cargada, entrenador con
+    placa de carbono).
+
+---
+
 ## 18/09/2026 12:18 — Run & Bike y Todo Trail: de tema claro a tema oscuro
 
 Al fundador no le convenció el fondo blanco de ninguna de las dos
