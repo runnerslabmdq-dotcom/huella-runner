@@ -12,6 +12,14 @@ el GAS es la versión más nueva.
 
 ---
 
+## 21/09/2026 08:09 — Ficha técnica de la New Balance Fresh Foam X 860 v15
+
+- **`gas/index.html`**: el fundador pasó el dato que faltaba —
+  drop 8mm, talón 43mm, antepié 35mm. Ya queda completa (foto,
+  clasificación rodadora y ahora también ficha técnica).
+
+---
+
 ## 21/09/2026 08:01 — 3 modelos nuevos de New Balance
 
 - **`gas/index.html`**: agregados al catálogo, con foto propia y
