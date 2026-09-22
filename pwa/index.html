@@ -69,81 +69,12 @@
       0%   { transform: translateX(-100%); }
       100% { transform: translateX(350%); }
     }
-    /* ── Aviso "navegador de adentro" (Instagram/Facebook/TikTok) ──
-       Esos navegadores in-app no soportan bien "Agregar a pantalla de
-       inicio" (ícono genérico, sin pantalla completa real) porque no son
-       Chrome/Safari de verdad. No se puede forzar la salida (las apps lo
-       bloquean a propósito).
-       HISTORIA de este cartel (para no repetir el mismo error dos veces):
-       1) Primera versión: pausaba el redirect y pedía elegir "salir a
-          Chrome" o "continuar acá" — mucha fricción justo en la entrada.
-       2) Segunda versión: sacó la pausa, entraba solo a los 3.5s — el
-          fundador probó en el celu y no le daba tiempo ni a leerlo, se
-          iba antes de terminar la frase.
-       3) Esta versión (la que queda): sin cronómetro. Se muestra fijo,
-          con un solo botón grande — entra recién cuando la persona lo
-          toca, sin apuro. En cualquier otro navegador (fuera de
-          Instagram/Facebook/TikTok) el comportamiento no cambió: sigue
-          entrando solo a los 1.2s.
-       4) 14/08/2026: texto cambiado de aviso técnico ("Estás entrando
-          desde Instagram") a gancho de valor ("Un toque y ves cuántos
-          km lleva tu zapatilla") — el aviso técnico no daba ningún
-          motivo para tocar el botón. Sacado también el bloque de "cómo
-          instalar" (quedaba como fricción extra justo en la entrada,
-          nadie llega hasta acá para instalar) — esa info se comunica
-          aparte, en un posteo de Instagram dedicado.
-       5) 17/08/2026: segunda vuelta de texto — de "ver" (pasivo) a
-          "probar" (invitación), y agregada una línea chica debajo
-          aclarando que el registro es rápido ("en un minuto") — ataca
-          directo la excusa más común para no entrar ("esto me va a
-          llevar rato"). Botón "Ver mis zapatillas" → "Empezar", porque
-          ya no asume que la persona tiene zapatillas cargadas.
-       6) 23/08/2026: TEMPORAL (después revertido) — línea chica
-          mencionaba el sorteo (meta de 100 registros) con fecha límite
-          26/8.
-       7) 24/08/2026: vuelto al texto de la versión 5 antes de la fecha
-          límite del sorteo, a pedido del fundador — el mensaje del
-          sorteo se sigue comunicando en el posteo dedicado, no hace
-          falta duplicarlo acá. De paso, la letra chica (.iab-sub) un
-          poco más grande (0.8rem → 0.92rem). */
-    .iab-banner {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: #080808;
-      z-index: 10;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 32px 24px;
-      text-align: center;
-      gap: 22px;
-    }
-    .iab-banner.show { display: flex; }
-    .iab-banner p {
-      color: #E8E8E8;
-      font-size: 0.9rem;
-      line-height: 1.6;
-      max-width: 320px;
-    }
-    .iab-banner strong { color: #C5B358; }
-    .iab-banner .iab-sub {
-      color: #aaaaaa;
-      font-size: 0.92rem;
-      line-height: 1.5;
-      max-width: 300px;
-    }
-    .iab-continue-btn {
-      background: #C5B358;
-      color: #080808;
-      border: none;
-      border-radius: 12px;
-      padding: 16px 40px;
-      font-size: 0.95rem;
-      font-weight: 900;
-      font-family: sans-serif;
-      cursor: pointer;
-    }
+    /* 22/09/2026: se sacó el cartel "Probá Huella Runner / Empezar →"
+       que se le mostraba SOLO a quien entraba desde Instagram/Facebook/
+       TikTok (obligaba a tocar un botón para pasar). Ahora esos casos
+       entran igual que cualquier otro navegador: ver el splash de abajo
+       y pasar solos al ratito, sin tocar nada. Historial completo de
+       por qué existía ese cartel y qué se probó antes: HISTORIAL-CAMBIOS.md. */
     /* ── PRUEBA: iframe en vez de redirect ──
        Antes, irALaApp() hacía window.location.replace(GAS_URL) — el
        navegador pasaba a mostrar "script.google.com" en la barra de
@@ -171,11 +102,6 @@
   </style>
 </head>
 <body>
-  <div class="iab-banner" id="iab-banner">
-    <p><strong>Probá Huella Runner</strong></p>
-    <p class="iab-sub">Registrate en un minuto, cargá tus zapatillas y empezá a sumar los km de cada una.</p>
-    <button class="iab-continue-btn" onclick="irALaApp()">Empezar →</button>
-  </div>
   <div class="splash" id="splash">
     <div>
       <img src="https://res.cloudinary.com/klxkj07e/image/upload/v1788190309/NEW_LOGO_lynhg6.png" alt="Huella Runner"
@@ -197,9 +123,6 @@
     }
 
     function irALaApp() {
-      var banner = document.getElementById('iab-banner');
-      if (banner) banner.classList.remove('show');
-
       var frame = document.getElementById('app-frame');
       frame.addEventListener('load', function() {
         document.getElementById('splash').style.display = 'none';
@@ -208,19 +131,10 @@
       frame.src = GAS_URL + '?v=' + Date.now();
     }
 
-    // Instagram y Facebook agregan su propia marca al user-agent del
-    // navegador in-app ("Instagram", "FBAN"/"FBAV"). TikTok también, por
-    // si el link circula ahí. Si detectamos alguno, se muestra el cartel
-    // fijo (sin cronómetro) y se espera el toque en "Continuar →" — ver
-    // la nota arriba de .iab-banner sobre por qué no hay timer acá.
-    var ua = navigator.userAgent || '';
-    var esNavegadorInApp = /Instagram|FBAN|FBAV|TikTok/i.test(ua);
-
-    if (esNavegadorInApp) {
-      document.getElementById('iab-banner').classList.add('show');
-    } else {
-      setTimeout(irALaApp, 1200);
-    }
+    // 22/09/2026: entra sola a los 1.2s para cualquier navegador,
+    // incluido Instagram/Facebook/TikTok (antes esos casos requerían
+    // tocar un botón — ver HISTORIAL-CAMBIOS.md).
+    setTimeout(irALaApp, 1200);
   </script>
 </body>
 </html>
