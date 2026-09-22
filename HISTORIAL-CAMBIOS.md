@@ -12,6 +12,32 @@ el GAS es la versión más nueva.
 
 ---
 
+## 22/09/2026 08:29 — pwa/: se saca el cartel "Empezar →" de Instagram
+
+Diagnóstico previo (mirando el panel de Admin): casi nadie externo
+llegaba a abrir la app desde el link de Instagram — la fricción estaba
+antes de entrar, no en el registro. Una de las hipótesis: el cartel
+extra que obligaba a tocar un botón antes de ver la app, solo para
+quien entraba desde Instagram/Facebook/TikTok.
+
+- **`pwa/index.html`**: se saca por completo el bloque `.iab-banner`
+  ("Probá Huella Runner... Empezar →") y la detección de navegador
+  in-app que lo activaba. Ahora **cualquier** navegador —incluido el de
+  Instagram— se comporta igual: ve el splash de siempre y pasa solo a
+  los 1.2 segundos a la app, sin tocar nada.
+  Ese cartel existía por una razón real (dos intentos previos de
+  auto-avance habían fallado — ver el historial que tenía el propio
+  código, ya reemplazado por esta entrada): la primera vez pedía
+  elegir "salir a Chrome o seguir acá" (mucha fricción), la segunda
+  auto-avanzaba a los 3.5s pero con un texto largo que no daba tiempo
+  a leer. Como el texto de hoy es mucho más corto, se decidió probar
+  de nuevo el auto-avance, esta vez con el mismo tiempo (1.2s) que ya
+  usa cualquier otro navegador.
+  Verificado: con user-agent de Instagram forzado, no aparece ninguna
+  pantalla intermedia, entra directo.
+
+---
+
 ## 21/09/2026 08:09 — Ficha técnica de la New Balance Fresh Foam X 860 v15
 
 - **`gas/index.html`**: el fundador pasó el dato que faltaba —
