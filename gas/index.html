@@ -1,14 +1,15 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 09/10/2026 08:34 (hora Argentina)
+  Última actualización: 09/10/2026 09:17 (hora Argentina)
   Cambios en esta versión:
-    - PRUEBA Ranerz Club (misma cuenta que Run & Bike): muestra con
-      acento amarillo vivo y logo "HUELLA RANERZ" (RANERZ en rosa).
-      "Powered by" NO cambia, sigue diciendo Huella Runner MDQ. Ver
-      HISTORIAL-CAMBIOS.md.
+    - PRUEBA Ranerz Club: tipografía Baloo 2 (aproximación a la fuente
+      redondeada de Ranerz) en el logo y botones principales, y esos
+      mismos botones pasan a forma de píldora. Solo para la cuenta de
+      prueba. Ver HISTORIAL-CAMBIOS.md.
   Cambios en versiones anteriores:
-    - Ficha técnica de la New Balance Fresh Foam X 860 v15: drop 8mm,
-      talón 43mm, antepié 35mm.
+    - PRUEBA Ranerz Club (misma cuenta que Run & Bike): acento amarillo
+      vivo y logo "HUELLA RANERZ" (RANERZ en rosa), "Powered by" sin
+      cambios.
     - PRUEBA Run & Bike y Todo Trail pasan de tema CLARO a tema
       OSCURO: mantienen el fondo negro de siempre, solo cambia el
       color de acento por marca.
@@ -51,7 +52,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="theme-color" content="#080808">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Bebas+Neue&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
   <!-- SWIPER.JS CDN -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
@@ -147,6 +148,23 @@
     :root.tema-ranerz #login-logo-fallback,
     :root.tema-ranerz #reg-logo-fallback { display: block !important; }
     :root.tema-ranerz #dash-logo-fallback { display: inline-block !important; }
+    /* Ajuste (09/10/2026): tipografía más redonda/gruesa (Baloo 2, la
+       más parecida en Google Fonts a la fuente "bubbly" que usa
+       Ranerz en su logo) y botones en forma de píldora en vez del
+       rectángulo redondeado de siempre — solo en este tema, nadie más
+       se ve afectado. No es la fuente exacta de Ranerz (no tenemos su
+       manual de marca), es la aproximación más cercana disponible. */
+    :root.tema-ranerz #login-logo-fallback,
+    :root.tema-ranerz #reg-logo-fallback,
+    :root.tema-ranerz #dash-logo-fallback {
+      font-family: 'Baloo 2', sans-serif !important;
+    }
+    :root.tema-ranerz .btn-primary,
+    :root.tema-ranerz .cf-btn-train,
+    :root.tema-ranerz .cf-btn-history {
+      font-family: 'Baloo 2', sans-serif;
+      border-radius: 999px !important;
+    }
 
     /* PRUEBA (18/09/2026, pasada a tema OSCURO), solo usuarios con
        Provincia = "San Luis": mismo criterio que tema-runandbike —
