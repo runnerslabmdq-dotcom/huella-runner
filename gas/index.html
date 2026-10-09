@@ -1,15 +1,14 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 09/10/2026 09:17 (hora Argentina)
+  Última actualización: 09/10/2026 09:36 (hora Argentina)
   Cambios en esta versión:
-    - PRUEBA Ranerz Club: tipografía Baloo 2 (aproximación a la fuente
-      redondeada de Ranerz) en el logo y botones principales, y esos
-      mismos botones pasan a forma de píldora. Solo para la cuenta de
-      prueba. Ver HISTORIAL-CAMBIOS.md.
+    - PRUEBA Ranerz Club: amarillo pasa a un tono mostaza/pastel (antes
+      era muy neón), y nuevo rosa pastel para el brillo de los íconos
+      del header y el borde del carrusel de zapatillas (antes cian-
+      naranja). Solo para la cuenta de prueba. Ver HISTORIAL-CAMBIOS.md.
   Cambios en versiones anteriores:
-    - PRUEBA Ranerz Club (misma cuenta que Run & Bike): acento amarillo
-      vivo y logo "HUELLA RANERZ" (RANERZ en rosa), "Powered by" sin
-      cambios.
+    - PRUEBA Ranerz Club: tipografía Baloo 2 en el logo y botones
+      principales, botones en forma de píldora.
     - PRUEBA Run & Bike y Todo Trail pasan de tema CLARO a tema
       OSCURO: mantienen el fondo negro de siempre, solo cambia el
       color de acento por marca.
@@ -129,9 +128,10 @@
        (RANERZ en rosa, el resto del tema en amarillo vivo). Ver
        HISTORIAL-CAMBIOS.md. */
     :root.tema-ranerz {
-      --amarillo: #F2E94E;
-      --amarillo-top: #F7F07A;
-      --amarillo-dark: #D4C800;
+      --amarillo: #D9BC4A;
+      --amarillo-top: #E6CD6E;
+      --amarillo-dark: #B89A2E;
+      --rosa-ranerz: #E99BC2;
     }
     :root.tema-ranerz #login-logo-fallback span:last-child,
     :root.tema-ranerz #reg-logo-fallback span:last-child,
@@ -164,6 +164,43 @@
     :root.tema-ranerz .cf-btn-history {
       font-family: 'Baloo 2', sans-serif;
       border-radius: 999px !important;
+    }
+    /* Ajuste (09/10/2026, 2da vuelta): amarillo más pastel/mostaza (el
+       de antes era muy parecido al neón de sus historias de
+       Instagram, pero su web real usa un tono mucho más apagado), y
+       un rosa pastel aparte para diferenciar los íconos del header y
+       el brillo del carrusel. Ojo: ⭐ y 🔔 son emojis de color fijo
+       (el sistema operativo los pinta siempre igual, no toman el
+       "color" de CSS) — lo que sí se puede teñir de rosa es el brillo
+       alrededor (drop-shadow) y el color al tocarlos/activarlos. */
+    :root.tema-ranerz .btn-notif:hover { color: var(--rosa-ranerz); }
+    :root.tema-ranerz .btn-notif.activa {
+      color: var(--rosa-ranerz) !important;
+      filter: drop-shadow(0 0 5px rgba(233,155,194,0.55)) !important;
+      animation: bell-pulse-ranerz 2.4s ease-in-out infinite !important;
+    }
+    @keyframes bell-pulse-ranerz {
+      0%, 100% { filter: drop-shadow(0 0 4px rgba(233,155,194,0.45)); }
+      50%       { filter: drop-shadow(0 0 10px rgba(233,155,194,0.85)); }
+    }
+    :root.tema-ranerz .btn-valoracion-brillo {
+      animation: btnValoracionBrilloRanerz 2.6s ease-in-out infinite !important;
+    }
+    @keyframes btnValoracionBrilloRanerz {
+      0%, 100% { filter: brightness(0.65) drop-shadow(0 0 0 rgba(233,155,194,0)); }
+      50%      { filter: brightness(1.35) drop-shadow(0 0 6px rgba(233,155,194,0.85)); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      :root.tema-ranerz .btn-valoracion-brillo { animation: none !important; }
+    }
+    /* Borde con brillo del carrusel: pasa de cian-naranja (el de
+       siempre) a un degradé rosa-amarillo, los dos colores de Ranerz. */
+    :root.tema-ranerz .swiper-slide-active .cf-neon-wrap {
+      background: linear-gradient(135deg, var(--rosa-ranerz) 0%, var(--amarillo) 100%) !important;
+      box-shadow:
+        0 0 18px rgba(233,155,194,0.35),
+        0 0 36px rgba(217,188,74,0.22),
+        0 12px 48px rgba(0,0,0,0.7) !important;
     }
 
     /* PRUEBA (18/09/2026, pasada a tema OSCURO), solo usuarios con
