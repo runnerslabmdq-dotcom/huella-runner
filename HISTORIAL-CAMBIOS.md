@@ -12,6 +12,33 @@ el GAS es la versión más nueva.
 
 ---
 
+## 09/10/2026 09:36 — PRUEBA Ranerz Club: colores pastel + rosa en íconos y borde
+
+El fundador mandó capturas de la web real de Ranerz Club (no solo sus
+historias de Instagram) y notó que el amarillo que habíamos usado era
+mucho más neón de lo que ellos realmente usan — se charló antes de
+tocar nada (3 puntos, con opciones) y se definió:
+
+- **`gas/index.html`**:
+  - El amarillo del tema pasa de neón (`#F2E94E`) a un tono mostaza
+    pastel (`#D9BC4A`), más fiel a la web real de Ranerz que a sus
+    historias (que son más vivas).
+  - Nuevo color `--rosa-ranerz` (`#E99BC2`, rosa pastel) para
+    diferenciar del amarillo en dos lugares puntuales:
+    - El brillo (drop-shadow) de los íconos ⭐ y 🔔 del header al
+      tocarlos/activarlos — importante: esos son emojis de color fijo
+      del sistema operativo, no se puede teñir el ícono en sí, solo
+      el resplandor alrededor y el color al pasar el mouse/tocar.
+    - El borde con brillo de la tarjeta activa del carrusel de
+      zapatillas, que antes era cian-naranja (el de siempre, igual en
+      todos los temas) y ahora es un degradé rosa-mostaza para esta
+      cuenta — se respeta `prefers-reduced-motion` igual que el
+      original.
+  - Verificado con `getComputedStyle` que el degradé y los colores de
+    sombra resuelven correctamente.
+
+---
+
 ## 09/10/2026 09:17 — PRUEBA Ranerz Club: tipografía y botones píldora
 
 El fundador probó la muestra anterior en el celu y pidió acercar más
