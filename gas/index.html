@@ -1,13 +1,14 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 21/09/2026 08:09 (hora Argentina)
+  Última actualización: 09/10/2026 08:34 (hora Argentina)
   Cambios en esta versión:
-    - Ficha técnica de la New Balance Fresh Foam X 860 v15: drop 8mm,
-      talón 43mm, antepié 35mm (faltaba desde la carga anterior). Ver
+    - PRUEBA Ranerz Club (misma cuenta que Run & Bike): muestra con
+      acento amarillo vivo y logo "HUELLA RANERZ" (RANERZ en rosa).
+      "Powered by" NO cambia, sigue diciendo Huella Runner MDQ. Ver
       HISTORIAL-CAMBIOS.md.
   Cambios en versiones anteriores:
-    - 3 modelos nuevos de New Balance: Fresh Foam X 880v15, Fresh Foam
-      X 860 v15 y FuelCell SuperComp Trainer v3.
+    - Ficha técnica de la New Balance Fresh Foam X 860 v15: drop 8mm,
+      talón 43mm, antepié 35mm.
     - PRUEBA Run & Bike y Todo Trail pasan de tema CLARO a tema
       OSCURO: mantienen el fondo negro de siempre, solo cambia el
       color de acento por marca.
@@ -115,6 +116,37 @@
     .cf-btn-opensports.cf-btn-opensports-runandbike:active {
       background: linear-gradient(180deg, #141414 0%, #0a0a0a 100%);
     }
+
+    /* PRUEBA (09/10/2026), solo estebandragotto@gmail.com: muestra del
+       estilo "Ranerz Club" — mismo criterio que tema-runandbike (fondo
+       negro de siempre, cambia el acento), pero acá la cuenta de
+       prueba pasa a mostrar Ranerz en vez de Run & Bike (el código de
+       Run & Bike queda intacto, solo esta cuenta deja de disparar esa
+       condición — ver _pintarPoweredBy()). "Powered by" NO cambia,
+       sigue diciendo "Huella Runner MDQ" a pedido del fundador — lo
+       que cambia es el logo grande, que pasa a decir "HUELLA RANERZ"
+       (RANERZ en rosa, el resto del tema en amarillo vivo). Ver
+       HISTORIAL-CAMBIOS.md. */
+    :root.tema-ranerz {
+      --amarillo: #F2E94E;
+      --amarillo-top: #F7F07A;
+      --amarillo-dark: #D4C800;
+    }
+    :root.tema-ranerz #login-logo-fallback span:last-child,
+    :root.tema-ranerz #reg-logo-fallback span:last-child,
+    :root.tema-ranerz #dash-logo-fallback span:last-child {
+      color: #E91E8C !important;
+    }
+    /* Los logos son imágenes con "HUELLA RUNNER" (pensadas para la
+       marca de siempre) — se ocultan acá y se usa el texto de
+       respaldo, al que _pintarPoweredBy() le cambia la segunda
+       palabra a "RANERZ" en vivo. */
+    :root.tema-ranerz #login-logo-img,
+    :root.tema-ranerz #reg-logo-img,
+    :root.tema-ranerz #dash-logo-img { display: none !important; }
+    :root.tema-ranerz #login-logo-fallback,
+    :root.tema-ranerz #reg-logo-fallback { display: block !important; }
+    :root.tema-ranerz #dash-logo-fallback { display: inline-block !important; }
 
     /* PRUEBA (18/09/2026, pasada a tema OSCURO), solo usuarios con
        Provincia = "San Luis": mismo criterio que tema-runandbike —
@@ -2581,14 +2613,31 @@
   var EMAIL_DEMO_RUNANDBIKE = 'estebandragotto@gmail.com';
   var HTML_POWERED_RUNANDBIKE = 'Powered by <span style="font-style:italic;font-weight:700;">Run <span style="color:#CFC60B;">&amp;</span> Bike</span>';
 
+  // ── PRUEBA Ranerz Club (09/10/2026), misma cuenta de prueba ──
+  // Esta cuenta ahora muestra Ranerz en vez de Run & Bike (el código
+  // de Run & Bike queda intacto, solo deja de activarse para este
+  // email — ver el "esRunAndBike = !esRanerz && ..." de abajo). A
+  // diferencia de los demás, el "Powered by" NO cambia — sigue
+  // diciendo "Huella Runner MDQ" a pedido del fundador. Lo que cambia
+  // es el logo grande ("HUELLA RANERZ" en vez de "HUELLA RUNNER"), ver
+  // más abajo donde se pinta esa palabra.
+  var EMAIL_DEMO_RANERZ = 'estebandragotto@gmail.com';
+
   function _pintarPoweredBy(prefix, email) {
     var poweredEl = document.getElementById(prefix + '-powered-by');
     if (!poweredEl) return;
     var logoEl = document.getElementById(prefix + '-logo-img');
+    var fallbackEl = document.getElementById(prefix + '-logo-fallback');
     var emailLimpio = (email || '').toString().trim().toLowerCase();
     var esOpenSports = emailLimpio === EMAIL_DEMO_OPEN_SPORTS;
-    var esRunAndBike = emailLimpio === EMAIL_DEMO_RUNANDBIKE;
+    var esRanerz = emailLimpio === EMAIL_DEMO_RANERZ;
+    var esRunAndBike = !esRanerz && emailLimpio === EMAIL_DEMO_RUNANDBIKE;
     document.documentElement.classList.toggle('tema-runandbike', esRunAndBike);
+    document.documentElement.classList.toggle('tema-ranerz', esRanerz);
+    if (fallbackEl) {
+      var segundaPalabra = fallbackEl.querySelector('span:last-child');
+      if (segundaPalabra) segundaPalabra.textContent = esRanerz ? 'RANERZ' : 'RUNNER';
+    }
     if (esOpenSports) {
       poweredEl.style.fontSize = '0.72rem';
       poweredEl.style.letterSpacing = '1.5px';
@@ -4202,9 +4251,12 @@
       // demo lista de cara a la reunión con Open Sports. Sacar esta
       // excepción cuando haya un sponsor real confirmado. ──
       var esUsuarioDemoOpenSports = (currentUserEmail || '').toString().trim().toLowerCase() === 'edragotto@hotmail.com';
+      // PRUEBA Ranerz (09/10/2026): misma cuenta de prueba que Run &
+      // Bike — tiene prioridad, así no se mezclan las dos demos.
+      var esUsuarioDemoRanerz = (currentUserEmail || '').toString().trim().toLowerCase() === EMAIL_DEMO_RANERZ;
       // PRUEBA (18/09/2026): mismo criterio, para no mostrarle "Open
       // Sports" a alguien que está viendo la demo de Run & Bike.
-      var esUsuarioDemoRunAndBike = (currentUserEmail || '').toString().trim().toLowerCase() === EMAIL_DEMO_RUNANDBIKE;
+      var esUsuarioDemoRunAndBike = !esUsuarioDemoRanerz && (currentUserEmail || '').toString().trim().toLowerCase() === EMAIL_DEMO_RUNANDBIKE;
       var shopRowHtml;
       if (s.Marca === 'Plantillas Jump Box') {
         // PRUEBA (04/09/2026), solo edragotto@hotmail.com: no es una
@@ -4235,6 +4287,16 @@
             '<button class="cf-btn-opensports cf-btn-opensports-gold" ' +
               'onclick="event.stopPropagation(); irATiendaSponsor(\'' + rawGenero + '\', \'' + rawTalle + '\');">' +
               '🛒 OPEN <span class="cf-btn-opensports-sports">SPORTS</span></button>' +
+          '</div>';
+      } else if (esUsuarioDemoRanerz) {
+        // Todavía no hay link real a dónde mandar (Ranerz es un club,
+        // no una tienda) — chip inerte, mismo estilo "apagado" que ve
+        // cualquier usuario sin sponsor confirmado.
+        shopRowHtml =
+          '<div class="cf-btn-row-shop">' +
+            '<button class="cf-btn-opensports cf-btn-opensports-off" disabled>' +
+              '🛒 RANERZ <span class="cf-btn-opensports-sports">CLUB</span>' +
+              '<span class="cf-btn-opensports-off-tag">Próximamente</span></button>' +
           '</div>';
       } else if (esUsuarioDemoRunAndBike) {
         var esTrailShoe = _esTrail(s.Marca, s.Modelo);

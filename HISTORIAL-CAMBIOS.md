@@ -12,6 +12,37 @@ el GAS es la versión más nueva.
 
 ---
 
+## 09/10/2026 08:34 — PRUEBA Ranerz Club, misma cuenta que Run & Bike
+
+El fundador está evaluando entregar el proyecto (app + IG) a Ranerz
+Club, un grupo de running real de Mar del Plata (entrenan, entre otros
+puntos, en Run & Bike). Pidió una muestra rápida con la estética de
+Ranerz, reusando la misma cuenta de prueba que ya tenía Run & Bike.
+
+- **`gas/index.html`**:
+  - Nueva clase `:root.tema-ranerz`, mismo criterio que
+    `tema-runandbike`/`tema-todotrail` (fondo negro de siempre, solo
+    cambia el acento — acá a amarillo vivo `#F2E94E`).
+  - A diferencia de los demás temas, acá el "Powered by" **no
+    cambia** (sigue "Huella Runner MDQ", a pedido puntual del
+    fundador) — lo que cambia es el logo grande, que pasa a decir
+    "HUELLA RANERZ" (RANERZ en rosa `#E91E8C`). Como el logo es una
+    imagen con "HUELLA RUNNER" fijo, se oculta y se usa el texto de
+    respaldo, al que `_pintarPoweredBy()` ahora le cambia la segunda
+    palabra en vivo según el email.
+  - Mismo email de prueba que Run & Bike (`estebandragotto@gmail.com`)
+    — Ranerz tiene prioridad para esa cuenta puntual (el código de
+    Run & Bike queda intacto, solo deja de activarse mientras se
+    prueba Ranerz; alcanza con pedir que se vuelva a priorizar si
+    hace falta mostrar Run & Bike de nuevo).
+  - Botón "Ver en tienda": chip inerte "RANERZ CLUB — Próximamente"
+    (es un club, no una tienda — no hay link real a dónde mandar
+    todavía).
+  - Verificado con capturas: logo y colores correctos en Login y
+    Dashboard, "Powered by" sin cambios.
+
+---
+
 ## 22/09/2026 08:29 — pwa/: se saca el cartel "Empezar →" de Instagram
 
 Diagnóstico previo (mirando el panel de Admin): casi nadie externo
