@@ -12,6 +12,28 @@ el GAS es la versión más nueva.
 
 ---
 
+## 09/10/2026 09:17 — PRUEBA Ranerz Club: tipografía y botones píldora
+
+El fundador probó la muestra anterior en el celu y pidió acercar más
+el diseño al de Ranerz Club: tipografía y forma de los botones.
+
+- **`gas/index.html`**:
+  - Sumada la fuente "Baloo 2" (Google Fonts, pesos 700/800) junto a
+    las que ya se usaban — es la más parecida disponible al estilo
+    redondeado/"bubbly" del logo de Ranerz. No es su fuente exacta (no
+    tenemos su manual de marca), es la aproximación más cercana.
+  - Se aplica solo dentro de `.tema-ranerz`: al logo grande ("HUELLA
+    RANERZ") y a los botones principales (Iniciar sesión, Crear
+    cuenta, Guardar..., y los de Sumar Km/Historial de cada
+    zapatilla).
+  - Esos mismos botones pasan de rectángulo con esquinas redondeadas a
+    **forma de píldora** (`border-radius: 999px`), como el botón "Ver
+    días y horarios" que usa Ranerz en sus historias.
+  - Nada de esto afecta a ningún otro usuario — todo queda bajo el
+    seudo-selector `:root.tema-ranerz`.
+
+---
+
 ## 09/10/2026 08:34 — PRUEBA Ranerz Club, misma cuenta que Run & Bike
 
 El fundador está evaluando entregar el proyecto (app + IG) a Ranerz
