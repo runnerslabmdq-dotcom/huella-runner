@@ -1,16 +1,15 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 14/10/2026 10:17 (hora Argentina)
+  Última actualización: 14/10/2026 11:11 (hora Argentina)
   Cambios en esta versión:
+    - PRUEBA Ranerz Club: todos los botones principales (Iniciar
+      Sesión, Guardar Puntuación, Guardar del Chequeo, etc. — todos
+      comparten .btn-primary) pasan de degradé mostaza a degradé rosa
+      pastel. Solo para la cuenta de prueba. Ver HISTORIAL-CAMBIOS.md.
+  Cambios en versiones anteriores:
     - PRUEBA Ranerz Club: reborde de los botones Sumar Km/Historial y
       la palabra "zapatillas" del título pasan de dorado/amarillo a
-      rosa pastel + blanco. Solo para la cuenta de prueba. Ver
-      HISTORIAL-CAMBIOS.md.
-  Cambios en versiones anteriores:
-    - PRUEBA Ranerz Club: amarillo pasa a un tono mostaza/pastel (antes
-      era muy neón), y nuevo rosa pastel para el brillo de los íconos
-      del header y el borde del carrusel de zapatillas (antes cian-
-      naranja).
+      rosa pastel + blanco.
     - PRUEBA Ranerz Club: tipografía Baloo 2 en el logo y botones
       principales, botones en forma de píldora.
     - PRUEBA Run & Bike y Todo Trail pasan de tema CLARO a tema
@@ -218,6 +217,17 @@
       color: #FFFFFF !important;
     }
     :root.tema-ranerz .armario-subtitle span { color: var(--rosa-ranerz) !important; }
+    /* Ajuste (14/10/2026, 2da vuelta): el fundador pidió llevar el rosa
+       chicle a TODOS los botones principales (es un único .btn-primary
+       reutilizado en Iniciar Sesión, Crear Cuenta, Guardar Puntuación,
+       Guardar del Chequeo, Guardar Entrenamiento, Guardar Perfil,
+       etc.) — antes solo el reborde de Sumar Km/Historial era rosa, el
+       resto seguía en degradé mostaza. Mismo degradé de 3 tonos que el
+       amarillo de siempre, pero en la familia de --rosa-ranerz. */
+    :root.tema-ranerz .btn-primary {
+      background: linear-gradient(180deg, #F3C4DE 0%, var(--rosa-ranerz) 45%, #C96FA0 100%) !important;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -1px 0 rgba(0,0,0,0.18), 0 2px 8px rgba(233,155,194,0.35) !important;
+    }
 
     /* PRUEBA (18/09/2026, pasada a tema OSCURO), solo usuarios con
        Provincia = "San Luis": mismo criterio que tema-runandbike —

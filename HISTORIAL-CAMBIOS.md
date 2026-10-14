@@ -12,6 +12,27 @@ el GAS es la versión más nueva.
 
 ---
 
+## 14/10/2026 11:11 — PRUEBA Ranerz Club: todos los botones principales en rosa
+
+El fundador mandó capturas de los botones "Guardar Puntuación",
+"Guardar" (del Chequeo de desgaste) e "Iniciar Sesión" y preguntó si
+también podían pasar a rosa pastel. Como los tres son en realidad el
+mismo botón reutilizado en toda la app (clase `.btn-primary`: Iniciar
+Sesión, Crear Cuenta, Añadir a Mis Zapas, Guardar Entrenamiento,
+Guardar Puntuación, Guardar del Chequeo, Guardar Perfil, etc.), se le
+avisó que el cambio los iba a afectar a todos, no solo a esos 3 — eligió
+que sí, todos.
+
+- **`gas/index.html`**:
+  - `:root.tema-ranerz .btn-primary` pasa su fondo de degradé mostaza
+    (`--amarillo-top/--amarillo/--amarillo-dark`) a un degradé rosa
+    pastel de 3 tonos (`#F3C4DE` → `--rosa-ranerz` → `#C96FA0`), mismo
+    patrón que el amarillo original.
+  - Solo afecta la cuenta de prueba `estebandragotto@gmail.com` — el
+    resto de usuarios sigue viendo el amarillo de siempre.
+
+---
+
 ## 14/10/2026 10:17 — PRUEBA Ranerz Club: botones y título en rosa + blanco
 
 El fundador vio el resultado del cambio anterior (amarillo pastel + rosa
