@@ -12,6 +12,26 @@ el GAS es la versión más nueva.
 
 ---
 
+## 14/10/2026 10:17 — PRUEBA Ranerz Club: botones y título en rosa + blanco
+
+El fundador vio el resultado del cambio anterior (amarillo pastel + rosa
+en íconos y borde del carrusel) y pidió llevar ese mismo "rosa chicle +
+blanco" a dos lugares más que todavía quedaban en dorado/amarillo. Se
+charló primero (2 opciones) y se eligió la más conservadora: quedarse en
+la misma familia de rosa pastel ya definida, sin sumar un tercer color.
+
+- **`gas/index.html`**:
+  - Los botones "⚡ Sumar Km" y "📋 Historial" de la tarjeta activa pasan
+    su reborde de dorado/gris apagado a `--rosa-ranerz` (el mismo rosa
+    pastel del borde del carrusel), y el texto a blanco puro.
+  - En el título "Tus zapatillas activas", la palabra "zapatillas" pasa
+    de amarillo a ese mismo rosa — "Tus" y "activas" ya se veían casi
+    blancos (usan `--plata`), no hizo falta tocarlos.
+  - Todo queda igual para el resto de los usuarios — es un ajuste solo
+    dentro de `:root.tema-ranerz`.
+
+---
+
 ## 09/10/2026 09:36 — PRUEBA Ranerz Club: colores pastel + rosa en íconos y borde
 
 El fundador mandó capturas de la web real de Ranerz Club (no solo sus

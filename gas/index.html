@@ -1,12 +1,16 @@
 <!--
   HUELLA RUNNER — Index.html
-  Última actualización: 09/10/2026 09:36 (hora Argentina)
+  Última actualización: 14/10/2026 10:17 (hora Argentina)
   Cambios en esta versión:
+    - PRUEBA Ranerz Club: reborde de los botones Sumar Km/Historial y
+      la palabra "zapatillas" del título pasan de dorado/amarillo a
+      rosa pastel + blanco. Solo para la cuenta de prueba. Ver
+      HISTORIAL-CAMBIOS.md.
+  Cambios en versiones anteriores:
     - PRUEBA Ranerz Club: amarillo pasa a un tono mostaza/pastel (antes
       era muy neón), y nuevo rosa pastel para el brillo de los íconos
       del header y el borde del carrusel de zapatillas (antes cian-
-      naranja). Solo para la cuenta de prueba. Ver HISTORIAL-CAMBIOS.md.
-  Cambios en versiones anteriores:
+      naranja).
     - PRUEBA Ranerz Club: tipografía Baloo 2 en el logo y botones
       principales, botones en forma de píldora.
     - PRUEBA Run & Bike y Todo Trail pasan de tema CLARO a tema
@@ -202,6 +206,18 @@
         0 0 36px rgba(217,188,74,0.22),
         0 12px 48px rgba(0,0,0,0.7) !important;
     }
+    /* Ajuste (14/10/2026): reborde de los botones de acción (Sumar Km /
+       Historial) pasa de dorado/gris apagado a rosa pastel + texto
+       blanco — el mismo "chicle y blanco" que ya tiene el borde del
+       carrusel. El título "Tus ZAPATILLAS activas" también pasa su
+       palabra destacada de amarillo a este rosa ("Tus"/"activas" ya
+       usan --plata, un gris casi blanco, no hacía falta tocarlos). */
+    :root.tema-ranerz .cf-btn-train,
+    :root.tema-ranerz .cf-btn-history {
+      border-color: var(--rosa-ranerz) !important;
+      color: #FFFFFF !important;
+    }
+    :root.tema-ranerz .armario-subtitle span { color: var(--rosa-ranerz) !important; }
 
     /* PRUEBA (18/09/2026, pasada a tema OSCURO), solo usuarios con
        Provincia = "San Luis": mismo criterio que tema-runandbike —
