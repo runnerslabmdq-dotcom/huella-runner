@@ -1,0 +1,2382 @@
+<!DOCTYPE html>
+<!--
+  PROFE-RUNNER (nuevo proyecto) — Admin.html
+  Punto de partida: copia exacta del admin.html de Huella Runner
+  tomada el 26/10/2026 12:22 (hora Argentina). Ver la nota grande en
+  codigo.gs de esta misma carpeta antes de tocar nada.
+-->
+<!--
+  HUELLA RUNNER — Admin.html
+  Última actualización: 12/09/2026 23:09 (hora Argentina)
+  Cambios en esta versión:
+    - Tarjeta de "aperturas vs. registros" (Insight Comercial) ahora
+      suma el desglose por origen (instagram, whatsapp, directo, etc.).
+      Ver HISTORIAL-CAMBIOS.md.
+  Cambios en versiones anteriores:
+    - Fix: "runners inactivos" mostraba "10" en dos lugares del panel
+      aunque hubiera más, porque usaba el largo de la lista recortada
+      en vez del total real (abandono.totalInactivos, nuevo en admin.gs).
+    - Si getInsightsExtendidos() falla, Constancia y Valoración
+      Runners ya no se quedan en "Cargando..." para siempre sin
+      aviso — ahora muestran el error.
+  Cambios en versiones anteriores:
+    - La barra de pestañas de Insights pasa de scroll horizontal a
+      varias líneas (flex-wrap) — con 11 pestañas quedaban algunas
+      escondidas al costado y no se notaba que había más para
+      deslizar. Ver HISTORIAL-CAMBIOS.md.
+  Cambios en versiones anteriores:
+    - Fix: la pestaña "★ Valoración Runners" del panel de Insights
+      (agregada en la versión anterior) no tenía botón de pestaña ni
+      entrada en el array de setInsTab(), así que el panel quedaba
+      armado pero inaccesible. Agregado el botón y la entrada que
+      faltaban. Ver HISTORIAL-CAMBIOS.md.
+  Cambios en versiones anteriores:
+    - Nueva sección en Insights: "★ Valoración Runners por modelo" —
+      dato privado, cuenta usuarios distintos (no filas) que puntuaron
+      cada modelo, y marca "listo para publicar" con 5 o más. Ver
+      HISTORIAL-CAMBIOS.md.
+  Cambios en versiones anteriores:
+    - Nueva plantilla rápida "Recordá cargar tus km" (ver
+      HISTORIAL-CAMBIOS.md).
+    - Nueva sección "🕵️ Actividad sospechosa — revisar": el anti-fraude
+      viene marcando entrenamientos "Sospechosa" (superan el acumulado
+      semanal) desde hace rato, pero se acreditaban igual sin que se
+      vieran en ningún lado del panel. Nueva cargarSospechosos() /
+      renderSospechosos(), reusan el mismo backend getEntrenamientosSospechosos()
+      (admin.gs). Encontrado en revisión de bugs del 03/08.
+  Cambios en versiones anteriores:
+    - Semáforo de desgaste arreglado para usar % sobre el límite propio de
+      cada zapatilla, no km crudo: a pedido del fundador, después de que la
+      revisión de bugs notara que las bandas de color (naranja 600-800 km,
+      rojo >800 km) ya no tenían sentido desde que existe el límite de km
+      por zapatilla (KM_Limite) — dos zapatillas con el mismo km crudo
+      pueden tener urgencias bien distintas si sus límites son distintos
+      (ej. 420 km sobre un límite de 400 es más urgente que 750 km sobre un
+      límite de 1000, aunque el km crudo diga lo contrario). Ahora:
+      · _kmBarColor() colorea según a.porcentaje (nuevo campo del backend,
+        codigo.gs) en vez de a.kilometraje: amarillo 100-119%, naranja
+        120-149%, rojo ≥150%.
+      · Las tarjetas de "Alertas de desgaste" muestran el % como número
+        principal (con el km/límite como detalle chico), y la barra ahora
+        representa cuánto se pasó del límite (0% = recién llegó, 100%+ =
+        el doble o más), no una escala fija de 0 a 1000 km.
+      · El semáforo (Insights → Estado Zapas) y su "Detalle por tramo"
+        usan el mismo criterio: Precaución = 100-119% de su límite,
+        Cambio urgente = ≥120%. "Saludables" sigue siendo el total de
+        zapas menos las que ya llegaron a su límite (sin cambios ahí).
+  Cambios en versiones anteriores:
+    - Nuevo 4to tab "Segmento" en "Enviar notificación", con 3 opciones
+      ya calculadas del lado del panel (a pedido del fundador):
+      · 🔥 Zapas en alerta (compradores inminentes) — mismo dato que la
+        tarjeta de Alertas, para reforzar avisos a quien está por
+        necesitar zapatillas nuevas.
+      · 😴 Inactivos / nunca entrenaron — para mensajearlos con un tono
+        suave (reutiliza la plantilla "Recordatorio de inactividad").
+      · 🎂 Cumpleaños esta semana — nuevo, usa getCumpleanosProximos().
+        Pensado para dar un descuento o premio en su semana. Nueva
+        plantilla de mensaje "🎂 Cumpleaños".
+      Cada opción muestra antes de enviar cuántos usuarios y quiénes
+      son. Usa el nuevo tipo de destinatario 'lista' de
+      enviarNotificacion() (codigo.gs).
+    - Nueva plantilla "⚠️ Zapa en zona crítica", para usar junto con el
+      segmento de zapas en alerta.
+    - De paso, fix: el filtro "Alerta Zapas" de "Usuarios registrados"
+      nunca mostraba resultados — dependía de un campo email que
+      alertasDesgaste no traía (arreglado en codigo.gs). Ahora sí filtra
+      bien.
+    - Nota para más adelante (no se construyó, el fundador prefirió
+      dejarlo anotado): aniversario de registro por usuario tiene poco
+      sentido individual al principio porque va a haber muchos con la
+      misma fecha (recién lanzada la app) — mejor pensarlo como sorteo
+      por el aniversario de la app en sí (ej. inscripciones a carreras
+      de premio), cuando se decida la fecha y el premio.
+  Cambios en versiones anteriores:
+    - Fix: el gráfico "Perfil Comunidad" (Insights) contaba mal a los
+      principiantes. Esperaba 5 niveles separados (Principiante,
+      Recreativo, Intermedio, Avanzado, Pro), pero el registro solo
+      guarda 4 (el nivel inicial es un solo valor combinado
+      "Principiante/Recreativo") — esos usuarios entraban al total pero
+      no aparecían en ninguna barra, y los porcentajes no cerraban en
+      100%. NIVELES_ORDER/NIVELES_COLORS ahora usan las 4 categorías
+      reales; se agregó NIVELES_LABELS solo para mostrar el nombre
+      largo en la barra. Encontrado en la revisión de bugs pedida por
+      el fundador.
+  Cambios en versiones anteriores:
+    - "Usuarios registrados" ya no muestra la lista completa de una:
+      · Paginado de a 25 (botones Anterior/Siguiente abajo de la tabla),
+        para que no sea interminable con muchos usuarios simulados/reales.
+      · Orden por defecto: más nuevos primero (antes no tenía orden
+        definido). Usa getAdminUsuarios() → fechaRegistroTs.
+      · 2 filtros nuevos (Provincia y Grupo), al lado de los que ya
+        había (Todos/Alerta Zapas/Inactivos/Top Performers) — se arman
+        solos con lo que hay cargado, no son una lista fija.
+      Pedido del fundador después de simular 50+ usuarios y ver que la
+      lista no paraba de scrollear.
+  Cambios en versiones anteriores:
+    - Plantillas rápidas de mensaje en "Enviar notificación": 10 botones
+      (4 de "invitame un agua/banana/gel" con link de Mercado Pago a
+      completar, y 6 de uso general: recordatorio de inactividad, rotar
+      zapatillas, catálogo nuevo, motivación, pedir sugerencias,
+      prevención de lesiones). Al tocar uno, completa el cuadro de
+      mensaje — se puede editar antes de enviar. Textos en
+      PLANTILLAS_MSG, fácil de sumar más adelante.
+    - Letra base del panel: otro +10% (16,2px → 17,82px), a pedido del
+      fundador.
+  Cambios en versiones anteriores:
+    - Letra base del panel: 14px → 16,2px, a pedido del fundador (se
+      le hacía chico, sobre todo en el celu). Como casi todo el tamaño
+      de texto del panel está en rem (115 usos) y no en px fijo, este
+      solo cambio agranda en cascada títulos, tablas, botones y
+      tarjetas sin tener que tocar cada elemento suelto.
+      Queda pendiente investigar por qué la lista de usuarios pareció
+      "no terminar" con 50 usuarios simulados — no se encontró ningún
+      límite en el código (ni en getAdminUsuarios ni en el render de la
+      tabla), puede ser que se haya visto a mitad de carga o haga falta
+      scrollear. Sigue esperando una captura del fundador para
+      confirmar antes de tocar nada ahí.
+  Cambios en versiones anteriores:
+    - Nuevo "Ver historial completo" dentro de la tarjeta "Notificaciones
+      leídas" (Salud del Sistema): muestra cada mensaje enviado, a quién,
+      cuándo, y si se leyó o si el usuario lo ocultó de su lado. Usa la
+      función nueva getHistorialNotificaciones() de admin.gs. Pedido
+      junto con la selección múltiple para borrar notificaciones en la
+      app (ver Index.html) — el usuario puede "borrar" de su lado, pero
+      acá siempre queda el registro completo.
+  Cambios en versiones anteriores:
+    - 6 secciones nuevas en "Insights del Negocio", pedidas por el
+      fundador tras revisar el panel a fondo:
+      · Constancia: ranking de quién entrena más SEGUIDO (no solo quién
+        acumula más km), últimos 30 días.
+      · Geografía: distribución de la comunidad por provincia (el dato
+        ya lo calculaba el backend, rankingProvincia, pero nunca se
+        mostraba en ningún lado).
+      · Horario Pico: dejó de ser un stub "Próximamente" — ahora usa la
+        hora real de cada entrenamiento.
+      · Tendencia Semanal: se sumó semana actual vs. anterior, últimas
+        8 semanas y últimos 6 meses (antes solo mostraba los últimos 7
+        días día por día).
+      · Insight Comercial: nueva tarjeta de abandono real (14+ días sin
+        entrenar, o nunca entrenaron) con lista desplegable y botón de
+        notificar por persona — reemplaza la señal débil de "no entrenó
+        hoy" que marcaba a casi todos los días.
+      · Salud del Sistema: nueva tarjeta de tasa de lectura de
+        notificaciones.
+    - Arreglado: "El mensaje llegará a 3 los usuarios registrados" tenía
+      el orden de palabras mal — ahora dice "a los 3 usuarios".
+    - Texto chico secundario (etiquetas, subtítulos, horarios) muy
+      difícil de leer: la variable --metal (usada en decenas de lugares
+      del panel) estaba en un gris apagado (#808080) sobre fondo negro,
+      poco contraste. Se subió a #E8E8E8 (mismo tono "plata" que usa el
+      resto de la app), un solo cambio que arregla todos los usos a la
+      vez. De paso, un gris suelto más oscuro (#444, detalle del
+      semáforo) que no pasaba por la variable, ahora también la usa.
+  Cambios en versiones anteriores:
+    - Paleta unificada con el resto de la app: el acento del panel era
+      negro + neón lima (#CCFF00), ahora usa el mismo dorado apagado
+      (#C5B358) que ya tienen la app y la PWA. Solo cambia el color de
+      acento — el fondo negro del panel se mantiene igual, es una
+      identidad intencional.
+    - Nueva sección "Salud del sistema": cupones emitidos (total,
+      disponibles, usados) y última corrida del cron nocturno de
+      Cache_Modelos, para enterarse acá si algo se rompió antes que un
+      usuario. Usa la nueva getSystemHealth() de admin.gs.
+    - Sacado todo lo de voucher/Open Sports del envío de notificaciones:
+      pestaña "Premio / Promo", campo de código, selector de Tipo (ya
+      no hace falta, solo queda un tipo de mensaje). El panel ahora
+      solo tiene 3 pestañas: Todos / Por grupo / Individual.
+  Cambios en versiones anteriores:
+    - BUG DE SEGURIDAD arreglado: el panel pedía sus datos
+      (getAdminStats, getAdminUsuarios, ranking, actividad,
+      notificaciones, etc.) sin mandar ningún token — el backend ahora
+      lo exige, así que esta pantalla lo manda en cada pedido. El token
+      lo pone el backend al armar la página (variable ADMIN_TOKEN,
+      rellenada por Apps Script al evaluar esta plantilla), no hace
+      falta hacer nada distinto para entrar al panel.
+  Cambios en versiones anteriores:
+    - Sacado "calzado trail" de un texto de insights (ahora dice
+      "calzado running").
+    - BUG REAL arreglado: el botón "Salir" no hacía nada al tocarlo.
+      Causa: Apps Script muestra este panel adentro de un iframe de
+      otro dominio, y el navegador bloquea en silencio el acceso
+      directo a la URL de arriba (window.top) por seguridad. Ahora
+      pide la URL real al backend (getAppUrl, en codigo.gs) y navega
+      con un link target="_top", igual que ya se usa para entrar al
+      panel admin desde el login.
+-->
+<html lang="es">
+<head>
+  <base target="_top">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#000000">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:        #000000;
+      --bg2:       #080808;
+      --card:      #0d0d0d;
+      --card2:     #0a0a0a;
+      --neon:      #C5B358;
+      --neon-dim:  #A89440;
+      --neon-glow: rgba(197,179,88,0.12);
+      --plata:     #F0F0F0;
+      --gris:      #C8C8C8;
+      --metal:     #E8E8E8;
+      --borde:     #1a1a1a;
+      --borde2:    #252525;
+      --verde:     #39FF14;
+      --rojo:      #FF2D55;
+      --naranja:   #FF6B00;
+      --amarillo:  #FFD60A;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--plata); min-height: 100vh; font-size: 17.82px; }
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: #0a0a0a; }
+    ::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 2px; }
+
+    #dashboard { display: block; padding: 0 0 80px; }
+
+    /* ══ HEADER ══ */
+    .adm-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 16px 28px; border-bottom: 1px solid var(--borde2);
+      background: var(--bg); position: sticky; top: 0; z-index: 100;
+    }
+    .adm-logo-wrap { display: flex; flex-direction: column; gap: 2px; }
+    .adm-tagline { font-size: 0.58rem; color: var(--metal); text-transform: uppercase; letter-spacing: 3px; }
+    .adm-header-right { display: flex; align-items: center; gap: 10px; }
+    .adm-badge { background: var(--neon); color: #000; font-size: 0.6rem; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; padding: 5px 12px; border-radius: 4px; }
+    .adm-refresh { background: transparent; border: 1px solid var(--borde2); border-radius: 6px; color: var(--metal); font-size: 0.7rem; font-weight: 700; font-family: 'Montserrat', sans-serif; padding: 7px 14px; cursor: pointer; transition: all 0.15s; }
+    .adm-refresh:hover { color: var(--neon); border-color: var(--neon); }
+
+    /* ══ FRANJA DE ATENCIÓN ══ */
+    .atencion-strip { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 24px; }
+    .atencion-chip {
+      flex: 1; min-width: 150px; background: var(--card); border: 1px solid var(--borde2);
+      border-radius: 10px; padding: 14px 16px; cursor: pointer; transition: border-color 0.15s;
+    }
+    .atencion-chip:hover { border-color: var(--neon); }
+    .atencion-num { font-size: 1.5rem; font-weight: 900; color: var(--metal); line-height: 1; }
+    .atencion-label { font-size: 0.64rem; font-weight: 700; color: var(--metal); text-transform: uppercase; letter-spacing: 1px; margin-top: 6px; }
+
+    /* ══ LAYOUT ══ */
+    .wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
+    .sec-label { font-size: 0.66rem; font-weight: 900; text-transform: uppercase; letter-spacing: 4px; color: var(--metal); margin: 36px 0 14px; display: flex; align-items: center; gap: 10px; }
+    .sec-label::before { content: ''; display: block; width: 3px; height: 14px; background: var(--neon); border-radius: 2px; flex-shrink: 0; }
+
+    /* ══ MÉTRICAS ══ */
+    .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    @media (max-width: 700px) { .metrics-grid { grid-template-columns: repeat(2, 1fr); } }
+    .metric-card { background: var(--card); border: 1px solid var(--borde); border-radius: 12px; padding: 20px 16px; position: relative; overflow: hidden; transition: border-color 0.2s; }
+    .metric-card.accent { border-color: rgba(197,179,88,0.2); background: linear-gradient(135deg, #0d0c05 0%, #0d0d0d 100%); }
+    .metric-card.accent::after { content: ''; position: absolute; top: 0; right: 0; width: 60px; height: 60px; background: radial-gradient(circle at top right, rgba(197,179,88,0.08), transparent 70%); }
+    .metric-lbl { font-size: 0.62rem; font-weight: 700; color: var(--metal); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; }
+    .metric-val { font-size: 2.6rem; font-weight: 900; color: var(--plata); line-height: 1; letter-spacing: -1px; }
+    .metric-card.accent .metric-val { color: var(--neon); }
+    .metric-sub { font-size: 0.68rem; color: var(--metal); margin-top: 8px; }
+
+    /* ══ DOS COLUMNAS ══ */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+
+    /* ══ PANEL ══ */
+    .panel { background: var(--card); border: 1px solid var(--borde); border-radius: 12px; padding: 20px 18px; }
+    .panel-title { font-size: 0.66rem; font-weight: 900; color: var(--metal); text-transform: uppercase; letter-spacing: 2.5px; margin-bottom: 16px; }
+
+    /* ══ RANKING ══ */
+    .rank-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--borde); }
+    .rank-item:last-child { border-bottom: none; }
+    .rank-num { font-size: 0.72rem; font-weight: 900; color: #333; width: 18px; text-align: center; flex-shrink: 0; }
+    .rank-num.gold   { color: var(--neon); }
+    .rank-num.silver { color: #C0C0C0; }
+    .rank-num.bronze { color: #B07850; }
+    .rank-avatar { width: 34px; height: 34px; border-radius: 50%; background: #111; border: 1px solid var(--borde2); display: flex; align-items: center; justify-content: center; font-size: 0.68rem; font-weight: 900; color: var(--metal); flex-shrink: 0; }
+    .rank-info { flex: 1; min-width: 0; }
+    .rank-name { font-size: 0.86rem; font-weight: 700; color: var(--plata); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .rank-detail { font-size: 0.65rem; color: var(--metal); margin-top: 2px; }
+    .rank-km { font-size: 1.05rem; font-weight: 900; color: var(--neon); white-space: nowrap; flex-shrink: 0; }
+    .rank-km span { font-size: 0.6rem; color: var(--metal); font-weight: 700; margin-left: 2px; }
+
+    /* ══ ACTIVIDAD RECIENTE ══ */
+    .act-item { display: flex; align-items: flex-start; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--borde); }
+    .act-item:last-child { border-bottom: none; }
+    .act-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--neon); flex-shrink: 0; margin-top: 5px; box-shadow: 0 0 6px var(--neon); }
+    .act-dot.grey { background: #2a2a2a; box-shadow: none; }
+    .act-body { flex: 1; min-width: 0; }
+    .act-text { font-size: 0.8rem; color: var(--gris); line-height: 1.4; }
+    .act-text strong { color: var(--plata); }
+    .act-time { font-size: 0.65rem; color: var(--metal); margin-top: 2px; }
+
+    /* ══ CHIPS FILTRO USUARIOS ══ */
+    .filter-bar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 16px; }
+    .fchip { font-size: 0.65rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1.5px; padding: 8px 16px; border-radius: 6px; cursor: pointer; border: 1px solid var(--borde2); background: var(--card2); color: var(--metal); transition: all 0.15s; white-space: nowrap; user-select: none; }
+    .fchip:hover { border-color: var(--neon); color: var(--neon); }
+    .fchip.active { background: var(--neon); color: #000; border-color: var(--neon); box-shadow: 0 0 12px var(--neon-glow); }
+    .filter-count { font-size: 0.6rem; font-weight: 900; color: var(--metal); margin-left: auto; white-space: nowrap; }
+    .filter-select {
+      background: var(--card2); border: 1px solid var(--borde2); border-radius: 6px;
+      color: var(--metal); font-family: 'Montserrat', sans-serif; font-size: 0.65rem;
+      font-weight: 700; padding: 8px 10px; cursor: pointer; outline: none;
+    }
+    .filter-select:focus { border-color: var(--neon); }
+    .pager { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 18px; }
+    .pager button {
+      background: var(--card2); border: 1px solid var(--borde2); border-radius: 6px;
+      color: var(--plata); font-family: 'Montserrat', sans-serif; font-size: 0.72rem; font-weight: 700;
+      padding: 8px 14px; cursor: pointer; transition: all 0.15s;
+    }
+    .pager button:hover:not(:disabled) { border-color: var(--neon); color: var(--neon); }
+    .pager button:disabled { opacity: 0.35; cursor: not-allowed; }
+    .pager .pager-info { font-size: 0.7rem; color: var(--metal); font-weight: 700; white-space: nowrap; }
+
+    /* ══ STATUS DOT ══ */
+    .status-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+    .status-dot.online  { background: var(--verde); box-shadow: 0 0 6px var(--verde); }
+    .status-dot.offline { background: #2a2a2a; }
+
+    /* ══ TABLA USUARIOS Desktop ══ */
+    .table-hint { font-size: 0.68rem; color: var(--metal); margin-bottom: 14px; }
+    .table-wrap { overflow-x: auto; }
+    .users-table { width: 100%; border-collapse: collapse; min-width: 480px; }
+    .users-table th { font-size: 0.62rem; font-weight: 900; color: var(--metal); text-transform: uppercase; letter-spacing: 2px; text-align: left; padding: 0 12px 12px 0; border-bottom: 1px solid var(--borde); }
+    .users-table td { font-size: 0.8rem; color: var(--gris); padding: 11px 12px 11px 0; border-bottom: 1px solid var(--borde); vertical-align: middle; }
+    .users-table td.name { color: var(--plata); font-weight: 700; font-size: 0.86rem; }
+    .users-table tr.row-click { cursor: pointer; transition: background 0.12s; }
+    .users-table tr.row-click:hover td { background: #0f0f0f; }
+
+    /* ══ CARDS Mobile ══ */
+    .users-cards { display: none; flex-direction: column; gap: 8px; }
+    @media (max-width: 640px) { .table-wrap { display: none; } .users-cards { display: flex; } }
+    .user-card { background: var(--bg2); border: 1px solid var(--borde); border-radius: 10px; padding: 14px 16px; cursor: pointer; transition: border-color 0.15s; }
+    .user-card:hover { border-color: var(--borde2); }
+    .user-card-top { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .user-card-avatar { width: 38px; height: 38px; border-radius: 50%; background: #111; border: 1px solid var(--borde2); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 900; color: var(--metal); flex-shrink: 0; }
+    .user-card-info { flex: 1; min-width: 0; }
+    .user-card-name { font-size: 0.9rem; font-weight: 700; color: var(--plata); }
+    .user-card-grupo { font-size: 0.65rem; color: var(--metal); margin-top: 2px; }
+    .user-card-stats { display: flex; gap: 16px; }
+    .user-card-stat { display: flex; flex-direction: column; gap: 2px; }
+    .user-card-stat-lbl { font-size: 0.58rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--metal); font-weight: 700; }
+    .user-card-stat-val { font-size: 1rem; font-weight: 900; color: var(--plata); }
+    .user-card-stat-val.neon { color: var(--neon); }
+    .user-card-actions { display: flex; align-items: center; gap: 8px; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--borde); }
+
+    /* ══ PILLS ══ */
+    .pill { display: inline-block; font-size: 0.58rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; padding: 4px 9px; border-radius: 4px; }
+    .pill.grupo { background: #0a0f1a; color: #7799EE; border: 1px solid #1a2240; }
+    .pill.nivel { background: #0d0c05; color: var(--neon); border: 1px solid rgba(197,179,88,0.2); }
+
+    /* ══ NOTIF BTN ══ */
+    .notif-btn { font-size: 0.6rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; padding: 5px 10px; border-radius: 5px; background: transparent; color: var(--metal); border: 1px solid var(--borde2); cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+    .notif-btn:hover { background: var(--neon); color: #000; border-color: var(--neon); }
+
+    /* ══ MODAL: ZAPATILLAS DE UN USUARIO ══ */
+    .uz-modal-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(3px); z-index: 200;
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    .uz-modal-overlay.show { display: flex; }
+    .uz-modal {
+      background: var(--card); border: 1px solid var(--borde2); border-radius: 16px;
+      width: 100%; max-width: 420px; max-height: 80vh; overflow-y: auto; padding: 20px;
+    }
+    .uz-modal-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+    .uz-modal-title { font-size: 0.9rem; font-weight: 900; color: var(--plata); }
+    .uz-modal-close { background: none; border: none; color: var(--metal); font-size: 1.2rem; cursor: pointer; line-height: 1; padding: 4px; }
+    .uz-modal-close:hover { color: var(--plata); }
+    .uz-shoe-item { display: flex; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--borde); }
+    .uz-shoe-item:last-child { border-bottom: none; }
+    .uz-shoe-info { flex: 1; min-width: 0; }
+    .uz-shoe-model { font-size: 0.82rem; font-weight: 700; color: var(--plata); }
+    .uz-shoe-marca { font-size: 0.62rem; color: var(--metal); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+    .uz-shoe-right { text-align: right; flex-shrink: 0; }
+    .uz-shoe-km { font-size: 0.72rem; font-weight: 900; color: var(--neon); white-space: nowrap; }
+    .uz-shoe-estado { font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 3px; white-space: nowrap; }
+
+    /* ══ ALERTAS DESGASTE ══ */
+    .alertas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; }
+    .alert-card { background: var(--bg2); border: 1px solid var(--borde); border-radius: 10px; padding: 14px 16px; transition: border-color 0.2s; }
+    .alert-card:hover { border-color: var(--borde2); }
+    .alert-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+    .alert-runner { font-size: 0.88rem; font-weight: 700; color: var(--plata); }
+    .alert-zapa { font-size: 0.68rem; color: var(--metal); margin-top: 3px; }
+    .alert-km-badge { font-size: 1.1rem; font-weight: 900; white-space: nowrap; flex-shrink: 0; line-height: 1; }
+    .alert-km-badge span { font-size: 0.6rem; color: var(--metal); font-weight: 700; margin-left: 2px; }
+    .km-bar-track { height: 6px; border-radius: 3px; background: #1a1a1a; overflow: hidden; margin-top: 4px; }
+    .km-bar-fill { height: 100%; border-radius: 3px; transition: width 0.8s cubic-bezier(0.4,0,0.2,1); }
+    .km-bar-labels { display: flex; justify-content: space-between; margin-top: 5px; }
+    .km-bar-label { font-size: 0.54rem; color: #2a2a2a; font-weight: 700; }
+    .km-bar-label.active { color: var(--metal); }
+
+    /* ══ NOTIFICACIONES ══ */
+    .notif-tabs { display: flex; gap: 7px; margin-bottom: 20px; flex-wrap: wrap; }
+    .ntab { font-size: 0.65rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1.5px; padding: 8px 14px; border-radius: 6px; cursor: pointer; border: 1px solid transparent; transition: all 0.15s; }
+    .ntab.active   { background: var(--neon); color: #000; }
+    .ntab.inactive { background: var(--card2); color: var(--metal); border-color: var(--borde2); }
+    .ntab.inactive:hover { border-color: var(--neon); color: var(--neon); }
+    .nf-label { font-size: 0.64rem; font-weight: 900; color: var(--metal); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; }
+    .nf-select, .nf-textarea { width: 100%; background: var(--bg); border: 1px solid var(--borde2); border-radius: 8px; color: var(--plata); font-family: 'Montserrat', sans-serif; font-size: 0.86rem; padding: 11px 14px; outline: none; margin-bottom: 14px; transition: border-color 0.2s; }
+    .nf-select:focus, .nf-textarea:focus { border-color: var(--neon); }
+    .nf-textarea { resize: vertical; min-height: 90px; }
+    .nf-chip { display: inline-flex; align-items: center; gap: 8px; background: rgba(197,179,88,0.06); border: 1px solid rgba(197,179,88,0.25); border-radius: 7px; padding: 8px 12px; font-size: 0.8rem; font-weight: 700; color: var(--neon); margin-bottom: 14px; }
+    .nf-chip button { background: none; border: none; color: var(--metal); cursor: pointer; font-size: 1rem; padding: 0; line-height: 1; }
+    .nf-chip button:hover { color: var(--rojo); }
+    .plantillas-wrap { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+    .plantilla-chip {
+      font-family: 'Montserrat', sans-serif; font-size: 0.7rem; font-weight: 700;
+      background: var(--card2); color: var(--metal);
+      border: 1px solid var(--borde2); border-radius: 20px;
+      padding: 7px 13px; cursor: pointer; transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .plantilla-chip:hover { border-color: var(--neon); color: var(--neon); }
+    .nf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .nf-btn { width: 100%; background: var(--neon); color: #000; border: none; border-radius: 8px; font-family: 'Montserrat', sans-serif; font-size: 0.8rem; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; padding: 14px; cursor: pointer; margin-top: 4px; transition: all 0.2s; }
+    .nf-btn:hover    { background: var(--neon-dim); box-shadow: 0 0 16px var(--neon-glow); }
+    .nf-btn:disabled { background: #1a1a1a; color: #333; cursor: not-allowed; box-shadow: none; }
+    .nf-feedback { font-size: 0.76rem; margin-top: 10px; min-height: 20px; text-align: center; }
+    .nf-feedback.ok  { color: var(--verde); }
+    .nf-feedback.err { color: var(--rojo); }
+    .nf-info { font-size: 0.76rem; color: var(--metal); margin-bottom: 14px; padding: 10px 0; }
+
+    /* ══ SEARCH ══ */
+    .users-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px; }
+    .search-input { background: var(--bg); border: 1px solid var(--borde2); border-radius: 7px; color: var(--plata); font-family: 'Montserrat', sans-serif; font-size: 0.78rem; padding: 8px 14px; outline: none; width: 220px; transition: border-color 0.2s; }
+    .search-input:focus { border-color: var(--neon); }
+
+    /* ══ LOADING / TOAST ══ */
+    .loading-row { text-align: center; padding: 32px 10px; color: #333; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; }
+    #toast { display: none; position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); background: var(--card2); border: 1px solid var(--borde2); border-radius: 8px; padding: 12px 20px; font-size: 0.78rem; font-weight: 700; color: var(--plata); z-index: 9999; white-space: nowrap; box-shadow: 0 4px 32px rgba(0,0,0,0.8); }
+
+    /* ══════════════════════════════════════════════════
+       PANEL INSIGHTS — pestañas + módulos
+    ══════════════════════════════════════════════════ */
+    .insights-panel {
+      background: var(--card); border: 1px solid var(--borde);
+      border-radius: 12px; overflow: hidden;
+    }
+
+    /* Barra de pestañas */
+    .ins-tabs {
+      display: flex; flex-wrap: wrap; border-bottom: 1px solid var(--borde);
+    }
+    .ins-tab {
+      font-size: 0.62rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1.5px;
+      padding: 14px 18px; cursor: pointer; color: var(--metal); white-space: nowrap;
+      border-bottom: 2px solid transparent; transition: all 0.15s;
+      background: transparent; border-left: none; border-right: none; border-top: none;
+    }
+    .ins-tab:hover { color: var(--plata); }
+    .ins-tab.active { color: var(--neon); border-bottom-color: var(--neon); }
+
+    /* Contenido de cada pestaña */
+    .ins-content { display: none; padding: 22px 20px; }
+    .ins-content.active { display: block; }
+
+    /* ── Módulo A: Perfil Comunidad ── */
+    .nivel-bar-wrap { margin-bottom: 14px; }
+    .nivel-bar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .nivel-bar-name { font-size: 0.76rem; font-weight: 700; color: var(--plata); }
+    .nivel-bar-count { font-size: 0.72rem; font-weight: 900; color: var(--neon); }
+    .nivel-bar-track { height: 8px; background: #111; border-radius: 4px; overflow: hidden; }
+    .nivel-bar-fill  { height: 100%; border-radius: 4px; transition: width 0.9s cubic-bezier(0.4,0,0.2,1); }
+    .nivel-bar-pct   { font-size: 0.6rem; color: var(--metal); margin-top: 3px; text-align: right; }
+
+    /* ── Módulo B: Semáforo Zapas ── */
+    .semaforo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    @media (max-width: 480px) { .semaforo-grid { grid-template-columns: 1fr; } }
+    .semaforo-card {
+      border-radius: 10px; padding: 18px 14px; text-align: center;
+      border: 1px solid; position: relative; overflow: hidden;
+    }
+    .semaforo-card.verde   { background: #001a00; border-color: rgba(57,255,20,0.25); }
+    .semaforo-card.naranja { background: #1a0800; border-color: rgba(255,107,0,0.3); }
+    .semaforo-card.rojo    { background: #1a0008; border-color: rgba(255,45,85,0.3); }
+    .semaforo-dot { width: 12px; height: 12px; border-radius: 50%; margin: 0 auto 12px; }
+    .semaforo-card.verde   .semaforo-dot { background: var(--verde); box-shadow: 0 0 10px var(--verde); }
+    .semaforo-card.naranja .semaforo-dot { background: var(--naranja); box-shadow: 0 0 10px var(--naranja); }
+    .semaforo-card.rojo    .semaforo-dot { background: var(--rojo); box-shadow: 0 0 10px var(--rojo); }
+    .semaforo-num { font-size: 2.4rem; font-weight: 900; line-height: 1; margin-bottom: 4px; }
+    .semaforo-card.verde   .semaforo-num { color: var(--verde); }
+    .semaforo-card.naranja .semaforo-num { color: var(--naranja); }
+    .semaforo-card.rojo    .semaforo-num { color: var(--rojo); }
+    .semaforo-lbl { font-size: 0.62rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1.5px; color: var(--metal); }
+    .semaforo-sub { font-size: 0.6rem; color: var(--metal); margin-top: 6px; }
+
+    /* ── Módulo C: Tendencia semanal ── */
+    .tend-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .tend-day { font-size: 0.68rem; font-weight: 700; color: var(--metal); width: 36px; text-align: right; flex-shrink: 0; }
+    .tend-track { flex: 1; background: #111; border-radius: 3px; height: 10px; overflow: hidden; }
+    .tend-fill  { height: 100%; background: var(--neon); border-radius: 3px; transition: width 0.7s ease; }
+    .tend-info  { font-size: 0.64rem; color: var(--metal); width: 100px; text-align: right; flex-shrink: 0; }
+
+    /* ── Módulo D: Top Modelos ══ */
+    .top-modelo-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--borde); }
+    .top-modelo-item:last-child { border-bottom: none; }
+    .top-modelo-pos { font-size: 0.7rem; font-weight: 900; color: #2a2a2a; width: 20px; flex-shrink: 0; text-align: center; }
+    .top-modelo-pos.t1 { color: var(--neon); }
+    .top-modelo-pos.t2 { color: #C0C0C0; }
+    .top-modelo-pos.t3 { color: #B07850; }
+    .top-modelo-info { flex: 1; min-width: 0; }
+    .top-modelo-name { font-size: 0.84rem; font-weight: 700; color: var(--plata); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .top-modelo-marca { font-size: 0.62rem; color: var(--metal); margin-top: 2px; }
+    .top-modelo-count { font-size: 1rem; font-weight: 900; color: var(--neon); flex-shrink: 0; white-space: nowrap; }
+    .top-modelo-count span { font-size: 0.6rem; color: var(--metal); margin-left: 2px; }
+
+    /* ── Módulo E: Insight Comercial ══ */
+    .insight-card {
+      background: var(--bg2); border: 1px solid var(--borde2); border-radius: 10px;
+      padding: 16px 18px; margin-bottom: 10px; display: flex; align-items: flex-start; gap: 14px;
+    }
+    .insight-icon { font-size: 1.6rem; flex-shrink: 0; line-height: 1; margin-top: 2px; }
+    .insight-body { flex: 1; min-width: 0; }
+    .insight-title { font-size: 0.82rem; font-weight: 700; color: var(--plata); margin-bottom: 4px; }
+    .insight-desc  { font-size: 0.72rem; color: var(--metal); line-height: 1.5; }
+    .insight-action {
+      font-size: 0.62rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1.5px;
+      color: var(--neon); border: 1px solid rgba(197,179,88,0.3); border-radius: 5px;
+      padding: 5px 10px; cursor: pointer; background: transparent; margin-top: 10px;
+      transition: all 0.15s; display: inline-block;
+    }
+    .insight-action:hover { background: var(--neon); color: #000; }
+    .insight-num { font-size: 2rem; font-weight: 900; color: var(--neon); flex-shrink: 0; line-height: 1; align-self: center; }
+
+    /* ══ RESPONSIVE ══ */
+    @media (max-width: 480px) {
+      .adm-header { padding: 14px 16px; }
+      .wrap { padding: 0 14px; }
+      .nf-row { grid-template-columns: 1fr; }
+      .filter-bar { gap: 6px; }
+      .fchip { padding: 7px 12px; font-size: 0.6rem; }
+      .ins-tab { padding: 12px 14px; font-size: 0.58rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="dashboard">
+
+  <!-- HEADER -->
+  <div class="adm-header">
+    <div class="adm-logo-wrap">
+      <img src="https://res.cloudinary.com/klxkj07e/image/upload/v1788190308/NEW_LOGO_2_xcoysy.png" alt="Huella Runner"
+        style="height:22px;width:auto;display:block;"
+        onerror="this.style.display='none';document.getElementById('adm-logo-fallback').style.display='block';">
+      <div id="adm-logo-fallback" style="display:none;font-size:0.9rem;font-weight:900;color:var(--plata);text-transform:uppercase;letter-spacing:3px;">
+        Huella <span style="color:var(--neon);">Runner</span>
+      </div>
+      <div class="adm-tagline">Panel de administración</div>
+    </div>
+    <div class="adm-header-right">
+      <button class="adm-refresh" onclick="cargarTodo()">↺ Actualizar</button>
+      <button class="adm-refresh" onclick="salirDelPanelAdmin(this)" title="Volver al login">⏻ Salir</button>
+      <div class="adm-badge">Admin</div>
+    </div>
+  </div>
+
+  <div class="wrap">
+
+    <!-- 0. FRANJA DE ATENCIÓN — resumen de "qué necesita que mires hoy",
+         para no tener que bajar por toda la página a buscarlo. Cada
+         número reusa los mismos datos que ya cargan las secciones de
+         abajo (alertas, sospechosos, abandono real) — al tocar un chip,
+         te lleva directo a esa sección. -->
+    <div class="atencion-strip" id="atencion-strip">
+      <div class="atencion-chip" onclick="activarFiltro('alerta-zapas'); document.querySelector('.users-toolbar').scrollIntoView({behavior:'smooth',block:'start'});">
+        <div class="atencion-num" id="atencion-alertas">—</div>
+        <div class="atencion-label">🔥 Zapas en alerta</div>
+      </div>
+      <div class="atencion-chip" onclick="document.getElementById('panel-sospechosos').scrollIntoView({behavior:'smooth',block:'start'});">
+        <div class="atencion-num" id="atencion-sospechosos">—</div>
+        <div class="atencion-label">🕵️ Sospechosos</div>
+      </div>
+      <div class="atencion-chip" onclick="setInsTab('comercial'); document.querySelector('.insights-panel').scrollIntoView({behavior:'smooth',block:'start'});">
+        <div class="atencion-num" id="atencion-inactivos">—</div>
+        <div class="atencion-label">💤 Abandono real (14+ días)</div>
+      </div>
+    </div>
+
+    <!-- 1. MÉTRICAS -->
+    <div class="sec-label">Resumen general</div>
+    <div class="metrics-grid" id="metrics-grid">
+      <div class="loading-row" style="grid-column:1/-1">Cargando...</div>
+    </div>
+
+    <!-- 2. RANKING + ACTIVIDAD -->
+    <div class="sec-label">Rankings y actividad</div>
+    <div class="two-col">
+      <div class="panel">
+        <div class="panel-title">🏅 Ranking — KM totales</div>
+        <div id="ranking-list"><div class="loading-row">Cargando...</div></div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">⚡ Actividad reciente</div>
+        <div id="actividad-list"><div class="loading-row">Cargando...</div></div>
+      </div>
+    </div>
+
+    <!-- 3. ALERTAS DESGASTE — oculto visualmente (los datos alimentan el panel Insights) -->
+    <div style="display:none;">
+      <div id="alertas-list"></div>
+    </div>
+
+    <!-- 3b. ENTRENAMIENTOS SOSPECHOSOS — el anti-fraude los marca y los
+         acredita igual (no se bloquean como los rechazados), pero antes
+         nadie los veía en ningún lado del panel para revisarlos a mano. -->
+    <div class="panel" id="panel-sospechosos">
+      <div class="panel-title">🕵️ Actividad sospechosa — revisar</div>
+      <div id="sospechosos-list"><div class="loading-row">Cargando...</div></div>
+    </div>
+
+    <!-- 4. USUARIOS REGISTRADOS -->
+    <div class="sec-label">Usuarios registrados</div>
+    <div class="panel">
+      <div class="users-toolbar">
+        <div class="panel-title" style="margin:0;">Todos los usuarios</div>
+        <input type="text" class="search-input" id="buscar-usuario"
+          placeholder="Buscar nombre o email..." oninput="filtrarYRenderizar()">
+      </div>
+      <div class="filter-bar" id="filter-bar">
+        <div class="fchip active" data-filter="todos"          onclick="activarFiltro('todos')">Todos</div>
+        <div class="fchip"        data-filter="alerta-zapas"   onclick="activarFiltro('alerta-zapas')">🔥 Alerta Zapas</div>
+        <div class="fchip"        data-filter="inactivos"      onclick="activarFiltro('inactivos')">💤 Inactivos</div>
+        <div class="fchip"        data-filter="top-performers" onclick="activarFiltro('top-performers')">⭐ Top Performers</div>
+        <select class="filter-select" id="filtro-provincia" onchange="filtrarYRenderizar()">
+          <option value="">Toda provincia</option>
+        </select>
+        <select class="filter-select" id="filtro-grupo-usuarios" onchange="filtrarYRenderizar()">
+          <option value="">Todo grupo</option>
+        </select>
+        <span class="filter-count" id="filter-count"></span>
+      </div>
+      <div class="table-hint">💡 Tocá un runner para enviarle una notificación individual, o el ícono 👟 para ver sus zapatillas · se muestran los más nuevos primero</div>
+      <div class="table-wrap">
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>Estado</th><th>Nombre</th><th>Grupo</th><th>Nivel</th><th>Zapas</th><th>KM totales</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="users-tbody">
+            <tr><td colspan="7" class="loading-row">Cargando usuarios...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="users-cards" id="users-cards"></div>
+      <div class="pager" id="users-pager"></div>
+    </div>
+
+    <!-- 5. ENVIAR NOTIFICACIÓN -->
+    <div class="sec-label">Enviar notificación</div>
+    <div class="panel" id="panel-notificacion">
+      <div class="notif-tabs">
+        <div class="ntab active"   onclick="setTab('todos')">Todos</div>
+        <div class="ntab inactive" onclick="setTab('grupo')">Por grupo</div>
+        <div class="ntab inactive" onclick="setTab('individual')">Individual</div>
+        <div class="ntab inactive" onclick="setTab('segmento')">Segmento</div>
+      </div>
+      <div class="nf-label" id="nf-destino-label">Destinatarios</div>
+      <select class="nf-select" id="nf-destino" style="display:none;"></select>
+      <div id="nf-individual-wrap" style="display:none;">
+        <div id="nf-chip-wrap" style="display:none;">
+          <div class="nf-chip">
+            <span id="nf-chip-nombre"></span>
+            <button onclick="limpiarDestinatario()">✕</button>
+          </div>
+        </div>
+        <input type="text" class="nf-select" id="nf-email-individual"
+          placeholder="Email del usuario (o seleccioná desde la tabla arriba)...">
+      </div>
+      <div id="nf-destino-todos" class="nf-info">
+        El mensaje llegará a los <strong id="total-users-label" style="color:var(--plata);">todos</strong> usuarios registrados.
+      </div>
+      <div id="nf-segmento-wrap" style="display:none;">
+        <select class="nf-select" id="nf-segmento-select" onchange="onSegmentoChange()">
+          <option value="">— Elegí un segmento —</option>
+          <option value="alerta">🔥 Zapas en alerta (compradores inminentes)</option>
+          <option value="inactivos">😴 Inactivos / nunca entrenaron</option>
+          <option value="cumple">🎂 Cumpleaños esta semana</option>
+        </select>
+        <div class="nf-info" id="nf-segmento-info" style="display:none;"></div>
+      </div>
+      <div class="nf-label">Plantillas rápidas <span style="text-transform:none;font-weight:500;color:var(--metal);">— tocá una para completar el mensaje, después lo podés editar</span></div>
+      <div class="plantillas-wrap">
+        <button type="button" class="plantilla-chip" onclick="usarPlantilla('agua')">💧 Invitame un agua</button>
+        <button type="button" class="plantilla-chip" onclick="usarPlantilla('banana')">🍌 Invitame una banana</button>
+        <button type="button" class="plantilla-chip" onclick="usarPlantilla('combo')">🥤 Invitame lo que sea</button>
+        <button type="button" class="plantilla-chip" onclick="usarPlantilla('sumate')">🙌 Sumate al proyecto</button>
+        <button type="button" class="plantilla-chip" onclick="usarPlantilla('inactividad')">😴 Recordatorio de inactividad</button>
+        <button type="button" class="plantilla-chip" onclick="usarPlantilla('recordarKm')">🏃‍♂️ Recordá cargar tus km</button>
+        <button type="button" class="plantilla-chip" onclick="usarPlantilla('rotacion')">🔄 Rotar zapatillas</button>
+        <button type="button" class="plantilla-chip" onclick="usarPlantilla('catalogo')">👟 Catálogo nuevo</button>
+        <button type="button" class="plantilla-chip" onclick="usarPlantilla('motivacion')">🔥 Motivación</button>
+        <button type="button" class="plantilla-chip" onclick="usarPlantilla('encuesta')">💬 Pedir sugerencias</button>
+        <button type="button" class="plantilla-chip" onclick="usarPlantilla('lesiones')">🩹 Prevención de lesiones</button>
+        <button type="button" class="plantilla-chip" onclick="usarPlantilla('cumple')">🎂 Cumpleaños</button>
+        <button type="button" class="plantilla-chip" onclick="usarPlantilla('critico')">⚠️ Zapa en zona crítica</button>
+      </div>
+      <div class="nf-label">Mensaje</div>
+      <textarea class="nf-textarea" id="nf-mensaje" placeholder="Escribí el mensaje que recibirán..."></textarea>
+      <label style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:0.76rem;color:var(--metal);cursor:pointer;">
+        <input type="checkbox" id="nf-tambien-email" style="width:16px;height:16px;cursor:pointer;">
+        ✉️ También por email (además de la notificación en la app)
+      </label>
+      <div class="nf-row" style="justify-content:flex-end;">
+        <div style="display:flex;align-items:flex-end;">
+          <button class="nf-btn" id="nf-btn" onclick="enviarNotif()">Enviar notificación →</button>
+        </div>
+      </div>
+      <div class="nf-feedback" id="nf-feedback"></div>
+    </div>
+
+    <!-- 6. PANEL INSIGHTS -->
+    <div class="sec-label">Insights del negocio</div>
+    <div class="insights-panel">
+
+      <!-- Pestañas -->
+      <div class="ins-tabs">
+        <div class="ins-tab active"   onclick="setInsTab('comunidad')">👥 Perfil Comunidad</div>
+        <div class="ins-tab"          onclick="setInsTab('grupos')">🏃 Grupos</div>
+        <div class="ins-tab"          onclick="setInsTab('zapas')">🚦 Estado Zapas</div>
+        <div class="ins-tab"          onclick="setInsTab('tendencia')">📈 Tendencia Semanal</div>
+        <div class="ins-tab"          onclick="setInsTab('vidautil')">⏳ Vida Útil</div>
+        <div class="ins-tab"          onclick="setInsTab('horario')">🕐 Horario Pico</div>
+        <div class="ins-tab"          onclick="setInsTab('modelos')">👟 Recambio</div>
+        <div class="ins-tab"          onclick="setInsTab('comercial')">💡 Insight Comercial</div>
+        <div class="ins-tab"          onclick="setInsTab('constancia')">📅 Constancia</div>
+        <div class="ins-tab"          onclick="setInsTab('geografia')">🗺️ Geografía</div>
+        <div class="ins-tab"          onclick="setInsTab('valoracion')">★ Valoración Runners</div>
+      </div>
+
+      <!-- A: PERFIL COMUNIDAD -->
+      <div class="ins-content active" id="ins-comunidad">
+        <div class="panel-title">Distribución de niveles en la comunidad</div>
+        <div id="ins-niveles-bars"><div class="loading-row">Cargando...</div></div>
+      </div>
+
+      <!-- B: ESTADO ZAPAS (Semáforo) -->
+      <div class="ins-content" id="ins-zapas">
+        <div class="panel-title">Estado de zapatillas activas</div>
+        <div class="semaforo-grid" id="ins-semaforo">
+          <div class="loading-row" style="grid-column:1/-1">Cargando...</div>
+        </div>
+        <div style="margin-top:18px; padding-top:14px; border-top:1px solid var(--borde);">
+          <div class="panel-title">Detalle por tramo</div>
+          <div id="ins-semaforo-detalle"></div>
+        </div>
+      </div>
+
+      <!-- C: TENDENCIA SEMANAL -->
+      <div class="ins-content" id="ins-tendencia">
+        <div class="panel-title">KM registrados — últimos 7 días</div>
+        <div id="ins-tend-chart"><div class="loading-row">Cargando...</div></div>
+        <div id="ins-tend-resumen" style="margin-top:16px; padding-top:14px; border-top:1px solid var(--borde);"></div>
+        <div id="ins-tend-extra"></div>
+      </div>
+
+      <!-- F: GRUPOS EN MOVIMIENTO -->
+      <div class="ins-content" id="ins-grupos">
+        <div class="panel-title">Ranking de grupos por KM totales</div>
+        <div id="ins-grupos-list"><div class="loading-row">Cargando...</div></div>
+      </div>
+
+      <!-- G: VIDA ÚTIL PROMEDIO -->
+      <div class="ins-content" id="ins-vidautil">
+        <div class="panel-title">Vida útil promedio de las zapatillas</div>
+        <div id="ins-vidautil-body"><div class="loading-row">Cargando...</div></div>
+      </div>
+
+      <!-- H: HORARIO PICO -->
+      <div class="ins-content" id="ins-horario">
+        <div class="panel-title">Franja horaria de entrenamiento</div>
+        <div id="ins-horario-body"><div class="loading-row">Cargando...</div></div>
+      </div>
+
+      <!-- D: RANKING CALZADO — CAMBIO v2906 -->
+      <div class="ins-content" id="ins-modelos">
+        <div class="panel-title">👟 Ranking de Calzado — Los más usados en Huella Runner</div>
+        <div id="ins-top-modelos"><div class="loading-row">Cargando...</div></div>
+      </div>
+
+      <!-- E: INSIGHT COMERCIAL -->
+      <div class="ins-content" id="ins-comercial">
+        <div class="panel-title">Oportunidades de acción comercial</div>
+        <div id="ins-comercial-cards"><div class="loading-row">Cargando...</div></div>
+        <div id="ins-abandono-lista" style="display:none;margin-top:16px;padding-top:14px;border-top:1px solid var(--borde);"></div>
+      </div>
+
+      <!-- I: CONSTANCIA -->
+      <div class="ins-content" id="ins-constancia">
+        <div class="panel-title">Ranking de constancia — días distintos con actividad (últimos 30 días)</div>
+        <div id="ins-constancia-list"><div class="loading-row">Cargando...</div></div>
+      </div>
+
+      <!-- J: GEOGRAFÍA -->
+      <div class="ins-content" id="ins-geografia">
+        <div class="panel-title">Comunidad por provincia</div>
+        <div id="ins-geografia-list"><div class="loading-row">Cargando...</div></div>
+      </div>
+
+      <!-- K: VALORACIÓN RUNNERS POR MODELO (dato privado, no se publica
+           en la app hasta que un modelo tenga suficiente muestra real —
+           ver getInsightsExtendidos() en admin.gs) -->
+      <div class="ins-content" id="ins-valoracion">
+        <div class="panel-title">★ Valoración Runners por modelo — mínimo 5 usuarios distintos para publicar</div>
+        <div id="ins-valoracion-list"><div class="loading-row">Cargando...</div></div>
+      </div>
+
+    </div><!-- /insights-panel -->
+
+    <!-- 7. SALUD DEL SISTEMA -->
+    <div class="sec-label">Salud del sistema</div>
+    <div class="two-col">
+      <div class="metric-card">
+        <div class="metric-lbl">Cupones emitidos</div>
+        <div class="metric-val" id="health-cupones-total">—</div>
+        <div class="metric-sub" id="health-cupones-detalle">—</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-lbl">Caché de comunidad</div>
+        <div class="metric-val" id="health-cache-fecha" style="font-size:1.15rem;">—</div>
+        <div class="metric-sub">última actualización (cron nocturno)</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-lbl">Notificaciones leídas</div>
+        <div class="metric-val" id="health-notif-lectura">—</div>
+        <div class="metric-sub" id="health-notif-detalle">—</div>
+        <div style="margin-top:8px;">
+          <button onclick="toggleHistorialNotif()" style="background:none;border:none;color:var(--neon);font-size:0.72rem;font-weight:700;cursor:pointer;padding:0;">Ver historial completo</button>
+        </div>
+      </div>
+    </div>
+    <div id="historial-notif-cont" style="display:none;margin-top:16px;padding-top:14px;border-top:1px solid var(--borde);"></div>
+
+  </div><!-- /wrap -->
+</div><!-- /dashboard -->
+
+<div id="toast"></div>
+
+<div class="uz-modal-overlay" id="uz-modal-overlay" onclick="if(event.target===this) cerrarModalZapas()">
+  <div class="uz-modal">
+    <div class="uz-modal-header">
+      <div class="uz-modal-title" id="uz-modal-title">Zapatillas</div>
+      <button class="uz-modal-close" onclick="cerrarModalZapas()">✕</button>
+    </div>
+    <div id="uz-modal-body"><div class="loading-row">Cargando...</div></div>
+  </div>
+</div>
+
+<script>
+  // Token de admin: lo puso el backend al armar esta página (ya se
+  // validó en doGet antes de mostrar el panel). Cada pedido de datos
+  // de acá en más lo manda de nuevo, porque las funciones del servidor
+  // ahora también lo revisan (antes solo se protegía esta pantalla).
+  const ADMIN_TOKEN = "<?= adminToken ?>";
+
+  /* ════════════════════════════════════
+     ESTADO GLOBAL
+  ════════════════════════════════════ */
+  let tabActual           = 'todos';
+  let usuariosData        = [];
+  let gruposData          = [];
+  let filtroActivo        = 'todos';
+  let usuariosFiltrados   = [];
+  let paginaActual        = 0;
+  const USERS_PAGE_SIZE   = 25;
+  let alertasData         = [];
+  let alertasFull         = [];
+  let sospechososFull     = [];
+  let actividadPorDiaData = [];
+  let insightsExtData     = null;
+  let insTabActual        = 'comunidad';
+  let historialNotifData  = null;
+  let cumpleanosData      = [];
+  let segmentoEmails      = [];
+
+  // Estado compartido entre las dos llamadas async (stats y dashboard).
+  const _insState = { totalZapas: null, alertasCount: null };
+
+  function sanitize(str) {
+    return (str || '').toString()
+      .replace(/&/g,  '&amp;')
+      .replace(/</g,  '&lt;')
+      .replace(/>/g,  '&gt;')
+      .replace(/"/g,  '&quot;')
+      .replace(/'/g,  '&#39;');
+  }
+
+  window.onload = function() { cargarTodo(); };
+
+  function cargarTodo() {
+    cargarMetricas();
+    cargarRanking();
+    cargarActividad();
+    cargarAlertas();
+    cargarSospechosos();
+    cargarUsuarios();
+    cargarGrupos();
+    cargarActividadPorDia();
+    cargarSaludSistema();
+    cargarInsightsExtendidos();
+    cargarCumpleanos();
+  }
+
+  /* ════════════════════════════════════
+     CUMPLEAÑOS PRÓXIMOS (segmento de notificaciones)
+  ════════════════════════════════════ */
+  function cargarCumpleanos() {
+    google.script.run
+      .withSuccessHandler(function(res) {
+        cumpleanosData = (res && res.success) ? (res.lista || []) : [];
+      })
+      .withFailureHandler(function() {})
+      .getCumpleanosProximos(ADMIN_TOKEN);
+  }
+
+  /* ════════════════════════════════════
+     SALUD DEL SISTEMA
+  ════════════════════════════════════ */
+  function cargarSaludSistema() {
+    google.script.run
+      .withSuccessHandler(function(data) {
+        if (!data || !data.success) return;
+        document.getElementById('health-cupones-total').textContent = data.cuponesTotal;
+        document.getElementById('health-cupones-detalle').textContent =
+          data.cuponesDisponibles + ' disponibles · ' + data.cuponesUsados + ' usados';
+        document.getElementById('health-cache-fecha').textContent = data.ultimaCorridaCache;
+      })
+      .withFailureHandler(function() {})
+      .getSystemHealth(ADMIN_TOKEN);
+  }
+
+  /* ════════════════════════════════════
+     INSIGHTS EXTENDIDOS — constancia, horario real, tendencia
+     semanal/mensual con comparación, abandono real, lectura notif.
+  ════════════════════════════════════ */
+  function cargarInsightsExtendidos() {
+    google.script.run
+      .withSuccessHandler(function(data) {
+        if (!data || !data.success) {
+          _mostrarErrorInsightsExtendidos(data && data.error);
+          return;
+        }
+        insightsExtData = data;
+        actualizarFranjaAtencion();
+        _renderConstancia();
+        _renderHorarioReal();
+        _renderTendenciaExtendida();
+        _renderNotifLectura();
+        _renderInsightComercial(); // re-renderiza para sumar la tarjeta de abandono
+        _renderValoracionModelos();
+      })
+      .withFailureHandler(function(e) {
+        _mostrarErrorInsightsExtendidos(e && e.message);
+      })
+      .getInsightsExtendidos(ADMIN_TOKEN);
+  }
+
+  // Antes, si esta llamada fallaba, las secciones que dependen de ella
+  // (Constancia, Valoración Runners) se quedaban con el "Cargando..."
+  // inicial para siempre, sin ningún aviso — parecía que la sección no
+  // existía. Ahora se ve el error en pantalla.
+  function _mostrarErrorInsightsExtendidos(detalle) {
+    const msg = '<div style="text-align:center;padding:24px;font-size:0.84rem;color:var(--rojo);">' +
+      'No se pudo cargar esta sección' + (detalle ? ': ' + sanitize(String(detalle)) : '') +
+      '. Probá recargar la página.</div>';
+    ['ins-constancia-list', 'ins-valoracion-list'].forEach(function(id) {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = msg;
+    });
+  }
+
+  function _renderConstancia() {
+    const cont = document.getElementById('ins-constancia-list');
+    if (!cont) return;
+    const lista = (insightsExtData && insightsExtData.rankingConstancia) || [];
+    if (!lista.length) {
+      cont.innerHTML = '<div style="text-align:center;padding:24px;font-size:0.84rem;color:var(--metal);">Sin actividad en los últimos 30 días</div>';
+      return;
+    }
+    const maxDias = lista[0].diasActivos || 1;
+    cont.innerHTML =
+      '<div style="font-size:0.66rem;color:var(--gris);margin-bottom:16px;padding:10px 12px;' +
+      'background:var(--bg2);border-radius:8px;border:1px solid var(--borde);line-height:1.6;">' +
+      '📅 Quién entrena más <strong style="color:var(--neon)">seguido</strong> (no solo quién acumula más km) — ' +
+      'útil para premiar regularidad, no solo volumen.</div>' +
+      lista.map(function(u, i) {
+        const pct = Math.round((u.diasActivos / maxDias) * 100);
+        return `<div style="margin-bottom:16px;">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;">
+            <div class="top-modelo-pos ${i < 3 ? 't'+(i+1) : ''}">${i+1}</div>
+            <div class="top-modelo-info">
+              <div class="top-modelo-name">${sanitize(u.nombre)}</div>
+              <div class="top-modelo-marca">${sanitize(u.grupo || 'Sin grupo')}</div>
+            </div>
+            <div class="top-modelo-count">${u.diasActivos}<span>día${u.diasActivos!==1?'s':''}</span></div>
+          </div>
+          <div class="nivel-bar-track"><div class="nivel-bar-fill" style="width:${pct}%;background:var(--neon);"></div></div>
+        </div>`;
+      }).join('');
+  }
+
+  // Valoración Runners por modelo — dato privado del panel, para ver
+  // cuándo un modelo junta suficiente muestra REAL (usuarios distintos,
+  // no filas de zapatillas) antes de mostrar nada en la app. Ver
+  // getInsightsExtendidos() (admin.gs) y HISTORIAL-CAMBIOS.md.
+  function _renderValoracionModelos() {
+    const cont = document.getElementById('ins-valoracion-list');
+    if (!cont) return;
+    const lista = (insightsExtData && insightsExtData.valoracionPorModelo) || [];
+    if (!lista.length) {
+      cont.innerHTML = '<div style="text-align:center;padding:24px;font-size:0.84rem;color:var(--metal);">Todavía nadie puntuó ninguna zapatilla</div>';
+      return;
+    }
+    cont.innerHTML =
+      '<div style="font-size:0.66rem;color:var(--gris);margin-bottom:16px;padding:10px 12px;' +
+      'background:var(--bg2);border-radius:8px;border:1px solid var(--borde);line-height:1.6;">' +
+      '★ Se cuentan <strong style="color:var(--neon)">usuarios distintos</strong>, no zapatillas — si la misma persona ' +
+      'tiene 2 pares del mismo modelo, cuenta una sola vez. Un modelo está <strong style="color:var(--neon)">listo para ' +
+      'publicar</strong> recién con 5 usuarios distintos o más.</div>' +
+      lista.map(function(m, i) {
+        return `<div style="margin-bottom:14px;display:flex;align-items:center;gap:12px;">
+          <div class="top-modelo-pos ${i < 3 ? 't'+(i+1) : ''}">${i+1}</div>
+          <div class="top-modelo-info">
+            <div class="top-modelo-name">${sanitize(m.marca)} ${sanitize(m.modelo)}</div>
+            <div class="top-modelo-marca">${m.usuariosDistintos} usuario${m.usuariosDistintos!==1?'s':''} distinto${m.usuariosDistintos!==1?'s':''}
+              ${m.listoParaPublicar ? ' · <span style="color:var(--neon);">listo para publicar</span>' : ' · falta muestra'}</div>
+          </div>
+          <div class="top-modelo-count">★ ${m.promedio}</div>
+        </div>`;
+      }).join('');
+  }
+
+  function _renderGeografia(data) {
+    const cont = document.getElementById('ins-geografia-list');
+    if (!cont) return;
+    const lista = (data && data.rankingProvincia) || [];
+    if (!lista.length) {
+      cont.innerHTML = '<div style="text-align:center;padding:24px;font-size:0.84rem;color:var(--metal);">Todavía no hay provincias cargadas</div>';
+      return;
+    }
+    const maxRunners = lista[0].runners || 1;
+    cont.innerHTML =
+      '<div style="font-size:0.66rem;color:var(--gris);margin-bottom:16px;padding:10px 12px;' +
+      'background:var(--bg2);border-radius:8px;border:1px solid var(--borde);line-height:1.6;">' +
+      '🗺️ De dónde es tu comunidad — útil para saber dónde tiene sentido buscar sponsors locales.</div>' +
+      lista.map(function(p, i) {
+        const pct = Math.round((p.runners / maxRunners) * 100);
+        return `<div style="margin-bottom:16px;">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;">
+            <div class="top-modelo-pos ${i < 3 ? 't'+(i+1) : ''}">${i+1}</div>
+            <div class="top-modelo-info">
+              <div class="top-modelo-name">${sanitize(p.provincia)}</div>
+              <div class="top-modelo-marca">${Math.round(p.kmTotal||0)} km acumulados</div>
+            </div>
+            <div class="top-modelo-count">${p.runners}<span>runner${p.runners!==1?'s':''}</span></div>
+          </div>
+          <div class="nivel-bar-track"><div class="nivel-bar-fill" style="width:${pct}%;background:var(--neon);"></div></div>
+        </div>`;
+      }).join('');
+  }
+
+  function _renderHorarioReal() {
+    const cont = document.getElementById('ins-horario-body');
+    if (!cont || !insightsExtData) return;
+    const h = insightsExtData.horarioPico || { manana: 0, tarde: 0, noche: 0, totalRegistros: 0 };
+    const franjas = [
+      { lbl: '🌅 Mañana', rango: '6 – 12 h',  pct: h.manana },
+      { lbl: '☀️ Tarde',  rango: '12 – 19 h', pct: h.tarde  },
+      { lbl: '🌙 Noche',  rango: '19 – 6 h',  pct: h.noche  }
+    ];
+    if (!h.totalRegistros) {
+      cont.innerHTML = franjas.map(function(f) {
+        return `<div style="margin-bottom:14px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <div style="font-size:0.78rem;font-weight:700;color:var(--plata);">${f.lbl}</div>
+            <div style="font-size:0.62rem;color:var(--metal);">${f.rango}</div>
+          </div>
+          <div class="nivel-bar-track"><div class="nivel-bar-fill" style="width:0%;background:#2a2a2a;"></div></div>
+        </div>`;
+      }).join('') +
+      `<div style="text-align:center;padding:16px;font-size:0.84rem;color:var(--metal);">Todavía no hay entrenamientos con hora registrada</div>`;
+      return;
+    }
+    cont.innerHTML = franjas.map(function(f) {
+      return `<div style="margin-bottom:14px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <div style="font-size:0.78rem;font-weight:700;color:var(--plata);">${f.lbl}</div>
+          <div style="font-size:0.62rem;color:var(--metal);">${f.rango} · ${f.pct}%</div>
+        </div>
+        <div class="nivel-bar-track"><div class="nivel-bar-fill" style="width:${f.pct}%;background:var(--neon);"></div></div>
+      </div>`;
+    }).join('') +
+    `<div style="font-size:0.72rem;color:var(--metal);line-height:1.6;padding:14px 16px;background:var(--bg2);border-radius:8px;border:1px solid var(--borde);margin-top:6px;">
+      Sobre ${h.totalRegistros} entrenamiento${h.totalRegistros!==1?'s':''} con hora registrada. Sirve para elegir el mejor momento para enviar notificaciones y promos con mayor apertura.
+    </div>`;
+  }
+
+  function _renderTendenciaExtendida() {
+    const cont = document.getElementById('ins-tend-extra');
+    if (!cont || !insightsExtData) return;
+
+    const semActual   = insightsExtData.semanaActualKm   || 0;
+    const semAnterior = insightsExtData.semanaAnteriorKm || 0;
+    const delta       = semActual - semAnterior;
+    const deltaColor  = delta > 0 ? '#39FF14' : (delta < 0 ? '#FF2D55' : 'var(--metal)');
+    const deltaTexto  = delta > 0 ? '+' + delta + ' km' : (delta < 0 ? delta + ' km' : 'sin cambios');
+
+    const semanas = insightsExtData.tendenciaSemanas || [];
+    const maxSem  = Math.max.apply(null, semanas.map(function(s) { return s.km || 0; })) || 1;
+    const meses   = insightsExtData.tendenciaMeses || [];
+    const maxMes  = Math.max.apply(null, meses.map(function(m) { return m.km || 0; })) || 1;
+
+    let extra = `<div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--borde);">
+      <div class="panel-title">Semana actual vs. anterior</div>
+      <div style="display:flex;align-items:baseline;gap:10px;">
+        <div style="font-size:1.6rem;font-weight:900;color:var(--neon);">${semActual} km</div>
+        <div style="font-size:0.78rem;font-weight:700;color:${deltaColor};">${deltaTexto} vs. semana anterior (${semAnterior} km)</div>
+      </div>
+    </div>`;
+
+    extra += `<div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--borde);">
+      <div class="panel-title">Últimas 8 semanas</div>` +
+      semanas.map(function(s) {
+        const pct = Math.round((s.km / maxSem) * 100);
+        return `<div class="tend-row">
+          <div class="tend-day" style="width:78px;font-size:0.6rem;white-space:nowrap;">${s.label}</div>
+          <div class="tend-track">
+            <div class="tend-fill" style="width:${pct}%;${s.km>0?'':'background:#1a1a1a;'}"></div>
+          </div>
+          <div class="tend-info">${s.km} km</div>
+        </div>`;
+      }).join('') + '</div>';
+
+    extra += `<div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--borde);">
+      <div class="panel-title">Últimos 6 meses</div>` +
+      meses.map(function(m) {
+        const pct = Math.round((m.km / maxMes) * 100);
+        return `<div class="tend-row">
+          <div class="tend-day">${m.label}</div>
+          <div class="tend-track">
+            <div class="tend-fill" style="width:${pct}%;${m.km>0?'':'background:#1a1a1a;'}"></div>
+          </div>
+          <div class="tend-info">${m.km} km</div>
+        </div>`;
+      }).join('') + '</div>';
+
+    cont.innerHTML = extra;
+  }
+
+  function _renderNotifLectura() {
+    const el = document.getElementById('health-notif-lectura');
+    if (!el || !insightsExtData) return;
+    const n = insightsExtData.notifLectura || { enviadas: 0, leidas: 0, pct: 0 };
+    el.textContent = n.pct + '%';
+    document.getElementById('health-notif-detalle').textContent =
+      n.leidas + ' leídas de ' + n.enviadas + ' enviadas';
+  }
+
+  // Historial completo de mensajes enviados (qué se dijo y a quién).
+  // El registro nunca se borra en el Sheet, aunque el usuario oculte la
+  // notificación de su lado — esto muestra ese historial completo.
+  function toggleHistorialNotif() {
+    const cont = document.getElementById('historial-notif-cont');
+    if (!cont) return;
+    const visible = cont.style.display !== 'none';
+    if (visible) { cont.style.display = 'none'; return; }
+    cont.style.display = 'block';
+
+    if (historialNotifData) { _renderHistorialNotif(); return; }
+    cont.innerHTML = '<div style="text-align:center;padding:16px;font-size:0.84rem;color:var(--metal);">Cargando...</div>';
+    google.script.run
+      .withSuccessHandler(function(res) {
+        historialNotifData = (res && res.success) ? res.historial : [];
+        _renderHistorialNotif();
+      })
+      .withFailureHandler(function() {
+        cont.innerHTML = '<div style="text-align:center;padding:16px;font-size:0.84rem;color:var(--rojo);">No se pudo cargar el historial.</div>';
+      })
+      .getHistorialNotificaciones(ADMIN_TOKEN);
+  }
+
+  function _renderHistorialNotif() {
+    const cont = document.getElementById('historial-notif-cont');
+    const lista = historialNotifData || [];
+    if (!lista.length) {
+      cont.innerHTML = '<div style="text-align:center;padding:16px;font-size:0.84rem;color:var(--metal);">Todavía no se envió ningún mensaje.</div>';
+      return;
+    }
+    cont.innerHTML = '<div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:1px;color:var(--metal);margin-bottom:10px;">Últimos ' + lista.length + ' mensajes (más reciente primero)</div>'
+      + lista.map(function(h) {
+        const estado = h.oculto ? 'Ocultado por el usuario' : (h.leido ? 'Leído' : 'No leído');
+        const colorEstado = h.oculto ? 'var(--metal)' : (h.leido ? 'var(--verde)' : 'var(--neon)');
+        return '<div style="padding:10px 0;border-bottom:1px solid var(--borde);">'
+          + '<div style="display:flex;justify-content:space-between;gap:10px;margin-bottom:4px;">'
+          + '<span style="font-size:0.78rem;font-weight:700;color:var(--plata);">' + sanitize(h.email) + '</span>'
+          + '<span style="font-size:0.66rem;color:var(--metal);white-space:nowrap;">' + sanitize(h.fecha) + '</span>'
+          + '</div>'
+          + '<div style="font-size:0.8rem;color:var(--gris);line-height:1.4;margin-bottom:4px;">' + sanitize(h.mensaje) + '</div>'
+          + '<span style="font-size:0.64rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:' + colorEstado + ';">' + estado + '</span>'
+          + '</div>';
+      }).join('');
+  }
+
+  // Vuelve a la app principal (login/dashboard).
+  // Apps Script muestra este panel adentro de un iframe de otro dominio, así que
+  // no se puede leer/escribir window.top.location directo (el navegador lo bloquea
+  // por seguridad, sin avisar). Por eso se pide la URL real al backend y se navega
+  // con un link target="_top", igual que el login usa para entrar al panel admin.
+  function salirDelPanelAdmin(btn) {
+    if (btn) { btn.disabled = true; btn.innerText = '...'; }
+    google.script.run
+      .withSuccessHandler(function(appUrl) {
+        var a = document.createElement('a');
+        a.href = appUrl;
+        a.target = '_top';
+        document.body.appendChild(a);
+        a.click();
+      })
+      .withFailureHandler(function(e) {
+        if (btn) { btn.disabled = false; btn.innerText = '⏻ Salir'; }
+        alert('No se pudo salir: ' + (e && e.message ? e.message : e));
+      })
+      .getAppUrl();
+  }
+
+  /* ════════════════════════════════════
+     MÉTRICAS
+  ════════════════════════════════════ */
+  function cargarMetricas() {
+    google.script.run
+      .withSuccessHandler(renderMetricas)
+      .withFailureHandler(function() {})
+      .getAdminStats(ADMIN_TOKEN);
+  }
+  function renderMetricas(data) {
+    if (!data || !data.success) return;
+    document.getElementById('metrics-grid').innerHTML = `
+      <div class="metric-card accent">
+        <div class="metric-lbl">Usuarios totales</div>
+        <div class="metric-val">${data.usuariosTotales}</div>
+        <div class="metric-sub">registrados</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-lbl">Activos hoy</div>
+        <div class="metric-val">${data.activosHoy}</div>
+        <div class="metric-sub">${data.registrosHoy} entrenamientos</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-lbl">Zapatillas activas</div>
+        <div class="metric-val">${data.zapatillasTotales}</div>
+        <div class="metric-sub">${data.zapasArchivadas} archivadas</div>
+      </div>
+      <div class="metric-card accent">
+        <div class="metric-lbl">KM registrados hoy</div>
+        <div class="metric-val">${data.kmHoy}</div>
+        <div class="metric-sub">${data.kmSemana} esta semana</div>
+      </div>`;
+    document.getElementById('total-users-label').textContent = data.usuariosTotales;
+    _insState.totalZapas = data.zapatillasTotales;
+    _actualizarSemaforoVerde();
+  }
+
+  /* ════════════════════════════════════
+     RANKING
+  ════════════════════════════════════ */
+  function cargarRanking() {
+    google.script.run
+      .withSuccessHandler(renderRanking)
+      .withFailureHandler(function() {})
+      .getRankingUsuarios(ADMIN_TOKEN);
+  }
+  function renderRanking(lista) {
+    const cont = document.getElementById('ranking-list');
+    if (!lista || !lista.length) { cont.innerHTML = '<div class="loading-row">Sin datos</div>'; return; }
+    const cls = ['gold','silver','bronze'];
+    cont.innerHTML = lista.slice(0, 8).map(function(u, i) {
+      const ini = sanitize(((u.nombre[0]||'') + (u.apellido[0]||'')).toUpperCase()) || '?';
+      return `<div class="rank-item">
+        <div class="rank-num ${cls[i]||''}">${i+1}</div>
+        <div class="rank-avatar">${ini}</div>
+        <div class="rank-info">
+          <div class="rank-name">${sanitize(u.nombre)} ${sanitize(u.apellido)}</div>
+          <div class="rank-detail">${u.zapatillas} zapa${u.zapatillas!==1?'s':''} · ${sanitize(u.grupo||'Sin grupo')}</div>
+        </div>
+        <div class="rank-km">${u.kmTotales}<span>km</span></div>
+      </div>`;
+    }).join('');
+  }
+
+  /* ════════════════════════════════════
+     ACTIVIDAD RECIENTE
+  ════════════════════════════════════ */
+  function cargarActividad() {
+    google.script.run
+      .withSuccessHandler(renderActividad)
+      .withFailureHandler(function() {})
+      .getActividadReciente(ADMIN_TOKEN);
+  }
+  function renderActividad(eventos) {
+    const cont = document.getElementById('actividad-list');
+    if (!eventos || !eventos.length) { cont.innerHTML = '<div class="loading-row">Sin actividad reciente</div>'; return; }
+    cont.innerHTML = eventos.map(function(ev) {
+      const display = sanitize((ev.nombre && ev.nombre !== ev.email) ? ev.nombre : ev.email);
+      const dotCls  = ev.tipo === 'entrenamiento' ? '' : 'grey';
+      const zapaTag = ev.zapatilla
+        ? `<span style="color:var(--metal);font-size:0.65rem;display:block;margin-top:1px;">${sanitize(ev.zapatilla)}</span>`
+        : '';
+      const texto = ev.tipo === 'entrenamiento'
+        ? `<strong>${display}</strong> sumó <strong style="color:var(--neon)">${ev.km} km</strong>${zapaTag}`
+        : `<strong>${display}</strong> se registró`;
+      return `<div class="act-item">
+        <div class="act-dot ${dotCls}"></div>
+        <div class="act-body">
+          <div class="act-text">${texto}</div>
+          <div class="act-time">${_formatFecha(ev.fecha)}</div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  /* ════════════════════════════════════
+     ACTIVIDAD SOSPECHOSA (anti-fraude — no bloquea, pero hay que revisarla)
+     El entrenamiento SÍ se acredita (no es un "Rechazada"), solo queda
+     marcado porque superó el acumulado semanal — antes esto no se veía
+     en ningún lado del panel, quedaba la marca en el Sheet sin que nadie
+     se enterara.
+  ════════════════════════════════════ */
+  function cargarSospechosos() {
+    google.script.run
+      .withSuccessHandler(renderSospechosos)
+      .withFailureHandler(function() {
+        document.getElementById('sospechosos-list').innerHTML = '<div class="loading-row">Sin datos</div>';
+      })
+      .getEntrenamientosSospechosos(ADMIN_TOKEN);
+  }
+  function renderSospechosos(lista) {
+    const cont = document.getElementById('sospechosos-list');
+    sospechososFull = lista || [];
+    actualizarFranjaAtencion();
+    if (!lista || !lista.length) {
+      cont.innerHTML = '<div style="text-align:center;padding:20px;font-size:0.84rem;color:var(--metal);">✅ Nada para revisar por ahora.</div>';
+      return;
+    }
+    cont.innerHTML = lista.map(function(s) {
+      const nombre = sanitize(s.nombre || s.email);
+      const zapaTag = s.zapatilla
+        ? `<span style="color:var(--metal);font-size:0.65rem;display:block;margin-top:1px;">${sanitize(s.zapatilla)}</span>`
+        : '';
+      const motivoTxt = s.motivo ? ' · ' + sanitize(s.motivo) : '';
+      return `<div class="act-item">
+        <div class="act-dot" style="background:var(--naranja);box-shadow:0 0 6px var(--naranja);"></div>
+        <div class="act-body">
+          <div class="act-text"><strong>${nombre}</strong> cargó <strong style="color:var(--naranja)">${s.km} km</strong>${zapaTag}</div>
+          <div class="act-time">${sanitize(s.fecha)}${motivoTxt}</div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  /* ════════════════════════════════════
+     ALERTAS DESGASTE
+  ════════════════════════════════════ */
+  function cargarAlertas() {
+    google.script.run
+      .withSuccessHandler(renderAlertas)
+      .withFailureHandler(function() {
+        document.getElementById('alertas-list').innerHTML = '<div class="loading-row">Sin datos</div>';
+      })
+      .getAdminDashboardData(ADMIN_TOKEN);
+  }
+  // Color según % sobre el límite PROPIO de cada zapatilla (a.porcentaje),
+  // no un tope de km fijo — desde que existe el límite por zapatilla
+  // (KM_Limite), dos zapatillas con el mismo km crudo pueden tener
+  // urgencias bien distintas si sus límites son distintos. Todo lo que
+  // llega acá ya está en 100%+ (getAdminDashboardData solo manda las que
+  // llegaron a su límite), así que las 3 bandas son "qué tan pasada" está.
+  function _kmBarColor(pct) {
+    if (pct >= 150) return '#FF2D55'; // muy pasada
+    if (pct >= 120) return '#FF6B00'; // bastante pasada
+    return '#FFD60A';                 // recién cruzó el límite
+  }
+  function renderAlertas(data) {
+    const cont = document.getElementById('alertas-list');
+    if (!data || !data.success) { cont.innerHTML = '<div class="loading-row">Sin datos</div>'; return; }
+    const alertas = data.alertasDesgaste || [];
+    alertasData = alertas.map(function(a) { return (a.email || '').toLowerCase(); });
+    alertasFull = alertas;
+    actualizarFranjaAtencion();
+
+    // Alimenta el panel Insights con datos del dashboard
+    _renderInsightsDesdeDashboard(data);
+
+    if (!alertas.length) {
+      cont.innerHTML = `<div style="text-align:center;padding:24px;font-size:0.86rem;color:var(--metal);">✅ Ninguna zapatilla en zona crítica</div>`;
+      return;
+    }
+    cont.innerHTML = '<div class="alertas-grid">' +
+      alertas.map(function(a) {
+        const km    = a.kilometraje || 0;
+        const lim   = a.limite || km || 1;
+        const pct   = a.porcentaje || Math.round((km / lim) * 100);
+        const color = _kmBarColor(pct);
+        // La barra muestra cuánto se pasó del límite (0% = recién llegó,
+        // 100%+ = el doble o más de su propio límite), no el km crudo.
+        const overPct = Math.min(100, Math.max(0, pct - 100));
+        const t1 = pct >= 100 ? 'active' : '';
+        const t2 = pct >= 120 ? 'active' : '';
+        const t3 = pct >= 150 ? 'active' : '';
+        const t4 = pct >= 200 ? 'active' : '';
+        return `<div class="alert-card">
+          <div class="alert-card-top">
+            <div>
+              <div class="alert-runner">${sanitize(a.runner || 'Runner')}</div>
+              <div class="alert-zapa">${sanitize(a.zapatilla || '—')}${a.grupo ? ' · '+sanitize(a.grupo) : ''}</div>
+            </div>
+            <div class="alert-km-badge" style="color:${color};">${pct}%<span>${km} / ${lim} km</span></div>
+          </div>
+          <div class="km-bar-track">
+            <div class="km-bar-fill" style="width:${overPct}%;background:${color};box-shadow:0 0 6px ${color}40;"></div>
+          </div>
+          <div class="km-bar-labels">
+            <span class="km-bar-label ${t1}">100%</span>
+            <span class="km-bar-label ${t2}">120%</span>
+            <span class="km-bar-label ${t3}">150%</span>
+            <span class="km-bar-label ${t4}">200%+</span>
+          </div>
+        </div>`;
+      }).join('') + '</div>';
+  }
+
+  /* ════════════════════════════════════
+     USUARIOS
+  ════════════════════════════════════ */
+  function cargarUsuarios() {
+    document.getElementById('users-tbody').innerHTML = '<tr><td colspan="7" class="loading-row">Cargando...</td></tr>';
+    document.getElementById('users-cards').innerHTML  = '<div class="loading-row">Cargando...</div>';
+    google.script.run
+      .withSuccessHandler(function(data) {
+        usuariosData = data || [];
+        poblarFiltrosUsuarios();
+        filtrarYRenderizar();
+        _renderInsightsDesdeUsuarios();
+      })
+      .withFailureHandler(function() {})
+      .getAdminUsuarios(ADMIN_TOKEN);
+  }
+
+  // Provincia y grupo se arman con lo que realmente hay cargado, no una
+  // lista fija — así nunca queda desactualizada.
+  function poblarFiltrosUsuarios() {
+    const provincias = Array.from(new Set(
+      usuariosData.map(function(u) { return (u.provincia || '').trim(); }).filter(Boolean)
+    )).sort();
+    const grupos = Array.from(new Set(
+      usuariosData.map(function(u) { return (u.grupo || '').trim(); }).filter(Boolean)
+    )).sort();
+
+    const selP = document.getElementById('filtro-provincia');
+    const valP = selP.value;
+    selP.innerHTML = '<option value="">Toda provincia</option>' +
+      provincias.map(function(p) { return '<option value="' + sanitize(p) + '">' + sanitize(p) + '</option>'; }).join('');
+    selP.value = valP;
+
+    const selG = document.getElementById('filtro-grupo-usuarios');
+    const valG = selG.value;
+    selG.innerHTML = '<option value="">Todo grupo</option>' +
+      grupos.map(function(g) { return '<option value="' + sanitize(g) + '">' + sanitize(g) + '</option>'; }).join('');
+    selG.value = valG;
+  }
+
+  function activarFiltro(filtro) {
+    filtroActivo = filtro;
+    document.querySelectorAll('.fchip').forEach(function(el) {
+      el.classList.toggle('active', el.dataset.filter === filtro);
+    });
+    filtrarYRenderizar();
+  }
+
+  function filtrarYRenderizar() {
+    const q = (document.getElementById('buscar-usuario').value || '').toLowerCase().trim();
+    const provinciaSel = document.getElementById('filtro-provincia').value;
+    const grupoSel     = document.getElementById('filtro-grupo-usuarios').value;
+    let lista = usuariosData.slice();
+    if (filtroActivo === 'alerta-zapas') {
+      lista = lista.filter(function(u) { return alertasData.indexOf(u.email.toLowerCase()) !== -1; });
+    } else if (filtroActivo === 'inactivos') {
+      lista = lista.filter(function(u) { return !u.activoHoy; });
+    } else if (filtroActivo === 'top-performers') {
+      lista = lista.filter(function(u) { return ['avanzado','pro','Avanzado','Pro'].indexOf(u.nivel) !== -1; });
+    }
+    if (provinciaSel) lista = lista.filter(function(u) { return (u.provincia || '') === provinciaSel; });
+    if (grupoSel)     lista = lista.filter(function(u) { return (u.grupo || '') === grupoSel; });
+    if (q) {
+      lista = lista.filter(function(u) {
+        return (u.nombre + ' ' + u.apellido + ' ' + u.email).toLowerCase().includes(q);
+      });
+    }
+    // Más nuevos primero — así se ve quién se sumó último sin buscar nada.
+    lista.sort(function(a, b) { return (b.fechaRegistroTs || 0) - (a.fechaRegistroTs || 0); });
+
+    usuariosFiltrados = lista;
+    paginaActual = 0;
+    renderPaginaUsuarios();
+  }
+
+  function filtrarTabla() { filtrarYRenderizar(); }
+
+  // Corta la lista ya filtrada/ordenada en páginas de USERS_PAGE_SIZE,
+  // para no renderizar cientos de filas de una — con pocos usuarios ni
+  // se nota (una sola página), con muchos evita la lista interminable.
+  function renderPaginaUsuarios() {
+    const total = usuariosFiltrados.length;
+    const totalPaginas = Math.max(1, Math.ceil(total / USERS_PAGE_SIZE));
+    if (paginaActual >= totalPaginas) paginaActual = totalPaginas - 1;
+    if (paginaActual < 0) paginaActual = 0;
+    const desde  = paginaActual * USERS_PAGE_SIZE;
+    const pagina = usuariosFiltrados.slice(desde, desde + USERS_PAGE_SIZE);
+
+    const countEl = document.getElementById('filter-count');
+    if (countEl) {
+      const hasta = Math.min(desde + USERS_PAGE_SIZE, total);
+      countEl.textContent = total === 0
+        ? '0 runners'
+        : (desde + 1) + '–' + hasta + ' de ' + total + ' runner' + (total !== 1 ? 's' : '');
+    }
+    renderTabla(pagina);
+    renderCards(pagina);
+    renderPagerUsuarios(totalPaginas);
+  }
+
+  function renderPagerUsuarios(totalPaginas) {
+    const cont = document.getElementById('users-pager');
+    if (!cont) return;
+    if (totalPaginas <= 1) { cont.innerHTML = ''; return; }
+    cont.innerHTML =
+      '<button onclick="irAPaginaUsuarios(-1)"' + (paginaActual === 0 ? ' disabled' : '') + '>← Anterior</button>' +
+      '<span class="pager-info">Página ' + (paginaActual + 1) + ' de ' + totalPaginas + '</span>' +
+      '<button onclick="irAPaginaUsuarios(1)"' + (paginaActual >= totalPaginas - 1 ? ' disabled' : '') + '>Siguiente →</button>';
+  }
+
+  function irAPaginaUsuarios(delta) {
+    paginaActual += delta;
+    renderPaginaUsuarios();
+  }
+
+  function renderTabla(lista) {
+    const tbody = document.getElementById('users-tbody');
+    if (!lista || !lista.length) {
+      tbody.innerHTML = '<tr><td colspan="7" class="loading-row">Sin resultados</td></tr>'; return;
+    }
+    tbody.innerHTML = lista.map(function(u) {
+      const nom  = sanitize((u.nombre + ' ' + u.apellido).trim());
+      const esc  = nom.replace(/'/g, "\\'");
+      const escE = sanitize(u.email).replace(/'/g, "\\'");
+      const dotCls = u.activoHoy ? 'online' : 'offline';
+      const grp  = u.grupo ? `<span class="pill grupo">${sanitize(u.grupo)}</span>` : '<span style="color:#333;">—</span>';
+      const niv  = u.nivel ? `<span class="pill nivel">${sanitize(u.nivel)}</span>` : '<span style="color:#333;">—</span>';
+      return `<tr class="row-click" onclick="seleccionarDestinatario('${escE}','${esc}')">
+        <td><span class="status-dot ${dotCls}" title="${u.activoHoy ? 'Entrenó hoy' : 'Inactivo hoy'}"></span></td>
+        <td class="name">${nom}</td>
+        <td>${grp}</td>
+        <td>${niv}</td>
+        <td style="font-weight:700;">${u.zapatillas}</td>
+        <td style="color:var(--neon);font-weight:900;font-size:0.92rem;">${u.kmTotales}</td>
+        <td>
+          <button class="notif-btn" title="Ver zapatillas" onclick="event.stopPropagation();verZapasUsuario('${escE}','${esc}')">👟</button>
+          <button class="notif-btn" title="Enviar notificación" onclick="event.stopPropagation();seleccionarDestinatario('${escE}','${esc}')">✉</button>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  function renderCards(lista) {
+    const cont = document.getElementById('users-cards');
+    if (!lista || !lista.length) { cont.innerHTML = '<div class="loading-row">Sin resultados</div>'; return; }
+    cont.innerHTML = lista.map(function(u) {
+      const nom  = sanitize((u.nombre + ' ' + u.apellido).trim());
+      const esc  = nom.replace(/'/g, "\\'");
+      const escE = sanitize(u.email).replace(/'/g, "\\'");
+      const ini  = sanitize(((u.nombre[0]||'') + (u.apellido[0]||'')).toUpperCase()) || '?';
+      const dotCls = u.activoHoy ? 'online' : 'offline';
+      const grp  = u.grupo ? `<span class="pill grupo">${sanitize(u.grupo)}</span>` : '';
+      const niv  = u.nivel ? `<span class="pill nivel">${sanitize(u.nivel)}</span>` : '';
+      return `<div class="user-card" onclick="seleccionarDestinatario('${escE}','${esc}')">
+        <div class="user-card-top">
+          <div class="user-card-avatar">${ini}</div>
+          <div class="user-card-info">
+            <div class="user-card-name">${nom}</div>
+            <div class="user-card-grupo">${grp} ${niv}</div>
+          </div>
+          <span class="status-dot ${dotCls}" style="margin-left:auto;"></span>
+        </div>
+        <div class="user-card-stats">
+          <div class="user-card-stat"><div class="user-card-stat-lbl">KM totales</div><div class="user-card-stat-val neon">${u.kmTotales}</div></div>
+          <div class="user-card-stat"><div class="user-card-stat-lbl">Zapatillas</div><div class="user-card-stat-val">${u.zapatillas}</div></div>
+        </div>
+        <div class="user-card-actions">
+          <button class="notif-btn" onclick="event.stopPropagation();verZapasUsuario('${escE}','${esc}')">👟 Zapatillas</button>
+          <button class="notif-btn" onclick="event.stopPropagation();seleccionarDestinatario('${escE}','${esc}')">✉ Notificación</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  /* ════════════════════════════════════
+     MODAL: ZAPATILLAS DE UN USUARIO — antes, para ver qué zapatillas
+     tenía alguien había que ir directo a la pestaña Zapatillas del
+     Sheet y filtrar a mano por email. Reusa el mismo estilo de
+     semáforo (colores por estado) que ya usás en Alertas/Insights.
+  ════════════════════════════════════ */
+  function verZapasUsuario(email, nombre) {
+    document.getElementById('uz-modal-title').textContent = '👟 Zapatillas — ' + nombre;
+    document.getElementById('uz-modal-body').innerHTML = '<div class="loading-row">Cargando...</div>';
+    document.getElementById('uz-modal-overlay').classList.add('show');
+    google.script.run
+      .withSuccessHandler(renderZapasUsuario)
+      .withFailureHandler(function() {
+        document.getElementById('uz-modal-body').innerHTML = '<div class="loading-row">Error al cargar.</div>';
+      })
+      .getZapatillasDeUsuario(ADMIN_TOKEN, email);
+  }
+  function cerrarModalZapas() {
+    document.getElementById('uz-modal-overlay').classList.remove('show');
+  }
+  function _colorEstadoZapa(estado) {
+    const e = (estado || '').toLowerCase();
+    if (e === 'crítico' || e === 'critico') return 'var(--rojo)';
+    if (e === 'bajo')                       return 'var(--naranja)';
+    if (e === 'positivo')                   return 'var(--amarillo)';
+    return 'var(--verde)';
+  }
+  function renderZapasUsuario(lista) {
+    const cont = document.getElementById('uz-modal-body');
+    if (!lista || !lista.length) {
+      cont.innerHTML = '<div style="text-align:center;padding:20px;font-size:0.82rem;color:var(--metal);">Sin zapatillas registradas.</div>';
+      return;
+    }
+    cont.innerHTML = lista.map(function(z) {
+      const aliasTxt = z.alias ? ` <span style="color:var(--metal);font-weight:400;">(${sanitize(z.alias)})</span>` : '';
+      const estadoTxt   = z.archivada ? 'Archivada' : (z.estado || 'Normal');
+      const estadoColor = z.archivada ? 'var(--metal)' : _colorEstadoZapa(z.estado);
+      return `<div class="uz-shoe-item">
+        <div class="uz-shoe-info">
+          <div class="uz-shoe-model">${sanitize(z.modelo)}${aliasTxt}</div>
+          <div class="uz-shoe-marca">${sanitize(z.marca)} · EU ${sanitize(z.talle)} · ${sanitize(z.genero)}</div>
+        </div>
+        <div class="uz-shoe-right">
+          <div class="uz-shoe-km">${z.km} / ${z.limite} km</div>
+          <div class="uz-shoe-estado" style="color:${estadoColor};">${estadoTxt}</div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  /* ════════════════════════════════════
+     DESTINATARIO / GRUPOS / NOTIF / TABS
+  ════════════════════════════════════ */
+  function seleccionarDestinatario(email, nombre) {
+    setTab('individual');
+    document.getElementById('nf-email-individual').value = email;
+    document.getElementById('nf-email-individual').style.display = 'none';
+    document.getElementById('nf-chip-nombre').textContent = nombre || email;
+    document.getElementById('nf-chip-wrap').style.display = 'block';
+    const panelN = document.getElementById('panel-notificacion');
+    if (panelN) panelN.scrollIntoView({ behavior:'smooth', block:'start' });
+    toast('✉ Destinatario: ' + (nombre || email));
+  }
+  function limpiarDestinatario() {
+    document.getElementById('nf-chip-wrap').style.display = 'none';
+    document.getElementById('nf-email-individual').value = '';
+    document.getElementById('nf-email-individual').style.display = 'block';
+  }
+
+  // Plantillas rápidas para el cuadro de mensaje — ver HISTORIAL-CAMBIOS.md.
+  // Las que dicen [link] hay que reemplazarlo por el link de Mercado Pago
+  // real antes de enviar.
+  const PLANTILLAS_MSG = {
+    agua:        '¿Te sirvió Huella Runner? Regalame un agua 💧 [link]',
+    banana:      'Si la app te ayuda, convidame una banana 🍌 [link]',
+    combo:       'Bancá el proyecto con lo que quieras — un agua, una banana o un gel: [link]',
+    sumate:      'Sumate a mantener esto gratis con una banana, un agua o un gel, lo que prefieras: [link]',
+    inactividad: 'Hace un tiempo que no cargás un entrenamiento — ¿todo bien? Te esperamos para seguir sumando kilómetros.',
+    recordarKm:  '¡Hola, runner! 🏃‍♂️ Te recordamos registrar tus últimos entrenamientos en Huella Runner. Mantener tus kilómetros al día te ayuda a cuidar la vida útil de tus zapatillas. ¡A seguir sumando!',
+    rotacion:    'Si tenés varias zapatillas activas, alternarlas ayuda a que duren más y reduce el riesgo de lesión. ¿Ya rotaste esta semana?',
+    catalogo:    'Sumamos nuevos modelos al catálogo 👟 — fijate si ya está el tuyo.',
+    motivacion:  '¡Seguís sumando kilómetros! Cada carga te acerca más a conocer el estado real de tus zapatillas. Seguí así 🔥',
+    encuesta:    '¿Qué te gustaría ver en Huella Runner? Contanos tu idea — no prometemos nada, pero la tenemos en cuenta 💬',
+    lesiones:    'Un consejo si estás arrancando: subí el volumen de a poco. La mayoría de las lesiones vienen de ir muy rápido, muy pronto.',
+    cumple:      '🎂 ¡Feliz cumple de parte de Huella Runner! Esta semana tenés [detalle del premio o descuento] — contestá este mensaje si lo querés usar.',
+    critico:     'Tu [zapatilla] ya está en zona crítica de desgaste. Es un buen momento para pensar en el próximo par — fijate el catálogo actualizado en la app.'
+  };
+  function usarPlantilla(key) {
+    const txt = PLANTILLAS_MSG[key];
+    if (!txt) return;
+    const el = document.getElementById('nf-mensaje');
+    el.value = txt;
+    el.focus();
+  }
+  function cargarGrupos() {
+    google.script.run
+      .withSuccessHandler(function(grupos) {
+        gruposData = grupos || [];
+        const sel = document.getElementById('nf-destino');
+        sel.innerHTML = '<option value="">— Seleccioná un grupo —</option>';
+        gruposData.forEach(function(g) {
+          const o = document.createElement('option');
+          o.value = g; o.textContent = g; sel.appendChild(o);
+        });
+      })
+      .withFailureHandler(function() {})
+      .getGruposRunning();
+  }
+  function setTab(tab) {
+    tabActual = tab;
+    document.querySelectorAll('.ntab').forEach(function(el, i) {
+      const tabs = ['todos','grupo','individual','segmento'];
+      el.className = 'ntab ' + (tabs[i] === tab ? 'active' : 'inactive');
+    });
+    document.getElementById('nf-destino').style.display         = tab === 'grupo'      ? 'block' : 'none';
+    document.getElementById('nf-individual-wrap').style.display = tab === 'individual' ? 'block' : 'none';
+    document.getElementById('nf-destino-todos').style.display   = tab === 'todos' ? 'block' : 'none';
+    document.getElementById('nf-segmento-wrap').style.display   = tab === 'segmento' ? 'block' : 'none';
+  }
+
+  // Arma segmentoEmails con la lista de destinatarios calculada del lado
+  // del panel (no vienen de un select fijo de grupo/usuario individual).
+  function onSegmentoChange() {
+    const val  = document.getElementById('nf-segmento-select').value;
+    const info = document.getElementById('nf-segmento-info');
+    let nombres = [];
+    segmentoEmails = [];
+
+    if (val === 'alerta') {
+      segmentoEmails = alertasFull.map(function(a) { return a.email; }).filter(Boolean);
+      nombres = alertasFull.map(function(a) { return a.runner; }).filter(Boolean);
+    } else if (val === 'inactivos') {
+      const ab = (insightsExtData && insightsExtData.abandono) || {};
+      segmentoEmails = ab.todosEmails || [];
+      nombres = (ab.lista || []).map(function(u) { return u.nombre; });
+    } else if (val === 'cumple') {
+      segmentoEmails = cumpleanosData.map(function(u) { return u.email; });
+      nombres = cumpleanosData.map(function(u) {
+        return u.nombre + (u.esHoy ? ' (¡hoy!)' : ' (' + u.fecha + ')');
+      });
+    }
+
+    if (!val) { info.style.display = 'none'; return; }
+    info.style.display = 'block';
+    if (segmentoEmails.length === 0) {
+      info.innerHTML = 'Nadie en este segmento por ahora.';
+    } else {
+      const previa = nombres.slice(0, 8).map(sanitize).join(', ') + (nombres.length > 8 ? '…' : '');
+      info.innerHTML = 'El mensaje llegará a <strong style="color:var(--plata);">' + segmentoEmails.length +
+        '</strong> usuario(s)' + (previa ? ': ' + previa : '') + '.';
+    }
+  }
+  function enviarNotif() {
+    const mensaje = document.getElementById('nf-mensaje').value.trim();
+    const btn     = document.getElementById('nf-btn');
+    const fb      = document.getElementById('nf-feedback');
+    if (!mensaje) { fb.className = 'nf-feedback err'; fb.textContent = 'El mensaje no puede estar vacío.'; return; }
+    let dTipo = tabActual;
+    let dValor = '';
+    if (tabActual === 'grupo') {
+      dValor = document.getElementById('nf-destino').value;
+      if (!dValor) { fb.className = 'nf-feedback err'; fb.textContent = 'Seleccioná un grupo.'; return; }
+    } else if (tabActual === 'individual') {
+      dValor = document.getElementById('nf-email-individual').value.trim();
+      if (!dValor) { fb.className = 'nf-feedback err'; fb.textContent = 'Seleccioná un usuario desde la tabla.'; return; }
+    } else if (tabActual === 'segmento') {
+      dTipo  = 'lista';
+      dValor = segmentoEmails;
+      if (!dValor || dValor.length === 0) {
+        fb.className = 'nf-feedback err';
+        fb.textContent = 'Elegí un segmento que tenga usuarios.';
+        return;
+      }
+    }
+    btn.disabled = true; btn.textContent = 'Enviando...'; fb.textContent = '';
+    google.script.run
+      .withSuccessHandler(function(res) {
+        btn.disabled = false; btn.textContent = 'Enviar notificación →';
+        if (res && res.success) {
+          fb.className = 'nf-feedback ok';
+          fb.textContent = '✓ Enviado a ' + (res.enviados || 1) + ' usuario(s).' + (res.emailsEnviados ? ' (' + res.emailsEnviados + ' por email)' : '');
+          document.getElementById('nf-mensaje').value = '';
+          document.getElementById('nf-tambien-email').checked = false;
+          limpiarDestinatario();
+        } else {
+          fb.className = 'nf-feedback err';
+          fb.textContent = '✗ ' + (res ? res.error : 'Error desconocido');
+        }
+      })
+      .withFailureHandler(function() {
+        btn.disabled = false; btn.textContent = 'Enviar notificación →';
+        fb.className = 'nf-feedback err'; fb.textContent = '✗ Error de conexión.';
+      })
+      .enviarNotificacion(dTipo, dValor, mensaje, 'Mensaje', '', ADMIN_TOKEN, document.getElementById('nf-tambien-email').checked);
+  }
+
+  /* ════════════════════════════════════
+     ACTIVIDAD 7 DÍAS
+  ════════════════════════════════════ */
+  function cargarActividadPorDia() {
+    google.script.run
+      .withSuccessHandler(function(dias) {
+        actividadPorDiaData = dias || [];
+        _renderTendencia();
+      })
+      .withFailureHandler(function() {})
+      .getActividadPorDia(ADMIN_TOKEN);
+  }
+
+  /* ════════════════════════════════════════════════════
+     PESTAÑAS INSIGHTS — controlador
+  ════════════════════════════════════════════════════ */
+  /* ════════════════════════════════════════════════════
+     FRANJA DE ATENCIÓN — pinta los 3 contadores de arriba de todo
+     con lo que ya cargaron renderAlertas/renderSospechosos/
+     cargarInsightsExtendidos. Se llama desde cada uno de esos —
+     no pide datos propios, solo reusa lo que ya hay.
+  ════════════════════════════════════════════════════ */
+  function actualizarFranjaAtencion() {
+    _pintarAtencion('atencion-alertas', alertasFull.length, 'var(--naranja)');
+    _pintarAtencion('atencion-sospechosos', sospechososFull.length, 'var(--amarillo)');
+    if (insightsExtData && insightsExtData.abandono) {
+      _pintarAtencion('atencion-inactivos', insightsExtData.abandono.totalInactivos, 'var(--rojo)');
+    }
+  }
+  function _pintarAtencion(id, num, colorSiHay) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = num;
+    el.style.color = num > 0 ? colorSiHay : 'var(--metal)';
+  }
+
+  function setInsTab(tab) {
+    insTabActual = tab;
+    document.querySelectorAll('.ins-tab').forEach(function(el, i) {
+      const tabs = ['comunidad','grupos','zapas','tendencia','vidautil','horario','modelos','comercial','constancia','geografia','valoracion'];
+      el.classList.toggle('active', tabs[i] === tab);
+    });
+    document.querySelectorAll('.ins-content').forEach(function(el) {
+      el.classList.remove('active');
+    });
+    const target = document.getElementById('ins-' + tab);
+    if (target) target.classList.add('active');
+  }
+
+  /* ════════════════════════════════════════════════════
+     INSIGHTS — Módulo A: Perfil Comunidad
+  ════════════════════════════════════════════════════ */
+  const NIVELES_ORDER  = ['Principiante/Recreativo','Intermedio','Avanzado','Pro'];
+  const NIVELES_LABELS = {
+    'Principiante/Recreativo': 'Principiante / Recreativo'
+  };
+  const NIVELES_COLORS = {
+    'Principiante/Recreativo': '#39FF14',
+    'Intermedio':   '#FFD60A',
+    'Avanzado':     '#FF6B00',
+    'Pro':          '#FF2D55'
+  };
+
+  function _renderInsightsDesdeUsuarios() {
+    if (!usuariosData || !usuariosData.length) return;
+
+    /* ── A: Niveles ── */
+    const conteo = {};
+    NIVELES_ORDER.forEach(function(n) { conteo[n] = 0; });
+    usuariosData.forEach(function(u) {
+      const niv = (u.nivel || '').trim();
+      if (conteo[niv] !== undefined) conteo[niv]++;
+    });
+    const total = usuariosData.length;
+    const cont  = document.getElementById('ins-niveles-bars');
+    if (total === 0) { cont.innerHTML = '<div class="loading-row">Sin datos</div>'; return; }
+
+    cont.innerHTML = NIVELES_ORDER.map(function(n) {
+      const c   = conteo[n] || 0;
+      const pct = total > 0 ? Math.round((c / total) * 100) : 0;
+      const col = NIVELES_COLORS[n] || 'var(--neon)';
+      const label = NIVELES_LABELS[n] || n;
+      return `<div class="nivel-bar-wrap">
+        <div class="nivel-bar-header">
+          <div class="nivel-bar-name">${label}</div>
+          <div class="nivel-bar-count">${c}</div>
+        </div>
+        <div class="nivel-bar-track">
+          <div class="nivel-bar-fill" style="width:${pct}%;background:${col};"></div>
+        </div>
+        <div class="nivel-bar-pct">${pct}% de la comunidad</div>
+      </div>`;
+    }).join('');
+
+    /* ── E, F, G ── (H: Horario Pico ahora lo pinta _renderHorarioReal(),
+       ver getInsightsExtendidos — este módulo viejo quedó obsoleto) */
+    _renderInsightComercial();
+    _renderGrupos();
+    _renderVidaUtil();
+  }
+
+  /* ════════════════════════════════════════════════════
+     INSIGHTS — Módulo B: Semáforo + Módulo D: Ranking Calzado
+     CAMBIO v2906: Módulo D ahora usa data.rankingCalzado
+  ════════════════════════════════════════════════════ */
+  function _renderInsightsDesdeDashboard(data) {
+    if (!data || !data.alertasDesgaste) return;
+    const alertas = data.alertasDesgaste || [];
+
+    /* ── J: Geografía (rankingProvincia ya viene calculado del backend) ── */
+    _renderGeografia(data);
+
+    /* ── B: Semáforo ──
+       Bandas por % sobre el límite PROPIO de cada zapatilla (a.porcentaje),
+       no por km crudo — dos zapatillas con el mismo km pueden tener
+       urgencias distintas si sus límites (KM_Limite) son distintos. Todo lo
+       que llega en `alertas` ya está en 100%+ (getAdminDashboardData solo
+       manda las que llegaron a su límite). */
+    let critico    = 0;
+    let precaucion = 0;
+
+    alertas.forEach(function(a) {
+      const pct = a.porcentaje || Math.round(((a.kilometraje||0) / (a.limite||a.kilometraje||1)) * 100);
+      if (pct >= 120) critico++;
+      else            precaucion++;
+    });
+
+    const semCont = document.getElementById('ins-semaforo');
+    semCont.innerHTML = `
+      <div class="semaforo-card verde">
+        <div class="semaforo-dot"></div>
+        <div class="semaforo-num" id="sem-verde">—</div>
+        <div class="semaforo-lbl">Saludables</div>
+        <div class="semaforo-sub">Debajo de su límite</div>
+      </div>
+      <div class="semaforo-card naranja">
+        <div class="semaforo-dot"></div>
+        <div class="semaforo-num">${precaucion}</div>
+        <div class="semaforo-lbl">Precaución</div>
+        <div class="semaforo-sub">100% – 119% de su límite</div>
+      </div>
+      <div class="semaforo-card rojo">
+        <div class="semaforo-dot"></div>
+        <div class="semaforo-num">${critico}</div>
+        <div class="semaforo-lbl">Cambio urgente</div>
+        <div class="semaforo-sub">≥ 120% de su límite</div>
+      </div>`;
+
+    _insState.alertasCount = alertas.length;
+    _actualizarSemaforoVerde();
+
+    /* ── Detalle por tramo ── */
+    const detCont = document.getElementById('ins-semaforo-detalle');
+    if (!alertas.length) {
+      detCont.innerHTML = '<div style="color:var(--metal);font-size:0.8rem;padding:12px 0;">✅ No hay zapatillas en zona de alerta.</div>';
+    } else {
+      detCont.innerHTML = alertas.slice(0, 6).map(function(a) {
+        const km    = a.kilometraje || 0;
+        const lim   = a.limite || km || 1;
+        const pct   = a.porcentaje || Math.round((km / lim) * 100);
+        const color = _kmBarColor(pct);
+        const barPct = Math.min(100, Math.max(0, pct - 100));
+        return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--borde);">
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:0.8rem;font-weight:700;color:var(--plata);">${sanitize(a.runner)}</div>
+            <div style="font-size:0.65rem;color:var(--metal);">${sanitize(a.zapatilla)}</div>
+          </div>
+          <div style="width:80px;">
+            <div style="height:5px;background:#111;border-radius:2px;overflow:hidden;">
+              <div style="height:100%;width:${barPct}%;background:${color};border-radius:2px;"></div>
+            </div>
+          </div>
+          <div style="font-size:0.82rem;font-weight:900;color:${color};white-space:nowrap;">${pct}%</div>
+        </div>`;
+      }).join('');
+    }
+
+    /* ── D: Ranking Calzado — CAMBIO v2906 ──────────────────────────────
+       Usa data.rankingCalzado devuelto por getAdminDashboardData() en el GS.
+       rankingCalzado = array de { marca, modelo, cantidad, kmTotal }
+         ordenado por cantidad DESC, top 15, solo zapatillas ACTIVAS.
+       Si rankingCalzado llega vacío (backend viejo o sin datos),
+       cae en el fallback que calcula desde alertasDesgaste.
+    ─────────────────────────────────────────────────────────────────── */
+    const modelCont      = document.getElementById('ins-top-modelos');
+    const rankingCalzado = data.rankingCalzado || [];
+
+    if (rankingCalzado.length > 0) {
+      // ── Modo principal: datos completos desde el backend ──
+      const posClass = ['t1','t2','t3'];
+      const maxCant  = rankingCalzado[0].cantidad || 1;
+
+      modelCont.innerHTML =
+        '<div style="font-size:0.66rem;color:var(--gris);margin-bottom:16px;padding:10px 12px;' +
+        'background:var(--bg2);border-radius:8px;border:1px solid var(--borde);line-height:1.6;">' +
+        '👟 Ranking de todos los modelos <strong style="color:var(--neon)">activos</strong> en la comunidad. ' +
+        'Usalo para conocer las marcas preferidas por tus clientes y orientar el stock de <strong style="color:var(--plata)">Huella Runner</strong>.' +
+        '</div>' +
+        rankingCalzado.slice(0, 15).map(function(m, i) {
+          const pct    = Math.round((m.cantidad / maxCant) * 100);
+          const posC   = posClass[i] || '';
+          const kmProm = m.cantidad > 0 ? Math.round(m.kmTotal / m.cantidad) : 0;
+          return `<div style="margin-bottom:16px;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;">
+              <div class="top-modelo-pos ${posC}">${i+1}</div>
+              <div class="top-modelo-info">
+                <div class="top-modelo-name">${sanitize(m.modelo || '—')}</div>
+                <div class="top-modelo-marca">${sanitize(m.marca || '—')} · ${kmProm} km/prom · ${m.kmTotal} km total</div>
+              </div>
+              <div class="top-modelo-count">${m.cantidad}<span>${m.cantidad !== 1 ? ' pares' : ' par'}</span></div>
+            </div>
+            <div class="nivel-bar-track">
+              <div class="nivel-bar-fill" style="width:${pct}%;background:var(--neon);"></div>
+            </div>
+          </div>`;
+        }).join('');
+
+    } else {
+      // ── Fallback: calcular desde alertasDesgaste (solo zapas >700 km) ──
+      const modelMap = {};
+      alertas.forEach(function(a) {
+        const key = (a.zapatilla || '').trim();
+        if (!key) return;
+        if (!modelMap[key]) modelMap[key] = { nombre: key, count: 0, kmTotal: 0 };
+        modelMap[key].count++;
+        modelMap[key].kmTotal += (a.kilometraje || 0);
+      });
+      const modelList = Object.values(modelMap).sort(function(a, b) { return b.count - a.count; });
+
+      if (!modelList.length) {
+        modelCont.innerHTML = '<div style="text-align:center;padding:24px;font-size:0.84rem;color:var(--metal);">✅ Sin datos de modelos disponibles por ahora</div>';
+      } else {
+        const posClass2 = ['t1','t2','t3'];
+        modelCont.innerHTML =
+          '<div style="font-size:0.66rem;color:var(--gris);margin-bottom:16px;padding:10px 12px;' +
+          'background:var(--bg2);border-radius:8px;border:1px solid var(--borde);line-height:1.5;">' +
+          '⚠️ Mostrando solo modelos en zona crítica (>700 km). Actualizá para ver el ranking completo.</div>' +
+          modelList.slice(0, 7).map(function(m, i) {
+            const parts  = m.nombre.split(' ');
+            const marca  = parts[0] || '';
+            const modelo = parts.slice(1).join(' ') || m.nombre;
+            return `<div class="top-modelo-item">
+              <div class="top-modelo-pos ${posClass2[i]||''}">${i+1}</div>
+              <div class="top-modelo-info">
+                <div class="top-modelo-name">${sanitize(modelo)}</div>
+                <div class="top-modelo-marca">${sanitize(marca)} · ${m.kmTotal} km acumulados</div>
+              </div>
+              <div class="top-modelo-count">${m.count}<span>${m.count!==1?'runners':'runner'}</span></div>
+            </div>`;
+          }).join('');
+      }
+    }
+  }
+
+  /* Semáforo verde: saludables = total zapas − en alerta */
+  function _actualizarSemaforoVerde() {
+    const el = document.getElementById('sem-verde');
+    if (!el) return;
+    const total = _insState.totalZapas;
+    if (total === null || total === undefined) { el.textContent = '—'; return; }
+    const saludables = Math.max(0, total - (_insState.alertasCount || 0));
+    el.textContent = saludables;
+  }
+
+  /* ════════════════════════════════════════════════════
+     INSIGHTS — Módulo C: Tendencia Semanal
+  ════════════════════════════════════════════════════ */
+  function _renderTendencia() {
+    const cont    = document.getElementById('ins-tend-chart');
+    const resumen = document.getElementById('ins-tend-resumen');
+    const dias    = actividadPorDiaData;
+
+    if (!dias || !dias.length) {
+      cont.innerHTML = '<div class="loading-row">Sin datos</div>'; return;
+    }
+
+    const maxKm     = Math.max.apply(null, dias.map(function(d) { return d.km || 0; })) || 1;
+    const totalKm   = dias.reduce(function(s, d) { return s + (d.km || 0); }, 0);
+    const totalDias = dias.filter(function(d) { return (d.km || 0) > 0; }).length;
+    const diaPico   = dias.reduce(function(a, b) { return (b.km||0) > (a.km||0) ? b : a; }, dias[0]);
+
+    cont.innerHTML = dias.map(function(d) {
+      const pct    = Math.round(((d.km||0) / maxKm) * 100);
+      const activo = (d.km||0) > 0;
+      return `<div class="tend-row">
+        <div class="tend-day">${d.label}</div>
+        <div class="tend-track">
+          <div class="tend-fill" style="width:${pct}%;${activo ? '' : 'background:#1a1a1a;'}"></div>
+        </div>
+        <div class="tend-info">${d.usuarios||0} runners · ${d.km||0} km</div>
+      </div>`;
+    }).join('');
+
+    resumen.innerHTML = `
+      <div style="display:flex;gap:20px;flex-wrap:wrap;">
+        <div>
+          <div style="font-size:0.6rem;color:var(--metal);text-transform:uppercase;letter-spacing:2px;margin-bottom:4px;">KM semana</div>
+          <div style="font-size:1.6rem;font-weight:900;color:var(--neon);">${totalKm}</div>
+        </div>
+        <div>
+          <div style="font-size:0.6rem;color:var(--metal);text-transform:uppercase;letter-spacing:2px;margin-bottom:4px;">Días activos</div>
+          <div style="font-size:1.6rem;font-weight:900;color:var(--plata);">${totalDias}/7</div>
+        </div>
+        <div>
+          <div style="font-size:0.6rem;color:var(--metal);text-transform:uppercase;letter-spacing:2px;margin-bottom:4px;">Día pico</div>
+          <div style="font-size:1.6rem;font-weight:900;color:var(--plata);">${diaPico.label}</div>
+          <div style="font-size:0.65rem;color:var(--metal);">${diaPico.km||0} km</div>
+        </div>
+      </div>`;
+  }
+
+  /* ════════════════════════════════════════════════════
+     INSIGHTS — Módulo E: Insight Comercial
+  ════════════════════════════════════════════════════ */
+  function _renderInsightComercial() {
+    const cont = document.getElementById('ins-comercial-cards');
+    if (!usuariosData || !usuariosData.length) {
+      cont.innerHTML = '<div class="loading-row">Esperando datos...</div>'; return;
+    }
+
+    const listosCambio    = (_insState.alertasCount || 0);
+    const inactivosSemana = usuariosData.filter(function(u) { return !u.activoHoy; }).length;
+    const topRunners      = usuariosData.filter(function(u) { return ['Avanzado','Pro'].indexOf(u.nivel) !== -1; }).length;
+    const sinZapas        = usuariosData.filter(function(u) { return (u.zapatillas || 0) === 0; }).length;
+
+    const insights = [
+      {
+        icon: '🔥', num: listosCambio,
+        title: listosCambio + ' runners listos para renovar zapatillas',
+        desc: 'Tienen zapatillas en zona crítica (>700 km). Momento ideal para una campaña de descuento en calzado running.',
+        action: 'Ver y notificar',
+        onClick: "irANotificarSegmento('alerta','¡Tus zapatillas ya cumplieron su ciclo! Es momento de renovarlas. Tenemos opciones especiales para vos. 🏃')"
+      },
+      {
+        icon: '💤', num: inactivosSemana,
+        title: inactivosSemana + ' runners no entrenaron hoy',
+        desc: 'Una notificación motivacional o una promo puede reactivarlos. El engagement es clave para fidelizar.',
+        action: 'Filtrar inactivos',
+        onClick: "activarFiltro('inactivos'); irANotificarSegmento('inactivos','¡Extrañamos verte en la pista! Volvé a entrenar y seguí sumando kilómetros. 💪')"
+      },
+      {
+        icon: '⭐', num: topRunners,
+        title: topRunners + ' runners nivel Avanzado / Pro',
+        desc: 'Son tus embajadores naturales. Ofreceles productos premium, acceso anticipado a novedades o beneficios exclusivos.',
+        action: 'Segmentar Top Runners',
+        onClick: "activarFiltro('top-performers'); document.querySelector('.users-toolbar').scrollIntoView({behavior:'smooth',block:'start'});"
+      },
+      {
+        icon: '👟', num: sinZapas,
+        title: sinZapas + ' usuarios sin zapatillas registradas',
+        desc: 'Aún no registraron su calzado en la app. Son clientes potenciales directos para la tienda.',
+        action: 'Notificar a todos',
+        onClick: "irANotificar('todos','¡Registrá tus zapatillas en Huella Runner y comenzá a trackear tus kilómetros! 👟')"
+      }
+    ];
+
+    // Abandono real (14+ días sin entrenar, o nunca entrenaron) — usa
+    // getInsightsExtendidos, que carga por separado y puede llegar
+    // después de esta primera pintada; por eso se agrega acá si ya está.
+    if (insightsExtData && insightsExtData.abandono) {
+      const ab = insightsExtData.abandono;
+      insights.push({
+        icon: '⚠️', num: ab.totalInactivos,
+        title: ab.totalInactivos + ' runners sin actividad hace 14+ días (o nunca entrenaron)',
+        desc: 'A diferencia de "no entrenó hoy", esto marca abandono real. Es el momento de un mensaje personal antes de perderlos del todo.',
+        action: 'Ver lista y notificar',
+        onClick: "toggleListaAbandono()"
+      });
+    }
+
+    // Visitas vs. registros (últimos 7 días) — para saber si el
+    // problema de conseguir usuarios está en el tráfico o en el
+    // formulario. Ver getInsightsExtendidos() (admin.gs).
+    if (insightsExtData && insightsExtData.visitasVsRegistros) {
+      const vr = insightsExtData.visitasVsRegistros;
+      // Los valores de "origen" vienen del parámetro ?src= del link que
+      // haya usado quien entró — es texto libre de afuera, por eso se
+      // pasa por sanitize() antes de mostrarlo (si no, alguien podría
+      // mandar un link con ?src=<script> y ejecutarlo acá).
+      const origenesOrdenados = Object.keys(vr.origenes || {}).sort(function(a, b) {
+        return vr.origenes[b] - vr.origenes[a];
+      });
+      const origenesTxt = origenesOrdenados.length
+        ? ' Por origen: ' + origenesOrdenados.map(function(k) {
+            return sanitize(k) + ' (' + vr.origenes[k] + ')';
+          }).join(', ') + '.'
+        : '';
+      insights.push({
+        icon: '📊', num: vr.visitas7,
+        title: vr.visitas7 + ' aperturas de la app esta semana → ' + vr.registros7 + ' registros nuevos' +
+          (vr.conversionPct !== null ? ' (~' + vr.conversionPct + '%)' : ''),
+        desc: 'Ojo: "aperturas" cuenta cada vez que se abre la app, no gente distinta — alguien que entra todos los días suma varias veces. Sirve para ver la tendencia (¿el problema es que no entra gente, o que entra y no se registra?), no como número exacto de visitantes.' + origenesTxt,
+        action: 'Actualizar',
+        onClick: "cargarInsightsExtendidos()"
+      });
+    }
+
+    cont.innerHTML = insights.map(function(ins) {
+      return `<div class="insight-card">
+        <div class="insight-icon">${ins.icon}</div>
+        <div class="insight-body">
+          <div class="insight-title">${ins.title}</div>
+          <div class="insight-desc">${ins.desc}</div>
+          <button class="insight-action" onclick="${ins.onClick}">${ins.action} →</button>
+        </div>
+        <div class="insight-num">${ins.num}</div>
+      </div>`;
+    }).join('');
+  }
+
+  /* ════════════════════════════════════════════════════
+     HELPER: ir al panel de notificación con mensaje
+  ════════════════════════════════════════════════════ */
+  function irANotificar(tab, mensaje) {
+    setTab(tab || 'todos');
+    if (mensaje) document.getElementById('nf-mensaje').value = mensaje;
+    const panel = document.getElementById('panel-notificacion');
+    if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // Como irANotificar(), pero para las acciones rápidas de Insights que
+  // apuntan a un segmento puntual (alerta / inactivos / cumple) — evita
+  // que el atajo caiga en la pestaña "Todos" y termine mandando el
+  // mensaje a toda la base en vez de al grupo que el card describe.
+  function irANotificarSegmento(segmento, mensaje) {
+    setTab('segmento');
+    const sel = document.getElementById('nf-segmento-select');
+    if (sel) { sel.value = segmento; onSegmentoChange(); }
+    if (mensaje) document.getElementById('nf-mensaje').value = mensaje;
+    const panel = document.getElementById('panel-notificacion');
+    if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function toggleListaAbandono() {
+    const cont = document.getElementById('ins-abandono-lista');
+    if (!cont) return;
+    const visible = cont.style.display !== 'none';
+    if (visible) { cont.style.display = 'none'; return; }
+
+    const lista = (insightsExtData && insightsExtData.abandono && insightsExtData.abandono.lista) || [];
+    if (!lista.length) {
+      cont.innerHTML = '<div style="text-align:center;padding:16px;font-size:0.84rem;color:var(--metal);">Nadie en esta situación por ahora ✅</div>';
+    } else {
+      cont.innerHTML = lista.map(function(u) {
+        const diasTxt = u.diasSinEntrenar === null ? 'Nunca entrenó' : 'Hace ' + u.diasSinEntrenar + ' días';
+        const esc  = sanitize(u.nombre).replace(/'/g, "\\'");
+        const escE = sanitize(u.email).replace(/'/g, "\\'");
+        return `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--borde);">
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:0.82rem;font-weight:700;color:var(--plata);">${sanitize(u.nombre)}</div>
+            <div style="font-size:0.65rem;color:var(--metal);">${sanitize(u.grupo || 'Sin grupo')} · ${diasTxt}</div>
+          </div>
+          <button class="notif-btn" onclick="seleccionarDestinatario('${escE}', '${esc}')">✉ Notificar</button>
+        </div>`;
+      }).join('');
+    }
+    cont.style.display = 'block';
+    cont.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  /* ════════════════════════════════════════════════════
+     INSIGHTS — Módulo F: Grupos
+  ════════════════════════════════════════════════════ */
+  function _renderGrupos() {
+    const cont = document.getElementById('ins-grupos-list');
+    if (!usuariosData || !usuariosData.length) {
+      cont.innerHTML = '<div class="loading-row">Sin datos</div>'; return;
+    }
+    const grupoMap = {};
+    usuariosData.forEach(function(u) {
+      const g = (u.grupo || '').trim() || 'Sin grupo';
+      if (!grupoMap[g]) grupoMap[g] = { nombre: g, km: 0, runners: 0, activos: 0 };
+      grupoMap[g].km      += (u.kmTotales || 0);
+      grupoMap[g].runners += 1;
+      if (u.activoHoy) grupoMap[g].activos += 1;
+    });
+    const lista = Object.values(grupoMap)
+      .filter(function(g) { return g.nombre !== 'Sin grupo'; })
+      .sort(function(a, b) { return b.km - a.km; });
+
+    if (!lista.length) {
+      cont.innerHTML = '<div class="loading-row">Sin grupos registrados</div>'; return;
+    }
+    const maxKm    = Math.max.apply(null, lista.map(function(g){ return g.km; })) || 1;
+    const posClass = ['t1','t2','t3'];
+    cont.innerHTML = lista.slice(0, 10).map(function(g, i) {
+      const pct = Math.round((g.km / maxKm) * 100);
+      return `<div style="margin-bottom:16px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+          <div class="top-modelo-pos ${posClass[i]||''}">${i+1}</div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:0.84rem;font-weight:700;color:var(--plata);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${sanitize(g.nombre)}</div>
+            <div style="font-size:0.62rem;color:var(--metal);">${g.runners} runner${g.runners!==1?'s':''} · ${g.activos} activo${g.activos!==1?'s':''} hoy</div>
+          </div>
+          <div style="font-size:1rem;font-weight:900;color:var(--neon);white-space:nowrap;">${g.km}<span style="font-size:0.6rem;color:var(--metal);margin-left:2px;">km</span></div>
+        </div>
+        <div class="nivel-bar-track"><div class="nivel-bar-fill" style="width:${pct}%;background:var(--neon);"></div></div>
+      </div>`;
+    }).join('');
+  }
+
+  /* ════════════════════════════════════════════════════
+     INSIGHTS — Módulo G: Vida Útil
+  ════════════════════════════════════════════════════ */
+  function _renderVidaUtil() {
+    const cont = document.getElementById('ins-vidautil-body');
+    let kmTotal = 0, zapasTotal = 0;
+    usuariosData.forEach(function(u) {
+      kmTotal    += (u.kmTotales || 0);
+      zapasTotal += (u.zapatillas || 0);
+    });
+    const promedio = zapasTotal > 0 ? Math.round(kmTotal / zapasTotal) : 0;
+
+    cont.innerHTML = `
+      <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:18px;">
+        <div class="metric-card accent" style="flex:1;min-width:160px;">
+          <div class="metric-lbl">Promedio km / zapatilla</div>
+          <div class="metric-val">${promedio}</div>
+          <div class="metric-sub">sobre zapas activas</div>
+        </div>
+        <div class="metric-card" style="flex:1;min-width:160px;">
+          <div class="metric-lbl">Zapatillas activas</div>
+          <div class="metric-val">${zapasTotal}</div>
+          <div class="metric-sub">${kmTotal} km acumulados</div>
+        </div>
+      </div>
+      <div style="font-size:0.72rem;color:var(--metal);line-height:1.6;padding:14px 16px;background:var(--bg2);border-radius:8px;border:1px solid var(--borde);">
+        ⏳ <strong style="color:var(--gris);">Próximamente:</strong> cuando conectemos el backend, vas a ver acá cuántos km le saca en promedio un corredor a una zapatilla <strong style="color:var(--gris);">antes de archivarla</strong>. Ese dato es clave para saber cada cuánto tu cliente necesita reponer calzado.
+      </div>`;
+  }
+
+  /* ════════════════════════════════════
+     HELPERS
+  ════════════════════════════════════ */
+  function _formatFecha(fechaStr) {
+    if (!fechaStr) return '';
+    try {
+      const parts = fechaStr.toString().trim().split(' ');
+      const dp = parts[0].split('/');
+      const tp = parts[1] ? parts[1].split(':') : ['0','0'];
+      const d  = new Date(+dp[2], +dp[1]-1, +dp[0], +tp[0], +tp[1]);
+      const diff = Math.floor((Date.now() - d.getTime()) / 60000);
+      if (isNaN(diff) || diff < 0) return parts[0];
+      if (diff < 1)    return 'ahora';
+      if (diff < 60)   return 'hace ' + diff + ' min';
+      if (diff < 1440) return 'hace ' + Math.floor(diff/60) + 'h';
+      return dp[0] + '/' + dp[1];
+    } catch(e) { return ''; }
+  }
+
+  function toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.style.display = 'block';
+    setTimeout(function() { t.style.display = 'none'; }, 2800);
+  }
+</script>
+</body>
+</html>
+
+

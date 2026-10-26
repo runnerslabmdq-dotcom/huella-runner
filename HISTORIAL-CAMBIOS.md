@@ -12,6 +12,39 @@ el GAS es la versión más nueva.
 
 ---
 
+## 26/10/2026 12:22 — Nuevo proyecto "Profe-Runner": copia base
+
+El fundador decidió dejar de lado Huella Runner como app de zapatillas
+(2385 seguidores en IG, 30 registrados, casi sin movimiento hace un mes)
+y arrancar un proyecto distinto sobre la misma base técnica: una app
+para que un profe de running le arme el plan de entrenamiento a sus
+runners (en vez de un grupo de WhatsApp), y el runner cargue km, ritmo,
+sensaciones y molestias. Se charló el diseño completo antes de tocar
+nada (biblioteca de rutinas + calendario de asignación + panel de
+control del profe, un solo profe piloto para arrancar, selector de
+botones en vez de chat real).
+
+- **Carpeta nueva `gas-profe-runner/`** (al lado de `gas/`, que sigue
+  intacta): copia exacta de los 4 archivos de producción
+  (`index.html`, `codigo.gs`, `admin.gs`, `admin.html`), tal cual
+  estaban el día de la copia — es el punto de partida, todavía no
+  tiene ninguna pantalla de profe/runner construida.
+- **`gas-profe-runner/codigo.gs`**:
+  - `SHEET_ID` se deja en un placeholder que tira error a propósito
+    (`PEGAR_AQUI_ID_SHEET_NUEVA`) — así es imposible que este proyecto
+    escriba por accidente en la Sheet real de Huella Runner.
+  - Nueva función `configurarHojasProfeRunner()`: se corre UNA vez a
+    mano desde el editor de Apps Script (después de pegar el ID de una
+    Sheet nueva y vacía) y crea solas las pestañas que van a hacer
+    falta — `Usuarios` (con el campo nuevo `Rol`), `Biblioteca_Rutinas`,
+    `Plan_Asignado` y `Registros_Runner` — con sus columnas. Se puede
+    correr de nuevo sin miedo, no duplica pestañas que ya existan.
+- Es un proyecto nuevo de Apps Script separado (link propio) — es el
+  fundador quien crea ese proyecto, pega estos archivos y lo deploya,
+  igual que se hace con Huella Runner hoy.
+
+---
+
 ## 14/10/2026 11:11 — PRUEBA Ranerz Club: todos los botones principales en rosa
 
 El fundador mandó capturas de los botones "Guardar Puntuación",
