@@ -12,6 +12,18 @@ el GAS es la versión más nueva.
 
 ---
 
+## 26/10/2026 12:56 — Profe-Runner: conectado a la Sheet real
+
+El fundador creó la Sheet nueva ("Profe Huella Runner") y pasó su link.
+
+- **`gas-profe-runner/codigo.gs`**: `SHEET_ID` pasa del placeholder a
+  apuntar de verdad a esa Sheet (`1ifKbVcTqHMQokJdBlv0p6L-mny8WgKnPEPSjpB1J1Y8`).
+  Falta un solo paso antes de poder usar la app: correr una vez
+  `configurarHojasProfeRunner()` desde el editor de Apps Script nuevo
+  (ver instrucciones de copiado que se le pasaron por chat).
+
+---
+
 ## 26/10/2026 12:22 — Nuevo proyecto "Profe-Runner": copia base
 
 El fundador decidió dejar de lado Huella Runner como app de zapatillas
