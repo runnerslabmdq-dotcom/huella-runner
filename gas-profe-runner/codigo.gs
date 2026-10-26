@@ -5,17 +5,11 @@
 // armar encima el proyecto de planes de entrenamiento profe→runner,
 // SIN tocar ni arriesgar la app de zapatillas que sigue en producción.
 //
-// IMPORTANTE — ANTES DE USAR ESTE ARCHIVO:
-//   1. Creá una Google Sheet NUEVA y vacía (NO la de Huella Runner).
-//   2. Pegá su ID (lo de la URL entre /d/ y /edit) en SHEET_ID, acá
-//      abajo, reemplazando el texto "PEGAR_AQUI_ID_SHEET_NUEVA".
-//   3. Corré una vez la función configurarHojasProfeRunner() (abajo
-//      de todo, en este mismo archivo) desde el editor de Apps Script
-//      — crea sola las pestañas y columnas que hacen falta.
-//   Si SHEET_ID se queda con el valor viejo de Huella Runner, este
-//   proyecto escribiría arriba de los datos reales de zapatillas —
-//   por eso abajo apunta a un ID que no existe, para que tire error
-//   hasta que lo reemplaces a propósito.
+// SHEET_ID ya apunta a la Sheet "Profe Huella Runner" (creada el
+// 26/10/2026). Falta un solo paso antes de usar esta app:
+//   - Correr una vez la función configurarHojasProfeRunner() (abajo
+//     de todo, en este mismo archivo) desde el editor de Apps Script
+//     — crea solas las pestañas y columnas que hacen falta.
 //
 // Todo lo de más abajo (desde "Última actualización" en el próximo
 // bloque) es el encabezado y el código ORIGINAL de Huella Runner tal
@@ -56,7 +50,7 @@
 // los últimos 2 cambios, para no seguir creciendo sin límite.)
 // ============================================
 
-const SHEET_ID = 'PEGAR_AQUI_ID_SHEET_NUEVA'; // ⚠️ reemplazar por el ID de tu Sheet nueva antes de correr nada
+const SHEET_ID = '1ifKbVcTqHMQokJdBlv0p6L-mny8WgKnPEPSjpB1J1Y8'; // Sheet "Profe Huella Runner"
 const TZ_AR = 'America/Argentina/Buenos_Aires';
 
 // ============================================
