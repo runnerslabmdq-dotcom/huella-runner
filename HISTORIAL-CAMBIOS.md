@@ -12,6 +12,36 @@ el GAS es la versión más nueva.
 
 ---
 
+## 27/10/2026 13:20 — Profe-Runner: primera pantalla real (Panel del profe)
+
+El fundador confirmó que `estebandragotto@gmail.com` es el profe
+piloto y pidió arrancar la construcción, con el mismo flujo de
+siempre (commit → PR → merge a `main` → avisar para copiar al GAS).
+
+- **`gas-profe-runner/codigo.gs`**:
+  - `PROFE_EMAILS` / `_esEmailProfe()`: mismo criterio que
+    `ADMIN_EMAILS` de `admin.gs`, por ahora un solo email hardcodeado.
+  - `loginUser()` ahora devuelve también `esProfe`.
+  - Nuevas `getPanelProfeData()`, `crearRutina()`, `asignarPlan()` —
+    traen runners + biblioteca de rutinas, guardan una rutina nueva, y
+    asignan una rutina de la biblioteca a una fecha para un runner
+    puntual o para todos.
+  - `configurarHojasProfeRunner()` corregida: ya no crea su propia
+    versión de la pestaña `Usuarios` (quedaba con columnas distintas
+    a `USERS_HEADERS`, que el resto del código ya sabe auto-crear
+    bien) — ahora solo toca las 3 pestañas realmente nuevas.
+- **`gas-profe-runner/index.html`**: nueva vista `view-profe-panel` —
+  el profe entra ahí en vez de al dashboard de zapatillas. Primera
+  versión: lista de runners, biblioteca de rutinas (con formulario
+  para crear una nueva) y un formulario para asignar una rutina a una
+  fecha/runner. Todo texto, sin fotos, reusando los mismos estilos de
+  `.card`/`.form-group` que ya existen.
+- **Todavía no existe** el lado del runner ("Hoy" / "Mi semana") — lo
+  que el profe asigna acá no lo ve nadie del otro lado todavía. Es el
+  siguiente paso acordado.
+
+---
+
 ## 26/10/2026 12:56 — Profe-Runner: conectado a la Sheet real
 
 El fundador creó la Sheet nueva ("Profe Huella Runner") y pasó su link.
