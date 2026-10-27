@@ -1,20 +1,26 @@
 // ============================================
 // PROFE-RUNNER (nuevo proyecto) — codigo.gs
-// Punto de partida: copia exacta del codigo.gs de Huella Runner
-// (gas/codigo.gs) tomada el 26/10/2026 12:22 (hora Argentina), para
-// armar encima el proyecto de planes de entrenamiento profe→runner,
-// SIN tocar ni arriesgar la app de zapatillas que sigue en producción.
-//
-// SHEET_ID ya apunta a la Sheet "Profe Huella Runner" (creada el
-// 26/10/2026). Falta un solo paso antes de usar esta app:
-//   - Correr una vez la función configurarHojasProfeRunner() (abajo
-//     de todo, en este mismo archivo) desde el editor de Apps Script
-//     — crea solas las pestañas y columnas que hacen falta.
+// Última actualización: 27/10/2026 13:20 (hora Argentina)
+// Cambios en esta versión:
+//   - Panel del profe, primera versión: PROFE_EMAILS/_esEmailProfe(),
+//     loginUser() ahora devuelve esProfe, y las funciones nuevas
+//     getPanelProfeData() / crearRutina() / asignarPlan() (biblioteca
+//     de rutinas + asignar a runners). Todavía NO están las pantallas
+//     del lado runner ("Hoy"/"Mi semana") — lo asignado acá no lo ve
+//     nadie del otro lado todavía, es el próximo paso.
+//   - configurarHojasProfeRunner() corregida: ya no crea una
+//     "Usuarios" con columnas propias (quedaba inconsistente con
+//     USERS_HEADERS, que el resto del código ya auto-crea bien).
+// Cambios en versiones anteriores:
+//   - Punto de partida: copia exacta del codigo.gs de Huella Runner
+//     (gas/codigo.gs) tomada el 26/10/2026 12:22 (hora Argentina) —
+//     SIN tocar ni arriesgar la app de zapatillas en producción.
+//   - SHEET_ID conectado a la Sheet real "Profe Huella Runner".
 //
 // Todo lo de más abajo (desde "Última actualización" en el próximo
 // bloque) es el encabezado y el código ORIGINAL de Huella Runner tal
-// cual estaban el día de la copia — se va a ir reescribiendo a medida
-// que armemos las pantallas de profe/runner.
+// cual estaban el día de la copia — se va reescribiendo a medida que
+// armamos las pantallas de profe/runner.
 // ============================================
 
 // ============================================
@@ -53,6 +59,24 @@
 const SHEET_ID = '1ifKbVcTqHMQokJdBlv0p6L-mny8WgKnPEPSjpB1J1Y8'; // Sheet "Profe Huella Runner"
 const TZ_AR = 'America/Argentina/Buenos_Aires';
 
+// Profe piloto (único por ahora — ver charla del 26-27/10/2026): este
+// email es el que ve el Panel de control en vez del dashboard de
+// siempre. Mismo criterio que ADMIN_EMAILS en admin.gs: una lista
+// hardcodeada, fácil de ampliar el día que haya más de un profe.
+const PROFE_EMAILS = ['estebandragotto@gmail.com'];
+function _esEmailProfe(email) {
+  const emailClean = (email || '').toString().trim().toLowerCase();
+  return PROFE_EMAILS.indexOf(emailClean) !== -1;
+}
+
+// Columnas de las 3 pestañas nuevas (biblioteca de rutinas, calendario
+// de asignación, y lo que carga el runner) — las usan tanto
+// configurarHojasProfeRunner() como las funciones del panel del profe
+// de más abajo, para que no se desalineen entre sí.
+const BIBLIOTECA_RUTINAS_HEADERS = ['ID_Rutina', 'Nombre', 'Tipo', 'Zona', 'Ritmo_Objetivo', 'Distancia_Objetivo_Km', 'Nota_Profe'];
+const PLAN_ASIGNADO_HEADERS = ['ID_Plan', 'Fecha', 'Email_Runner', 'ID_Rutina', 'Estado'];
+const REGISTROS_RUNNER_HEADERS = ['ID_Registro', 'Email_Runner', 'Fecha', 'ID_Plan', 'Km_Reales', 'Ritmo_Real', 'Percepcion_Esfuerzo', 'Comentario_Sensaciones', 'Molestia', 'Molestia_Detalle', 'Clima_Temp', 'Clima_Lluvia'];
+
 // ============================================
 // Setup inicial — correr UNA sola vez a mano desde el editor de Apps
 // Script (elegir esta función en el desplegable de arriba y tocar
@@ -77,36 +101,134 @@ function configurarHojasProfeRunner() {
     return hoja;
   }
 
-  // Usuarios: email, nombre, password, provincia, etc. + el campo
-  // nuevo "Rol" (Runner / Profe) que no existía en Huella Runner.
-  asegurarHoja('Usuarios', [
-    'Email', 'Password', 'Nombre', 'Provincia', 'Rol', 'Fecha_Registro'
-  ]);
+  // Usuarios NO se crea acá a propósito: el resto del código
+  // (getSheetAndHeaders / appendDataByHeader, ver loginUser y
+  // registerUser) ya la crea sola con las columnas reales
+  // (USERS_HEADERS, que ya incluye "Rol") la primera vez que alguien
+  // se registra. Crearla acá también, con otras columnas, solo iba a
+  // generar un desorden de columnas duplicadas.
 
   // Biblioteca_Rutinas: las "recetas" reusables que arma el profe una
   // sola vez (tipo, zona y ritmo salen de listas fijas de botones en
   // la pantalla, acá se guarda el resultado).
-  asegurarHoja('Biblioteca_Rutinas', [
-    'ID_Rutina', 'Nombre', 'Tipo', 'Zona', 'Ritmo_Objetivo',
-    'Distancia_Objetivo_Km', 'Nota_Profe'
-  ]);
+  asegurarHoja('Biblioteca_Rutinas', BIBLIOTECA_RUTINAS_HEADERS);
 
   // Plan_Asignado: el calendario real — qué rutina de la biblioteca le
   // toca a qué runner, qué día.
-  asegurarHoja('Plan_Asignado', [
-    'ID_Plan', 'Fecha', 'Email_Runner', 'ID_Rutina', 'Estado'
-  ]);
+  asegurarHoja('Plan_Asignado', PLAN_ASIGNADO_HEADERS);
 
   // Registros_Runner: lo que el runner efectivamente hizo y sintió.
-  asegurarHoja('Registros_Runner', [
-    'ID_Registro', 'Email_Runner', 'Fecha', 'ID_Plan',
-    'Km_Reales', 'Ritmo_Real', 'Percepcion_Esfuerzo',
-    'Comentario_Sensaciones', 'Molestia', 'Molestia_Detalle',
-    'Clima_Temp', 'Clima_Lluvia'
-  ]);
+  asegurarHoja('Registros_Runner', REGISTROS_RUNNER_HEADERS);
 
   SpreadsheetApp.flush();
   Logger.log('Listo — pestañas y columnas creadas/verificadas en la Sheet nueva.');
+}
+
+// ============================================================
+// PANEL DEL PROFE (27/10/2026) — primera versión: biblioteca de
+// rutinas + asignar. Todavía no están las pantallas del runner
+// ("Hoy" / "Mi semana"), así que lo que se asigna acá por ahora no lo
+// ve nadie del otro lado — es el siguiente paso.
+// ============================================================
+
+// Trae todo lo que necesita pintar el Panel de control: la lista de
+// runners (cualquier usuario que no sea el profe) y la biblioteca de
+// rutinas ya creada.
+function getPanelProfeData() {
+  try {
+    const { sheet: uSheet, headers: uHeaders } = getSheetAndHeaders('Usuarios', USERS_HEADERS);
+    const uData = uSheet.getDataRange().getValues();
+    const uEmailCol  = uHeaders.indexOf('Email');
+    const uNombreCol = uHeaders.indexOf('Nombre');
+
+    const runners = [];
+    for (let i = 1; i < uData.length; i++) {
+      const email = uEmailCol !== -1 && uData[i][uEmailCol] ? uData[i][uEmailCol].toString().trim().toLowerCase() : '';
+      if (!email || _esEmailProfe(email)) continue;
+      runners.push({
+        email: email,
+        nombre: uNombreCol !== -1 ? (uData[i][uNombreCol] || '') : ''
+      });
+    }
+
+    const { sheet: rSheet, headers: rHeaders } = getSheetAndHeaders('Biblioteca_Rutinas', BIBLIOTECA_RUTINAS_HEADERS);
+    const rData = rSheet.getDataRange().getValues();
+    const rIdCol = rHeaders.indexOf('ID_Rutina');
+    const rutinas = [];
+    for (let i = 1; i < rData.length; i++) {
+      if (!rData[i][rIdCol]) continue;
+      const obj = {};
+      rHeaders.forEach(function(h, idx) { obj[h] = rData[i][idx]; });
+      rutinas.push(obj);
+    }
+
+    return { success: true, runners: runners, rutinas: rutinas };
+  } catch (e) {
+    Logger.log('getPanelProfeData ERROR: ' + e.toString());
+    return { success: false, error: 'Error al cargar el panel: ' + e.toString() };
+  }
+}
+
+// El profe crea una rutina nueva en su biblioteca (se reusa semana a
+// semana, no hay que recrearla cada vez).
+function crearRutina(datos) {
+  try {
+    if (!datos || !datos.nombre || !datos.tipo) {
+      return { success: false, error: 'Faltan datos de la rutina (nombre y tipo son obligatorios).' };
+    }
+    const idRutina = 'R' + new Date().getTime();
+    appendDataByHeader('Biblioteca_Rutinas', BIBLIOTECA_RUTINAS_HEADERS, {
+      ID_Rutina: idRutina,
+      Nombre: datos.nombre.toString().trim().slice(0, 80),
+      Tipo: datos.tipo.toString().trim(),
+      Zona: (datos.zona || '').toString().trim(),
+      Ritmo_Objetivo: (datos.ritmoObjetivo || '').toString().trim().slice(0, 40),
+      Distancia_Objetivo_Km: datos.distanciaObjetivo || '',
+      Nota_Profe: (datos.nota || '').toString().trim().slice(0, 200)
+    });
+    return { success: true, idRutina: idRutina };
+  } catch (e) {
+    Logger.log('crearRutina ERROR: ' + e.toString());
+    return { success: false, error: 'Error al guardar la rutina.' };
+  }
+}
+
+// El profe asigna una rutina de la biblioteca a una fecha, para un
+// runner puntual o para todos a la vez.
+function asignarPlan(datos) {
+  try {
+    if (!datos || !datos.idRutina || !datos.fecha || !datos.emailRunner) {
+      return { success: false, error: 'Faltan datos para asignar el plan.' };
+    }
+    let emails = [];
+    if (datos.emailRunner === 'TODOS') {
+      const { sheet: uSheet, headers: uHeaders } = getSheetAndHeaders('Usuarios', USERS_HEADERS);
+      const uData = uSheet.getDataRange().getValues();
+      const uEmailCol = uHeaders.indexOf('Email');
+      for (let i = 1; i < uData.length; i++) {
+        const email = uEmailCol !== -1 && uData[i][uEmailCol] ? uData[i][uEmailCol].toString().trim().toLowerCase() : '';
+        if (email && !_esEmailProfe(email)) emails.push(email);
+      }
+    } else {
+      emails = [datos.emailRunner.toString().trim().toLowerCase()];
+    }
+    if (emails.length === 0) {
+      return { success: false, error: 'Todavía no hay runners registrados para asignarles un plan.' };
+    }
+    emails.forEach(function(email) {
+      appendDataByHeader('Plan_Asignado', PLAN_ASIGNADO_HEADERS, {
+        ID_Plan: 'P' + new Date().getTime() + '_' + email,
+        Fecha: datos.fecha,
+        Email_Runner: email,
+        ID_Rutina: datos.idRutina,
+        Estado: 'Pendiente'
+      });
+    });
+    return { success: true, cantidad: emails.length };
+  } catch (e) {
+    Logger.log('asignarPlan ERROR: ' + e.toString());
+    return { success: false, error: 'Error al asignar el plan.' };
+  }
 }
 
 function doGet(e) {
@@ -389,6 +511,7 @@ function loginUser(email, password) {
         email:   rowEmail,
         nombre:  nomCol !== -1 ? data[i][nomCol] : '',
         esAdmin: rol === 'admin' || _esEmailAdmin(rowEmail),
+        esProfe: _esEmailProfe(rowEmail),
         requiereCambioPassword: requiereCambio
       };
     }

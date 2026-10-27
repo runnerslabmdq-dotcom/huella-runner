@@ -1,10 +1,17 @@
 <!--
   PROFE-RUNNER (nuevo proyecto) — Index.html
-  Punto de partida: copia exacta del index.html de Huella Runner
-  tomada el 26/10/2026 12:22 (hora Argentina). Acá vamos a reemplazar
-  el dashboard de zapatillas por las pantallas de "Hoy" / "Mi semana"
-  (runner) y el panel de control / armar rutina / asignar (profe). Ver
-  la nota grande en codigo.gs de esta misma carpeta antes de tocar nada.
+  Última actualización: 27/10/2026 13:20 (hora Argentina)
+  Cambios en esta versión:
+    - Nueva vista "view-profe-panel": el profe piloto (ver PROFE_EMAILS
+      en codigo.gs) entra ahí en vez de al dashboard de zapatillas.
+      Primera versión: lista de runners, biblioteca de rutinas (crear
+      nueva) y asignar una rutina a una fecha/runner. Todo texto, sin
+      fotos. Las pantallas del lado runner ("Hoy"/"Mi semana") todavía
+      no existen — el dashboard de zapatillas de siempre sigue siendo
+      lo que ve cualquier otro usuario, por ahora.
+  Cambios en versiones anteriores:
+    - Punto de partida: copia exacta del index.html de Huella Runner
+      tomada el 26/10/2026 12:22 (hora Argentina).
 -->
 <!--
   HUELLA RUNNER — Index.html
@@ -2101,6 +2108,101 @@
 
   </div>
 
+  <!-- VISTA: PANEL DEL PROFE (proyecto Profe-Runner, 27/10/2026) —
+       primera versión: lista de runners, biblioteca de rutinas y
+       asignar. Todo texto, sin fotos — es un panel de control, no un
+       carrusel de tarjetas. -->
+  <div id="view-profe-panel" style="display:none;">
+    <div class="top-bar">
+      <div class="saludo-topbar" style="font-size:0.9rem; font-weight:900;">Panel de <span style="color:var(--amarillo);">Profe</span></div>
+      <button onclick="doLogout()" style="background:none; border:none; color:var(--amarillo); cursor:pointer; font-weight:700; font-size:0.8rem;">Salir</button>
+    </div>
+
+    <div class="card" style="margin:14px;">
+      <h3 style="margin-bottom:10px; font-size:0.95rem; text-transform:uppercase;">Mis runners</h3>
+      <div id="pp-runners-list" style="display:flex; flex-direction:column; gap:6px;">
+        <div style="color:var(--gris-texto); font-size:0.8rem;">Cargando...</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin:14px;">
+      <h3 style="margin-bottom:10px; font-size:0.95rem; text-transform:uppercase;">Biblioteca de rutinas</h3>
+      <div id="pp-rutinas-list" style="display:flex; flex-direction:column; gap:6px; margin-bottom:14px;">
+        <div style="color:var(--gris-texto); font-size:0.8rem;">Cargando...</div>
+      </div>
+
+      <div style="border-top:1px solid var(--borde); padding-top:12px;">
+        <div class="form-group">
+          <label>Nombre de la rutina</label>
+          <input type="text" id="pp-rut-nombre" placeholder="Ej: Fartlek 6x3min">
+        </div>
+        <div style="display:flex; gap:10px;">
+          <div class="form-group" style="flex:1;">
+            <label>Tipo</label>
+            <select id="pp-rut-tipo">
+              <option value="Rodaje">Rodaje</option>
+              <option value="Series">Series</option>
+              <option value="Pasadas">Pasadas</option>
+              <option value="Lomas">Lomas</option>
+              <option value="Fondo">Fondo</option>
+              <option value="Regenerativo">Regenerativo</option>
+              <option value="Descanso">Descanso</option>
+            </select>
+          </div>
+          <div class="form-group" style="flex:1;">
+            <label>Zona</label>
+            <select id="pp-rut-zona">
+              <option value="Indistinto">Indistinto</option>
+              <option value="Llano">Llano</option>
+              <option value="Lomas">Lomas</option>
+              <option value="Pista">Pista</option>
+              <option value="Playa">Playa</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:flex; gap:10px;">
+          <div class="form-group" style="flex:1;">
+            <label>Ritmo objetivo</label>
+            <input type="text" id="pp-rut-ritmo" placeholder="Ej: 5:30 - 5:45 min/km">
+          </div>
+          <div class="form-group" style="flex:1;">
+            <label>Distancia (km)</label>
+            <input type="number" id="pp-rut-distancia" step="0.1" placeholder="Ej: 8">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Nota para el runner (opcional)</label>
+          <input type="text" id="pp-rut-nota" placeholder="Ej: ritmo cómodo, sin forzar">
+        </div>
+        <div id="pp-rut-error" style="display:none; color:#ff6b6b; font-size:0.75rem; margin-bottom:8px;"></div>
+        <button class="btn-primary" id="pp-btn-crear-rutina" onclick="crearRutinaUI()" style="margin-top:4px;">Guardar rutina</button>
+      </div>
+    </div>
+
+    <div class="card" style="margin:14px;">
+      <h3 style="margin-bottom:10px; font-size:0.95rem; text-transform:uppercase;">Asignar</h3>
+      <div class="form-group">
+        <label>Rutina</label>
+        <select id="pp-asig-rutina"><option value="">Primero cargá una rutina</option></select>
+      </div>
+      <div style="display:flex; gap:10px;">
+        <div class="form-group" style="flex:1;">
+          <label>Fecha</label>
+          <input type="date" id="pp-asig-fecha">
+        </div>
+        <div class="form-group" style="flex:1;">
+          <label>Para</label>
+          <select id="pp-asig-runner">
+            <option value="TODOS">Todos mis runners</option>
+          </select>
+        </div>
+      </div>
+      <div id="pp-asig-error" style="display:none; color:#ff6b6b; font-size:0.75rem; margin-bottom:8px;"></div>
+      <div id="pp-asig-ok" style="display:none; color:var(--amarillo); font-size:0.75rem; margin-bottom:8px;"></div>
+      <button class="btn-primary" id="pp-btn-asignar" onclick="asignarPlanUI()">Asignar</button>
+    </div>
+  </div>
+
   <!-- VISTA: DETALLE DE ZAPATILLA -->
   <!-- VISTA: AGREGAR ZAPATILLA -->
   <div id="view-add-shoe" style="display: none;">
@@ -3210,11 +3312,177 @@
 
   let currentDetailShoe = null;
   let allUserShoes = [];
-  const ALL_VIEWS = ['view-login','view-register','view-dashboard','view-add-shoe','view-notificaciones','view-set-password','view-valoracion'];
+  const ALL_VIEWS = ['view-login','view-register','view-dashboard','view-add-shoe','view-notificaciones','view-set-password','view-valoracion','view-profe-panel'];
 
   function switchView(viewId) {
     ALL_VIEWS.forEach(id => { document.getElementById(id).style.display = 'none'; });
     document.getElementById(viewId).style.display = 'block';
+  }
+
+  // ============================================================
+  // PANEL DEL PROFE (proyecto Profe-Runner, 27/10/2026) — primera
+  // versión: traer runners + biblioteca de rutinas, armar rutina
+  // nueva, y asignar una rutina a una fecha/runner.
+  // ============================================================
+  var _ppRutinas = []; // última lista de rutinas traída del servidor, para no pedirla de nuevo al armar el <select> de "Asignar"
+
+  function loadPanelProfe() {
+    document.getElementById('pp-runners-list').innerHTML = '<div style="color:var(--gris-texto); font-size:0.8rem;">Cargando...</div>';
+    document.getElementById('pp-rutinas-list').innerHTML = '<div style="color:var(--gris-texto); font-size:0.8rem;">Cargando...</div>';
+    google.script.run
+      .withSuccessHandler(function(res) {
+        if (!res || !res.success) {
+          document.getElementById('pp-runners-list').innerHTML = '<div style="color:#ff6b6b; font-size:0.8rem;">' + ((res && res.error) || 'Error al cargar.') + '</div>';
+          document.getElementById('pp-rutinas-list').innerHTML = '';
+          return;
+        }
+        _renderPpRunners(res.runners);
+        _ppRutinas = res.rutinas || [];
+        _renderPpRutinas(_ppRutinas);
+        _renderPpSelectRunner(res.runners);
+        _renderPpSelectRutina(_ppRutinas);
+      })
+      .withFailureHandler(function(e) {
+        document.getElementById('pp-runners-list').innerHTML = '<div style="color:#ff6b6b; font-size:0.8rem;">Error de conexión: ' + (e && e.message ? e.message : e) + '</div>';
+      })
+      .getPanelProfeData();
+  }
+
+  function _renderPpRunners(runners) {
+    var cont = document.getElementById('pp-runners-list');
+    if (!runners || runners.length === 0) {
+      cont.innerHTML = '<div style="color:var(--gris-texto); font-size:0.8rem;">Todavía no se registró ningún runner.</div>';
+      return;
+    }
+    cont.innerHTML = runners.map(function(r) {
+      return '<div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--borde); padding:6px 0;">' +
+        '<span style="font-size:0.85rem; font-weight:700;">' + (r.nombre || r.email) + '</span>' +
+        '<span style="font-size:0.72rem; color:var(--gris-texto);">' + r.email + '</span>' +
+        '</div>';
+    }).join('');
+  }
+
+  function _renderPpRutinas(rutinas) {
+    var cont = document.getElementById('pp-rutinas-list');
+    if (!rutinas || rutinas.length === 0) {
+      cont.innerHTML = '<div style="color:var(--gris-texto); font-size:0.8rem;">Todavía no armaste ninguna rutina.</div>';
+      return;
+    }
+    cont.innerHTML = rutinas.map(function(r) {
+      var detalle = [r.Tipo, r.Zona, r.Ritmo_Objetivo, r.Distancia_Objetivo_Km ? (r.Distancia_Objetivo_Km + ' km') : '']
+        .filter(function(x) { return x; }).join(' · ');
+      return '<div style="border-bottom:1px solid var(--borde); padding:6px 0;">' +
+        '<div style="font-size:0.85rem; font-weight:700;">' + r.Nombre + '</div>' +
+        '<div style="font-size:0.72rem; color:var(--gris-texto);">' + detalle + '</div>' +
+        '</div>';
+    }).join('');
+  }
+
+  function _renderPpSelectRunner(runners) {
+    var sel = document.getElementById('pp-asig-runner');
+    var opciones = '<option value="TODOS">Todos mis runners</option>';
+    (runners || []).forEach(function(r) {
+      opciones += '<option value="' + r.email + '">' + (r.nombre || r.email) + '</option>';
+    });
+    sel.innerHTML = opciones;
+  }
+
+  function _renderPpSelectRutina(rutinas) {
+    var sel = document.getElementById('pp-asig-rutina');
+    if (!rutinas || rutinas.length === 0) {
+      sel.innerHTML = '<option value="">Primero cargá una rutina</option>';
+      return;
+    }
+    sel.innerHTML = rutinas.map(function(r) {
+      return '<option value="' + r.ID_Rutina + '">' + r.Nombre + '</option>';
+    }).join('');
+  }
+
+  function crearRutinaUI() {
+    var nombre = document.getElementById('pp-rut-nombre').value.trim();
+    var tipo = document.getElementById('pp-rut-tipo').value;
+    var err = document.getElementById('pp-rut-error');
+    err.style.display = 'none';
+    if (!nombre) {
+      err.innerText = 'Ponele un nombre a la rutina.';
+      err.style.display = 'block';
+      return;
+    }
+    var datos = {
+      nombre: nombre,
+      tipo: tipo,
+      zona: document.getElementById('pp-rut-zona').value,
+      ritmoObjetivo: document.getElementById('pp-rut-ritmo').value.trim(),
+      distanciaObjetivo: document.getElementById('pp-rut-distancia').value,
+      nota: document.getElementById('pp-rut-nota').value.trim()
+    };
+    var btn = document.getElementById('pp-btn-crear-rutina');
+    btn.innerText = 'GUARDANDO...';
+    btn.disabled = true;
+    google.script.run
+      .withSuccessHandler(function(res) {
+        btn.innerText = 'Guardar rutina';
+        btn.disabled = false;
+        if (!res || !res.success) {
+          err.innerText = (res && res.error) || 'Error al guardar la rutina.';
+          err.style.display = 'block';
+          return;
+        }
+        document.getElementById('pp-rut-nombre').value = '';
+        document.getElementById('pp-rut-ritmo').value = '';
+        document.getElementById('pp-rut-distancia').value = '';
+        document.getElementById('pp-rut-nota').value = '';
+        loadPanelProfe();
+      })
+      .withFailureHandler(function(e) {
+        btn.innerText = 'Guardar rutina';
+        btn.disabled = false;
+        err.innerText = 'Error de conexión: ' + (e && e.message ? e.message : e);
+        err.style.display = 'block';
+      })
+      .crearRutina(datos);
+  }
+
+  function asignarPlanUI() {
+    var idRutina = document.getElementById('pp-asig-rutina').value;
+    var fecha = document.getElementById('pp-asig-fecha').value;
+    var emailRunner = document.getElementById('pp-asig-runner').value;
+    var err = document.getElementById('pp-asig-error');
+    var ok = document.getElementById('pp-asig-ok');
+    err.style.display = 'none';
+    ok.style.display = 'none';
+    if (!idRutina) {
+      err.innerText = 'Elegí una rutina de la biblioteca.';
+      err.style.display = 'block';
+      return;
+    }
+    if (!fecha) {
+      err.innerText = 'Elegí una fecha.';
+      err.style.display = 'block';
+      return;
+    }
+    var btn = document.getElementById('pp-btn-asignar');
+    btn.innerText = 'ASIGNANDO...';
+    btn.disabled = true;
+    google.script.run
+      .withSuccessHandler(function(res) {
+        btn.innerText = 'Asignar';
+        btn.disabled = false;
+        if (!res || !res.success) {
+          err.innerText = (res && res.error) || 'Error al asignar.';
+          err.style.display = 'block';
+          return;
+        }
+        ok.innerText = 'Asignado a ' + res.cantidad + (res.cantidad === 1 ? ' runner.' : ' runners.');
+        ok.style.display = 'block';
+      })
+      .withFailureHandler(function(e) {
+        btn.innerText = 'Asignar';
+        btn.disabled = false;
+        err.innerText = 'Error de conexión: ' + (e && e.message ? e.message : e);
+        err.style.display = 'block';
+      })
+      .asignarPlan({ idRutina: idRutina, fecha: fecha, emailRunner: emailRunner });
   }
 
   function cerrarOnboardingFab() {
@@ -3832,6 +4100,15 @@
               err.style.display = 'block';
             })
             .getAdminUrl();
+          return;
+        }
+        if (res.esProfe) {
+          // PROYECTO PROFE-RUNNER (27/10/2026): el profe piloto no ve
+          // el dashboard de zapatillas, va directo a su Panel de control.
+          currentUserEmail = res.email;
+          document.getElementById('user-name').innerText = res.nombre || 'Profe';
+          switchView('view-profe-panel');
+          loadPanelProfe();
           return;
         }
         currentUserEmail = res.email;
